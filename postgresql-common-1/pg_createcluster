@@ -89,6 +89,8 @@ error 'could not create data directory' if system ('install', '-d', $confdir);
 symlink $datadir, $pgdata;
 chown $owneruid, $ownergid, $pgdata;
 
+$port = next_free_port;
+
 if (-f "$pgdata/PG_VERSION") {
     if (open F, "$pgdata/PG_VERSION") {
         $existingver = <F>;
@@ -111,9 +113,8 @@ move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, "640";
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, "640";
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
 
-# configure for next free port
-$port = next_free_port;
-print "Configuring postgresql.conf to use next free port $port...\n";
+# configure port
+print "Configuring postgresql.conf to use port $port...\n";
 set_conf_value $version, $cluster, "port", $port;
 
 # create log file
