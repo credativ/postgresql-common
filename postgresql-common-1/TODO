@@ -48,3 +48,5 @@ Write manpages for: pg_lsclusters, pg_{create,start,stop,reload}cluster
 add $CONFDIR/port, add support for that in pg_{create,start}cluster and
 pg_lscclusters, prefer this in init scripts
 
+determine db version of the default port in pg_wrapper
+

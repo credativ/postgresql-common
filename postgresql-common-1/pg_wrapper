@@ -1,0 +1,72 @@
+#!/usr/bin/perl -w
+
+# configuration
+$mapfile = "/etc/postgresql-common/user_clusters";
+$confroot = "/etc/postgresql";
+$binroot = "/usr/lib/postgresql";
+$socketdir = "/var/run/postgresql";
+
+@commands = qw/clusterdb createdb createlang createuser dropdb droplang dropuser pg_dump
+    pg_dumpall pg_restore psql vacuumdb vacuumlo/;
+
+# Return parameter from a PostgreSQL configuration file.
+# Parameters: <version> <cluster> <parameter name>
+sub get_conf_value {
+    return 0 unless $_[0] && $_[1];
+    open F, "$confroot/$_[0]/$_[1]/postgresql.conf" or die "Could not open configuration file: $!";
+    while (<F>) {
+        return $1 if /^\s*$_[2]\s*=\s*(\w+)\b/;
+    }
+    return 0;
+}
+
+# Return the PostgreSQL version, cluster, and database to connect to. Return
+# ("","","") if $mapfile does not exist or has no entry for the current user
+sub get_version_cluster_db {
+    my ($user, $pwd, $uid, $gid) = getpwuid $>;
+    my $group = (getgrgid  $gid)[0];
+
+    if (! open MAP, $mapfile) {
+        print "Warning: could not open $mapfile, connecting to default port\n";
+        return ('','',$user);
+    }
+    while (<MAP>) {
+        s/(.*?)#.*/$1/;
+        next if /^\s*$/;
+        ($u,$g,$v,$c,$db) = split;
+        if (!$db) {
+            print  "Warning: ignoring invalid line $. in $mapfile\n";
+            next;
+        }
+        if (($u eq "*" || $u eq $user) && ($g eq "*" || $g eq $group)) {
+            return ($v,$c, ($db eq "*") ? '' : $db);
+        }
+    }
+    return ('','','');
+}
+
+#
+# main
+#
+
+$cmd = (split '/', $0)[-1];
+grep { $cmd eq $_ } @commands or die "pg_wrapper: invalid command name $cmd";
+
+# Determine $version, $cluster, $db, $port
+($version, $cluster, $db) = get_version_cluster_db();
+if ($version && $cluster) {
+    $port = (get_conf_value $version, $cluster, 'port');
+} else {
+    $version = "8.0"; # TODO: determine version from default port
+}
+
+#print "pg_wrapper debug: version $version, cluster $cluster, port $port, db $db\n";
+
+$ENV{'PGPORT'} = "$port" if $port;
+$ENV{'PGHOST'} = $socketdir;
+$ENV{'PGDATABASE'} = $db if $db;
+
+@args = ("$binroot/$version/bin/$cmd");
+push @args, @ARGV;
+exec @args;
+
