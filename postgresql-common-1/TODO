@@ -44,5 +44,3 @@ pg_lscclusters, prefer this in init scripts
 determine db version of the default port in pg_wrapper
 
 automatically determine next free port in pg_createcluster
-
-rewrite pg_createcluster in perl

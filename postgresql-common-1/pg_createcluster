@@ -1,79 +1,103 @@
-#!/bin/sh -e
+#!/usr/bin/perl -w
 
-# Create a new PostgreSQL cluster.
+# Create new PostgreSQL cluster or integrate an existing data directory into
+# the postgresql-common infrastructure.
+#
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-# Print an error message to stderr and exit with status 1
-die() {
-    echo $1 >&2
-    exit 1
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+use Getopt::Long;
+
+# call initdb 
+# Arguments: <version> <data directory> <owner uid> <owner gid>
+sub init_db {
+    $datadir = (-l $_[1]) ? readlink $_[1] : $_[1];
+
+    if (system 'install', '-d', '-o', $_[2], '-g', $_[3], $datadir) {
+        error 'could not create data directory';
+    }
+
+    $initdb = get_program_path 'initdb', $_[0];
+    die 'Internal error: could not determine initdb path' unless $initdb;
+
+    if (fork) {
+        wait;
+        error 'initdb failed' if $?;
+    } else{
+        close STDOUT;
+        $( = $) = $_[3];
+        $< = $> = $_[2];
+        exec $initdb, '-D', $datadir, '-A', 'ident sameuser';
+    }
 }
 
-# call $INITDB to install into directory ($1)
-init_db() {
-    # get system default locale (inherit to initdb)
-    [ -r /etc/environment ] && . /etc/environment || true
-
-    if [ -L "$1" ]; then
-        datadir=$(readlink "$1")
-    else
-        datadir="$1"
-    fi
-
-    mkdir -p "$datadir"
-    chown postgres.postgres "$datadir"
-    /sbin/start-stop-daemon --chuid postgres --start --exec "$INITDB" -- \
-        -D "$datadir" -A 'ident sameuser' >/dev/null
-}
-
-# if file $1 exists, move it to $2 and install it as root:$3 with permissions $4
-move_conffile() {
-    if [ -e "$1" ]; then
-        install -o root -g $3 -m $4 "$1" "$2"
-        rm "$1"
-    else
-        die "Error: required configuration file $1 does not exist"
-    fi
+# move a file to a directory with defined permissions
+# Arguments: <source file> <target dir> <uid> <gid> <perms>
+sub move_conffile {
+    ($file, $target, $uid, $gid, $perms) = @_;
+    if (-e $file) {
+        print "Moving configuration file $file to $target...\n";
+        if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perms, $file, $target) {
+            error "move_conffile: could not install $file";
+        }
+        unlink $file;
+    } else {
+        error "move_conffile: required configuration file $file does not exist";
+    }
 }
 
 #
 # Execution starts here
 #
 
-[ "$1" -a "$2" ] || die "Usage: $0 <version> <cluster name>"
+# command line arguments
 
-VERSION="$1"
-CLUSTER="$2"
-CONFDIR="/etc/postgresql/$VERSION/$CLUSTER"
-PGDATA="$CONFDIR/pgdata"
-INITDB="/usr/lib/postgresql/$VERSION/bin/initdb"
+$owneruid = $>;
+$ownergid = $);
+exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid);
 
-# hardcode path for now; later this should become an option
-DATADIR="/var/lib/postgresql/$VERSION/$CLUSTER"
+if ($#ARGV < 1) {
+    print "Usage: $0 [-u <uid>] [-g <gid>] <version> <cluster name> [<data directory>]\n";
+    exit 1;
+}
+
+$owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
+$ownergid = (getgrnam $ownergid)[2] unless $ownergid =~ /\d+/;
+
+error 'clusters must not be owned by root' unless $owneruid && $ownergid;
+
+($version, $cluster, $datadir) = @ARGV;
+$datadir ||= "/var/lib/postgresql/$version/$cluster";
+$confdir = "$PgCommon::confroot/$version/$cluster";
+$pgdata = "$confdir/pgdata";
 
 # some sanity checks
-
-[ -x "$INITDB" ] || die "Error: Invalid version $VERSION"
-
-[ ! -d "$CONFDIR" ] || [ -z "$(ls "$CONFDIR")" ] || die "Error: cluster already exists"
+error "invalid version: $version" unless get_program_path 'initdb', $version;
+error 'cluster configuration already exists' if -d $confdir && <$confdir/*>;
 
 # create configuration directory
-mkdir -p "$CONFDIR" 
-ln -s "$DATADIR" "$PGDATA"
+error 'could not create data directory' if system ('install', '-d', $confdir);
+symlink $datadir, $pgdata;
 
-if [ -f "$DATADIR/PG_VERSION" ]; then
-    V=$(< "$DATADIR/PG_VERSION")
-    if [ "$V" = "$VERSION" ]; then
-        echo "Configuring already existing cluster (configuration: $CONFDIR, data: $DATADIR)"
-    else
-        die "Error: $DATADIR already contains a version $V cluster"
-    fi
-else
-    echo "Creating new cluster (configuration: $CONFDIR, data: $DATADIR)..."
-    init_db "$PGDATA"
-fi
+if (-f "$pgdata/PG_VERSION") {
+    if (open F, "$pgdata/PG_VERSION") {
+        $existingver = <F>;
+        close F;
+    } else {
+        error "could not open $pgdata/PG_VERSION";
+    }
+    if ($existingver = $version) {
+        print "Configuring already existing cluster (configuration: $confdir, data: $datadir)\n";
+    } else {
+        error "$datadir already contains a version $existingver cluster";
+    }
+} else {
+    print "Creating new cluster (configuration: $confdir, data: $datadir)...\n";
+    init_db $version, $pgdata, $owneruid, $ownergid;
+}
 
 # move conffiles, setup permissions
-move_conffile "$PGDATA/pg_hba.conf" "$CONFDIR" postgres 0640
-move_conffile "$PGDATA/pg_ident.conf" "$CONFDIR" postgres 0640
-move_conffile "$PGDATA/postgresql.conf" "$CONFDIR" root 0644
+move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, "640";
+move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, "640";
+move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
