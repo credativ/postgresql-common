@@ -97,6 +97,7 @@ $datadir ||= "/var/lib/postgresql/$version/$cluster";
 $confdir = "$PgCommon::confroot/$version/$cluster";
 $pgdata = "$confdir/pgdata";
 $logfile = "$confdir/log";
+$avac_log = "$confdir/autovacuum_log";
 
 # some sanity checks
 error "invalid version: $version" unless get_program_path 'initdb', $version;
@@ -147,6 +148,16 @@ chmod 0660, $real_logfile;
 symlink $real_logfile, $logfile;
 chown $owneruid, $ownergid, $real_logfile, $logfile;
 
+# create autovacuum log file
+$real_logfile = "/var/log/postgresql/pg_autovacuum-$version-$cluster.log";
+if (! -e $real_logfile) {
+    open L, ">$real_logfile" or error "could not create log file $real_logfile";
+    close L;
+}
+chmod 0660, $real_logfile;
+symlink $real_logfile, $avac_log;
+chown $owneruid, $ownergid, $real_logfile, $avac_log;
+
 __END__
 
 =head1 NAME
@@ -174,6 +185,10 @@ B<pgdata> which points to the actual data directory I<data dir> (which defaults
 to B</var/lib/postgresql/>I<version>B</>I<name>B</>), and a symbolic link
 B<log> which points to the log file (by default,
 B</var/log/postgresql/postgresql->I<version>B<->I<name>B<.log>).
+
+To enable easy integration of B<pg_autovacuum>, this program also creates a
+symbolic link B<autovacuum_log> which points to the pg_autuvacuum log file (by
+default, B</var/log/postgresql/pg_autovacuum->I<version>B<->I<name>B<.log>).
 
 B<postgresql.conf> is automatically adapted to use the next available port, i.
 e. the first port (starting from 5432) which is not yet used by an already

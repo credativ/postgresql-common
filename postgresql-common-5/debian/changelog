@@ -1,11 +1,13 @@
 postgresql-common (5) experimental; urgency=low
 
-  * PgCommon.pm: internalize get/set_conf_value, export get/set_cluster_port
+  * PgCommon.pm: Internalize get/set_conf_value, export get/set_cluster_port
     instead.
-  * Integrated pg_autovacuum startup if -contrib is installed (based on some
-    patches from Adam R. Skutt, thanks).
+  * pg_ctlcluster: Integrated pg_autovacuum startup if -contrib is installed
+    (based on some patches from Adam R. Skutt, thanks).
+  * pg_createcluster: Create autovacuum_log symlink and log file.
+  * pg_dropcluster: Remove autovacuum_log symlink and log file.
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  2 Apr 2005 17:48:57 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat,  2 Apr 2005 18:53:14 +0200
 
 postgresql-common (4) experimental; urgency=low
 
