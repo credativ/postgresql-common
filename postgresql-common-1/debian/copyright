@@ -1,6 +1,7 @@
-This package was written for Debian by Oliver Elphick olly@lfix.co.uk.
+This package was written for Debian by Oliver Elphick
+<olly@lfix.co.uk> and Martin Pitt <mpitt@debian.org>.
 
-Copyright (c) 2004 Oliver Elphick. 
+Copyright (c) 2004 Oliver Elphick, Martin Pitt 
 
    This software is licensed under the GNU General Public Licence, version
    2 or later (at the licensee's option).  A full copy of the license is

@@ -1,4 +1,4 @@
-postgresql-common (0pre5) experimental; urgency=low
+postgresql-common (0pre6) experimental; urgency=low
 
   * New package to provide a common infrastructure for different PostgreSQL
     versions. This finally fixes all bugs concerning failed automatic
