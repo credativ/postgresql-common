@@ -33,7 +33,7 @@ for ($i = 0; $i <= $#ARGV; ++$i) {
 # Determine $version, $cluster, $db, $port from map files
 ($version, $cluster, $db) = user_cluster_map() unless $cluster;
 if ($cluster) {
-    $port = (get_conf_value $version, $cluster, 'postgresql.conf', 'port');
+    $port = get_cluster_port($version, $cluster);
 }
 
 $ENV{'PGPORT'} = "$port" if $port;

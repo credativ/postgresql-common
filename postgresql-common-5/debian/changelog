@@ -1,9 +1,9 @@
 postgresql-common (5) experimental; urgency=low
 
-  * PgCommon.pm: get/set_conf_value take a file name now instead of assuming
-    postgresql.conf. This makes it useful for other configuration files, too.
+  * PgCommon.pm: internalize get/set_conf_value, export get/set_cluster_port
+    instead.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 30 Mar 2005 19:57:55 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 30 Mar 2005 21:59:23 +0200
 
 postgresql-common (4) experimental; urgency=low
 

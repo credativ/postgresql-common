@@ -6,7 +6,7 @@ package PgCommon;
 use Exporter;
 $VERSION = 1.00;
 @ISA = ('Exporter');
-@EXPORT = qw/error set_conf_value get_conf_value user_cluster_map
+@EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists/;
 @EXPORT_OK = qw/$confroot/;
@@ -62,6 +62,19 @@ sub set_conf_value {
 	print F $_;
     }
     close F;
+}
+
+# Return the port of a particular cluster or undef if the cluster
+# does not exist.
+# Arguments: <version> <cluster>
+sub get_cluster_port {
+    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'port');
+}
+
+# Set the port of a particular cluster. 
+# Arguments: <version> <cluster> <port>
+sub set_cluster_port {
+    set_conf_value $_[0], $_[1], 'postgresql.conf', 'port', $_[2];
 }
 
 # Return the path of a program of a particular version.
