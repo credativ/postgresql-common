@@ -7,10 +7,15 @@
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
 use lib '/usr/share/postgresql-common';
+use Getopt::Long;
 use PgCommon;
 
+# command line options
+$setuid = 0;
+exit 1 unless GetOptions ("setuid|s" => \$setuid);
+
 if ($#ARGV != 2) {
-    print "Usage: $0 <version> <cluster> <action>\n";
+    print "Usage: $0 [-s] <version> <cluster> <action>\n";
     exit 1;
 }
 
@@ -70,6 +75,11 @@ unless ($info{'pgdata'}) {
     exit 1;
 }
 
+if ($setuid) {
+    $( = $) = $info{'ownergid'};
+    $< = $> = $info{'owneruid'};
+}
+
 if( $> != $info{'owneruid'} ) {
     print STDERR 'Error: You must run this program as the cluster owner (',
         (getpwuid $info{'owneruid'})[0], ")\n";
@@ -97,7 +107,9 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_ctlcluster> I<cluster-version> I<cluster-name> B<start>|B<stop>|B<restart>|B<reload>
+B<pg_ctlcluster> [B<--setuid>|B<-s>] I<cluster-version> I<cluster-name> I<action>
+
+where I<action> = B<start>|B<stop>|B<restart>|B<reload>
 
 =head1 DESCRIPTION
 
@@ -106,11 +118,14 @@ essentially wraps the B<pg_ctl> command. It determines the cluster version and
 data path and calls the right version of B<pg_ctl> with appropriate
 configuration parameters and paths.
 
-You have to start this program as the user who owns the database cluster.
+You have to start this program as the user who owns the database cluster. If
+you start B<pg_ctlcluster> as root, you can also use the option
+B<--setuid>/B<-s> to automatically set the user and group id to the cluster
+owner.
 
 In B<start> mode, a log file for this specific cluster is created if it does
 not exist yet (by default,
-C</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>,
+B</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>,
 and a PostreSQL server process (B<postmaster>) is started on it.
 
 B<stop> stops the B<postmaster> server of the given cluster with increasing
