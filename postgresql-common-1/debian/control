@@ -8,9 +8,8 @@ Build-Depends-Indep: cdbs, debhelper (>= 4.1.29)
 
 Package: postgresql-common
 Architecture: all
-Section: misc
 Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5)
-Replaces: postgresql (<= 7.5), postgresql-client (<< 7.5)
+Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5)
 Depends: ${shlibs:Depends}
 Description: manager for PostgreSQL database clusters
  postgresql-common provides a structure under which multiple versions of
