@@ -6,8 +6,12 @@ postgresql-common (5) experimental; urgency=low
     (based on some patches from Adam R. Skutt, thanks).
   * pg_createcluster: Create autovacuum_log symlink and log file.
   * pg_dropcluster: Remove autovacuum_log symlink and log file.
+  * PgCommon.pm: If a configuration file is not found in the cluster conf dir,
+    fall back to the one in /etc/postgresql-common.
+  * Install /etc/postgresql-common/autovacuum.conf as a fallback default
+    configuration file for pg_autovacuum.
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  2 Apr 2005 18:53:14 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun,  3 Apr 2005 09:10:27 +0200
 
 postgresql-common (4) experimental; urgency=low
 

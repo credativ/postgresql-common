@@ -3,8 +3,4 @@ postgresql TODO
 
 Provide do.maintenance which vacuums all running clusters.
 
-postgresql-contrib-x.x need to check a file supplied by
-postgresql-common to see whether and with what parameters to run
-autovacuum.
-
 recheck ports of already existing clusters on installation (might collide)

@@ -14,6 +14,7 @@ $VERSION = 1.00;
 # configuration
 $mapfile = "/etc/postgresql-common/user_clusters";
 $confroot = "/etc/postgresql";
+$common_confdir = "/etc/postgresql-common";
 $binroot = "/usr/lib/postgresql";
 $defaultport = 5432;
 
@@ -28,7 +29,10 @@ sub error {
 # Arguments: <version> <cluster> <config file name> <parameter name>
 sub get_conf_value {
     return 0 unless $_[0] && $_[1];
-    if (open F, "$confroot/$_[0]/$_[1]/$_[2]") {
+    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
+    -e $fname or $fname = "$common_confdir/$_[2]";
+
+    if (open F, $fname) {
         while (<F>) {
             return $1 if /^\s*$_[3]\s*=\s*(\w+)\b/;
         }
