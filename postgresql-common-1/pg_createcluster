@@ -28,7 +28,7 @@ sub init_db {
         close STDOUT;
         $( = $) = $_[3];
         $< = $> = $_[2];
-        exec $initdb, '-D', $datadir, '-A', 'ident sameuser';
+        exec $initdb, '-D', $datadir
     }
 }
 
