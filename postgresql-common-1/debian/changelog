@@ -1,7 +1,11 @@
 postgresql-common (1) unstable; urgency=low
 
   * New package to provide a common infrastructure for different PostgreSQL
-    versions.
+    versions. This finally fixes all bugs concerning failed automatic
+    upgrades. Closes: #277700, #282803, #224047, #229240, #232553, #279184,
+    #241337, #247261, #157282
+  * pg_wrapper now has a central role for mapping clients to clusters, so it
+    is not "overkill" any more. Closes: #201702
 
- -- Oliver Elphick <olly@lfix.co.uk>  Mon, 29 Oct 2004 21:58:52 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 28 Jan 2005 16:01:12 +0100
 
