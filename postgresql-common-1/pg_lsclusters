@@ -11,8 +11,6 @@ show_cluster() {
     cluster=$(basename "$1")
     version=$(basename "$(dirname "$1")")
     pg_data=$(readlink "$1/pgdata")
-    unset port
-    #port=$(grep '^[[:space:]]*port[[:space:]]*=' $1/postgresql.conf | sed 's/^[^=]*=[[:space:]]\([0-9]\+\)[[:space:]]*$/\1/') || port="n/c"
     port=$(sed -n '/^[ \t]*port[ \t]*=/ { 
               s/^[^=]*=[ \t]*\([0-9]\+\)[ \t]*$/\1/; h} ; 
            $ { g; p }' "$1"/postgresql.conf)
