@@ -38,12 +38,16 @@ sub init_db {
 # Arguments: <source file> <target dir> <uid> <gid> <perms>
 sub move_conffile {
     ($file, $target, $uid, $gid, $perms) = @_;
+    $realfile = $file;
+    while (-l $realfile) {
+        $realfile = readlink $realfile;
+    }
     if (-e $file) {
-        print "Moving configuration file $file to $target...\n";
-        if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perms, $file, $target) {
-            error "move_conffile: could not install $file";
+        print "Moving configuration file $realfile to $target...\n";
+        if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perms, $realfile, $target) {
+            error "move_conffile: could not install $realfile";
         }
-        unlink $file;
+        unlink $file, $realfile;
 
         if ($version < 8) {
             @pathcomps = split ('/', $file);
@@ -57,7 +61,7 @@ sub move_conffile {
             $) = $oldgid;
         }
     } else {
-        error "move_conffile: required configuration file $file does not exist";
+        error "move_conffile: required configuration file $realfile does not exist";
     }
 }
 
