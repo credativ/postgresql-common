@@ -3,5 +3,5 @@ debian/init.d-functions usr/share/postgresql-common
 PgCommon.pm usr/share/postgresql-common
 pg_wrapper usr/share/postgresql-common
 pg_lsclusters usr/bin
-pg_createcluster usr/sbin
+pg_createcluster usr/bin
 pg_ctlcluster usr/bin
