@@ -3,18 +3,28 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-use lib '/usr/share/postgresql-common';
+#use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 $show_header = 1;
 
-print "Version\tCluster\tPort\tStatus\tData directory\t\t\tLog file\n" if $show_header;
+@columns = ('Version', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory',
+            'Log file');
+@colwidths = qw/8 10 5 7 9 35 30/;
+
+foreach $cw (@colwidths) {
+    $fmtstring .= '%-'.$cw.'s';
+}
+$fmtstring .= "\n";
+
+printf $fmtstring, @columns;
 
 foreach $v (get_versions) {
     foreach $c (get_version_clusters $v) {
         %info = cluster_info $v, $c;
-        print join "\t", ($v, $c, $info{'port'}, 
-            $info{'running'} ? "running" : "down", 
-            $info{'pgdata'}, $info{'logfile'}), "\n";
+        printf $fmtstring, ($v, $c, $info{'port'}, 
+            $info{'running'} ? "online" : "down", 
+            (getpwuid $info{'owneruid'})[0], $info{'pgdata'},
+            $info{'logfile'});
     }
 }
