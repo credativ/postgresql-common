@@ -32,6 +32,4 @@ new port:
           
    c.    Start postmaster on the new port
 
-create update transition packages from legacy 7.4 packages
-
 recheck ports of already existing clusters on installation (might collide)
