@@ -1,25 +1,27 @@
 Source: postgresql-common
 Section: misc
 Priority: optional
-Maintainer: Oliver Elphick <Oliver.Elphick@lfix.co.uk>
-Uploaders: Martin Pitt <mpitt@debian.org>
+Maintainer: Martin Pitt <mpitt@debian.org>
+Uploaders: Oliver Elphick <Oliver.Elphick@lfix.co.uk> 
 Standards-Version: 3.6.1
 Build-Depends: cdbs, debhelper (>= 4.1.29)
 
 Package: postgresql-common
 Architecture: any
 Section: misc
-Conflicts: postgresql (<= 7.4.2-3), postgresql-client (<= 7.4.2-3)
-Replaces: postgresql (<= 7.4.2-3), postgresql-client (<= 7.4.2-3)
-Depends: postgresql-client7.4 | postgresql-client7.3 | postgresql-client7.2 | postgresql-client8.0
+Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5)
+Replaces: postgresql (<= 7.5), postgresql-client (<< 7.5)
+Depends: ${shlibs:Depends}
 Description: manager for PostgreSQL database clusters
  postgresql-common provides a structure under which multiple versions of
  PostgreSQL may be installed and/or multiple clusters maintained at one
  time.
  .
- This package is required by the postgresqlx.x packages themselves and also
- by the postgresql-clientx.x frontend packages.
- .
- PostgreSQL is an object-relational database, which supports a large part
- of SQL 99.  It is the free software rival to Oracle.
+ PostgreSQL is a fully featured object-relational database management
+ system.  It supports a large part of the SQL standard and is designed
+ to be extensible by users in many aspects.  Some of the features are:
+ ACID transactions, foreign keys, views, sequences, subqueries,
+ triggers, user-defined types and functions, outer joins, multiversion
+ concurrency control.  Graphical user interfaces and bindings for many
+ programming languages are available as well.
 
