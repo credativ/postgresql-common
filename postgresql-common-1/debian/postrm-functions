@@ -1,0 +1,28 @@
+# This file contains common functionality for all postgresql server
+# package postrm scripts.
+
+clean_dir() {
+    if [ -d "$1" ]; then
+        rmdir --ignore-fail-on-non-empty "$1"
+    fi
+}
+
+# Remove all clusters of a particular version ($1)and try to clean up some
+# directories.
+purge_version() {
+    [ "$1" ] || { echo "Error: purge_version: need version parameter" >&2; exit 1; }
+    [ -d "/etc/postgresql/$1" ] || return
+    [ "$(ls /etc/postgresql/$1)" ] || return
+
+    for c in /etc/postgresql/"$1"/*; do
+	cluster=$(basename "$c")
+	echo "Dropping cluster $1 $cluster..."
+	pg_dropcluster --stop-server "$1" "$cluster"
+    done
+
+    clean_dir /etc/postgresql/"$1"
+    clean_dir /etc/postgresql
+    clean_dir /var/lib/postgresql/"$1"
+    clean_dir /var/lib/postgresql
+    clean_dir /var/log/postgresql
+}
