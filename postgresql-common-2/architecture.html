@@ -1,8 +1,10 @@
- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
 <html>
 <head>
-<meta name="author" content="Oliver Elphick, Martin Pitt">
-<title>PostgreSQL client wrapper</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Oliver Elphick, Martin Pitt" />
+  <title>Multiversion/Multicluster PostgreSQL architecture</title>
 </head>
 <body>
 
@@ -92,26 +94,29 @@ default version/cluster and database; overrides
 <tr>
   <td><code>/etc/postgresql/<i>version</i>/<i>clustername</i></code></td>
   <td>Cluster-specific configuration files: <code>postgresql.conf</code>,
-  <code>pg_hba.conf</code>, <code>pg_ident.conf</code>, and a symbolic link
-  <code>pgdata</code> which points to the actual data directory</td>
+  <code>pg_hba.conf</code>, <code>pg_ident.conf</code>, a symbolic link
+  <code>pgdata</code> which points to the actual data directory, and a symbolic
+  link <code>log</code> which points to the log file.</td>
 </tr>
 </table>
 
 <h3>Per-version files and programs</h3>
 
 <table cellpadding="6" cellspacing="0" border="0">
-<tr><td><code>/usr/lib/postgresql/<i>version</i></code></td>		<td colspan="0" rowspan="3" valign="middle">files for a specific version</td></tr>
+<tr><td><code>/usr/lib/postgresql/<i>version</i></code></td> <td colspan="0" rowspan="3" valign="middle">files for a specific version</td></tr>
 <tr><td><code>/usr/share/postgresql/<i>version</i></code></td></tr>
 <tr><td><code>/usr/share/doc/postgresql/<i>version</i></code></td></tr>
 </table>
 
 <h3>Common programs</h3>
 <table cellpadding="6" cellspacing="0" border="0">
-<tr><td><code>/usr/bin/pg_wrapper</code></td> <td>environment chooser and program selector</td></tr>
+<tr><td><code>/usr/share/postgresql-common/pg_wrapper</code></td> <td>environment chooser and program selector</td></tr>
 <tr><td><code>/usr/bin/<i>program</i></code></td>  <td>symbolic links to pg_wrapper, for all client programs</td></tr>
 <tr><td><code>/usr/bin/pg_lsclusters</code></td> <td>list all available clusters with their status and configuration</td></tr>
-<tr><td><code>/usr/sbin/pg_createcluster</code></td><td>wrapper for <code>initdb</code>, sets up the necessary configuration structure</td></tr>
-<tr><td><code>/usr/sbin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server</td></tr>
+<tr><td><code>/usr/bin/pg_createcluster</code></td><td>wrapper for <code>initdb</code>, sets up the necessary configuration structure</td></tr>
+<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server</td></tr>
+<tr><td><code>/usr/bin/pg_upgradecluster</code></td><td>Upgrade a cluster to a newer major version.</td></tr>
+<tr><td><code>/usr/bin/pg_dropcluster</code></td><td>remove a cluster and its configuration</td></tr>
 </table>
 
 <h3>psql</h3>
@@ -145,73 +150,41 @@ constructed and executed.</p>
 
 <p>This script now handles the postmaster server processes for each
 cluster. However, most of the actual work is done by the new
-<code>pg_ctlcluster</code> program.
+<code>pg_ctlcluster</code> program.</p>
 
-<h3>pg_version_upgrade</h3>
+<h3>pg_upgradecluster</h3>
 
 <p>This new program replaces postgresql-dump (a Debian specific program).</p>
 
 <p>It is used to migrate a cluster from one major version to another.</p>
 
-<p>Options:
-<dl>
-<dt>-c <i>cluster</i></dt>
-	<dd>the name of the cluster</dd>
+<p>Usage: <code>pg_upgradecluster</code> [<code>-v</code> <i>newversion</i>]
+<i>version name</i> [<i>data_dir</i>]</p>
 
-<dt>-v <i>version</i></dt>         <dd> the version to upgrade to (the default is the latest
-                      version installed)</dd>
+<p><code>-v</code> <i>version</i> specifies the version to upgrade to; defaults
+to the newest available version.</p>
 
-<dt>-p <i>clusterpath</i> </dt>    <dd> the new clusterpath (default = old clusterpath)</dd>
-
-<dt>-d <i>dump directory</i></dt>   <dd>the directory in which to put the dump of the old
-                      cluster (default = old clusterpath parent)</dd>
-
-<dt>-r  </dt>                  <dd>recover; continue upgrading from a previous failure</dd>
-
-</dl>
-</p>
-<p>Procedure:
+<p>Procedure:</p>
 
 <ol>
-  <li>initdb a new cluster in <code><i>clusterpath</i>.new/data</code> for the new major
-    version</li>
+  <li>Use <code>pg_createcluster</code> to create the new (&quot;target&quot;)
+   cluster (same name, new version).</li>
 
-  <li>start a postmaster for the new cluster with port 5430</li>
+  <li>Start a server for the target cluster.</li>
 
-  <li>stop the postmaster for the old cluster</li>
+  <li>Call <code>pg_dumpall</code> on the original cluster and feed the output to a
+   <code>psql</code> process for the target cluster.</li>
 
-  <li>set the active field in <code>cluster_ports</code> to &quot;upgrading&quot;
-</li>
-  <li>start a postmaster for the old cluster with port 5431
-</li>
-  <li><code>pg_dumpall</code> the old cluster > <code><i>clustername</i>.dumpall</code></li>
+  <li>On error, use <code>pg_dropcluster</code> to remove the target cluster
+   again and exit.</li>
 
-  <li>load the dump in the new cluster > <code><i>dbname</i>.upgrade 2>&1</code></li>
+  <li>Stop the postmaster for the original cluster.</li>
 
-  <li>if there are no errors, stop the two postmasters, else set status
-    to "failed-upgrade" and exit
-</li>
-  <li>move the old cluster directory to <code><i>clusterpath</i>.old</code> and move
-    <code><i>clusterpath</i>.new</code> to <code><i>clusterpath</i></code>; in <code>cluster_ports</code>, set the
-    active field back to its original value
-</li>
- <li>start the postmaster for the new cluster</li>
- 
- <li>(with administrator approval only) delete the old cluster and
-    the dump file</li>
+  <li>Configure the original cluster to an unused port.</li>
+
+  <li>Configure the target cluster to use the port of the original
+   cluster.</li>
 </ol>
-(All operations are done with the software version appropriate to the
-cluster version.)
-</p>
-
-
-<h3>prerm script</h3>
-
-<p>prerm should fail for any particular package postgresql-<i>ver</i> or
-postgresql-client-<i>ver</i> if there is still a cluster for that version
-listed in cluster_ports.  In other words, users have to upgrade or delete their databases
-before they can remove the software package that is needed to read
-those databases.</p>
 
 <p><i><a href="mailto:pkg-postgresql-public@lists.alioth.debian.org">The Debian
 PostgreSQL developers</a> (Oliver Elphick, Martin Pitt)</i></p>
