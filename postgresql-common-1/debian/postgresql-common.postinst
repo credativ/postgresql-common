@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$1" = configure ]; then
+    # Make sure the administrative user exists
+    getent group postgres >/dev/null 2>&1 || addgroup --system postgres
+    getent passwd postgres >/dev/null 2>&1 ||
+        adduser --system --shell /bin/bash --home /var/lib/postgres --ingroup postgres --gecos "PostgreSQL administrator" postgres
+fi
+
+#DEBHELPER#
+
