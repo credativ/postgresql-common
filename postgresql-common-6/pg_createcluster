@@ -65,8 +65,8 @@ sub move_conffile {
     }
 }
 
-# Add a "local all" entry to pg_hba.conf, put before all other entries (after
-# two consecutive empty lines). If comment is specified, it is prepended before
+# Add a "local all" entry to pg_hba.conf, put before all other entries.
+# If comment is specified, it is prepended before
 # the entry.
 # Arguments: user, method, comment
 sub add_local_hba_entry {
@@ -74,18 +74,18 @@ sub add_local_hba_entry {
     $fname = "$confdir/pg_hba.conf";
     
     open (F, $fname) or error "could not open $fname for reading";
-    $prev = '';
     $search = 1;
     while (<F>) {
-	# add entry after two consecutive empty lines
-	if ($search && $prev eq "\n" && $_ eq "\n") {
+	$line = $_;
+	# add entry before column description line
+	if ($search && /#.*TYPE\s+DATABASE/) {
 	    push @lines, $comment if defined($comment);
 	    $s = sprintf "%-7s %-11s %-33s %s\n", 'local', 'all', $user, $method;
 	    push @lines, $s;
+	    push @lines, "\n";
 	    $search = 0;
 	}
-	push @lines, $_;
-	$prev = $_;
+	push @lines, $line;
     }
     close F;
 
