@@ -1,3 +1,9 @@
+postgresql-common (4) experimental; urgency=low
+
+  * 
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Mar 2005 01:09:19 +0100
+
 postgresql-common (3) experimental; urgency=low
 
   * Add richer set of common maintainer scripts functions (for package
