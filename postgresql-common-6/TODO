@@ -6,5 +6,3 @@ Provide do.maintenance which vacuums all running clusters.
 recheck ports of already existing clusters on installation (might collide)
 
 document autovacuum stuff in architecture.html and POD
-
-pg_ctlcluster, autovacuum start: check for already existing daemon
