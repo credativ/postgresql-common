@@ -12,7 +12,7 @@ Section: misc
 Conflicts: postgresql (<= 7.4.2-3), postgresql-client (<= 7.4.2-3)
 Replaces: postgresql (<= 7.4.2-3), postgresql-client (<= 7.4.2-3)
 Depends: postgresql-client7.4 | postgresql-client7.3 | postgresql-client7.2 | postgresql-client8.0
-Description: Manager for PostgreSQL database clusters
+Description: manager for PostgreSQL database clusters
  postgresql-common provides a structure under which multiple versions of
  PostgreSQL may be installed and/or multiple clusters maintained at one
  time.
