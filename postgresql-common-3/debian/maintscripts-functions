@@ -1,25 +1,42 @@
 # This file contains common functionality for all postgresql server
 # package maintainer scripts.
 
-# Create a main cluster for given version ($1) if no cluster already exists
-# for that version.
+# arguments: version package master
+_link_manpages() {
+    MANS=$(dpkg -L $2|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$3")
+    SLAVES=$(for i in $MANS; do TARGET=$(echo $i | sed "s/postgresql\/$1\///"); echo -n " --slave $TARGET $(basename $i) $i"; done)
+    update-alternatives --verbose --install /usr/share/man/man1/$3 \
+	$3 /usr/share/postgresql/$1/man/man1/$3 \
+	$(echo "$1" | tr -cd 0-9) $SLAVES
+}
+
+_unlink_manpages() {
+    update-alternatives --verbose --remove $3 /usr/share/postgresql/$1/man/man1/$3
+}
+
 configure_version() {
-    [ "$1" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
-    if [ ! -d /etc/postgresql/$1 ] || [ -z "$(ls /etc/postgresql/$1)" ]; then
-        /usr/bin/pg_createcluster -u postgres $1 main
+    VERSION="$1"
+
+    # Create a main cluster for given version ($1) if no cluster already exists
+    # for that version.
+    [ "$VERSION" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
+    if [ ! -d /etc/postgresql/$VERSION ] || [ -z "$(ls /etc/postgresql/$VERSION)" ]; then
+        /usr/bin/pg_createcluster -u postgres $VERSION main
     fi
+
+    _link_manpages "$VERSION" "postgresql-$VERSION" postmaster.1.gz
 }
 
 remove_version() {
-    return 0
+    _unlink_manpages "$1" "postgresql-$1" postmaster.1.gz
 }
 
 configure_client_version() {
-    return 0
+    _link_manpages "$1" "postgresql-client-$1" psql.1.gz
 }
 
 remove_client_version() {
-    return 0
+    _unlink_manpages "$1" "postgresql-client-$1" psql.1.gz
 }
 
 configure_contrib_version() {

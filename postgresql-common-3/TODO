@@ -1,10 +1,6 @@
 postgresql TODO
 ===============
 
-Man pages are installed in /usr/share/postgresql/<X.Y>/man.  Provide a
-program to be run by the postinst script to run update-alternatives
-on every manpage to link it to /usr/share/man/man/<X.Y>/<page>
-
 Provide do.maintenance which vacuums all running clusters.
 
 postgresql-contrib-x.x need to check a file supplied by
