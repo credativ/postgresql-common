@@ -7,8 +7,8 @@ use Exporter;
 $VERSION = 1.00;
 @ISA = ('Exporter');
 @EXPORT = qw/error set_conf_value get_conf_value user_cluster_map
-    get_program_path cluster_info get_versions get_version_clusters
-    next_free_port/;
+    get_program_path cluster_info get_versions get_newest_version
+    get_version_clusters next_free_port/;
 @EXPORT_OK = qw/$confroot/;
 
 # configuration
@@ -109,6 +109,13 @@ sub get_versions {
         closedir D;
     }
     return @versions;
+}
+
+# Return the newest available version
+sub get_newest_version {
+    $newest = 0;
+    map { $newest = $_ if $newest < $_ } get_versions;
+    return $newest;
 }
 
 # Return an array of all available clusters of given version
