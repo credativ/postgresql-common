@@ -2,7 +2,7 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 
 POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
-PODPROGS=pg_ctlcluster pg_wrapper
+PODPROGS=pg_ctlcluster pg_wrapper pg_lsclusters
 
 build/postgresql-common::
 	for p in $(PODPROGS); do $(POD2MAN) $$p > $$p.1; done
