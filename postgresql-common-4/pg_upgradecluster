@@ -4,7 +4,7 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-#use lib '/usr/share/postgresql-common';
+use lib '/usr/share/postgresql-common';
 use PgCommon;
 use Getopt::Long;
 use POSIX;

@@ -1,8 +1,9 @@
 postgresql-common (4) experimental; urgency=low
 
-  * 
+  * pg_upgradecluster: Uncomment library search path (artifact from
+    debugging).
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Mar 2005 01:09:19 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Mar 2005 20:14:07 +0100
 
 postgresql-common (3) experimental; urgency=low
 
