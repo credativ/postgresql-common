@@ -1,0 +1,79 @@
+#!/bin/sh -e
+
+# Create a new PostgreSQL cluster.
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+# Print an error message to stderr and exit with status 1
+die() {
+    echo $1 >&2
+    exit 1
+}
+
+# call $INITDB to install into directory ($1)
+init_db() {
+    # get system default locale (inherit to initdb)
+    [ -r /etc/environment ] && . /etc/environment || true
+
+    if [ -L "$1" ]; then
+        datadir=$(readlink "$1")
+    else
+        datadir="$1"
+    fi
+
+    mkdir -p "$datadir"
+    chown postgres.postgres "$datadir"
+    /sbin/start-stop-daemon --chuid postgres --start --exec "$INITDB" -- \
+        -D "$datadir" -A 'ident sameuser' >/dev/null
+}
+
+# if file $1 exists, move it to $2 and install it as root:$3 with permissions $4
+move_conffile() {
+    if [ -e "$1" ]; then
+        install -o root -g $3 -m $4 "$1" "$2"
+        rm "$1"
+    else
+        die "Error: required configuration file $1 does not exist"
+    fi
+}
+
+#
+# Execution starts here
+#
+
+[ "$1" -a "$2" ] || die "Usage: $0 <version> <cluster name>"
+
+VERSION="$1"
+CLUSTER="$2"
+CONFDIR="/etc/postgresql/$VERSION/$CLUSTER"
+PGDATA="$CONFDIR/pgdata"
+INITDB="/usr/lib/postgresql/$VERSION/bin/initdb"
+
+# hardcode path for now; later this should become an option
+DATADIR="/var/lib/postgresql/$VERSION/$CLUSTER"
+
+# some sanity checks
+
+[ -x "$INITDB" ] || die "Error: Invalid version $VERSION"
+
+[ ! -d "$CONFDIR" ] || [ -z "$(ls "$CONFDIR")" ] || die "Error: cluster already exists"
+
+# create configuration directory
+mkdir -p "$CONFDIR" 
+ln -s "$DATADIR" "$PGDATA"
+
+if [ -f "$DATADIR/PG_VERSION" ]; then
+    V=$(< "$DATADIR/PG_VERSION")
+    if [ "$V" = "$VERSION" ]; then
+        echo "Configuring already existing cluster (configuration: $CONFDIR, data: $DATADIR)"
+    else
+        die "Error: $DATADIR already contains a version $V cluster"
+    fi
+else
+    echo "Creating new cluster (configuration: $CONFDIR, data: $DATADIR)..."
+    init_db "$PGDATA"
+fi
+
+# move conffiles, setup permissions
+move_conffile "$PGDATA/pg_hba.conf" "$CONFDIR" postgres 0640
+move_conffile "$PGDATA/pg_ident.conf" "$CONFDIR" postgres 0640
+move_conffile "$PGDATA/postgresql.conf" "$CONFDIR" root 0644

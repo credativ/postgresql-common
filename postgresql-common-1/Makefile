@@ -2,13 +2,14 @@
 
 PREFIX ?= /usr
 BINDIR = $(PREFIX)/bin
+SBINDIR = $(PREFIX)/sbin
 MANDIR = $(PREFIX)/man
 
 CFLAGS = -g -Wall
 
 PROGS = pg_wrapper
 
-LINKS = pg_exec pg_default psql pg_dump pg_dumpall initdb createdb createuser dropdb dropuser pg_restore clusterdb vacuumdb psql
+LINKS = pg_exec pg_default psql pg_dump pg_dumpall createdb createuser dropdb dropuser pg_restore clusterdb vacuumdb psql
 
 SRCS  = pg_wrapper.c pg_default.c pg_files.c pg_exec.c
 
@@ -24,6 +25,7 @@ install:	pg_wrapper
 	[ -z "$(DESTDIR)" ] || mkdir -p "$(DESTDIR)"
 	install -D -m 755 pg_wrapper $(DESTDIR)/$(BINDIR)/pg_wrapper
 	install -D -m 755 pg_lsclusters $(DESTDIR)/$(BINDIR)/pg_lsclusters
+	install -D -m 755 pg_createcluster $(DESTDIR)/$(SBINDIR)/pg_createcluster
 	
 	cd $(DESTDIR)/$(BINDIR) && \
 	    for f in $(LINKS); do \
