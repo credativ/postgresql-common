@@ -23,5 +23,5 @@
 # group, not to PostgreSQL users and groups.  FORCED may take the value
 # "yes" or "no", meaning set or unset.
 #
-# USER       GROUP        CLUSTER            FORCED         DATABASE
+# USER	GROUP	VERSION	CLUSTER	FORCED	DATABASE
 
