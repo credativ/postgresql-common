@@ -1,0 +1,28 @@
+.TH pg_reloadcluster 8 "January 01, 2005" "Martin Pitt"
+
+.SH NAME
+pg_reloadcluster \- manually reload a PostgreSQL cluster
+
+.SH SYNOPSIS
+.B pg_reloadcluster
+.I version clustername
+
+.SH DESCRIPTION
+.B pg_reloadcluster 
+reloads the PostgreSQL server cluster (i. e. a
+collection of databases served by a postmaster instance) of the given
+version and name. This causes the configuration files to be re-read
+without completely stopping and starting the cluster.
+
+This script essentially wraps the
+.B pg_ctl reload
+command.
+
+.SH SEE ALSO
+.BR pg_startcluster (8),
+.BR pg_stopcluster (8),
+.BR pg_lsclusters (1),
+.BR pg_wrapper (1)
+
+.SH AUTHOR
+Martin Pitt <mpitt@debian.org>

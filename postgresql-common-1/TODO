@@ -43,7 +43,7 @@ Do we need separate pam files in each source package?
 Should we do a general debconf query for all pg versions? rather than
 one per source package?
 
-Write manpages for: pg_lsclusters, pg_{create,start,stop,reload}cluster
+Write manpages for: pg_lsclusters
 
 add $CONFDIR/port, add support for that in pg_{create,start}cluster and
 pg_lscclusters, prefer this in init scripts
