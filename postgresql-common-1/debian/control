@@ -1,0 +1,25 @@
+Source: postgresql-common
+Section: misc
+Priority: optional
+Maintainer: Oliver Elphick <Oliver.Elphick@lfix.co.uk>
+Uploaders: Martin Pitt <mpitt@debian.org>
+Standards-Version: 3.6.1
+Build-Depends:  debhelper (>= 4.1.29)
+
+Package: postgresql-common
+Architecture: any
+Section: misc
+Conflicts: postgresql (<= 7.4.2-3), postgresql-client (<= 7.4.2-3)
+Replaces: postgresql (<= 7.4.2-3), postgresql-client (<= 7.4.2-3)
+Depends: postgresql-client7.4 | postgresql-client7.3 | postgresql-client7.2 | postgresql-client8.0
+Description: Manager for PostgreSQL database clusters
+ postgresql-common provides a structure under which multiple versions of
+ PostgreSQL may be installed and/or multiple clusters maintained at one
+ time.
+ .
+ This package is required by the postgresqlx.x packages themselves and also
+ by the postgresql-clientx.x frontend packages.
+ .
+ PostgreSQL is an object-relational database, which supports a large part
+ of SQL 99.  It is the free software rival to Oracle.
+

@@ -1,0 +1,7 @@
+postgresql-common (1) unstable; urgency=low
+
+  * New package to provide a common infrastructure for different PostgreSQL
+    versions.
+
+ -- Oliver Elphick <olly@lfix.co.uk>  Mon, 29 Oct 2004 21:58:52 +0100
+

@@ -1,0 +1,94 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.\"
+.TH USER_CLUSTERS 5 "November 2003" "Debian Project" "Debian Linux"
+.SH NAME
+user_clusters \- File linking users to PostgreSQL clusters
+.SH DESCRIPTION
+.P
+This file maps users against the database clusters to which they will
+connect by default.  Any user may use 
+.B pg-wrapper -c
+to set a new
+default to be stored in 
+.I $HOME/.postgresqlrc
+and the existence of that file
+will supersede anything stored here, unless
+.B FORCED
+is set.
+.P
+When scanning this file, the first matching line will be used.  It is a
+good idea to provide a default explicitly, with a final line where both
+user and group are set to 
+.BR * .
+This can be done by the command
+.BI "pg_wrapper -a -c " cluster " -d 
+.IR database .
+If there is no default, the implicit default
+is to connect to the cluster whose postmaster is listening on port 5432
+and to the database matching the user's login name.
+.SH FORMAT
+.P
+Comments are introduced by the character
+.BR # .
+Comments may follow data on a line; the first comment character terminates
+the data.
+Leading whitespace and blank lines are ignored.
+.P
+Each uncommented, non-blank line must describe a user, group or the
+default (where both user and group are set to 
+.BR * .
+.P
+Fields must be given in the following order, separated by white space:
+.TP
+.B USER
+The login id of the Unix user to whom this line applies. The wildcard character
+.B *
+means any user.
+.TP
+.B GROUP
+The group name of the Unix group to which this line applies. The wildcard character
+.B *
+means any group.
+.TP
+.B CLUSTER
+The name of a cluster defined in the file
+.IR /etc/postgresql/cluster_ports .
+.TP
+.B FORCED
+The word
+.RB ' yes "' or '" no "'"
+indicating whether or not the user is forced to connect only to the cluster
+specified by this line.
+.TP
+.B DATABASE
+Within the cluster, the database to which the user will connect by default
+if he does not specify a database on the command line.  If this is
+.BR * ,
+the default database will be the one named by the user's login id.
+.SH NOTES
+.P
+Since the first matching line is used, the default line must come last.
+.P
+If
+.B FORCED
+is set, matching users will not be able to override the
+choices preselected for them.
+.P
+This file may be altered by
+.B pg_default
+when run by root or postgres.
+.SH BUGS
+The
+.B FORCED
+option is intended only to restrict the ability of naive users to
+connect to the wrong database.  It is
+.B not
+a security measure, since it can easily be bypassed by specifying an
+explicit path and setting
+.B PGPORT
+in the environment.
+.SH SEE ALSO
+.BR cluster_ports (5)
+.SH AUTHOR
+Oliver Elphick
+.RI < olly@lfix.co.uk >

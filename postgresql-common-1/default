@@ -1,0 +1,45 @@
+# Default values for postgresql-common and for all versioned postgresql
+# packages
+# Copyright (c) Oliver Elphick 2003
+# Part of the Debian package, postgresql. The Debian packaging is
+# licensed under GPL v.2
+#
+# POSTGRES_HOME is the PostgreSQL administrator's home directory.  (The
+# administrator is not typically a real user, but a system user for which
+# direct login is disabled.  On Debian, this user is 'postgres'.)
+POSTGRES_HOME=/var/lib/postgres
+
+# Where to find the PostgreSQL database clusters.  This is the parent
+# of all clusters installed by versioned packages and the default location
+# for those created by initdb.
+POSTGRES_CLUSTERS=/var/lib/postgres/clusters
+
+# Any special options to pass to the postmaster through pg_ctl's -o option.
+# This may include such options as "-h hostname", for which there is no
+# parameter defined.  However most options can be set by editing
+# postgresql.conf appropriately.  
+POSTMASTER_OPTIONS=""
+
+# Minimum number of entries in the kernel file table.  If the table size is
+# lower, postgresql.startup attempts to increase it by writing this parameter 
+# into /proc/sys/kernel/file-max.  This is only effective if the kernel has
+# been compiled to support run-time configuration.
+#
+# This parameter is multiplied by the number of clusters before being
+# applied to the system.
+KERNEL_FILE_MAX=1032
+
+
+# Logging directory for output from the postmasters.
+#
+# Warning: if you use syslog for logging (syslog=2 in postgresql.conf) for
+# any cluster, you may not be able to distinguish the output for different
+# postmasters, unless you take special steps to have syslog put its logging
+# into separate files.
+#
+# You can override this setting for individual clusters
+#
+# If you change this, remember to change /etc/logrotate.d/postgresql too.
+POSTGRES_LOGDIR=/var/log/postgresql/
+
+

@@ -1,0 +1,14 @@
+usr/bin/pg_wrapper	usr/bin/pg_exec
+usr/bin/pg_wrapper	usr/bin/pg_default
+usr/bin/pg_wrapper	usr/bin/psql
+usr/bin/pg_wrapper	usr/bin/pg_dump
+usr/bin/pg_wrapper	usr/bin/pg_dumpall
+usr/bin/pg_wrapper	usr/bin/initdb
+usr/bin/pg_wrapper	usr/bin/createdb
+usr/bin/pg_wrapper	usr/bin/createuser
+usr/bin/pg_wrapper	usr/bin/dropdb
+usr/bin/pg_wrapper	usr/bin/dropuser
+usr/bin/pg_wrapper	usr/bin/pg_restore
+usr/bin/pg_wrapper	usr/bin/clusterdb
+usr/bin/pg_wrapper	usr/bin/vacuumdb
+usr/bin/pg_wrapper	usr/bin/psql

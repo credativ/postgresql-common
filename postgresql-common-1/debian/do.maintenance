@@ -1,0 +1,119 @@
+#! /bin/bash
+#
+# [TODO] convert this script to read /etc/postgresql/cluster.ports and to see
+# to the vacuuming of every listed cluster
+
+# Script for automatic maintenance of Debian PostgreSQL8.0, to be run by cron,
+# with the owner being the postgres superuser
+
+# Use of this script with PostgreSQL passwords is likely to be insecure.
+# The preferred method for ensuring access is to have "ident" authentication
+# enabled by having this line in /etc/postgresql/8.0/pg_hba.conf:
+#
+#  local   all  	postgres	ident sameuser
+#
+# this will allow the postgres superuser on the local machine to connect as
+# itself without giving a password.  This is the default configuration for
+# the Debian package.
+#
+# If password access for "local" is turned on in
+# /etc/postgresql/8.0/pg_hba.conf,
+# you must create a file ~postgres/.pgpass containing a line specifying the
+# password, as explained in section 1.11 of the PostgreSQL Programmer's Guide
+# (package postgresql-doc).
+
+. /etc/default/postgresql/8.0
+
+syntax() {
+	echo Syntax: $0 [-v] [-a] [-f] [-F] [-u user] [-u]
+	exit 1
+}
+
+verbose=
+analyse=
+while getopts aFfvu: arg
+do
+	case $arg
+		in
+		a)
+			analyse=ANALYZE
+			;;
+		F)
+			force=FORCE
+			;;
+		f)
+			full=FULL
+			;;
+		v)
+			verbose=VERBOSE
+			;;
+		u)
+			user=$OPTARG
+			;;
+		*)
+			syntax;;
+	esac
+done
+
+/usr/sbin/invoke-rc.d --query postgresql start
+if [ $? -ne 104 ]
+then
+	[ -n "$verbose" ] && 
+		echo "PostgreSQL is currently disabled by update-rc.d or file-rc"
+	exit 1
+fi
+
+if [ ! -S /var/run/postgresql/.s.PGSQL.${PGPORT} ]
+then
+	[ -n "$verbose" ] && 
+		echo "The PostgreSQL8.0 postmaster is not running (there is no UNIX socket)"
+	exit 1
+fi
+
+if [ -r $PGDATA/postmaster.pid ]
+then
+	# check the postmaster is running
+	if ! /bin/kill -0 `sed '2,$d' $PGDATA/postmaster.pid`
+	then
+		[ -n "$verbose" ] && 
+			echo "The PostgreSQL8.0 postmaster is not running (no process)"
+		exit 1
+	fi
+fi
+
+if [ -r $PGDATA/autovacuum.pid ]
+then
+	# check if autovacuum is running
+	if /bin/kill -0 `cat $PGDATA/autovacuum.pid`
+	then
+		if [ -z "$force" ]
+		then 
+			echo "The PostgreSQL8.0 autovacuum daemon is running and force is not enabled"
+			exit 1
+		fi
+	fi
+fi
+
+
+if [ -n "$user" ]
+then
+	UNAME="-U$user"
+fi
+
+dblist=$(/usr/lib/postgresql/8.0/bin/psql $UNAME -q -t -d template1 -P border=0 -c "
+SELECT      datname
+  FROM      pg_database
+  WHERE     datallowconn
+  ORDER BY  datname")
+
+IFS='
+'
+
+(
+	for database in $dblist
+	do
+		echo "\c '${database}'"
+		echo "vacuum ${full} ${verbose} ${analyse};"
+	done
+) | /usr/lib/postgresql/8.0/bin/psql -d template1 -t -q ${UNAME} 2>&1
+

@@ -1,0 +1,364 @@
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="author" content="Oliver Elphick">
+<title>PostgreSQL client wrapper</title>
+</head>
+<body>
+
+<h1>PostgreSQL client wrapper</h1>
+
+
+<h2>Solving a problem</h2>
+
+<p>
+When a new major version of PostgreSQL is released, it is necessary to
+dump and reload the database.  The old software must be used for the dump,
+and the new software for the reload.</p>
+
+<p>This was a major problem for Red Hat and Debian, because a dump and reload was
+not required by every upgrade and by the time the need for a dump is
+realised, the old software might have been deleted.  Debian had certain rather
+unreliable procedures to save the old software and use it to do a dump, but
+these procedures often went wrong.  Red Hat's installation environment is so
+rigid that it is not practicable for the Red Hat packages to attempt an
+automatic upgrade.  Debian offered a debconf choice for
+whether to attempt automatic upgrading; if it failed or was not allowed, a 
+manual upgrade had to be done, either from a pre-existing dump or by
+manual invocation of the postgresql-dump script.</p>
+
+<p>There was once an upstream program called pg_upgrade which could be used
+for in-place upgrading.  This does not currently work and does not seem to
+be a high priority with upstream developers.
+</p>
+<p>It is possible to run different versions of PostgreSQL simultaneously, and
+indeed to run the same version on separate database clusters simultaneously.
+To do so, each postmaster must listen on a different port, so each client
+must specify the correct port.  By having two separate
+versions of the PostgreSQL packages installed simultaneously, it is
+simple to do database upgrades by dumping from the old version and
+uploading to the new.  The PostgreSQL client wrapper is designed to 
+permit this.</p>
+
+
+
+<h2>Description</h2>
+
+<p>The Debian packaging has been changed to create a new package for each
+major version.  The criterion for creating a new package is that initdb is
+required when upgrading from the previous version. Thus, the existing
+postgresql packages have become postgresql-7.2, postgresql-7.3 and
+postgresql-7.4 (and similarly
+for all the binary packages).  postgresql and the other existing binary
+package names have become dummy packages depending on one of the versioned
+equivalents.
+</p>
+<p>When a new set of
+versioned packages is put in the archive, the previous set should depend
+on the new set, so as to force its installation.  This will enable old
+packages to be removed.  All versioned packages should provide the virtual
+package postgresql-db,
+but there should also be a dummy postgresql package which will depend on
+postgresql-7.2.  After sarge becomes the new stable release, postgresql
+will depend on postgresql-7.4
+instead.  postgresql should always depend on the versioned package which is
+the last version in the current stable release.
+<BR><STRONG>*** WILL THIS WORK? ***</strong>
+</p>
+<p>
+</p>
+
+<p>Each versioned package installs into <code>/usr/lib/postgresql/<i>version</i></code>. 
+In order to allow users easily to select the right package when working,
+the Debian package's pg_wrapper program is used to read the
+current version set by any user and to fork the correct executable
+with the correct library versions according to those preferences.
+<code>/usr/bin</code> provides executables soft-linked to pg_wrapper.
+</p>
+<p>This procedure also allows separate database clusters to be maintained
+for the use of different groups of users; these clusters need not all be
+of the same major version.  This allows much greater flexibility for
+those people who need to make application software changes consequent on
+a PostgreSQL upgrade.</p>
+
+
+
+<h2>Detailed structure</h2>
+
+<p>The system is driven by two simple datafiles, one of which tabulates
+clusters against major versions and a unique port number.  The other
+tabulates user against cluster and default database.  The default database
+need not be specified; if it is not, it defaults to the user's own login name, in
+accordance with current upstream behaviour.
+</p>
+<h3>Configuration</h3>
+<table cellpadding="6" cellspacing="0" border="0">
+<tr><td><code>/etc/default/postgresql</code></td>		<td>Default values for all versions</td></tr>
+<tr><td><code>/etc/postgresql/cluster_ports</code></td>		<td>maps clusters to versions and ports</td></tr>
+<tr><td><code>/etc/postgresql/user_clusters</code></td>		<td>maps users against clusters and dbs</td></tr>
+<tr><td><code>/etc/postgresql/config-<i>version</i>/</code></td>	<td>Default per-version configuration
+					<code>postgresql.conf</code>, <code>pg_hba.conf</code>, etc.</td></tr>
+<tr><td><code>/etc/postgresql/<i>port</i>/</code></td>			<td>Configuration for a specific cluster
+					containing cluster-specific files
+					(defaulting to the general files for
+					the version)</td></tr></table>
+
+<p><code>/etc/default/postgresql</code>  replaces the old <code>postmaster.conf</code> and
+<code>postgresql.env</code> in <code>/etc/postgresql</code>.  Any per-cluster information
+that was in those files is now stored in <code>/etc/postgresql/cluster_ports</code> or under
+<code>/etc/postgresql/<i>port</i>/</code></p>
+
+<h3>Package files and programs</h3>
+
+<table cellpadding="6" cellspacing="0" border="0">
+<tr><td><code>/usr/lib/postgresql/<i>version</i></code></td>		<td colspan="0" rowspan="3" valign="middle">files for a specific version</td></tr>
+<tr><td><code>/usr/share/postgresql/<i>version</i></code></td></tr>
+<tr><td><code>/usr/share/doc/postgresql/<i>version</i></code></td></tr>
+<tr><td><code>/usr/bin/<i>program</i>-<i>version</i></code></td>            <td colspan="0" rowspan="2" valign="middle">soft-links to pg_wrapper</td></tr>
+<tr><td><code>/usr/lib/postgresql/bin/<i>program</i>-<i>version</i></code></td></tr>
+</table>
+
+<h3>Common programs</h3>
+<table cellpadding="6" cellspacing="0" border="0">
+<tr><td><code>/usr/bin/pg_wrapper</code></td>			<td>environment chooser and program
+					selector</td></tr>
+<tr><td><code>/usr/bin/<i>program</i></code></td>                      <td>soft-links to pg_wrapper</td></tr>
+<tr><td><code>/usr/lib/postgresql/bin/<i>program</i></code></td>       <td>soft-links to pg_wrapper for
+					administrator programs</td></tr>
+</table>
+
+<h3>cluster_ports file</h3>
+<pre>
+# This file maps PostgreSQL database clusters against their database
+# versions, the ports on which their postmasters are to listen, the Unix
+# logins of their administrators and the directories where their data are
+# to be found.
+#
+# Cluster:  the name of the cluster; this must be unique in this file.
+# Status:   "active" if a postmaster should be started at boot time;
+#           "inactive" if it can only be started by the administrator;
+#           "upgrading" only when the database is being upgraded from
+#           one major version to another - an "upgrading" database is
+#           inaccessible except to the administrator;
+#           "failed-upgrade" if an upgrade failed.
+# Owner:    The Unix login of the cluster owner and administrator.
+# Version:  The database version of the cluster.
+# Port:     The port on which this cluster's postmaster should listen;
+#           ports 5430 and 5431 are reserved for cluster upgrades.
+# Pgdata:   The pathname of the data directory for this cluster.
+#
+# This file is altered by initdb, which adds lines when a
+# new cluster is created.  pg_version_upgrade  changes the active flag
+# to "upgrading" while an upgrade is taking place
+#
+# CLUSTER     STATUS     OWNER      VERSION  PORT  CLUSTERPATH
+
+postgresql    active     postgres   7.3      5432  /var/lib/postgres/db   
+developers    inactive   postgres   7.4      5433  /var/lib/postgres/devel
+mycustomer01  active     cust01     7.3      5436  /usr3/cust/cust01 
+</pre>
+
+<h3>user_clusters file</h3>
+<pre>
+# This file maps users against the database clusters to which they will
+# connect by default.  Any user may use "pg-wrapper -c" to set a new
+# default to be stored in ~/.postgresqlrc and the existence of that file
+# will supersede anything stored here, unless FORCED is set.  If a
+# database is specified, that will be the one connected to by client tools
+# if none is specified on the command line.  If the database specified
+# here is "*", this is interpreted as the database whose name is the same
+# as the user's login.  (Setting the database to "*" will provide the
+# current default upstream behaviour for command line tools.)
+#
+# When pg_wrapper scans this file, the first matching line is used.  It is a
+# good idea to provide a default explicitly, with a final line with both
+# user and group set to "*".  If there is no default, the implicit default
+# is to connect to the cluster whose postmaster is listening on port 5432
+# and to the database matching the user's login name.
+#
+# If FORCED is set, matching users will not be able to override the
+# choices preselected for them.
+#
+# This file may be altered by pg_wrapper -u when run by root.
+#
+# In the context of this file, user and group refer to the Unix login or
+# group, not to PostgreSQL users and groups
+#
+# USER       GROUP        CLUSTER            FORCED         DATABASE
+
+cust01       *            mycustomer01       no             template1
+*            cust01       mycustomer01       yes            apps
+*            *            postgresql         no             *
+
+</pre>
+
+<h2>Changes to upstream programs</h2>
+
+<h3>initdb</h3>
+
+<p>Options have been added to specify parameters to be written into cluster_ports:
+
+<dl>
+<dt>-C <i>cluster</i></dt>
+	<dd>Name of the cluster (required)</dd>
+
+<dt>-p <i>port</i></dt>
+   <dd>port to use for accessing it (default: highest in file + 1)</dd>
+</dl>
+</p>
+
+<p>The administrator login recorded is  that of the owner of the current
+login session.  The version is  that of the initdb instance, and the
+database path is the specified PGDATA.</p>
+
+<p>When the <strong>--debian-conffile</strong> option is specified, the configuration files
+are written in <code>/etc/postgresql/config-<i>version</i></code> (if they do not exist
+already).  Any options that apply to a specific cluster only are
+written to <code>/etc/postgresql/<i>port</i></code>.  This  always includes <code>pg_hba.conf</code>
+and <code>pg_ident.conf</code>.</p>
+
+
+<h3>postmaster</h3>
+
+<p>The config files are read in order: <code>/etc/postgresql/<i>port</i>/*</code>, then
+<code>/etc/postgresql/config-<i>version</i>/*</code> for any missing options and finally
+<code>/etc/default/postgresql</code> for any more that are not yet set.</p>
+
+<p>The presence of inappropriate options in <code>/etc/default/postgresql</code> is not
+an error, since appropriate options change from one version to another.</p>
+
+<p>pg_hba.conf and pg_iodent.conf are only ever read from
+<code>/etc/postgresql/<i>port</i>/*</code></p>
+
+
+<h3>psql</h3>
+
+<p>We have abandoned the old non-standard error abort if a connection database
+is not specified; psql is not expected to be run directly and all
+connection parameters should be provided by pg_wrapper as specified above.</p>
+
+
+<h3>other command-line programs</h3>
+
+<p><strong>All</strong> command-line client programs are accessed through pg_wrapper, including
+those which are currently in <code>/usr/lib/postgresql/bin/</code></p>
+
+<p>It is possible for the postgres Unix user to execute programs directly
+from <code>/usr/lib/postgresql/<i>version</i>/bin</code>, but he is advised against
+doing this in normal circumstances.</p>
+
+
+<h3>pg_wrapper</h3>
+
+<p>pg_wrapper has been completely rewritten.  When called a pg_default, it 
+allows a user to display his own connection choices, or to change them for
+the current session, or for all sessions (by writing <code>~/.postgresqlrc</code>).
+When called by root, it  allows user_clusters to be changed.
+</p>
+<p>When called as pg_exec, pg_wrapper can execute code from an
+arbitrary version in order to connect to a remote machine.</p>
+
+<p>When called as a link to any other name, that name is treated as a
+client program and a path to the appropriate version of that program is
+constructed and executed.</p>
+
+<p>See the man pages for full details of the program's operation.</p>
+
+
+<h3>/etc/init.d/postgresql</h3>
+
+<p>This script now starts a postmaster for each active instance in
+<code>clusters_ports</code>, setting PGPORT and PGDATA and the effective user id
+appropriately for each instance and starting the correct version of
+the software for each cluster.</p>
+
+
+<h3>pg_ctl</h3>
+
+<p>This script has become cluster-aware.</p>
+
+<p>We have added these options:
+<dl>
+<dt>-c <i>cluster</i></dt>
+	<dd>read the appropriate settings from <code>cluster_ports</code>
+			(and abort if the EUID is wrong).</dd>
+<dt>-A	</dt>		<dd>operate on all clusters</dd>
+
+<dt>-a	</dt>		<dd>(with start) operate on active clusters</dd>
+
+<dt>-r</dt>			<dd>operate only on running clusters - those for which
+			postmaster is running
+</dd>
+</dl>			
+</p>
+
+
+<h3>pg_version_upgrade</h3>
+
+<p>This new program replaces postgresql-dump [a Debian-only  program].</p>
+
+<p>It is used to migrate a cluster from one major version to another.</p>
+
+<p>Options:
+<dl>
+<dt>-c <i>cluster</i></dt>
+	<dd>the name of the cluster</dd>
+
+<dt>-v <i>version</i></dt>         <dd> the version to upgrade to (the default is the latest
+                      version installed)</dd>
+
+<dt>-p <i>clusterpath</i> </dt>    <dd> the new clusterpath (default = old clusterpath)</dd>
+
+<dt>-d <i>dump directory</i></dt>   <dd>the directory in which to put the dump of the old
+                      cluster (default = old clusterpath parent)</dd>
+
+<dt>-r  </dt>                  <dd>recover; continue upgrading from a previous failure</dd>
+
+</dl>
+</p>
+<p>Procedure:
+
+<ol>
+  <li>initdb a new cluster in <code><i>clusterpath</i>.new/data</code> for the new major
+    version</li>
+
+  <li>start a postmaster for the new cluster with port 5430</li>
+
+  <li>stop the postmaster for the old cluster</li>
+
+  <li>set the active field in <code>cluster_ports</code> to &quot;upgrading&quot;
+</li>
+  <li>start a postmaster for the old cluster with port 5431
+</li>
+  <li><code>pg_dumpall</code> the old cluster > <code><i>clustername</i>.dumpall</code></li>
+
+  <li>load the dump in the new cluster > <code><i>dbname</i>.upgrade 2>&1</code></li>
+
+  <li>if there are no errors, stop the two postmasters, else set status
+    to "failed-upgrade" and exit
+</li>
+  <li>move the old cluster directory to <code><i>clusterpath</i>.old</code> and move
+    <code><i>clusterpath</i>.new</code> to <code><i>clusterpath</i></code>; in <code>cluster_ports</code>, set the
+    active field back to its original value
+</li>
+ <li>start the postmaster for the new cluster</li>
+ 
+ <li>(with administrator approval only) delete the old cluster and
+    the dump file</li>
+</ol>
+(All operations are done with the software version appropriate to the
+cluster version.)
+</p>
+
+
+<h3>prerm script</h3>
+
+<p>prerm should fail for any particular package postgresql-<i>ver</i> or
+postgresql-client-<i>ver</i> if there is still a cluster for that version
+listed in cluster_ports.  In other words, users have to upgrade or delete their databases
+before they can remove the software package that is needed to read
+those databases.</p>
+
+
+</body>
+</html>

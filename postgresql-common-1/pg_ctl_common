@@ -1,0 +1,65 @@
+#!/usr/bin/perl -d
+#
+#  pg_ctl_common 
+#
+#  Script to start multiple PostgreSQL postmasters according to the
+#  configuration
+#
+
+my $ix = 0;
+my $action = "";
+my $cluster;
+
+print @ARGV,"\n";
+
+if ( $ARGV[0] eq "-c" ) {
+	$cluster = $ARGV[1];
+	$ix = 2;
+}
+
+$action = $ARGV[$ix++];
+
+if ($action eq "start" || $action eq "reload" || $action eq "status") {
+	print "Action = $action\n";
+} elsif ($action eq "stop" || $action eq "restart") {
+	if ($ARGV[$ix++] eq "-m") {
+		$mode = $ARGV[$ix];
+	} else {
+		$mode = "fast";
+	}
+	print "Action = $action; mode = $mode\n";
+} else {
+	print "Syntax: pg_ctl_common [-c cluster] start|stop|restart|reload|status\n";
+	exit 1;
+}
+
+my ($clname, $status, $owner, $version, $port, $path);
+
+open CLUSTER_PORTS, "/etc/postgresql/cluster_ports" or die "Cannot open /etc/postgresql/cluster_ports";
+
+while (<CLUSTER_PORTS>) {
+	if (m/^ *#/) {
+		print "Comment: $_\n";
+	} else {
+		sscanf $_, '%s %s %s %s %s %s', $clname, $status, $owner, $version, $port, $path;
+		printf "Cluster: %s; Status: %s; Owner: %s; Version: %s; Port: %s; Path: %s\n", $clname, $status, $owner, $version, $port, $path;
+		if (! defined $cluster || $cluster eq $clname) {
+			# operate on this line
+			# Check that we have permission for the operation
+			if ($uid != 0 && $USER ne $owner) {
+				printf "Need root permission to operate on cluster $clname\n"
+			} else {
+				if ($uid == 0) { # adopt the correct identity here # }
+				$cmd = "/usr/lib/postgresql/$version/bin/pg_ctl -D $path";
+				setenv PGPORT, $port;
+				if (action eq "start") {
+					$options = "-p /usr/lib/postgresql/$version/bin/postmaster ";
+				} elsif ($action eq "stop" || $action eq "restart") {
+				$options = "-m $mode";
+				}
+				system("$cmd $options");
+			}
+			if ($uid == 0) { # abandon assumed identity # };
+		}
+	}
+}
