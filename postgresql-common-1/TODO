@@ -46,3 +46,5 @@ determine db version of the default port in pg_wrapper
 automatically determine next free port in pg_createcluster
 
 pg_lsclusters: determine whether server is really running
+
+create socket file in pgdata, not in /var/run
