@@ -1,2 +1,2 @@
-user_clusters etc/postgresql
+user_clusters etc/postgresql-common
 debian/init.d-functions /usr/share/postgresql-common/

@@ -66,13 +66,13 @@ for doing database upgrades.  It is not recommended for making dumps that
 are to be read back into the same version of the database.
 .SH FILES
 .TP
-.I /etc/postgresql/user_clusters 
+.I /etc/postgresql-common/user_clusters 
 contains the default cluster and database for users and groups as set by
 the administrators.
 .TP
 .I $HOME/.postgresqlrc
 contains defaults set by the user himself.  It overrides 
-.I /etc/postgresql/user_clusters
+.I /etc/postgresql-common/user_clusters
 unless the administrator has set the FORCED flag in that file.
 .SH SEE ALSO
 .BR pg_default (1),

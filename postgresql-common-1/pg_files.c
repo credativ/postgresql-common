@@ -35,7 +35,7 @@ void set_globals (char *uc_db, int frc);
 static FILE *cluster_ports;
 static FILE *user_clusters;
 char *cp_filename = "/etc/postgresql/cluster_ports";
-char *uc_filename = "/etc/postgresql/user_clusters";
+char *uc_filename = "/etc/postgresql-common/user_clusters";
 
 
 
@@ -43,7 +43,7 @@ char *uc_filename = "/etc/postgresql/user_clusters";
  Finding all the settings.
 
  Process: 
-   1.  Read /etc/postgresql/user_clusters, and get the system default cluster
+   1.  Read /etc/postgresql-common/user_clusters, and get the system default cluster
        for this user.
    2.  If FORCED is not set, the latest of these applies:
        a)  read $HOME/.postgresqlrc for the user default cluster.
@@ -394,7 +394,7 @@ void write_cluster_line(const char *user, const char *group,
 			const char *cluster, const char *db,
 			const int forceflag) {
   FILE *ucf;
-  char *filename = "/etc/postgresql/user_clusters";
+  char *filename = "/etc/postgresql-common/user_clusters";
   char *buf, *curpos;
   char *ptr, *fptr;
   char in[BUFSIZ], msg[BUFSIZ];
