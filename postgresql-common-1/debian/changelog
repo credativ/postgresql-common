@@ -1,3 +1,9 @@
+postgresql-common (0pre2) experimental; urgency=low
+
+  * New unofficial milestone.
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 13 Feb 2005 22:33:37 +0100
+
 postgresql-common (0pre1) experimental; urgency=low
 
   * New package to provide a common infrastructure for different PostgreSQL
