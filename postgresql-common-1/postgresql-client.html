@@ -94,7 +94,6 @@ accordance with current upstream behaviour.
 <h3>Configuration</h3>
 <table cellpadding="6" cellspacing="0" border="0">
 <tr><td><code>/etc/default/postgresql</code></td>		<td>Default values for all versions</td></tr>
-<tr><td><code>/etc/postgresql/cluster_ports</code></td>		<td>maps clusters to versions and ports</td></tr>
 <tr><td><code>/etc/postgresql-common/user_clusters</code></td>		<td>maps users against clusters and dbs</td></tr>
 <tr><td><code>/etc/postgresql/config-<i>version</i>/</code></td>	<td>Default per-version configuration
 					<code>postgresql.conf</code>, <code>pg_hba.conf</code>, etc.</td></tr>
@@ -105,8 +104,8 @@ accordance with current upstream behaviour.
 
 <p><code>/etc/default/postgresql</code>  replaces the old <code>postmaster.conf</code> and
 <code>postgresql.env</code> in <code>/etc/postgresql</code>.  Any per-cluster information
-that was in those files is now stored in <code>/etc/postgresql/cluster_ports</code> or under
-<code>/etc/postgresql/<i>port</i>/</code></p>
+that was in those files is now stored in
+<code>/etc/postgresql/</code><i>version</i><code>/</code><i>cluster</i>.
 
 <h3>Package files and programs</h3>
 
@@ -126,97 +125,6 @@ that was in those files is now stored in <code>/etc/postgresql/cluster_ports</co
 <tr><td><code>/usr/lib/postgresql/bin/<i>program</i></code></td>       <td>soft-links to pg_wrapper for
 					administrator programs</td></tr>
 </table>
-
-<h3>cluster_ports file</h3>
-<pre>
-# This file maps PostgreSQL database clusters against their database
-# versions, the ports on which their postmasters are to listen, the Unix
-# logins of their administrators and the directories where their data are
-# to be found.
-#
-# Cluster:  the name of the cluster; this must be unique in this file.
-# Status:   "active" if a postmaster should be started at boot time;
-#           "inactive" if it can only be started by the administrator;
-#           "upgrading" only when the database is being upgraded from
-#           one major version to another - an "upgrading" database is
-#           inaccessible except to the administrator;
-#           "failed-upgrade" if an upgrade failed.
-# Owner:    The Unix login of the cluster owner and administrator.
-# Version:  The database version of the cluster.
-# Port:     The port on which this cluster's postmaster should listen;
-#           ports 5430 and 5431 are reserved for cluster upgrades.
-# Pgdata:   The pathname of the data directory for this cluster.
-#
-# This file is altered by initdb, which adds lines when a
-# new cluster is created.  pg_version_upgrade  changes the active flag
-# to "upgrading" while an upgrade is taking place
-#
-# CLUSTER     STATUS     OWNER      VERSION  PORT  CLUSTERPATH
-
-postgresql    active     postgres   7.3      5432  /var/lib/postgres/db   
-developers    inactive   postgres   7.4      5433  /var/lib/postgres/devel
-mycustomer01  active     cust01     7.3      5436  /usr3/cust/cust01 
-</pre>
-
-<h3>user_clusters file</h3>
-<pre>
-# This file maps users against the database clusters to which they will
-# connect by default.  Any user may use "pg-wrapper -c" to set a new
-# default to be stored in ~/.postgresqlrc and the existence of that file
-# will supersede anything stored here, unless FORCED is set.  If a
-# database is specified, that will be the one connected to by client tools
-# if none is specified on the command line.  If the database specified
-# here is "*", this is interpreted as the database whose name is the same
-# as the user's login.  (Setting the database to "*" will provide the
-# current default upstream behaviour for command line tools.)
-#
-# When pg_wrapper scans this file, the first matching line is used.  It is a
-# good idea to provide a default explicitly, with a final line with both
-# user and group set to "*".  If there is no default, the implicit default
-# is to connect to the cluster whose postmaster is listening on port 5432
-# and to the database matching the user's login name.
-#
-# If FORCED is set, matching users will not be able to override the
-# choices preselected for them.
-#
-# This file may be altered by pg_wrapper -u when run by root.
-#
-# In the context of this file, user and group refer to the Unix login or
-# group, not to PostgreSQL users and groups
-#
-# USER       GROUP        CLUSTER            FORCED         DATABASE
-
-cust01       *            mycustomer01       no             template1
-*            cust01       mycustomer01       yes            apps
-*            *            postgresql         no             *
-
-</pre>
-
-<h2>Changes to upstream programs</h2>
-
-<h3>initdb</h3>
-
-<p>Options have been added to specify parameters to be written into cluster_ports:
-
-<dl>
-<dt>-C <i>cluster</i></dt>
-	<dd>Name of the cluster (required)</dd>
-
-<dt>-p <i>port</i></dt>
-   <dd>port to use for accessing it (default: highest in file + 1)</dd>
-</dl>
-</p>
-
-<p>The administrator login recorded is  that of the owner of the current
-login session.  The version is  that of the initdb instance, and the
-database path is the specified PGDATA.</p>
-
-<p>When the <strong>--debian-conffile</strong> option is specified, the configuration files
-are written in <code>/etc/postgresql/config-<i>version</i></code> (if they do not exist
-already).  Any options that apply to a specific cluster only are
-written to <code>/etc/postgresql/<i>port</i></code>.  This  always includes <code>pg_hba.conf</code>
-and <code>pg_ident.conf</code>.</p>
-
 
 <h3>postmaster</h3>
 

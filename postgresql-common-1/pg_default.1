@@ -10,7 +10,6 @@ pg_default \- Sets cluster and database for PostgreSQL commands
 .BI -u " user "
 .RB "| " -g
 .I " group"
-.RB [ -f ]
 .BI -c " cluster"
 [
 .BI -d " database"
@@ -35,12 +34,6 @@ This option may be used only by root or the administrator.
 .B -a
 Specify the default choice for all users, that will apply if no more
 specific match of user or group is found.
-This option may be used only by root or the administrator.
-.TP
-.B -f
-Set the FORCED flag in
-.IR user_clusters ,
-so that the user is unable to override the choice made for him.
 This option may be used only by root or the administrator.
 .TP
 .BI -c " cluster"
@@ -83,12 +76,6 @@ and
 options to set the defaults for another user and the 
 .B -a
 option to set the default cluster and database.
-The 
-.B -f
-option is used to set the FORCED flag in
-.IR user_clusters ,
-so that the user
-is not permitted to override the administrator's choices for him.
 .P
 Other users can set only their own options, which are stored in
 .IR ~/.postgresqlrc .
@@ -96,17 +83,10 @@ Other users can set only their own options, which are stored in
 .TP
 .I /etc/postgresql-common/user_clusters 
 stores the default cluster and database for users and groups as set by
-the administrators.  By setting the FORCED flag for a user or group, it
-is possible for an administrator to override a
-user's choices so that the user can connect only to the cluster and
-database selected for him.
+the administrators.
 .TP
 .I $HOME/.postgresqlrc
 stores defaults set by the user himself.
-.SH BUGS
-The FORCED flag is meant to protect naive users from stupid mistakes.  It
-is not a security measure, since it can easily be bypassed by entering the
-desired pathname and setting PGPORT directly.
 .SH SEE ALSO
 .BR pg_exec (1),
 .BR pg_wrapper (1)

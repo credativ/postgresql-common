@@ -12,9 +12,7 @@ to set a new
 default to be stored in 
 .I $HOME/.postgresqlrc
 and the existence of that file
-will supersede anything stored here, unless
-.B FORCED
-is set.
+will supersede anything stored here.
 .P
 When scanning this file, the first matching line will be used.  It is a
 good idea to provide a default explicitly, with a final line where both
@@ -56,12 +54,6 @@ The major PostgreSQL version of the cluster to connect to.
 .B CLUSTER
 The name of a cluster to connect to.
 .TP
-.B FORCED
-The word
-.RB ' yes "' or '" no "'"
-indicating whether or not the user is forced to connect only to the cluster
-specified by this line.
-.TP
 .B DATABASE
 Within the cluster, the database to which the user will connect by default
 if he does not specify a database on the command line.  If this is
@@ -71,26 +63,11 @@ the default database will be the one named by the user's login id.
 .P
 Since the first matching line is used, the default line must come last.
 .P
-If
-.B FORCED
-is set, matching users will not be able to override the
-choices preselected for them.
-.P
 This file may be altered by
 .B pg_default
 when run by root or postgres.
-.SH BUGS
-The
-.B FORCED
-option is intended only to restrict the ability of naive users to
-connect to the wrong database.  It is
-.B not
-a security measure, since it can easily be bypassed by specifying an
-explicit path and setting
-.B PGPORT
-in the environment.
 .SH SEE ALSO
-.BR cluster_ports (5)
+.BR pg_wrapper (1)
 .SH AUTHOR
 Oliver Elphick
 .RI < olly@lfix.co.uk >
