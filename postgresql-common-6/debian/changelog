@@ -8,8 +8,10 @@ postgresql-common (6) experimental; urgency=low
     configuration/removal of p-contrib-*.
   * pg_ctlcluster, autovacuum_start(): Check for already running daemon before
     starting a new one.
+  * pg_createcluster: Add an explicit "local all" entry for the database
+    superuser to pg_hba.conf. Closes: #303274
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  5 Apr 2005 23:47:32 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed,  6 Apr 2005 20:59:28 +0200
 
 postgresql-common (5) experimental; urgency=low
 

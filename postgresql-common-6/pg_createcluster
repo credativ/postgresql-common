@@ -65,6 +65,39 @@ sub move_conffile {
     }
 }
 
+# Add a "local all" entry to pg_hba.conf, put before all other entries (after
+# two consecutive empty lines). If comment is specified, it is prepended before
+# the entry.
+# Arguments: user, method, comment
+sub add_local_hba_entry {
+    ($user, $method, $comment) = @_;
+    $fname = "$confdir/pg_hba.conf";
+    
+    open (F, $fname) or error "could not open $fname for reading";
+    $prev = '';
+    $search = 1;
+    while (<F>) {
+	# add entry after two consecutive empty lines
+	if ($search && $prev eq "\n" && $_ eq "\n") {
+	    push @lines, $comment if defined($comment);
+	    $s = sprintf "%-7s %-11s %-33s %s\n", 'local', 'all', $user, $method;
+	    push @lines, $s;
+	    $search = 0;
+	}
+	push @lines, $_;
+	$prev = $_;
+    }
+    close F;
+
+    error "add_local_hba_entry: did not find insert position" if $search;
+
+    open (F, ">$fname") or error "could not open $fname for writing";
+    foreach (@lines) {
+	print F $_;
+    }
+    close F;
+}
+
 #
 # Execution starts here
 #
@@ -131,6 +164,19 @@ if (-f "$pgdata/PG_VERSION") {
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, "640";
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, "640";
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
+
+# add access for database superuser
+add_local_hba_entry (((getpwuid $owneruid)[0]), 'ident sameuser',
+"
+# DO NOT DISABLE!
+# If you change this first entry you will need to make sure that the database
+# super user can access the database using some other method. Noninteractive
+# access to all databases is required during automatic maintenance
+# (pg_autovacuum or daily cronjob).
+#
+# Database administrative login by UNIX sockets
+"
+);
 
 # configure port
 print "Configuring postgresql.conf to use port $port...\n";
