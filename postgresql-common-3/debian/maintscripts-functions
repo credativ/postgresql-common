@@ -5,13 +5,13 @@
 _link_manpages() {
     MANS=$(dpkg -L $2|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$3")
     SLAVES=$(for i in $MANS; do TARGET=$(echo $i | sed "s/postgresql\/$1\///"); echo -n " --slave $TARGET $(basename $i) $i"; done)
-    update-alternatives --verbose --install /usr/share/man/man1/$3 \
+    update-alternatives --install /usr/share/man/man1/$3 \
 	$3 /usr/share/postgresql/$1/man/man1/$3 \
 	$(echo "$1" | tr -cd 0-9) $SLAVES
 }
 
 _unlink_manpages() {
-    update-alternatives --verbose --remove $3 /usr/share/postgresql/$1/man/man1/$3
+    update-alternatives --remove $3 /usr/share/postgresql/$1/man/man1/$3
 }
 
 configure_version() {
