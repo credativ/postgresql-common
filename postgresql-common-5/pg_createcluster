@@ -133,7 +133,7 @@ move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
 
 # configure port
 print "Configuring postgresql.conf to use port $port...\n";
-set_conf_value $version, $cluster, "port", $port;
+set_conf_value $version, $cluster, 'postgresql.conf', 'port', $port;
 
 # create log file
 system 'mkdir', '-p', '/var/log/postgresql' and 

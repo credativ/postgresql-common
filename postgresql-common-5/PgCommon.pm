@@ -25,12 +25,12 @@ sub error {
 
 # Return parameter from a PostgreSQL configuration file, or undef if the parameter
 # does not exist.
-# Arguments: <version> <cluster> <parameter name>
+# Arguments: <version> <cluster> <config file name> <parameter name>
 sub get_conf_value {
     return 0 unless $_[0] && $_[1];
-    if (open F, "$confroot/$_[0]/$_[1]/postgresql.conf") {
+    if (open F, "$confroot/$_[0]/$_[1]/$_[2]") {
         while (<F>) {
-            return $1 if /^\s*$_[2]\s*=\s*(\w+)\b/;
+            return $1 if /^\s*$_[3]\s*=\s*(\w+)\b/;
         }
         close F;
     }
@@ -38,9 +38,9 @@ sub get_conf_value {
 }
 
 # Set parameter of a PostgreSQL configuration file.
-# Arguments: <version> <cluster> <parameter name> <value>
+# Arguments: <version> <cluster> <config file name> <parameter name> <value>
 sub set_conf_value {
-    my $fname = "$confroot/$_[0]/$_[1]/postgresql.conf";
+    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
 
     # read configuration file lines
     open (F, $fname) or die "Error: could not open $fname for reading";
@@ -49,12 +49,12 @@ sub set_conf_value {
 
     my $found = 0;
     for ($i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*#?\s*$_[2]\s*=/) {
-	    $lines[$i] = "$_[2] = $_[3]\n";
+	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=/) {
+	    $lines[$i] = "$_[3] = $_[4]\n";
 	    $found = 1;
 	}
     }
-    push (@lines, "$_[2] = $_[3]\n") unless $found;
+    push (@lines, "$_[3] = $_[4]\n") unless $found;
 
     # write configuration file lines
     open (F, '>'.$fname) or die "Error: could not open $fname for writing";
@@ -90,7 +90,7 @@ sub cluster_info {
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = readlink ($result{'configdir'} . "/pgdata");
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
-    $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
+    $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
     $result{'running'} = port_running ($_[0], $result{'port'});
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 
@@ -148,7 +148,7 @@ sub next_free_port {
     # create list of already used ports
     for $v (get_versions) {
 	for $c (get_version_clusters $v) {
-	    $p = (get_conf_value $v, $c, 'port') || $defaultport;
+	    $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
 	    push @ports, $p;
 	}
     }
@@ -166,7 +166,7 @@ sub next_free_port {
 sub port_version {
     for $v (get_versions) {
 	for $c (get_version_clusters $v) {
-	    $p = (get_conf_value $v, $c, 'port') || $defaultport;
+	    $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
 	    return $v if $p == $_[0];
 	}
     }
