@@ -1,0 +1,113 @@
+# This file contains common functionality for all postgresql server
+# package init.d scripts. It is usually included by
+# /etc/init.d/postgresqlX.Y.
+
+# Make sure the log directory and file exist with the correct ownership
+# needs correct $VERSION
+assert_logfile() {
+    if [ -z "$VERSION" ]; then
+        echo "Error: assert_logfile called without proper \$VERSION" >&2
+        exit 1
+    fi
+
+    LOGFILE=${POSTGRES_LOG:-/var/log/postgresql/postgresql-$VERSION.log}
+    LOGDIR="`dirname \"$LOGFILE\"`"
+
+    [ -d "$LOGDIR" ] || install -d -m 770 -o postgres -g postgres "$LOGDIR"
+
+    if [ ! -e "$LOGFILE" ]; then
+        touch "$LOGFILE"
+        chown postgres.postgres "$LOGFILE"
+        chmod 640 "$LOGFILE"
+    fi
+}
+
+# Get $PGDATA path, $PG_VERSION, and $PG_CTL path from given cluster name ($1) and
+# check that the # cluster data exists.
+prepare_cluster() {
+    PGDATA=/etc/postgresql/$1/pgdata
+    if [ ! -d $PGDATA ]; then
+        echo "Error: symbolic link $PGDATA to data directory does not exist, exiting" >&2
+        exit 1
+    fi
+
+    if [ ! -f $PGDATA/PG_VERSION ]; then
+        echo "Error: $PGDATA does not seem to contain a PostgreSQL cluster (PG_VERSION is missing)" >&2
+        exit 1
+    fi
+    PG_VERSION=$(< $PGDATA/PG_VERSION)
+
+    PG_CTL=/usr/lib/postgresql/$PG_VERSION/bin/pg_ctl
+}
+
+# start given cluster
+start() {
+    echo -n "Starting PostgreSQL database $1 server: postmaster"
+    prepare_cluster $1
+    assert_logfile
+
+    ERRMSG=$(/sbin/start-stop-daemon --pidfile $PGDATA/postmaster.pid \
+        --oknodo --chuid postgres --exec $PG_CTL --start -- \
+        -D $PGDATA -l $LOGFILE -s start 2>&1)
+
+    if [ $? != 0 ]; then
+        echo "(FAILED)"
+        [ "$ERRMSG" ] && echo -e "\nERROR: $ERRMSG" >&2 || true
+        exit 1
+    fi
+
+    [ "$ERRMSG" ] && echo -n "($ERRMSG)" >&2 || true
+    echo "."
+}
+
+# stop given cluster (i. e. major version)
+stop() {
+    echo -n "Stopping PostgreSQL database $1 server: postmaster"
+    prepare_cluster $1
+
+    start-stop-daemon -c postgres --start --exec $PG_CTL -- -D "$PGDATA" stop -s -w -m fast
+
+    # try harder if "fast" mode does not work
+    if [ -f "$PGDATA/postmaster.pid" ]; then
+        echo -n "(does not shutdown gracefully, now stopping immediately)"
+        start-stop-daemon -c postgres --start --exec $PG_CTL -- -D "$PGDATA" stop -s -w -m immediate
+    fi
+
+    # if that still not helps, use the big hammer
+    if [ -f "$PGDATA/postmaster.pid" ]; then
+        echo -n "(does not shutdown, killing the process)"
+        PID=`head -n 1 "$PGDATA/postmaster.pid"`
+        if [ "$PID" ]; then
+            kill -9 "$PID" || true
+            rm -f "$PGDATA/postmaster.pid"
+        fi
+    fi
+    echo "."
+}
+
+# reload given cluster
+reload() {
+    echo -n "Reloading PostgreSQL database $1 server: postmaster"
+    prepare_cluster $1
+
+    ERRMSG=$(start-stop-daemon --chuid postgres --start \
+        --exec $PG_CTL -- -D $PGDATA -s reload)
+
+    if [ $? != 0 ]; then
+        echo "(FAILED)"
+        [ "$ERRMSG" ] && echo "ERROR: $ERRMSG" >&2 || true
+        exit 1
+    fi
+
+    [ "$ERRMSG" ] && echo -n " ($ERRMSG)" >&2 || true
+    echo "."
+}
+
+# print status for given cluster
+status() {
+    prepare_cluster $1
+
+    echo "-- Cluster $1 --"
+    start-stop-daemon --chuid postgres --start --exec $PG_CTL -- -D $PGDATA status
+}
+

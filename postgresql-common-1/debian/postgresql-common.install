@@ -1,2 +1,3 @@
 cluster_ports etc/postgresql
 user_clusters etc/postgresql
+debian/init.d-functions /etc/postgresql/
