@@ -9,19 +9,19 @@ show_header=1
 
 show_cluster() {
     cluster=$(basename "$1")
-    version=$(basename $(dirname "$1") )
-    pg_data=$(readlink $1/pgdata)
+    version=$(basename "$(dirname "$1")")
+    pg_data=$(readlink "$1/pgdata")
     unset port
     #port=$(grep '^[[:space:]]*port[[:space:]]*=' $1/postgresql.conf | sed 's/^[^=]*=[[:space:]]\([0-9]\+\)[[:space:]]*$/\1/') || port="n/c"
     port=$(sed -n '/^[ \t]*port[ \t]*=/ { 
               s/^[^=]*=[ \t]*\([0-9]\+\)[ \t]*$/\1/; h} ; 
-           $ { g; p }' $1/postgresql.conf)
+           $ { g; p }' "$1"/postgresql.conf)
     [ "$port" ] || port="5432"
     echo -e "$version\t$cluster\t$port\t$pg_data"
 }
 
 show_version() {
-    for c in $1/*; do
+    for c in "$1"/*; do
         [ -d "$c" ] && [ -L "$c/pgdata" ] || continue
         show_cluster "$c"
     done
@@ -31,7 +31,7 @@ if [ "$show_header" ]; then
     echo -e "Version\tCluster\tPort\tData directory"
 fi
 
-for v in $BASEDIR/*; do
+for v in "$BASEDIR"/*; do
     [ -d "$v" ] || continue
     show_version "$v"
 done
