@@ -28,6 +28,7 @@ char *cluster_by_default_port(void);
 char *find_default_cluster(char *db);
 char *set_pgport(char *cluster);
 int set_version_from_pgdata(char *buf);
+void set_version(const char *cluster);
 void read_postgresqlrc(char which);
 void set_globals (char *uc_db, int frc);
 
@@ -111,12 +112,16 @@ void find_settings(char *path) {
     fprintf(stderr, "No clusters defined or available to this user\n");
     exit(LOC_ERR_CONFIG);
   }
+  set_version(clustername);
+
   if (!(ptr = set_pgport(clustername))) { /* PGDATA for this cluster */
     fprintf(stderr, "Could not find cluster_ports line for cluster %s\n",
 	    clustername);
     exit(LOC_ERR_CONFIG);
   }
   strcpy(buf, ptr);
+  /* set the PGDATA environment variable */
+  setenv("PGDATA", buf, 1);
 
   set_version_from_pgdata(buf);
   add_version_to_path(path);
@@ -295,6 +300,36 @@ char *set_pgport(char *cluster) {
 
 
 /********************************************************************
+ Set version from the cluster_ports line
+ *******************************************************************/
+void set_version(const char * cluster) {
+  char *cl_fmt = "%%%ds %%%ds %%%ds %%%ds %%%ds";
+  char fmt[LINELEN];
+  char line[LINELEN];
+  char cp_cl[BUFSIZ+1] = "";
+  char ver[BUFSIZ+1] = "";
+  char junk[PATHLEN+1] = "";
+
+  int assigned;
+
+  snprintf(fmt, BUFSIZ, cl_fmt, BUFSIZ, BUFSIZ, BUFSIZ, BUFSIZ, PATHLEN);
+
+  /* read through cluster_ports to find the named cluster */
+  fseek(cluster_ports, 0, SEEK_SET);
+
+  while (fgets(line, LINELEN, cluster_ports) != NULL) {
+    assigned = sscanf(line, fmt, cp_cl, junk, junk, ver, junk);
+
+    if (! strcmp(cp_cl, cluster)) {
+      strncpy(version, ver, BUFSIZ-1);
+      return; /* found it! */
+    }
+  }
+
+}
+
+
+/********************************************************************
  Read $PGDATA/PG_VERSION to find version; return 1 or 0 on success
  or failure.  (We will frequently fail, because this file is not
  expected to be world-readable.) 
@@ -399,8 +434,8 @@ void write_cluster_line(const char *user, const char *group,
   buf = calloc(s + 2, sizeof(char));
 
   /* map the file. */
-  if ((int)(fptr = (char *) mmap(NULL, s,
-		  PROT_READ | PROT_WRITE, MAP_SHARED, fileno(ucf), 0)) == -1) {
+  if ((fptr = (char *) mmap(NULL, s,
+	PROT_READ | PROT_WRITE, MAP_SHARED, fileno(ucf), 0)) == (void *) -1) {
     perror("Could not map user_clusters");
     exit(LOC_ERR_READ_FAIL);
   }
@@ -689,7 +724,6 @@ int    valid_cluster(const char *cluster) {
 
   /* read through cluster_ports to find the named cluster */
   fseek(cluster_ports, 0, SEEK_SET);
-
 
   while (fgets(line, LINELEN, cluster_ports) != NULL) {
     assigned = sscanf(line, fmt, cp_cl, junk);

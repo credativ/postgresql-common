@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl 
 #
 #  pg_ctl_common 
 #
@@ -6,73 +6,119 @@
 #  configuration
 #
 
+use English;
+use strict;
+use vars qw($opt_c $opt_f $opt_v $opt_x);
+use Getopt::Std;
+
+die "Syntax error\n" unless getopts('c:f:vx:');
+
 my $ix = 0;
 my $action = "";
 my $cluster;
+my $wanted_version;
+my $mode;
+my $silent = ! defined $opt_v;
 
-print @ARGV,"\n";
+if ( defined $opt_c && $opt_c ne "" ) {
+	$cluster = $opt_c;
+}
 
-if ( $ARGV[0] eq "-c" ) {
-	$cluster = $ARGV[1];
-	$ix = 2;
+if ( defined $opt_x && $opt_x ne "" ) {
+	# Add supported versions to the next line
+	if ($opt_x eq "8.0" || $opt_x eq "7.4") {
+		$wanted_version = $opt_x;
+	}
 }
 
 die "You must run pg_ctl_common as root\n" unless $UID == 0;
 
-$action = $ARGV[$ix++];
+$action = $ARGV[0] unless ! defined $ARGV[0];
 
 if ($action eq "start" || $action eq "reload" || $action eq "status") {
-	print "Action = $action\n";
+	print "Action = $action\n" unless $silent;
 } elsif ($action eq "stop" || $action eq "restart") {
 	if ($ARGV[$ix++] eq "-m") {
 		$mode = $ARGV[$ix];
 	} else {
 		$mode = "fast";
 	}
-	print "Action = $action; mode = $mode\n";
+	print "Action = $action; mode = $mode\n" unless $silent;
 } else {
-	print "Syntax: pg_ctl_common [-c cluster] start|stop|restart|reload|status\n";
+	print <STDOUT>, "Syntax: pg_ctl_common [-c cluster] [-f cluster_file]  start|stop|restart|reload|status\n";
 	exit 1;
 }
 
 my ($clname, $status, $owner, $version, $port, $path);
 
-# delete this and the next line and uncomment the line after
-my $portfile = "/tmp/cluster_ports";
-# my $portfile = "/etc/postgresql/cluster_ports";
+my $portfile = "/etc/postgresql/cluster_ports";
+$portfile = $opt_f unless ! defined $opt_f;
 open CLUSTER_PORTS, $portfile or die "Cannot open $portfile";
 
 while (<CLUSTER_PORTS>) {
 	if (! m/^\s*(#.*|)$/) {
 		($clname, $status, $owner, $version, $port, $path) = split /\s\s*/, $_;
-		printf "Cluster: %s; Status: %s; Owner: %s; Version: %s; Port: %s; Path: %s\n", $clname, $status, $owner, $version, $port, $path;
-		if (! defined $cluster || $cluster eq $clname) {
-			# set effective uid to cluster owner
+		printf "Cluster: %s; Status: %s; Owner: %s; Version: %s; Port: %s; Path: %s\n", $clname, $status, $owner, $version, $port, $path unless $silent;
+		if ((! defined $cluster && ! defined $wanted_version) || $cluster eq $clname || $version eq $wanted_version) {
+			# check cluster owner
 			my ($name, $passwd, $uid, $gid, $quota, $comment, $gcos, $dir, $shell) = getpwnam $owner;
-			die "Cluster $cluster's owner is set to root, which is not allowed\n" if $uid == 0;
-			$EUID = $uid;
+			if ($uid == 0) {
+				print <STDERR>, "Cluster ${cluster}'s owner is set to root.\nSkipping cluster\n";
+				next;
+			}
 			
 			# check cluster database path and version
 			my $version_file = "$path/PG_VERSION";
-			open PGVERSION, $version_file or die "Could not open $version_file\n";
-			read PGVERSION, $dbver, 999 or die "Could not read from $version_file";
+			my $failed = 0;
+			my $msg = "Could not open $version_file\n";
+			open PGVERSION, $version_file or $failed = 1;
+			if ($failed) {
+				print <STDERR>, $msg, "Skipping cluster\n";
+				next;
+			}
+			$msg = "Could not read from $version_file";
+			my $dbver;
+			read PGVERSION, $dbver, 999 or $failed = 1;
+			if ($failed) {
+				print <STDERR>, $msg, "Skipping cluster\n";
+				next;
+			}
 			close PGVERSION;
 			chomp $dbver;
-			die "Cluster $cluster specifies Pg version $version, but actual version is $dbver\n" unless $version == $dbver;
-
-			# set correct port to listen on
-			$ENV{PGPORT} = $port;
-
-			# define the command to run
-			$cmd = "/usr/lib/postgresql/$version/bin/pg_ctl -D $path";
-			if (action eq "start") {
-				$options = "-p /usr/lib/postgresql/$version/bin/postmaster ";
-			} elsif ($action eq "stop" || $action eq "restart") {
-				$options = "-m $mode";
+			if ($version != $dbver) {
+				print <STDERR>, "Cluster $cluster specifies Pg version $version, but actual version is $dbver\nSkipping cluster\n";
+				next;
 			}
-			print "Running command: $cmd $options\n";
-			system("$cmd $options");
-			$EUID = 0;
+
+			# fork so that we can set $EUID and still continue
+			# to be root
+			my $childpid = fork();
+			if ($childpid == 0) {
+				# this is the child process
+				# set effective uid to cluster owner
+				$EUID = $uid;
+				$UID = $uid;
+				# set correct port to listen on
+				$ENV{PGPORT} = $port;
+
+				# define the command to run
+				my ($cmd, $options);
+				$cmd = "/usr/lib/postgresql/$version/bin/pg_ctl $action -D $path";
+				if ($action eq "start") {
+					$options = "-p /usr/lib/postgresql/$version/bin/postmaster ";
+				} elsif ($action eq "stop" || $action eq "restart") {
+					$options = "-m $mode";
+				}
+				print "Running command: $cmd $options\n" unless $silent;
+				system("$cmd $options");
+			} else {
+				# parent waits for child to finish, so as not
+				# to overload the system
+				# [ perhaps we need not wait ]
+				print "waiting for process $childpid..." unless $silent;
+				waitpid $childpid, 0;
+				print "completed\n" unless $silent;
+			}
 		}
 	}
 }

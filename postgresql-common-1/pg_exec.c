@@ -8,6 +8,8 @@
 
  */
 
+#define _GNU_SOURCE
+
 #include "pg_wrapper.h"
 #include "pg_vars.h"
 
@@ -43,9 +45,10 @@ void exec_program (int argc, char **argv) {
   }
   strncat(path, progname, PATHLEN - strlen(path));
   path[PATHLEN] = '\0';
+  *argv = path;
 
   /* run the command */
-  execv(path, argv);
+  execve(path, argv, environ);
   /* Only get here if the command failed */
   snprintf(msg, PATHLEN + PATHLEN, "Command %s failed", path);
   perror(msg);
