@@ -116,7 +116,9 @@ sub get_version_clusters {
     my @clusters = ();
     if (opendir (D, $vdir)) {
         while (defined ($f = readdir D)) {
-            push @clusters, $f if -l $vdir.$f.'/pgdata';
+            if (-l $vdir.$f.'/pgdata' && -r $vdir.$f.'/postgresql.conf') {
+                push @clusters, $f;
+            }
         }
         closedir D;
     }
