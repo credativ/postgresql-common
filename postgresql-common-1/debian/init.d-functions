@@ -34,14 +34,18 @@ do_op_all() {
     [ -d "/etc/postgresql/$2" ] || return
     [ -z "$3" ] || echo -n "$3 PostgreSQL $2 database server:"
 
+    unset fail
     for c in /etc/postgresql/"$2"/*; do
 	echo -n " "$(basename "$c")
-	ERRMSG=$($1 "$2" "$(basename "$c")" 2>&1) || {
-	    echo "(FAILED)"
-	    [ -z "$ERRMSG" ] || echo "ERROR: $ERRMSG" >&2
-	    exit 1
-	}
+	ERRMSG="$ERRMSG\n"$($1 "$2" "$(basename "$c")" 2>&1) || {
+            echo -n "(FAILED)"
+            fail=1 
+        }
     done
+    if [ "$fail" ]; then
+	[ -z "$ERRMSG" ] || echo -e "\n$ERRMSG" >&2
+	exit 1
+    fi
 
     [ -z "$3" ] || echo "."
 }
