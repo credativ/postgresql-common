@@ -66,13 +66,16 @@ sub get_program_path {
 
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
-# Returns: information hash (keys: pgdata, port, running, logfile, configdir)
+# Returns: information hash (keys: pgdata, port, running, logfile, configdir,
+# owneruid, ownergid)
 sub cluster_info {
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = readlink $result{'configdir'} . "/pgdata";
     $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
     $result{'running'} = -S "$socketdir/.s.PGSQL." . $result{'port'};
     $result{'logfile'} = "$logdir/postgresql-$_[0]-$_[1].log";
+    ($result{'owneruid'}, $result{'ownergid'}) = 
+        (stat $result{'pgdata'})[4,5];
     return %result;
 }
 
