@@ -7,3 +7,4 @@ pg_lsclusters usr/bin
 pg_createcluster usr/bin
 pg_dropcluster usr/bin
 pg_ctlcluster usr/bin
+pg_upgradecluster usr/bin
