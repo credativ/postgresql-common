@@ -8,6 +8,7 @@ do_ctl_all() {
     [ "$1" ] || { echo "Error: invalid command '$1'" >&2; exit 1; }
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
     [ -d "/etc/postgresql/$2" ] || return
+    [ "$(ls /etc/postgresql/$2)" ] || return
     [ -z "$3" ] || echo -n "$3 PostgreSQL $2 database server:"
 
     unset fail
