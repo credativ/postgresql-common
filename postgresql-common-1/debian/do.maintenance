@@ -63,7 +63,7 @@ then
 	exit 1
 fi
 
-if [ ! -S /var/run/postgresql/.s.PGSQL.${PGPORT} ]
+if [ ! -S /tmp/.s.PGSQL.${PGPORT} ]
 then
 	[ -n "$verbose" ] && 
 		echo "The PostgreSQL8.0 postmaster is not running (there is no UNIX socket)"

@@ -4,10 +4,23 @@ if [ "$1" = configure ]; then
     # Make sure the administrative user exists
     getent group postgres >/dev/null 2>&1 || addgroup --system postgres
     getent passwd postgres >/dev/null 2>&1 ||
-        adduser --system --shell /bin/bash --home /var/lib/postgres --ingroup postgres --gecos "PostgreSQL administrator" postgres
+        adduser --system --shell /bin/bash --home / --no-create-home --ingroup postgres --gecos "PostgreSQL administrator" postgres
+fi
 
-    chown postgres:postgres /var/run/postgresql
-    chmod 2775 /var/run/postgresql
+if [ -x "/etc/init.d/postgresql-7.4" ]; then
+        if [ -x /usr/sbin/invoke-rc.d ]; then
+                invoke-rc.d postgresql-7.4 restart || exit 0
+        else
+                /etc/init.d/postgresql-7.4 restart || exit 0
+        fi
+fi
+
+if [ -x "/etc/init.d/postgresql-8.0" ]; then
+        if [ -x /usr/sbin/invoke-rc.d ]; then
+                invoke-rc.d postgresql-8.0 restart || exit 0
+        else
+                /etc/init.d/postgresql-8.0 restart || exit 0
+        fi
 fi
 
 #DEBHELPER#

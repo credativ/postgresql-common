@@ -1,0 +1,39 @@
+.TH POSTGRESQLRC 5 "Feburary 2005" "Debian" "Debian PostgreSQL infrastructure"
+
+.SH NAME
+~/.postgresqlrc \- Per\-user PostgreSQL cluster configuration
+
+.SH DESCRIPTION
+This file configures the default PostgreSQL version/cluster and the default
+database for an user. If it is not present, the system\-wide file
+.B /etc/postgresql\-common/user_clusters
+is used instead.
+
+.SH FORMAT
+.P
+Comments are introduced by the character
+.BR # .
+Comments may follow data on a line; the first comment character terminates
+the data.
+Leading whitespace and blank lines are ignored.
+
+The first uncommented, non\-blank line is used, all following lines are ignored.
+
+Fields must be given in the following order, separated by white space:
+
+.TP
+.B VERSION
+The major PostgreSQL version of the cluster to connect to.
+.TP
+.B CLUSTER
+The name of a cluster to connect to.
+.TP
+.B DATABASE
+Within the cluster, the database to which the user will connect by default
+if he does not specify a database on the command line.  If this is
+.BR * ,
+the default database will be the one named by the user's login id.
+
+.SH SEE ALSO
+.BR pg_wrapper (1),
+.BR user_clusters (5)

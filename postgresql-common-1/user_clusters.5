@@ -1,42 +1,33 @@
-.\" Hey, Emacs!  This is an -*- nroff -*- source file.
-.\"
-.TH USER_CLUSTERS 5 "November 2003" "Debian Project" "Debian Linux"
+.TH USER_CLUSTERS 5 "Feburary 2005" "Debian" "Debian PostgreSQL infrastructure"
+
 .SH NAME
 user_clusters \- File linking users to PostgreSQL clusters
+
 .SH DESCRIPTION
-.P
 This file maps users against the database clusters to which they will
-connect by default.  Any user may use 
-.B pg-wrapper -c
-to set a new
-default to be stored in 
-.I $HOME/.postgresqlrc
-and the existence of that file
-will supersede anything stored here.
-.P
+connect by default. However, every user can override these settings in
+.B ~/.postgresqlrc\fR.
+
 When scanning this file, the first matching line will be used.  It is a
 good idea to provide a default explicitly, with a final line where both
 user and group are set to 
 .BR * .
-This can be done by the command
-.BI "pg_wrapper -a -c " cluster " -d 
-.IR database .
-If there is no default, the implicit default
-is to connect to the cluster whose postmaster is listening on port 5432
-and to the database matching the user's login name.
+
+If there is no default, the implicit default is to connect to the cluster whose
+postmaster is listening on port 5432 and to the database matching the user's
+login name.
+
 .SH FORMAT
-.P
 Comments are introduced by the character
 .BR # .
 Comments may follow data on a line; the first comment character terminates
-the data.
-Leading whitespace and blank lines are ignored.
-.P
-Each uncommented, non-blank line must describe a user, group or the
-default (where both user and group are set to 
-.BR * .
-.P
+the data. Leading whitespace and blank lines are ignored.
+
+Each uncommented, non\-blank line must describe a user, group or the
+default (where both user and group are set to \fB*\fR).
+
 Fields must be given in the following order, separated by white space:
+
 .TP
 .B USER
 The login id of the Unix user to whom this line applies. The wildcard character
@@ -59,15 +50,11 @@ Within the cluster, the database to which the user will connect by default
 if he does not specify a database on the command line.  If this is
 .BR * ,
 the default database will be the one named by the user's login id.
+
 .SH NOTES
 .P
 Since the first matching line is used, the default line must come last.
 .P
-This file may be altered by
-.B pg_default
-when run by root or postgres.
+
 .SH SEE ALSO
-.BR pg_wrapper (1)
-.SH AUTHOR
-Oliver Elphick
-.RI < olly@lfix.co.uk >
+.BR pg_wrapper (1), " postgresqlrc" (5)

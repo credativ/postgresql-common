@@ -1,0 +1,73 @@
+#!/usr/bin/perl -w
+
+# Completely delete a PostgreSQL cluster. Fails if there is still a server
+# process attached.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+use lib '/usr/share/postgresql-common';
+use Getopt::Long;
+use PgCommon;
+
+$stopserver = 0;
+exit 1 unless GetOptions ('stop-server' => \$stopserver);
+
+# command line options
+if ($#ARGV != 1) {
+    print "Usage: $0 [--stop-server] <version> <cluster>\n";
+    exit 1;
+}
+
+($version, $cluster) = @ARGV;
+
+%info = cluster_info ($version, $cluster);
+
+error ("cluster data directory does not exist") unless -d $info{'pgdata'};
+
+if ($info{'running'}) {
+    if ($stopserver) {
+	if (system ('pg_ctlcluster', '-s', $version, $cluster, 'stop')) {
+	    error 'could not stop server, aborting';
+	}
+    } else {
+	error 'This cluster is still running. Stop it or supply the --stop-server option';
+    }
+}
+
+$c = $info{'configdir'};
+$result = system '/bin/rm', '-r', $info{'pgdata'}; 
+exit $result if $result;
+unlink $info{'logfile'}, $c.'/pg_hba.conf', $c.'/pg_ident.conf',
+    $c.'/postgresql.conf', $c.'/log', $c.'/pgdata';
+rmdir $c;
+
+__END__
+
+=head1 NAME
+
+pg_dropcluster - completely delete a PostgreSQL cluster
+
+=head1 SYNOPSIS
+
+B<pg_dropcluster> [B<--stop-server>] I<cluster-version> I<cluster-name>
+
+=head1 DESCRIPTION
+
+This program removes all files that belong to a given PostgreSQL cluster; that
+includes the data directory, the log file, and all configuration files that
+were created by B<pg_createcluster>. If the configuration directory
+(B</etc/postgresql/>I<version>B</>I<cluster>) is empty after this, it is
+removed as well.
+
+Usually a cluster which still has a running server attached will not be
+deleted. To override this, the B<--stop-server> option forces a server shutdown
+before the files are removed.
+
+=head1 SEE ALSO
+
+L<pg_createcluster(1)>, L<pg_ctlcluster(1)>
+
+=head1 AUTHOR
+
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
+

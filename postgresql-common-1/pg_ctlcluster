@@ -22,7 +22,7 @@ if ($#ARGV != 2) {
 sub start {
     my $cdir = $info{'configdir'};
     exec $pg_ctl, '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s', '-o', 
-        "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\" -c unix_socket_directory=$PgCommon::socketdir", 
+        "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\"", 
         'start';
 }
 
