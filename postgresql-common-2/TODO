@@ -11,25 +11,4 @@ postgresql-contrib-x.x need to check a file supplied by
 postgresql-common to see whether and with what parameters to run
 autovacuum.
 
-Write a utility to change the port on which a particular postmaster
-is running or to create a database and start a postmaster on some
-new port:
-   a.    Prompt for current port (if any);
-   b.    If current port is not blank:
-          shutdown the postmaster on that port
-          look up PostgreSQL version from
-          /etc/postgresql/cluster.ports
-          prompt for new port
-          move /etc/postgresql/<oldport> to .../<newport>
-          edit /etc/postgresql/<newport>/postgresql.conf 
-      else
-          prompt for: cluster.ports parameters
-          write line in cluster.ports
-          create /etc/postgresql/<newport>
-          initdb
-          move $PGDATA/config files to /etc/postgresql/<newport> and
-   	 create symlinks in their place
-          
-   c.    Start postmaster on the new port
-
 recheck ports of already existing clusters on installation (might collide)

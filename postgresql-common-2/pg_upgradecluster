@@ -1,0 +1,113 @@
+#!/usr/bin/perl -w
+
+# Upgrade a PostgreSQL cluster to a newer major version.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+#use lib '/usr/share/postgresql-common';
+use PgCommon;
+use Getopt::Long;
+use POSIX;
+
+#
+# Execution starts here
+#
+
+# command line arguments
+
+$newversion = get_newest_version;
+
+exit 1 unless GetOptions ('v|version=s' => \$newversion);
+
+if ($#ARGV < 1) {
+    print "Usage: $0 [-v <newversion>] <version> <cluster name> [<data directory>]\n";
+    exit 1;
+}
+
+($version, $cluster, $datadir) = @ARGV;
+%info = cluster_info ($version, $cluster);
+
+error "specified cluster does not exist" unless $info{'pgdata'};
+
+%newinfo = cluster_info($newversion, $cluster);
+error "target cluster $newversion/$cluster already exists" if $newinfo{'pgdata'};
+
+# create new cluster
+
+@argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
+$newversion, $cluster);
+push @argv, $datadir if $datadir;
+error "Could not create target cluster" if system @argv;
+
+@argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'start');
+error "Could not start target cluster" if system @argv;
+
+sleep(4);
+
+%newinfo = cluster_info($newversion, $cluster);
+
+# dump cluster; drop to cluster owner privileges
+
+print "Dumping the old cluster into the new one...\n";
+
+if (!fork) {
+    POSIX::setgid ($info{'ownergid'});
+    POSIX::setuid ($info{'owneruid'});
+    error 'Could not change user id' if $< != $info{'owneruid'};
+    error 'Could not change group id' if $( != $info{'ownergid'};
+
+    $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
+    $psql = get_program_path 'psql', $newversion;
+
+    $src = "$pg_dumpall -p " . $info{'port'} . '|';
+    $sink = "|$psql -q -p " . $newinfo{'port'} . ' -d template1';
+
+    open SOURCE, $src or 
+	error 'Could not execute pg_dumpall for old cluster';
+    open SINK, $sink or
+	error 'Could not execute psql for new cluster';
+    while (read SOURCE, $buffer, 16384) {
+	print SINK $buffer;
+    }
+    close SOURCE;
+    close SINK;
+    exit 0;
+}
+
+wait;
+if ($?) {
+    print STDERR "Error during cluster dumping, removing new cluster\n";
+    system 'pg_dropcluster', '--stop-server', $newversion, $cluster;
+    exit 1;
+}
+
+__END__
+
+=head1 NAME
+
+pg_upgradecluster - upgrade a new PostgreSQL cluster to a new major version.
+
+=head1 SYNOPSIS
+
+B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<data dir>]
+
+=head1 DESCRIPTION
+
+B<pg_upgradecluster> upgrades an existing PostgreSQL server cluster (i. e. a
+collection of databases served by a B<postmaster> instance) to a new version
+specified by I<newversion> (default: latest available version).
+
+The cluster of the old version will not automatically be removed. After
+upgrade, please verify that the new cluster indeed works as expected; if so,
+you should remove the old cluster with L<pg_dropcluster(8)>. Please be aware
+that the new cluster will listen on a previously unused port; after you removed
+the old cluster, you might want to change the port of the new cluster to the
+port the old version used previously.
+
+=head1 SEE ALSO
+
+L<pg_createcluster(8)>, L<pg_dropcluster(8)>, L<pg_lsclusters(1)>, L<pg_wrapper(1)>
+
+=head1 AUTHOR
+
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>

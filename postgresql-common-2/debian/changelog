@@ -1,8 +1,10 @@
 postgresql-common (2) experimental; urgency=low
 
   * pg_wrapper: Check that specified cluster actually exists.
+  * Fix some Perl warnings.
+  * Added initial version of pg_upgradecluster(8).
 
- -- Martin Pitt <mpitt@debian.org>  Wed,  2 Mar 2005 16:55:12 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 14 Mar 2005 17:51:22 +0100
 
 postgresql-common (1) experimental; urgency=low
 
