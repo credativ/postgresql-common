@@ -1,34 +1,10 @@
 # This file contains common functionality for all postgresql server
 # package init.d scripts. It is usually included by
-# /etc/init.d/postgresqlX.Y.
+# /etc/init.d/postgresql-X.Y.  
 
-# Get $CONFIGDIR, $PGDATA, and $PGCTL paths, and $PG_VERSION from given version
-# ($1) and cluster name ($2) and check that the cluster data exists.
-prepare_cluster() {
-    CONFIGDIR="/etc/postgresql/$1/$2"
-    PGDATA="$CONFIGDIR/pgdata"
-    if [ ! -d "$PGDATA" ]; then
-        echo "Error: symbolic link $PGDATA to data directory does not exist, exiting" >&2
-        exit 1
-    fi
-
-    if [ ! -f "$PGDATA/PG_VERSION" ]; then
-        echo "Error: $PGDATA does not seem to contain a PostgreSQL cluster (PG_VERSION is missing)" >&2
-        exit 1
-    fi
-    PG_VERSION=$(< "$PGDATA/PG_VERSION")
-
-    if [ "$1" != "$PG_VERSION" ]; then
-        echo "Error: $PGDATA/PG_VERSION is $PG_VERSION, but configuration directory is for version $1)" >&2
-        exit 1
-    fi
-
-    PG_CTL="/usr/lib/postgresql/$PG_VERSION/bin/pg_ctl"
-}
-
-# do command/function $1 to all clusters of version $2 with command
+# do pg_ctlcluster action $1 to all clusters of version $2 with command
 # description $3; output according to Debian Policy for init scripts
-do_op_all() {
+do_ctl_all() {
     [ "$1" ] || { echo "Error: invalid command '$1'" >&2; exit 1; }
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
     [ -d "/etc/postgresql/$2" ] || return
@@ -37,7 +13,7 @@ do_op_all() {
     unset fail
     for c in /etc/postgresql/"$2"/*; do
 	echo -n " "$(basename "$c")
-	ERRMSG="$ERRMSG\n"$($1 "$2" "$(basename "$c")" 2>&1) || {
+	ERRMSG="$ERRMSG\n"$(pg_ctlcluster -s "$2" "$(basename "$c")" $1 2>&1) || {
             echo -n "(FAILED)"
             fail=1 
         }
@@ -53,19 +29,25 @@ do_op_all() {
 # start all clusters of version $1
 # output according to Debian Policy for init scripts
 start() {
-    do_op_all pg_startcluster "$1" "Starting"
+    do_ctl_all start "$1" "Starting"
 }
 
 # stop all clusters of version $1
 # output according to Debian Policy for init scripts
 stop() {
-    do_op_all pg_stopcluster "$1" "Stopping"
+    do_ctl_all stop "$1" "Stopping"
+}
+
+# restart all clusters of version $1
+# output according to Debian Policy for init scripts
+restart() {
+    do_ctl_all restart "$1" "Restarting"
 }
 
 # reload all clusters of version $1
 # output according to Debian Policy for init scripts
 reload() {
-    do_op_all pg_reloadcluster "$1" "Reloading"
+    do_ctl_all reload "$1" "Reloading"
 }
 
 status() {
