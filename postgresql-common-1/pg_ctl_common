@@ -1,4 +1,4 @@
-#!/usr/bin/perl -d
+#!/usr/bin/perl -w
 #
 #  pg_ctl_common 
 #
@@ -16,6 +16,8 @@ if ( $ARGV[0] eq "-c" ) {
 	$cluster = $ARGV[1];
 	$ix = 2;
 }
+
+die "You must run pg_ctl_common as root\n" unless $UID == 0;
 
 $action = $ARGV[$ix++];
 
@@ -35,31 +37,42 @@ if ($action eq "start" || $action eq "reload" || $action eq "status") {
 
 my ($clname, $status, $owner, $version, $port, $path);
 
-open CLUSTER_PORTS, "/etc/postgresql/cluster_ports" or die "Cannot open /etc/postgresql/cluster_ports";
+# delete this and the next line and uncomment the line after
+my $portfile = "/tmp/cluster_ports";
+# my $portfile = "/etc/postgresql/cluster_ports";
+open CLUSTER_PORTS, $portfile or die "Cannot open $portfile";
 
 while (<CLUSTER_PORTS>) {
-	if (m/^ *#/) {
-		print "Comment: $_\n";
-	} else {
-		sscanf $_, '%s %s %s %s %s %s', $clname, $status, $owner, $version, $port, $path;
+	if (! m/^\s*(#.*|)$/) {
+		($clname, $status, $owner, $version, $port, $path) = split /\s\s*/, $_;
 		printf "Cluster: %s; Status: %s; Owner: %s; Version: %s; Port: %s; Path: %s\n", $clname, $status, $owner, $version, $port, $path;
 		if (! defined $cluster || $cluster eq $clname) {
-			# operate on this line
-			# Check that we have permission for the operation
-			if ($uid != 0 && $USER ne $owner) {
-				printf "Need root permission to operate on cluster $clname\n"
-			} else {
-				if ($uid == 0) { # adopt the correct identity here # }
-				$cmd = "/usr/lib/postgresql/$version/bin/pg_ctl -D $path";
-				setenv PGPORT, $port;
-				if (action eq "start") {
-					$options = "-p /usr/lib/postgresql/$version/bin/postmaster ";
-				} elsif ($action eq "stop" || $action eq "restart") {
+			# set effective uid to cluster owner
+			my ($name, $passwd, $uid, $gid, $quota, $comment, $gcos, $dir, $shell) = getpwnam $owner;
+			die "Cluster $cluster's owner is set to root, which is not allowed\n" if $uid == 0;
+			$EUID = $uid;
+			
+			# check cluster database path and version
+			my $version_file = "$path/PG_VERSION";
+			open PGVERSION, $version_file or die "Could not open $version_file\n";
+			read PGVERSION, $dbver, 999 or die "Could not read from $version_file";
+			close PGVERSION;
+			chomp $dbver;
+			die "Cluster $cluster specifies Pg version $version, but actual version is $dbver\n" unless $version == $dbver;
+
+			# set correct port to listen on
+			$ENV{PGPORT} = $port;
+
+			# define the command to run
+			$cmd = "/usr/lib/postgresql/$version/bin/pg_ctl -D $path";
+			if (action eq "start") {
+				$options = "-p /usr/lib/postgresql/$version/bin/postmaster ";
+			} elsif ($action eq "stop" || $action eq "restart") {
 				$options = "-m $mode";
-				}
-				system("$cmd $options");
 			}
-			if ($uid == 0) { # abandon assumed identity # };
+			print "Running command: $cmd $options\n";
+			system("$cmd $options");
+			$EUID = 0;
 		}
 	}
 }
