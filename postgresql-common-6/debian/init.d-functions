@@ -9,7 +9,7 @@ do_ctl_all() {
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
     [ -d "/etc/postgresql/$2" ] || return
     [ "$(ls /etc/postgresql/$2)" ] || return
-    [ -z "$3" ] || echo -n "$3 PostgreSQL $2 database server:"
+    [ -z "$3" ] || echo -n "$3"
 
     unset fail
     for c in /etc/postgresql/"$2"/*; do
@@ -31,27 +31,43 @@ do_ctl_all() {
 # start all clusters of version $1
 # output according to Debian Policy for init scripts
 start() {
-    do_ctl_all start "$1" "Starting"
+    do_ctl_all start "$1" "Starting PostgreSQL $1 database server:"
 }
 
 # stop all clusters of version $1
 # output according to Debian Policy for init scripts
 stop() {
-    do_ctl_all stop "$1" "Stopping"
+    do_ctl_all stop "$1" "Stopping PostgreSQL $1 database server:"
 }
 
 # restart all clusters of version $1
 # output according to Debian Policy for init scripts
 restart() {
-    do_ctl_all restart "$1" "Restarting"
+    do_ctl_all restart "$1" "Restarting PostgreSQL $1 database server:"
 }
 
 # reload all clusters of version $1
 # output according to Debian Policy for init scripts
 reload() {
-    do_ctl_all reload "$1" "Reloading"
+    do_ctl_all reload "$1" "Reloading PostgreSQL $1 database server:"
 }
 
 status() {
     pg_lsclusters
 }
+
+# start pg_autovacuum for all clusters of version $1
+autovac-start() {
+    do_ctl_all autovac-start "$1" "Starting PostgreSQL $1 autovacuum daemon:"
+}
+
+# stop pg_autovacuum for all clusters of version $1
+autovac-stop() {
+    do_ctl_all autovac-stop "$1" "Stopping PostgreSQL $1 autovacuum daemon:"
+}
+
+# restart pg_autovacuum for all clusters of version $1
+autovac-restart() {
+    do_ctl_all autovac-restart "$1" "Retarting PostgreSQL $1 autovacuum daemon:"
+}
+
