@@ -4,6 +4,7 @@
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
 BASEDIR=/etc/postgresql
+SOCKETDIR=/var/run/postgresql
 
 show_header=1
 
@@ -15,7 +16,13 @@ show_cluster() {
               s/^[^=]*=[ \t]*\([0-9]\+\)[ \t]*$/\1/; h} ; 
            $ { g; p }' "$1"/postgresql.conf)
     [ "$port" ] || port="5432"
-    echo -e "$version\t$cluster\t$port\t$pg_data"
+    if [ -S "$SOCKETDIR/.s.PGSQL.$port" ]; then
+        status="running"
+    else
+        status="down"
+    fi
+
+    echo -e "$version\t$cluster\t$port\t$status\t$pg_data"
 }
 
 show_version() {
@@ -26,7 +33,7 @@ show_version() {
 }
 
 if [ "$show_header" ]; then
-    echo -e "Version\tCluster\tPort\tData directory"
+    echo -e "Version\tCluster\tPort\tStatus\tData directory"
 fi
 
 for v in "$BASEDIR"/*; do
