@@ -69,7 +69,7 @@ if ($owneruid) {
 if ($ownergid) {
     $ownergid = (getgrnam $ownergid)[2] unless $ownergid =~ /\d+/;
 } else {
-    $ownergid = (getpwuid $owneruid)[2];
+    $ownergid = (getpwuid $owneruid)[3];
 }
 
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
