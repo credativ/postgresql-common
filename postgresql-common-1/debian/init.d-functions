@@ -3,17 +3,17 @@
 # /etc/init.d/postgresqlX.Y.
 
 # Make sure the log directory and file exist with the correct ownership
-# needs correct $VERSION
+# needs correct $VERSION and $CLUSTER
 assert_logfile() {
-    if [ -z "$VERSION" ]; then
-        echo "Error: assert_logfile called without proper \$VERSION" >&2
+    if [ -z "$VERSION" -o -z "$CLUSTER" ]; then
+        echo -e "\nError: assert_logfile called without proper \$VERSION and \$CLUSTER" >&2
         exit 1
     fi
 
-    LOGFILE=${POSTGRES_LOG:-/var/log/postgresql/postgresql-$VERSION.log}
-    LOGDIR="`dirname \"$LOGFILE\"`"
+    LOGFILE="/var/log/postgresql/postgresql-$VERSION-$CLUSTER.log"
+    LOGDIR=$(dirname "$LOGFILE")
 
-    [ -d "$LOGDIR" ] || install -d -m 770 -o postgres -g postgres "$LOGDIR"
+    [ -d "$LOGDIR" ] || install -d -m 2775 -o root -g postgres "$LOGDIR"
 
     if [ ! -e "$LOGFILE" ]; then
         touch "$LOGFILE"
@@ -22,10 +22,10 @@ assert_logfile() {
     fi
 }
 
-# Get $PGDATA path, $PG_VERSION, and $PG_CTL path from given cluster name ($1) and
-# check that the # cluster data exists.
+# Get $PGDATA path, $PG_VERSION, and $PG_CTL path from given version ($1) and
+# cluster name ($2) and check that the cluster data exists.
 prepare_cluster() {
-    PGDATA=/etc/postgresql/$1/pgdata
+    PGDATA=/etc/postgresql/$1/$CLUSTER/pgdata
     if [ ! -d $PGDATA ]; then
         echo "Error: symbolic link $PGDATA to data directory does not exist, exiting" >&2
         exit 1
@@ -37,13 +37,19 @@ prepare_cluster() {
     fi
     PG_VERSION=$(< $PGDATA/PG_VERSION)
 
+    if [ "$1" != $PG_VERSION ]; then
+        echo "Error: $PGDATA/PG_VERSION is $PG_VERSION, but configuration directory is for version $1)" >&2
+        exit 1
+    fi
+
     PG_CTL=/usr/lib/postgresql/$PG_VERSION/bin/pg_ctl
 }
 
-# start given cluster
-start() {
-    echo -n "Starting PostgreSQL database $1 server: postmaster"
-    prepare_cluster $1
+# start cluster $2 of version $1
+# output is appropriate after "Starting ...:" init message
+start_ver_cluster() {
+    prepare_cluster $1 $2
+    echo -n " $2"
     assert_logfile
 
     ERRMSG=$(/sbin/start-stop-daemon --pidfile $PGDATA/postmaster.pid \
@@ -57,13 +63,13 @@ start() {
     fi
 
     [ "$ERRMSG" ] && echo -n "($ERRMSG)" >&2 || true
-    echo "."
 }
 
-# stop given cluster (i. e. major version)
-stop() {
-    echo -n "Stopping PostgreSQL database $1 server: postmaster"
-    prepare_cluster $1
+# stop cluster $2 of version $1
+# output is appropriate after "Stopping ...:" init message
+stop_ver_cluster() {
+    prepare_cluster $1 $2
+    echo -n " $2"
 
     start-stop-daemon -c postgres --start --exec $PG_CTL -- -D "$PGDATA" stop -s -w -m fast
 
@@ -82,13 +88,13 @@ stop() {
             rm -f "$PGDATA/postmaster.pid"
         fi
     fi
-    echo "."
 }
 
-# reload given cluster
-reload() {
-    echo -n "Reloading PostgreSQL database $1 server: postmaster"
-    prepare_cluster $1
+# reload cluster $2 of version $1
+# output is appropriate after "Reloading ...:" init message
+reload_ver_cluster() {
+    prepare_cluster $1 $2
+    echo -n " $2"
 
     ERRMSG=$(start-stop-daemon --chuid postgres --start \
         --exec $PG_CTL -- -D $PGDATA -s reload)
@@ -100,14 +106,50 @@ reload() {
     fi
 
     [ "$ERRMSG" ] && echo -n " ($ERRMSG)" >&2 || true
-    echo "."
 }
 
-# print status for given cluster
-status() {
-    prepare_cluster $1
+# print status of cluster $2 of version $1
+status_ver_cluster() {
+    prepare_cluster $1 $2
 
-    echo "-- Cluster $1 --"
+    echo "-- Status of cluster $PG_VERSION/$CLUSTER:"
     start-stop-daemon --chuid postgres --start --exec $PG_CTL -- -D $PGDATA status
+}
+
+# do command/function $1 to all clusters of version $2 with command
+# description $3; output according to Debian Policy for init scripts
+do_op_all() {
+    [ "$1" ] || { echo "Error: invalid command '$1'" >&2; exit 1; }
+    [ "$2" -a -d "/etc/postgresql/$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
+    [ -z "$3" ] || echo -n "$3 PostgreSQL $2 database server:"
+
+    for c in /etc/postgresql/"$2"/*; do
+	$1 $2 $(basename $c)
+    done
+
+    [ -z "$3" ] || echo "."
+}
+
+# start all clusters of version $1
+# output according to Debian Policy for init scripts
+start() {
+    do_op_all start_ver_cluster $1 "Starting"
+}
+
+# stop all clusters of version $1
+# output according to Debian Policy for init scripts
+stop() {
+    do_op_all stop_ver_cluster $1 "Stopping"
+}
+
+# reload all clusters of version $1
+# output according to Debian Policy for init scripts
+reload() {
+    do_op_all reload_ver_cluster $1 "Reloading"
+}
+
+# display status all clusters of version $1
+status() {
+    do_op_all status_ver_cluster $1 
 }
 
