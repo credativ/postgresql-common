@@ -21,14 +21,15 @@ if ($#ARGV != 2) {
 
 sub start {
     my $cdir = $info{'configdir'};
-    @options = ('start', '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s', '-o');
+    @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s');
 
     # versions 8.0+ support configurable conffile locations
     if ($version >= 8) {
+	push @options, '-o';
         push @options, "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
     }
 
-    exec $pg_ctl, @options;
+    exec $pg_ctl @options;
 }
 
 sub stop {

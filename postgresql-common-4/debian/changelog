@@ -4,8 +4,10 @@ postgresql-common (4) experimental; urgency=low
     debugging).
   * debian/postgresql-common.postinst: Don't create postgres user with home /,
     this can lead to problems sometimes.
+  * pg_ctlcluster: Fixed pg_ctl invocation (dangling -o argument with versions
+    < 8.0, caused errors when using dash as /bin/sh). Closes: #300896
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 22 Mar 2005 22:33:52 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 22 Mar 2005 23:32:47 +0100
 
 postgresql-common (3) experimental; urgency=low
 
