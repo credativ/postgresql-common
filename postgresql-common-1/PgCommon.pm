@@ -22,9 +22,11 @@ $defaultport = 5432;
 # Arguments: <version> <cluster> <parameter name>
 sub get_conf_value {
     return 0 unless $_[0] && $_[1];
-    open F, "$confroot/$_[0]/$_[1]/postgresql.conf" or die "Could not open configuration file: $!";
-    while (<F>) {
-        return $1 if /^\s*$_[2]\s*=\s*(\w+)\b/;
+    if (open F, "$confroot/$_[0]/$_[1]/postgresql.conf") {
+        while (<F>) {
+            return $1 if /^\s*$_[2]\s*=\s*(\w+)\b/;
+        }
+        close F;
     }
     return '';
 }
@@ -64,9 +66,10 @@ sub get_program_path {
 
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
-# Returns: information hash (keys: pgdata, port, running, logfile)
+# Returns: information hash (keys: pgdata, port, running, logfile, configdir)
 sub cluster_info {
-    $result{'pgdata'} = readlink "$confroot/$_[0]/$_[1]/pgdata";
+    $result{'configdir'} = "$confroot/$_[0]/$_[1]";
+    $result{'pgdata'} = readlink $result{'configdir'} . "/pgdata";
     $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
     $result{'running'} = -S "$socketdir/.s.PGSQL." . $result{'port'};
     $result{'logfile'} = "$logdir/postgresql-$_[0]-$_[1].log";
