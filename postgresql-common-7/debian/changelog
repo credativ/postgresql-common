@@ -1,3 +1,9 @@
+postgresql-common (7) experimental; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Wed,  6 Apr 2005 22:06:36 +0200
+
 postgresql-common (6) experimental; urgency=low
 
   * pg_dropcluster: Check if postmaster and autovacuum log file paths are
