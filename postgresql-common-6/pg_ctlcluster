@@ -188,7 +188,7 @@ owner.
 
 In B<start> mode, a log file for this specific cluster is created if it does
 not exist yet (by default,
-B</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>,
+B</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>),
 and a PostreSQL server process (B<postmaster>) is started on it. If the package
 B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum> process is
 started as well (unless this gets disabled in
