@@ -14,7 +14,6 @@ $mapfile = "/etc/postgresql-common/user_clusters";
 $confroot = "/etc/postgresql";
 $binroot = "/usr/lib/postgresql";
 $socketdir = "/var/run/postgresql";
-$logdir = "/var/log/postgresql";
 $defaultport = 5432;
 
 # Print an error message to stderr and exit with status 1
@@ -77,9 +76,9 @@ sub get_program_path {
 sub cluster_info {
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = readlink $result{'configdir'} . "/pgdata";
+    $result{'logfile'} = readlink $result{'configdir'} . "/log";
     $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
     $result{'running'} = -S "$socketdir/.s.PGSQL." . $result{'port'};
-    $result{'logfile'} = "$logdir/postgresql-$_[0]-$_[1].log";
     ($result{'owneruid'}, $result{'ownergid'}) = 
         (stat $result{'pgdata'})[4,5];
     return %result;

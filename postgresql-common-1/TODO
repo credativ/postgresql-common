@@ -45,7 +45,4 @@ determine db version of the default port in pg_wrapper
 
 automatically determine next free port in pg_createcluster
 
-create log file in pg_createcluster with correct permission, not in
-init script
-
 pg_lsclusters: determine whether server is really running
