@@ -1,10 +1,4 @@
-postgresql-common (0pre2) experimental; urgency=low
-
-  * New unofficial milestone.
-
- -- Martin Pitt <mpitt@debian.org>  Sun, 13 Feb 2005 22:33:37 +0100
-
-postgresql-common (0pre1) experimental; urgency=low
+postgresql-common (0pre3) experimental; urgency=low
 
   * New package to provide a common infrastructure for different PostgreSQL
     versions. This finally fixes all bugs concerning failed automatic
@@ -13,5 +7,5 @@ postgresql-common (0pre1) experimental; urgency=low
   * pg_wrapper now has a central role for mapping clients to clusters, so it
     is not "overkill" any more. Closes: #201702
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 28 Jan 2005 16:01:12 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 15 Feb 2005 22:58:37 +0100
 
