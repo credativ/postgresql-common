@@ -54,7 +54,7 @@ sub move_conffile {
 # command line arguments
 
 $owneruid = $>;
-$ownergid = $);
+$ownergid = (getpwuid $>)[2];
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid);
 
 if ($#ARGV < 1) {
