@@ -1,8 +1,9 @@
 postgresql-common (3) experimental; urgency=low
 
-  * 
+  * Add richer set of common maintainer scripts functions (for package
+    removal, and also for client and contrib packages).
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 17 Mar 2005 13:08:02 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 20 Mar 2005 13:37:11 +0100
 
 postgresql-common (2) experimental; urgency=low
 

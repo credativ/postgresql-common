@@ -9,3 +9,24 @@ configure_version() {
         /usr/bin/pg_createcluster -u postgres $1 main
     fi
 }
+
+remove_version() {
+    return 0
+}
+
+configure_client_version() {
+    return 0
+}
+
+remove_client_version() {
+    return 0
+}
+
+configure_contrib_version() {
+    return 0
+}
+
+remove_contrib_version() {
+    return 0
+}
+
