@@ -32,3 +32,39 @@ $ENV{'PGDATABASE'} = $db if $db;
 push @args, @ARGV;
 exec @args;
 
+__END__
+
+=head1 NAME
+
+pg_wrapper - wrapper for PostgreSQL client commands
+
+=head1 DESCRIPTION
+
+This program is run only as a link to names which correspond to PostgreSQL
+programs in B</usr/lib/postgresql/>I<version>B</bin>. It finds the correct
+cluster and database for the user and calls the correct version of the desired
+program to connect to that cluster and database, supplying any specifed options
+to that command.
+
+=head1 FILES
+
+=over
+
+=item B</etc/postgresql-common/user_clusters>
+
+stores the default cluster and database for users and groups as set by
+the administrators. 
+
+=item B<$HOME/.postgresqlrc>
+
+stores defaults set by the user himself.
+
+=back
+
+=head1 SEE ALSO
+
+L<pg_default(1)>, L<pg_exec(1)>
+
+=head1 AUTHOR
+
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
