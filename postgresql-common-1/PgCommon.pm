@@ -88,12 +88,14 @@ sub port_running {
 # owneruid, ownergid)
 sub cluster_info {
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
-    $result{'pgdata'} = readlink $result{'configdir'} . "/pgdata";
-    $result{'logfile'} = readlink $result{'configdir'} . "/log";
+    $result{'pgdata'} = readlink ($result{'configdir'} . "/pgdata");
+    $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
     $result{'running'} = port_running ($_[0], $result{'port'});
-    ($result{'owneruid'}, $result{'ownergid'}) = 
-        (stat $result{'pgdata'})[4,5];
+    if ($result{'pgdata'}) {
+        ($result{'owneruid'}, $result{'ownergid'}) = 
+            (stat $result{'pgdata'})[4,5];
+    }
     return %result;
 }
 

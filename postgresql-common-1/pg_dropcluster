@@ -22,7 +22,7 @@ if ($#ARGV != 1) {
 
 %info = cluster_info ($version, $cluster);
 
-error ("cluster data directory does not exist") unless -d $info{'pgdata'};
+error ("cluster data directory does not exist") unless ($info{'pgdata'} && -d $info{'pgdata'});
 
 if ($info{'running'}) {
     if ($stopserver) {
