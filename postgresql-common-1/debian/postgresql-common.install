@@ -1,0 +1,2 @@
+cluster_ports etc/postgresql
+user_clusters etc/postgresql

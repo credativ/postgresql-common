@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Oliver Elphick <Oliver.Elphick@lfix.co.uk>
 Uploaders: Martin Pitt <mpitt@debian.org>
 Standards-Version: 3.6.1
-Build-Depends:  debhelper (>= 4.1.29)
+Build-Depends: cdbs, debhelper (>= 4.1.29)
 
 Package: postgresql-common
 Architecture: any
