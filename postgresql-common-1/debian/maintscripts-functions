@@ -1,5 +1,14 @@
 # This file contains common functionality for all postgresql server
-# package postrm scripts.
+# package maintainer scripts.
+
+# Create a main cluster for given version ($1) if no cluster already exists
+# for that version.
+configure_version() {
+    [ "$1" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
+    if [ ! -d /etc/postgresql/$1 ] || [ -z "$(ls /etc/postgresql/$1)" ]; then
+        /usr/bin/pg_createcluster -u postgres $1 main
+    fi
+}
 
 clean_dir() {
     if [ -d "$1" ]; then
@@ -7,7 +16,7 @@ clean_dir() {
     fi
 }
 
-# Remove all clusters of a particular version ($1)and try to clean up some
+# Remove all clusters of a particular version ($1) and try to clean up some
 # directories.
 purge_version() {
     [ "$1" ] || { echo "Error: purge_version: need version parameter" >&2; exit 1; }
