@@ -1,0 +1,13 @@
+usr/share/postgresql-common/pg_wrapper usr/bin/clusterdb
+usr/share/postgresql-common/pg_wrapper usr/bin/createdb
+usr/share/postgresql-common/pg_wrapper usr/bin/createlang
+usr/share/postgresql-common/pg_wrapper usr/bin/createuser
+usr/share/postgresql-common/pg_wrapper usr/bin/dropdb
+usr/share/postgresql-common/pg_wrapper usr/bin/droplang
+usr/share/postgresql-common/pg_wrapper usr/bin/dropuser
+usr/share/postgresql-common/pg_wrapper usr/bin/pg_dump
+usr/share/postgresql-common/pg_wrapper usr/bin/pg_dumpall
+usr/share/postgresql-common/pg_wrapper usr/bin/pg_restore
+usr/share/postgresql-common/pg_wrapper usr/bin/psql
+usr/share/postgresql-common/pg_wrapper usr/bin/vacuumdb
+usr/share/postgresql-common/pg_wrapper usr/bin/vacuumlo
