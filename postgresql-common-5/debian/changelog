@@ -2,8 +2,10 @@ postgresql-common (5) experimental; urgency=low
 
   * PgCommon.pm: internalize get/set_conf_value, export get/set_cluster_port
     instead.
+  * Integrated pg_autovacuum startup if -contrib is installed (based on some
+    patches from Adam R. Skutt, thanks).
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 30 Mar 2005 21:59:23 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat,  2 Apr 2005 17:48:57 +0200
 
 postgresql-common (4) experimental; urgency=low
 

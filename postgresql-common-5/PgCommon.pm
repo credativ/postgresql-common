@@ -109,6 +109,21 @@ sub cluster_info {
         ($result{'owneruid'}, $result{'ownergid'}) = 
             (stat $result{'pgdata'})[4,5];
     }
+
+    # autovacuum settings
+
+    if (get_program_path 'pg_autovacuum', $_[0]) {
+	$enableval = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start');
+	$result{'avac_enable'} = ($enableval eq 'yes');
+	$result{'avac_log'} = readlink ($result{'configdir'} . "/autovacuum_log");
+	$result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'sleep_base_value');
+	$result{'avac_sleep_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'sleep_scaling_factor');
+	$result{'avac_vac_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'vacuum_base_thresold');
+	$result{'avac_vac_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'vacuum_scaling_factor');
+	$result{'avac_anal_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'analyze_base_threshold');
+	$result{'avac_anal_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'analyze_scaling_factor');
+    }
+    
     return %result;
 }
 

@@ -8,6 +8,7 @@
 
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
+use POSIX qw/setsid/;
 use PgCommon;
 
 # command line options
@@ -17,6 +18,58 @@ exit 1 unless GetOptions ("setuid|s" => \$setuid);
 if ($#ARGV != 2) {
     print "Usage: $0 [-s] <version> <cluster> <action>\n";
     exit 1;
+}
+
+sub autovacuum_start {
+    return unless $info{'avac_enable'};
+
+    my %avac_flags = ('avac_sleep_base' => '-s', 'avac_sleep_scale' => '-S',
+                      'avac_vac_base'   => '-v', 'avac_vac_scale'   => '-V',
+                      'avac_anal_base'  => '-a', 'avac_anal_scale'  => '-A',
+                      'avac_log' => '-L');
+
+    @options = ('-p', $info{'port'});
+
+    foreach (keys %info) {
+	if (my $option = $avac_flags{$_}) {
+            push (@options, $option, $info{$_}) if $info{$_};
+	}
+    }
+
+    print "starting $pg_autovacuum ", (join (', ', @options)), "\n";
+
+    if (!($pid = fork())) {
+        close $_ for(STDOUT, STDIN, STDERR);
+	setsid;
+        chdir '/';
+        exec $pg_autovacuum, @options;
+	exit -1;
+    } else {
+        if(open my $AVAC_PID, '>', $info{'pgdata'}.'/autovacuum.pid') {
+            print $AVAC_PID "$pid\n";
+            close $AVAC_PID;
+        }
+        exit 0;
+    }
+}
+
+sub autovacuum_stop {
+    return unless ($info{'avac_enable'});
+
+    if (open my $AVAC_PID, $info{'pgdata'}.'/autovacuum.pid') {
+        $pid = <$AVAC_PID>;
+        close $AVAC_PID;
+    }
+
+    kill ('TERM', $pid) if ($pid);
+    unlink $info{'pgdata'}.'/autovacuum.pid';
+}
+
+sub autovacuum_restart {
+    if (-f $info{'pgdata'}.'/autovacuum.pid') {
+        autovacuum_stop;
+        autovacuum_start;
+    }
 }
 
 sub start {
@@ -29,10 +82,17 @@ sub start {
         push @options, "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
     }
 
-    exec $pg_ctl @options;
+    system $pg_ctl @options;
+
+    unless($?) {
+	sleep 3;
+	autovacuum_start;
+    }
 }
 
 sub stop {
+    autovacuum_stop;
+
     if (!fork()) {
         close STDOUT;
         exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'fast', 'stop';
@@ -87,9 +147,13 @@ if( $> != $info{'owneruid'} ) {
 }
 
 $pg_ctl = get_program_path 'pg_ctl', $ARGV[0];
+$pg_autovacuum = get_program_path 'pg_autovacuum', $ARGV[0];
 
-%actions = ("start" => \&start, "stop" => \&stop, "reload" => \&reload,
-            "restart" => \&restart, "status" => \&status);
+%actions = ('start' => \&start, 'stop' => \&stop, 'reload' => \&reload,
+            'restart' => \&restart, 'status' => \&status,
+            'autovac-start' => \&autovacuum_start,
+            'autovac-stop' => \&autovacuum_stop,
+            'autovac-restart' => \&autovacuum_restart);
 
 if ($actions{$ARGV[2]}) {
     $actions{$ARGV[2]}->();
