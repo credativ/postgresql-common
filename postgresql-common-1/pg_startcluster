@@ -26,5 +26,6 @@ fi
     -D "$PGDATA" -l "$LOGFILE" -s \
     -o "-c config_file=\"$CONFIGDIR/postgresql.conf\" \
         -c hba_file=\"$CONFIGDIR/pg_hba.conf\" \
-        -c ident_file=\"$CONFIGDIR/pg_ident.conf\"" start 
+        -c ident_file=\"$CONFIGDIR/pg_ident.conf\" \
+        -c unix_socket_directory=/var/run/postgresql/" start 
 

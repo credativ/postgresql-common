@@ -5,6 +5,9 @@ if [ "$1" = configure ]; then
     getent group postgres >/dev/null 2>&1 || addgroup --system postgres
     getent passwd postgres >/dev/null 2>&1 ||
         adduser --system --shell /bin/bash --home /var/lib/postgres --ingroup postgres --gecos "PostgreSQL administrator" postgres
+
+    chown postgres:postgres /var/run/postgresql
+    chmod 2775 /var/run/postgresql
 fi
 
 #DEBHELPER#
