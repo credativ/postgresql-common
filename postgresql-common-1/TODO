@@ -4,57 +4,47 @@ postgresql TODO
 Things that need doing in the new PostgreSQL packaging for Debian.
 
 
-1.   Man pages are installed in /usr/share/postgresql<X.X>/man.  Provide a
-     program to be run by the postinst script to run update-alternatives
-     on every manpage to link it to /usr/share/man/man<X>/<page>
+Man pages are installed in /usr/share/postgresql<X.X>/man.  Provide a
+program to be run by the postinst script to run update-alternatives
+on every manpage to link it to /usr/share/man/man<X>/<page>
 
-2.   Write pg_ctl_common to start or stop all database versions at once.
+Make do.maintenance version-specific.  It needs to check
+/etc/postgresql/cluster.ports in order to find out which ports to run a
+vacuum on and /var/run/postgresql/.s.PGSQL.${PGPORT} to be sure the
+postmaster for that port is running.
 
-3.   Work out the contents of /etc/default/postgresql.conf,
-     /etc/default/postgresql/x.x, /etc/postgresql and /etc/postgresql/x.x.
+Write a utility to change the port on which a particular postmaster
+is running or to create a database and start a postmaster on some
+new port:
+a.    Prompt for current port (if any);
+b.    If current port is not blank:
+       shutdown the postmaster on that port
+       look up PostgreSQL version from
+       /etc/postgresql/cluster.ports
+       prompt for new port
+       move /etc/postgresql/<oldport> to .../<newport>
+       edit /etc/postgresql/<newport>/postgresql.conf 
+   else
+       prompt for: cluster.ports parameters
+       write line in cluster.ports
+       create /etc/postgresql/<newport>
+       initdb
+       move $PGDATA/config files to /etc/postgresql/<newport> and
+	 create symlinks in their place
+       
+c.    Start postmaster on the new port
 
-4.   Make do.maintenance version-specific.  It needs to check
-     /etc/postgresql/cluster.ports in order to find out which ports to run a
-     vacuum on and /var/run/postgresql/.s.PGSQL.${PGPORT} to be sure the
-     postmaster for that port is running.
+postgresql-contribx.x need to check a file supplied by
+postgresql-common to see whether and with what parameters to run
+autovacuum.
 
-5.   Write a utility to change the port on which a particular postmaster
-     is running or to create a database and start a postmaster on some
-     new port:
-     a.    Prompt for current port (if any);
-     b.    If current port is not blank:
-               shutdown the postmaster on that port
-               look up PostgreSQL version from
-               /etc/postgresql/cluster.ports
-               prompt for new port
-               move /etc/postgresql/<oldport> to .../<newport>
-               edit /etc/postgresql/<newport>/postgresql.conf 
-           else
-               prompt for: cluster.ports parameters
-               write line in cluster.ports
-               create /etc/postgresql/<newport>
-               initdb
-               move $PGDATA/config files to /etc/postgresql/<newport> and
-                 create symlinks in their place
-               
-     c.    Start postmaster on the new port
+Do we need separate pam files in each source package?
 
-6.   There is a conflict between libecpg4.2 and libecpg4.1.  Both provide
-     libecpg_compat.so.1.1 and libpgtypes.so.1.2.  Do we remove them from
-     libecpg4.1? or do we create new binary packages for them?  Ask Michael.
+Should we do a general debconf query for all pg versions? rather than
+one per source package?
 
-7.   The init routine needs to be moved to postgresql-common and to read
-     cluster_ports to see what to do.  postgresql-contribx.x need to check
-     a file supplied by postgresql-common to see whether and with what
-     parameters to run autovacuum.
+Write manpages for: pg_lsclusters, pg_{create,start,stop,reload}cluster
 
-8.   Do we need separate pam files in each source package?
-
-9.   Should we do a general debconf query for all pg versions? rather than
-     one per source package?
-
-10.  Write manpages for: pg_lsclusters, pg_{create,start,stop,reload}cluster
-
-11.  add $CONFDIR/port, add support for that in pg_{create,start}cluster and
-     pg_lscclusters, prefer this in init scripts
+add $CONFDIR/port, add support for that in pg_{create,start}cluster and
+pg_lscclusters, prefer this in init scripts
 
