@@ -111,9 +111,7 @@ default version/cluster and database; overrides
 <tr><td><code>/usr/bin/<i>program</i></code></td>  <td>symbolic links to pg_wrapper, for all client programs</td></tr>
 <tr><td><code>/usr/bin/pg_lsclusters</code></td> <td>list all available clusters with their status and configuration</td></tr>
 <tr><td><code>/usr/sbin/pg_createcluster</code></td><td>wrapper for <code>initdb</code>, sets up the necessary configuration structure</td></tr>
-<tr><td><code>/usr/sbin/pg_startcluster</code></td><td>wrapper for <code>pg_ctl start</code>, start a cluster</td></tr>
-<tr><td><code>/usr/sbin/pg_stopcluster</code></td><td>wrapper for <code>pg_ctl stop</code>, stop a cluster</td></tr>
-<tr><td><code>/usr/sbin/pg_reloadcluster</code></td><td>wrapper for <code>pg_ctl reload</code>, reload a cluster</td></tr>
+<tr><td><code>/usr/sbin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server</td></tr>
 </table>
 
 <h3>psql</h3>
@@ -146,10 +144,8 @@ constructed and executed.</p>
 <h3>/etc/init.d/postgresql-<i>version</i></h3>
 
 <p>This script now handles the postmaster server processes for each
-cluster. However, most of the actual work is done by some new administrator
-scripts which do per-cluster operations, in particular
-<code>pg_startcluster</code>, <code>pg_stopcluster</code>, and
-<code>pg_reloadcluster</code>.
+cluster. However, most of the actual work is done by the new
+<code>pg_ctlcluster</code> program.
 
 <h3>pg_version_upgrade</h3>
 

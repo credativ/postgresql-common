@@ -4,6 +4,4 @@ PgCommon.pm usr/share/postgresql-common
 pg_wrapper usr/share/postgresql-common
 pg_lsclusters usr/bin
 pg_createcluster usr/sbin
-pg_startcluster usr/sbin
-pg_stopcluster usr/sbin
-pg_reloadcluster usr/sbin
+pg_ctlcluster usr/bin

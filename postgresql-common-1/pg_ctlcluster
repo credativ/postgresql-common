@@ -1,0 +1,135 @@
+#!/usr/bin/perl -w
+
+# multiversion/cluster aware pg_ctl wrapper; this also supplies the correct
+# configuration parameters to 'start', and makes sure that a postmaster really
+# stops on 'stop'.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+
+if ($#ARGV != 2) {
+    print "Usage: $0 <version> <cluster> <action>\n";
+    exit 1;
+}
+
+sub start {
+    my $cdir = $info{'configdir'};
+    exec $pg_ctl, '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s', '-o', 
+        "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\" -c unix_socket_directory=$PgCommon::socketdir", 
+        'start';
+}
+
+sub stop {
+    if (!fork()) {
+        close STDOUT;
+        exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'fast', 'stop';
+    } else {
+        wait;
+    }
+
+    # try harder if "fast" mode does not work
+    if (-f $info{'pgdata'}.'/postmaster.pid') {
+        print "(does not shutdown gracefully, now stopping immediately)";
+        if (!fork()) {
+            exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', 'stop';
+        } else {
+            wait;
+        }
+    }
+
+    # if that still not helps, use the big hammer
+    if (-f $info{'pgdata'}.'/postmaster.pid') {
+        print "(does not shutdown, killing the process)";
+        if (open FPID, $info{'pgdata'}.'/postmaster.pid') {
+            $pid = <FPID>;
+            close FPID;
+        }
+        kill (9, $pid) if $pid;
+        unlink $info{'pgdata'}.'/postmaster.pid';
+    }
+}
+
+sub restart {
+    stop if $info{'running'};
+    start;
+}
+
+sub reload {
+    exec $pg_ctl, '-D', $info{'pgdata'}, '-s', 'reload';
+}
+
+#
+# main
+#
+
+%info = cluster_info ($ARGV[0], $ARGV[1]);
+unless ($info{'pgdata'}) {
+    print STDERR "Error: specified cluster does not exist\n";
+    exit 1;
+}
+
+if( $> != $info{'owneruid'} ) {
+    print STDERR 'Error: You must run this program as the cluster owner (',
+        (getpwuid $info{'owneruid'})[0], ")\n";
+    exit 1;
+}
+
+$pg_ctl = get_program_path 'pg_ctl', $ARGV[0];
+
+%actions = ("start" => \&start, "stop" => \&stop, "reload" => \&reload,
+            "restart" => \&restart, "status" => \&status);
+
+if ($actions{$ARGV[2]}) {
+    $actions{$ARGV[2]}->();
+} else {
+    print STDERR 'Error: invalid action (must be one of: ', 
+        (join ', ', keys %actions), ")\n";
+    exit 1;
+}
+
+__END__
+
+=head1 NAME
+
+pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
+
+=head1 SYNOPSIS
+
+B<pg_ctlcluster> I<cluster-version> I<cluster-name> B<start>|B<stop>|B<restart>|B<reload>
+
+=head1 DESCRIPTION
+
+This program controls the B<postmaster> server for a particular cluster. It
+essentially wraps the B<pg_ctl> command. It determines the cluster version and
+data path and calls the right version of B<pg_ctl> with appropriate
+configuration parameters and paths.
+
+You have to start this program as the user who owns the database cluster.
+
+In B<start> mode, a log file for this specific cluster is created if it does
+not exist yet (by default,
+C</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>,
+and a PostreSQL server process (B<postmaster>) is started on it.
+
+B<stop> stops the B<postmaster> server of the given cluster with increasing
+force. Initially, the B<fast> mode is used which rolls back all active
+transactions and thus shuts down cleanly. If that does not work, shutdown is
+attempted again in B<immediate> mode, which can leave the cluster in an
+inconsistent state and thus will lead to a recovery run at the next start. If
+this still does not help, the B<postmaster> process is killed.
+
+B<restart> stops the server if it is running and starts it (again).
+
+B<reload> will cause the configuration files to be re-read without a full
+shutdown of the server.
+
+=head1 SEE ALSO
+
+L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>
+
+=head1 AUTHOR
+
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
+
