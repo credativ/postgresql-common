@@ -64,3 +64,6 @@ reload() {
     do_op_all pg_reloadcluster "$1" "Reloading"
 }
 
+status() {
+    pg_lsclusters
+}
