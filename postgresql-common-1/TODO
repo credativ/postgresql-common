@@ -52,3 +52,5 @@ Things that need doing in the new PostgreSQL packaging for Debian.
 
 9.   Should we do a general debconf query for all pg versions? rather than
      one per source package?
+
+10.  Write manpage for pg_lsclusters.

@@ -23,6 +23,7 @@ clean:
 install:	pg_wrapper
 	[ -z "$(DESTDIR)" ] || mkdir -p "$(DESTDIR)"
 	install -D -m 755 pg_wrapper $(DESTDIR)/$(BINDIR)/pg_wrapper
+	install -D -m 755 pg_lsclusters $(DESTDIR)/$(BINDIR)/pg_lsclusters
 	
 	cd $(DESTDIR)/$(BINDIR) && \
 	    for f in $(LINKS); do \
