@@ -1,0 +1,29 @@
+.TH pg_startcluster 8 "January 01, 2005" "Martin Pitt"
+
+.SH NAME
+pg_startcluster \- manually start a PostgreSQL cluster
+
+.SH SYNOPSIS
+.B pg_startcluster
+.I version clustername
+
+.SH DESCRIPTION
+.B pg_startcluster 
+starts PostgreSQL server cluster (i. e. a
+collection of databases served by a postmaster instance) of the given
+version and name.
+
+This script essentially wraps the
+.B pg_ctl start
+command, supplies the correct configuration parameters to it, and
+sets up a log file for this specific cluster (by default, 
+.B /var/log/postgresql/postgresql-\fIversion\fB-\fIclustername\fB.log\fR).
+
+.SH SEE ALSO
+.BR pg_stopcluster (8),
+.BR pg_reloadcluster (8),
+.BR pg_lsclusters (1),
+.BR pg_wrapper (1)
+
+.SH AUTHOR
+Martin Pitt <mpitt@debian.org>
