@@ -6,7 +6,7 @@ package PgCommon;
 use Exporter;
 $VERSION = 1.00;
 @ISA = ('Exporter');
-@EXPORT = qw/get_conf_value user_cluster_map get_program_path/;
+@EXPORT = qw/get_conf_value user_cluster_map get_program_path cluster_info get_versions get_version_clusters/;
 @EXPORT_OK = qw/$confroot $socket_dir/;
 
 # configuration
@@ -14,6 +14,7 @@ $mapfile = "/etc/postgresql-common/user_clusters";
 $confroot = "/etc/postgresql";
 $binroot = "/usr/lib/postgresql";
 $socketdir = "/var/run/postgresql";
+$defaultport = 5432;
 
 # Return parameter from a PostgreSQL configuration file, or '' if the parameter
 # does not exist.
@@ -55,5 +56,43 @@ sub user_cluster_map {
 # Return the path of a program of a particular version.
 # Arguments: <program name> <version>
 sub get_program_path {
-    return "$binroot/$_[1]/bin/$_[0]";
+    my $path = "$binroot/$_[1]/bin/$_[0]";
+    return $path if -x $path;
+    return '';
+}
+
+# Return a hash with information about a specific cluster.
+# Arguments: <version> <cluster name>
+# Returns: information hash (keys: pgdata, port, running)
+sub cluster_info {
+    $result{'pgdata'} = readlink "$confroot/$_[0]/$_[1]/pgdata";
+    $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
+    $result{'running'} = -S "$socketdir/.s.PGSQL." . $result{'port'};
+    return %result;
+}
+
+# Return an array of all available PostgreSQL versions
+sub get_versions {
+    my @versions = ();
+    if (opendir (D, $binroot)) {
+        while (defined ($f = readdir D)) {
+            push @versions, $f if get_program_path ('postmaster', $f);
+        }
+        closedir D;
+    }
+    return @versions;
+}
+
+# Return an array of all available clusters of given version
+# Arguments: <version>
+sub get_version_clusters {
+    my $vdir = $confroot.'/'.$_[0].'/';
+    my @clusters = ();
+    if (opendir (D, $vdir)) {
+        while (defined ($f = readdir D)) {
+            push @clusters, $f if -l $vdir.$f.'/pgdata';
+        }
+        closedir D;
+    }
+    return @clusters;
 }

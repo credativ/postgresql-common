@@ -1,42 +1,19 @@
-#!/bin/sh -e
+#!/usr/bin/perl
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-BASEDIR=/etc/postgresql
-SOCKETDIR=/var/run/postgresql
+use lib '/usr/share/postgresql-common';
+use PgCommon;
 
-show_header=1
+$show_header = 1;
 
-show_cluster() {
-    cluster=$(basename "$1")
-    version=$(basename "$(dirname "$1")")
-    pg_data=$(readlink "$1/pgdata")
-    port=$(sed -n '/^[ \t]*port[ \t]*=/ { 
-              s/^[^=]*=[ \t]*\([0-9]\+\)[ \t]*$/\1/; h} ; 
-           $ { g; p }' "$1"/postgresql.conf)
-    [ "$port" ] || port="5432"
-    if [ -S "$SOCKETDIR/.s.PGSQL.$port" ]; then
-        status="running"
-    else
-        status="down"
-    fi
+print "Version\tCluster\tPort\tStatus\tData directory\n" if $show_header;
 
-    echo -e "$version\t$cluster\t$port\t$status\t$pg_data"
+foreach $v (get_versions) {
+    foreach $c (get_version_clusters $v) {
+        %info = cluster_info $v, $c;
+        print join "\t", ($v, $c, $info{'port'}, $info{'running'} ? "running" :
+        "down", $info{'pgdata'}), "\n";
+    }
 }
-
-show_version() {
-    for c in "$1"/*; do
-        [ -d "$c" ] && [ -L "$c/pgdata" ] || continue
-        show_cluster "$c"
-    done
-}
-
-if [ "$show_header" ]; then
-    echo -e "Version\tCluster\tPort\tStatus\tData directory"
-fi
-
-for v in "$BASEDIR"/*; do
-    [ -d "$v" ] || continue
-    show_version "$v"
-done
