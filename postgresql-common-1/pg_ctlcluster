@@ -37,11 +37,7 @@ sub stop {
     # try harder if "fast" mode does not work
     if (-f $info{'pgdata'}.'/postmaster.pid') {
         print "(does not shutdown gracefully, now stopping immediately)";
-        if (!fork()) {
-            exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', 'stop';
-        } else {
-            wait;
-        }
+        system $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', 'stop';
     }
 
     # if that still not helps, use the big hammer
@@ -70,10 +66,8 @@ sub reload {
 #
 
 %info = cluster_info ($ARGV[0], $ARGV[1]);
-unless ($info{'pgdata'}) {
-    print STDERR "Error: specified cluster does not exist\n";
-    exit 1;
-}
+
+error "specified cluster does not exist" unless $info{'pgdata'};
 
 if ($setuid) {
     $( = $) = $info{'ownergid'};
@@ -81,9 +75,8 @@ if ($setuid) {
 }
 
 if( $> != $info{'owneruid'} ) {
-    print STDERR 'Error: You must run this program as the cluster owner (',
-        (getpwuid $info{'owneruid'})[0], ")\n";
-    exit 1;
+    error 'You must run this program as the cluster owner ('.
+        (getpwuid $info{'owneruid'})[0].')';
 }
 
 $pg_ctl = get_program_path 'pg_ctl', $ARGV[0];
@@ -94,9 +87,8 @@ $pg_ctl = get_program_path 'pg_ctl', $ARGV[0];
 if ($actions{$ARGV[2]}) {
     $actions{$ARGV[2]}->();
 } else {
-    print STDERR 'Error: invalid action (must be one of: ', 
-        (join ', ', keys %actions), ")\n";
-    exit 1;
+    error 'Error: invalid action (must be one of: '. 
+        (join ', ', keys %actions);
 }
 
 __END__

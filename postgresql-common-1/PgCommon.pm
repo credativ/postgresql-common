@@ -6,7 +6,7 @@ package PgCommon;
 use Exporter;
 $VERSION = 1.00;
 @ISA = ('Exporter');
-@EXPORT = qw/get_conf_value user_cluster_map get_program_path cluster_info get_versions get_version_clusters/;
+@EXPORT = qw/error get_conf_value user_cluster_map get_program_path cluster_info get_versions get_version_clusters/;
 @EXPORT_OK = qw/$confroot $socket_dir/;
 
 # configuration
@@ -16,6 +16,12 @@ $binroot = "/usr/lib/postgresql";
 $socketdir = "/var/run/postgresql";
 $logdir = "/var/log/postgresql";
 $defaultport = 5432;
+
+# Print an error message to stderr and exit with status 1
+sub error {
+    print STDERR 'Error: ', $_[0], "\n";
+    exit 1;
+}
 
 # Return parameter from a PostgreSQL configuration file, or '' if the parameter
 # does not exist.
