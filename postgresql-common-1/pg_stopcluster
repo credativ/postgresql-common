@@ -1,0 +1,30 @@
+#!/bin/sh -e
+
+# stop cluster $2 of version $1
+
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Usage: $0 <version> <cluster>" >&2
+    exit 1
+fi
+
+. /usr/share/postgresql-common/init.d-functions
+
+prepare_cluster "$1" "$2"
+
+start-stop-daemon -c postgres --start --exec "$PG_CTL" -- -D "$PGDATA" stop -s -w -m fast >/dev/null
+
+# try harder if "fast" mode does not work
+if [ -f "$PGDATA/postmaster.pid" ]; then
+    echo -n "(does not shutdown gracefully, now stopping immediately)"
+    start-stop-daemon -c postgres --start --exec "$PG_CTL" -- -D "$PGDATA" stop -s -w -m immediate >/dev/null
+fi
+
+# if that still not helps, use the big hammer
+if [ -f "$PGDATA/postmaster.pid" ]; then
+    echo -n "(does not shutdown, killing the process)"
+    PID=`head -n 1 "$PGDATA/postmaster.pid"`
+    if [ "$PID" ]; then
+        kill -9 "$PID" || true
+        rm -f "$PGDATA/postmaster.pid"
+    fi
+fi

@@ -1,0 +1,30 @@
+#!/bin/sh -e
+
+# start cluster $2 of version $1
+
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Usage: $0 <version> <cluster>" >&2
+    exit 1
+fi
+
+. /usr/share/postgresql-common/init.d-functions
+
+prepare_cluster "$1" "$2"
+
+# assert that the log file exists; if not, create it
+LOGFILE="/var/log/postgresql/postgresql-$VERSION-$CLUSTER.log"
+LOGDIR=$(dirname "$LOGFILE")
+[ -d "$LOGDIR" ] || install -d -m 2775 -o root -g postgres "$LOGDIR"
+if [ ! -e "$LOGFILE" ]; then
+    touch "$LOGFILE"
+    chown postgres.postgres "$LOGFILE"
+    chmod 640 "$LOGFILE"
+fi
+
+/sbin/start-stop-daemon --pidfile "$PGDATA/postmaster.pid" \
+    --oknodo --chuid postgres --exec "$PG_CTL" --start -- \
+    -D "$PGDATA" -l "$LOGFILE" -s \
+    -o "-c config_file=\"$CONFIGDIR/postgresql.conf\" \
+        -c hba_file=\"$CONFIGDIR/pg_hba.conf\" \
+        -c ident_file=\"$CONFIGDIR/pg_ident.conf\"" start 
+

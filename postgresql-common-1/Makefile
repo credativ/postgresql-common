@@ -26,6 +26,9 @@ install:	pg_wrapper
 	install -D -m 755 pg_wrapper $(DESTDIR)/$(BINDIR)/pg_wrapper
 	install -D -m 755 pg_lsclusters $(DESTDIR)/$(BINDIR)/pg_lsclusters
 	install -D -m 755 pg_createcluster $(DESTDIR)/$(SBINDIR)/pg_createcluster
+	install -D -m 755 pg_startcluster $(DESTDIR)/$(SBINDIR)/pg_startcluster
+	install -D -m 755 pg_stopcluster $(DESTDIR)/$(SBINDIR)/pg_stopcluster
+	install -D -m 755 pg_reloadcluster $(DESTDIR)/$(SBINDIR)/pg_reloadcluster
 	
 	cd $(DESTDIR)/$(BINDIR) && \
 	    for f in $(LINKS); do \

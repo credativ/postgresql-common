@@ -53,8 +53,8 @@ Things that need doing in the new PostgreSQL packaging for Debian.
 9.   Should we do a general debconf query for all pg versions? rather than
      one per source package?
 
-10.  Write manpages for: pg_lsclusters, pg_createcluster
+10.  Write manpages for: pg_lsclusters, pg_{create,start,stop,reload}cluster
 
-11.  add $CONFDIR/port, add support for that in pg_createcluster and
+11.  add $CONFDIR/port, add support for that in pg_{create,start}cluster and
      pg_lscclusters, prefer this in init scripts
 
