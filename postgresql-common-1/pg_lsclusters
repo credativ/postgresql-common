@@ -8,12 +8,13 @@ use PgCommon;
 
 $show_header = 1;
 
-print "Version\tCluster\tPort\tStatus\tData directory\n" if $show_header;
+print "Version\tCluster\tPort\tStatus\tData directory\t\t\tLog file\n" if $show_header;
 
 foreach $v (get_versions) {
     foreach $c (get_version_clusters $v) {
         %info = cluster_info $v, $c;
-        print join "\t", ($v, $c, $info{'port'}, $info{'running'} ? "running" :
-        "down", $info{'pgdata'}), "\n";
+        print join "\t", ($v, $c, $info{'port'}, 
+            $info{'running'} ? "running" : "down", 
+            $info{'pgdata'}, $info{'logfile'}), "\n";
     }
 }

@@ -14,6 +14,7 @@ $mapfile = "/etc/postgresql-common/user_clusters";
 $confroot = "/etc/postgresql";
 $binroot = "/usr/lib/postgresql";
 $socketdir = "/var/run/postgresql";
+$logdir = "/var/log/postgresql";
 $defaultport = 5432;
 
 # Return parameter from a PostgreSQL configuration file, or '' if the parameter
@@ -63,11 +64,12 @@ sub get_program_path {
 
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
-# Returns: information hash (keys: pgdata, port, running)
+# Returns: information hash (keys: pgdata, port, running, logfile)
 sub cluster_info {
     $result{'pgdata'} = readlink "$confroot/$_[0]/$_[1]/pgdata";
     $result{'port'} = (get_conf_value $_[0], $_[1], 'port') || $defaultport;
     $result{'running'} = -S "$socketdir/.s.PGSQL." . $result{'port'};
+    $result{'logfile'} = "$logdir/postgresql-$_[0]-$_[1].log";
     return %result;
 }
 
