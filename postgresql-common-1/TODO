@@ -34,7 +34,4 @@ new port:
 
 create update transition packages from legacy 7.4 packages
 
-make per-version postrm purging entirely self-hosted (p-common might not be
-available any more)
-
 recheck ports of already existing clusters on installation (might collide)
