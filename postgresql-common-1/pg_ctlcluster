@@ -21,9 +21,14 @@ if ($#ARGV != 2) {
 
 sub start {
     my $cdir = $info{'configdir'};
-    exec $pg_ctl, '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s', '-o', 
-        "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\"", 
-        'start';
+    @options = ('start', '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s', '-o');
+
+    # versions 8.0+ support configurable conffile locations
+    if ($version >= 8) {
+        push @options, "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
+    }
+
+    exec $pg_ctl, @options;
 }
 
 sub stop {
@@ -65,7 +70,8 @@ sub reload {
 # main
 #
 
-%info = cluster_info ($ARGV[0], $ARGV[1]);
+$version = $ARGV[0];
+%info = cluster_info ($version, $ARGV[1]);
 
 error "specified cluster does not exist" unless $info{'pgdata'};
 

@@ -32,7 +32,9 @@ sub init_db {
     }
 }
 
-# move a file to a directory with defined permissions
+# move a file to a directory with defined permissions; if $version is smaller
+# than 8.0, put a symlink at the old location (PostgreSQL prior to 8.0 does not
+# support configurable conffiles).
 # Arguments: <source file> <target dir> <uid> <gid> <perms>
 sub move_conffile {
     ($file, $target, $uid, $gid, $perms) = @_;
@@ -42,6 +44,18 @@ sub move_conffile {
             error "move_conffile: could not install $file";
         }
         unlink $file;
+
+        if ($version < 8) {
+            @pathcomps = split ('/', $file);
+            $target .= '/' . $pathcomps[-1];
+            $oldgid = $);
+            $olduid = $>;
+            $) = $gid;
+            $> = $uid;
+            symlink $target, $file;
+            $> = $olduid;
+            $) = $oldgid;
+        }
     } else {
         error "move_conffile: required configuration file $file does not exist";
     }
