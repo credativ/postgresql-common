@@ -114,6 +114,7 @@ sub cluster_info {
 
     if (get_program_path 'pg_autovacuum', $_[0]) {
 	$enableval = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start');
+	$enableval ||= 'no';
 	$result{'avac_enable'} = ($enableval eq 'yes');
 	$result{'avac_log'} = readlink ($result{'configdir'} . "/autovacuum_log");
 	$result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'sleep_base_value');
