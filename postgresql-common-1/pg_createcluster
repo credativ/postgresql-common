@@ -53,8 +53,6 @@ sub move_conffile {
 
 # command line arguments
 
-$owneruid = $>;
-$ownergid = (getpwuid $>)[2];
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid);
 
 if ($#ARGV < 1) {
@@ -62,8 +60,17 @@ if ($#ARGV < 1) {
     exit 1;
 }
 
-$owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
-$ownergid = (getgrnam $ownergid)[2] unless $ownergid =~ /\d+/;
+if ($owneruid) {
+    $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
+} else {
+    $owneruid = $>;
+}
+
+if ($ownergid) {
+    $ownergid = (getgrnam $ownergid)[2] unless $ownergid =~ /\d+/;
+} else {
+    $ownergid = (getpwuid $owneruid)[2];
+}
 
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 
