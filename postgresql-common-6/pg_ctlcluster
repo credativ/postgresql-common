@@ -36,8 +36,6 @@ sub autovacuum_start {
 	}
     }
 
-    print "starting $pg_autovacuum ", (join (', ', @options)), "\n";
-
     if (!($pid = fork())) {
         close $_ for(STDOUT, STDIN, STDERR);
 	setsid;
