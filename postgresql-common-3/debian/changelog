@@ -1,3 +1,9 @@
+postgresql-common (3) experimental; urgency=low
+
+  * 
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 17 Mar 2005 13:08:02 +0100
+
 postgresql-common (2) experimental; urgency=low
 
   * pg_wrapper: Check that specified cluster actually exists.
