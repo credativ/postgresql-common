@@ -3,7 +3,7 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-#use lib '/usr/share/postgresql-common';
+use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 $show_header = 1;
