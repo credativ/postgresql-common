@@ -8,7 +8,7 @@ $VERSION = 1.00;
 @ISA = ('Exporter');
 @EXPORT = qw/error set_conf_value get_conf_value user_cluster_map
     get_program_path cluster_info get_versions get_newest_version
-    get_version_clusters next_free_port/;
+    get_version_clusters next_free_port cluster_exists/;
 @EXPORT_OK = qw/$confroot/;
 
 # configuration
@@ -132,6 +132,15 @@ sub get_version_clusters {
         closedir D;
     }
     return @clusters;
+}
+
+# Check if a cluster exists.
+# Arguments: <version> <cluster>
+sub cluster_exists {
+    for $c (get_version_clusters $_[0]) {
+	return 1 if $c eq $_[1];
+    }
+    return 0;
 }
 
 # Return the next free PostgreSQL port.

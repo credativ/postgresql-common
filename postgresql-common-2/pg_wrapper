@@ -23,6 +23,8 @@ for ($i = 0; $i <= $#ARGV; ++$i) {
         error 'No version specified with --cluster' unless $version;
         error 'No cluster specified with --cluster' unless $cluster;
 
+	error 'Cluster does not exist' unless cluster_exists $version, $cluster;
+
         splice @ARGV, $i, 2;
         last;
     }
