@@ -1,13 +1,14 @@
 # Makefile for postgresql-common Debian package
 
-BINDIR = $(prefix)/bin
-MANDIR = $(prefix)/man
+PREFIX ?= /usr
+BINDIR = $(PREFIX)/bin
+MANDIR = $(PREFIX)/man
 
 CFLAGS = -g -Wall
 
 PROGS = pg_wrapper
 
-LINKS = pg_exec pg_default psql
+LINKS = pg_exec pg_default psql pg_dump pg_dumpall initdb createdb createuser dropdb dropuser pg_restore clusterdb vacuumdb psql
 
 SRCS  = pg_wrapper.c pg_default.c pg_files.c pg_exec.c
 
@@ -20,13 +21,13 @@ clean:
 	-rm *~
 
 install:	pg_wrapper
-	install pg_wrapper $(BINDIR)
-
-$(LINKS):	install
-	cd $(BINDIR) && \
-		for f in $(LINKS); do \
-			ln -f pg_wrapper $f \
-		done
+	[ -z "$(DESTDIR)" ] || mkdir -p "$(DESTDIR)"
+	install -D -m 755 pg_wrapper $(DESTDIR)/$(BINDIR)/pg_wrapper
+	
+	cd $(DESTDIR)/$(BINDIR) && \
+	    for f in $(LINKS); do \
+	        ln -sf pg_wrapper $$f; \
+	    done
 
 pg_wrapper:	$(OBJS)
 	gcc $(CFLAGS) $(OBJS) -o $@ 

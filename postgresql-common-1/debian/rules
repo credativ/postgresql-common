@@ -32,7 +32,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/<packagename>
-	$(MAKE) prefix=`pwd`/debian/`dh_listpackages`/usr install
+	$(MAKE) DESTDIR=`pwd`/debian/`dh_listpackages` install
 
 # Build architecture-independent files here.
 binary-indep: build install
