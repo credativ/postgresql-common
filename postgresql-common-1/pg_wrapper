@@ -1,4 +1,9 @@
 #!/usr/bin/perl -w
+# Call a PostgreSQL client program with the version, cluster and default
+# database specified in ~/.postgresqlrc or
+# /etc/postgresql-common/user_clusters.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
 
 # configuration
 $mapfile = "/etc/postgresql-common/user_clusters";
