@@ -2,8 +2,9 @@ postgresql-common (6) experimental; urgency=low
 
   * pg_dropcluster: Check if postmaster and autovacuum log file paths are
     defined before unlinking them to avoid a warning. Closes: #303259
+  * pg_ctlcluster: Documented the autovacuum stuff in the POD.
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  5 Apr 2005 21:32:10 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue,  5 Apr 2005 22:29:53 +0200
 
 postgresql-common (5) experimental; urgency=low
 

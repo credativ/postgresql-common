@@ -172,7 +172,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 B<pg_ctlcluster> [B<--setuid>|B<-s>] I<cluster-version> I<cluster-name> I<action>
 
-where I<action> = B<start>|B<stop>|B<restart>|B<reload>
+where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<autovac-start>|B<autovac-stop>|B<autovac-restart>
 
 =head1 DESCRIPTION
 
@@ -189,19 +189,34 @@ owner.
 In B<start> mode, a log file for this specific cluster is created if it does
 not exist yet (by default,
 B</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>,
-and a PostreSQL server process (B<postmaster>) is started on it.
+and a PostreSQL server process (B<postmaster>) is started on it. If the package
+B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum> process is
+started as well (unless this gets disabled in
+B</etc/postgresql-common/autovacuum.conf> or a cluster-specific
+B<autovacuum.conf> file).
 
-B<stop> stops the B<postmaster> server of the given cluster with increasing
-force. Initially, the B<fast> mode is used which rolls back all active
-transactions and thus shuts down cleanly. If that does not work, shutdown is
-attempted again in B<immediate> mode, which can leave the cluster in an
-inconsistent state and thus will lead to a recovery run at the next start. If
-this still does not help, the B<postmaster> process is killed.
+B<stop> stops the B<postmaster> server (and B<pg_autovacuum>, if running) of
+the given cluster with increasing force. Initially, the B<fast> mode is used
+which rolls back all active transactions and thus shuts down cleanly. If that
+does not work, shutdown is attempted again in B<immediate> mode, which can
+leave the cluster in an inconsistent state and thus will lead to a recovery run
+at the next start. If this still does not help, the B<postmaster> process is
+killed.
 
-B<restart> stops the server if it is running and starts it (again).
+B<restart> stops the server if it is running and starts it (again). If
+B<pg_autovacuum> is running on the server, it is restarted as well.
 
 B<reload> will cause the configuration files to be re-read without a full
 shutdown of the server.
+
+B<autovac-start> starts a B<pg_autovacuum> process for an already running
+cluster. This normally happens automatically along with B<start>.
+
+B<autovac-stop> stops the B<pg_autovacuum> process for a running cluster. This
+normally happens automatically along with B<stop>.
+
+B<autovac-restart> restarts a B<pg_autovacuum> process for an already running
+cluster. This normally happens automatically along with B<restart>.
 
 =head1 SEE ALSO
 
