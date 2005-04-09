@@ -84,6 +84,7 @@ sub set_cluster_port {
 # Return the path of a program of a particular version.
 # Arguments: <program name> <version>
 sub get_program_path {
+    return '' unless defined($_[0]) && defined($_[1]);
     my $path = "$binroot/$_[1]/bin/$_[0]";
     return $path if -x $path;
     return '';
