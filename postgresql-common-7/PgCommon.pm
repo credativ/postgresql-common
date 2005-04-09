@@ -210,7 +210,9 @@ sub port_version {
 
 # Return the PostgreSQL version, cluster, and database to connect to. version
 # is always set (defaulting to the version of the default port if no matching
-# entry is found), cluster and database may be 'undef'.
+# entry is found), cluster and database may be 'undef'. If only one cluster
+# exists, and no matching entry is found in the map files, that cluster is
+# returned.
 sub user_cluster_map {
     my ($user, $pwd, $uid, $gid) = getpwuid $>;
     my $group = (getgrgid  $gid)[0];
@@ -253,6 +255,18 @@ sub user_cluster_map {
         }
     }
     close MAP;
+
+    # if only one cluster exists, use that
+    $count = 0;
+    my ($last_version, $last_cluster);
+    for $v (get_versions) {
+	for $c (get_version_clusters $v) {
+            $last_version = $v;
+            $last_cluster = $c;
+            ++$count;
+	}
+    }
+    return ($last_version, $last_cluster, undef) if $count == 1;
 
     return (port_version $defaultport, undef, undef);
 }

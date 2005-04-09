@@ -1,8 +1,10 @@
 postgresql-common (7) experimental; urgency=low
 
   * Fix warning when calling pg_wrapper with an invalid cluster.
+  * PgCommon.pm, user_cluster_map(): If only one cluster exists, return that
+    if no match is found in the map files.
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  9 Apr 2005 18:40:31 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat,  9 Apr 2005 18:46:05 +0200
 
 postgresql-common (6) experimental; urgency=low
 
