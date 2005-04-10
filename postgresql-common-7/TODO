@@ -8,3 +8,5 @@ recheck ports of already existing clusters on installation (might collide)
 document autovacuum stuff in architecture.html and POD
 
 start postmaster under the locale used by initdb
+
+ship reindexdb in -contrib
