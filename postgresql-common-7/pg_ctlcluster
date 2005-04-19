@@ -74,6 +74,24 @@ sub autovacuum_restart {
 
 sub start {
     my $cdir = $info{'configdir'};
+
+    # get locale used by initdb
+    $pg_controldata = get_program_path 'pg_controldata', $version;
+    open (CTRL, '-|', $pg_controldata, $info{'pgdata'}) or 
+	error ("Could not start $pg_controldata");
+    my $locale = '';
+    while (<CTRL>) {
+	if (/^LC_CTYPE:\s*(\S+)\s*$/) {
+	    $locale = $1;
+	    last;
+	}
+    }
+    close CTRL;
+    $locale or error ('Could not parse locale out of pg_controldata output');
+
+    # set locale used by initdb
+    $ENV{'LC_ALL'} = $ENV{'LANG'} = $locale;
+
     @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s');
 
     # versions 8.0+ support configurable conffile locations

@@ -76,14 +76,6 @@ upgrade.</p>
 <h3>Configuration hierarchy</h3>
 
 <table cellpadding="6" cellspacing="0" border="0">
-<tr><td><code>/etc/default/postgresql-common</code></td> <td>Default values for
-all versions (replaces the old <code>postmaster.conf</code> and
-<code>postgresql.env</code> in <code>/etc/postgresql</code>)</td></tr>
-
-<tr><td><code>/etc/default/postgresql-<i>version</i></code></td>
-<td>Version-specific default values (if not present,
-<code>/etc/default/postgresql-common</code> provides fallback values)</td></tr>
-
 <tr><td><code>/etc/postgresql-common/user_clusters</code></td> <td>maps users
 against clusters and default databases</td></tr>
 
@@ -92,12 +84,26 @@ default version/cluster and database; overrides
 <code>/etc/postgresql-common/user_clusters</code></td></tr>
 
 <tr>
+  <td><code>/etc/postgresql-common/autovaccum.conf</code></td>
+  <td>Default <code>pg_autovacuum</code> configuration file. This has no effect
+  if the package <code>postgresql-contrib-</code><i>version</i> is not
+  installed.</td>
+</tr>
+
+<tr>
   <td><code>/etc/postgresql/<i>version</i>/<i>clustername</i></code></td>
   <td>Cluster-specific configuration files: <code>postgresql.conf</code>,
   <code>pg_hba.conf</code>, <code>pg_ident.conf</code>, a symbolic link
-  <code>pgdata</code> which points to the actual data directory, and a symbolic
-  link <code>log</code> which points to the log file.</td>
+  <code>pgdata</code> which points to the actual data directory, a symbolic
+  link <code>log</code> which points to the postmaster log file, and a symbolic link
+  <code>autovacuum_log</code> which points to the log file of the autovacuum
+  daemon (started if <code>postgresql-contrib-</code><i>version</i> is
+  installed). If this directory contains <code>autovacuum.conf</code>, this is
+  used as the cluster specific autovacuum daemon configuration; if it does not
+  exist, <code>/etc/postgresql-common/autovaccum.conf</code> is used as a
+  fallback.</td>
 </tr>
+
 </table>
 
 <h3>Per-version files and programs</h3>
@@ -114,7 +120,7 @@ default version/cluster and database; overrides
 <tr><td><code>/usr/bin/<i>program</i></code></td>  <td>symbolic links to pg_wrapper, for all client programs</td></tr>
 <tr><td><code>/usr/bin/pg_lsclusters</code></td> <td>list all available clusters with their status and configuration</td></tr>
 <tr><td><code>/usr/bin/pg_createcluster</code></td><td>wrapper for <code>initdb</code>, sets up the necessary configuration structure</td></tr>
-<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server</td></tr>
+<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server and <b>pg_autovacuum</b> daemon</td></tr>
 <tr><td><code>/usr/bin/pg_upgradecluster</code></td><td>Upgrade a cluster to a newer major version.</td></tr>
 <tr><td><code>/usr/bin/pg_dropcluster</code></td><td>remove a cluster and its configuration</td></tr>
 </table>
