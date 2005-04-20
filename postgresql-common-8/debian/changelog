@@ -1,3 +1,9 @@
+postgresql-common (8) experimental; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Apr 2005 02:36:59 +0200
+
 postgresql-common (7) experimental; urgency=low
 
   * Fix warning when calling pg_wrapper with an invalid cluster.
@@ -7,7 +13,7 @@ postgresql-common (7) experimental; urgency=low
     initdb.
   * Updated documentation in architecture.html.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Sat, 16 Apr 2005 20:28:03 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Apr 2005 02:34:19 +0200
 
 postgresql-common (6) experimental; urgency=low
 
