@@ -2,5 +2,3 @@ postgresql TODO
 ===============
 
 Provide do.maintenance which vacuums all running clusters.
-
-recheck ports of already existing clusters on installation (might collide)

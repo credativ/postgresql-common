@@ -1,8 +1,10 @@
 postgresql-common (8) experimental; urgency=low
 
-  *
+  * pg_ctlcluster: Check whether owner is in the shadow group, and keep shadow
+    group privilege in this case; this is a poor workaround for Perl's lack of
+    an initgroups() functions. Closes: #305427
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 20 Apr 2005 02:36:59 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Apr 2005 20:25:20 +1000
 
 postgresql-common (7) experimental; urgency=low
 
