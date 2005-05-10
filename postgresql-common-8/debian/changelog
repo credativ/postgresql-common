@@ -80,7 +80,7 @@ postgresql-common (1) experimental; urgency=low
   * New package to provide a common infrastructure for different PostgreSQL
     versions. This finally fixes all bugs concerning failed automatic
     upgrades. Closes: #277700, #282803, #224047, #229240, #232553, #279184,
-    #241337, #247261, #157282, #167864
+    #241337, #247261, #157282, #167864, #305347
   * pg_wrapper now has a central role for mapping clients to clusters, so it
     is not "overkill" any more. Closes: #201702
 
