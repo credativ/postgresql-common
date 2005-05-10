@@ -2,3 +2,5 @@ postgresql TODO
 ===============
 
 Provide do.maintenance which vacuums all running clusters.
+
+Handle configuration files in pg_upgradecluster somehow.
