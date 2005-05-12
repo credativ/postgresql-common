@@ -138,7 +138,7 @@ sub get_versions {
     my @versions = ();
     if (opendir (D, $binroot)) {
         while (defined ($f = readdir D)) {
-            push @versions, $f if get_program_path ('postmaster', $f);
+            push @versions, $f if get_program_path ('psql', $f);
         }
         closedir D;
     }
@@ -210,7 +210,8 @@ sub port_version {
 
 # Return the PostgreSQL version, cluster, and database to connect to. version
 # is always set (defaulting to the version of the default port if no matching
-# entry is found), cluster and database may be 'undef'. If only one cluster
+# entry is found, or finally to the latest installed version if there are no
+# clusters at all), cluster and database may be 'undef'. If only one cluster
 # exists, and no matching entry is found in the map files, that cluster is
 # returned.
 sub user_cluster_map {
@@ -268,5 +269,7 @@ sub user_cluster_map {
     }
     return ($last_version, $last_cluster, undef) if $count == 1;
 
-    return (port_version $defaultport, undef, undef);
+    # return version of single cluster or latest version if there are no local
+    # clusters
+    return ((port_version $defaultport) || get_newest_version, undef, undef);
 }

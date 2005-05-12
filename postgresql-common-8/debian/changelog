@@ -9,8 +9,11 @@ postgresql-common (8) experimental; urgency=low
     #305724
   * debian/postgresql-common.links: Add a symlink postgresql-common(7) to
     pg_wrapper(1) to make finding the manpage a bit more obvious.
+  * PgCommon.pm, user_cluster_map(): If there are no clusters, use the latest
+    version; this makes it possible to use remote clusters with no local ones.
+    Closes: #306836
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 13 May 2005 00:15:06 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 13 May 2005 00:35:35 +0200
 
 postgresql-common (7) experimental; urgency=low
 
