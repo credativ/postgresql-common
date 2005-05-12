@@ -3,8 +3,10 @@ postgresql-common (8) experimental; urgency=low
   * pg_ctlcluster: Check whether owner is in the shadow group, and keep shadow
     group privilege in this case; this is a poor workaround for Perl's lack of
     an initgroups() functions. Closes: #305427
+  * debian/postgresql-common.postinst: Fix adduser invocation, set home
+    directory to /var/lib/postgresql. Closes: #308589
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 20 Apr 2005 20:25:20 +1000
+ -- Martin Pitt <mpitt@debian.org>  Thu, 12 May 2005 23:56:33 +0200
 
 postgresql-common (7) experimental; urgency=low
 
