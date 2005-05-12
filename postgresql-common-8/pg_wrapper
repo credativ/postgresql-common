@@ -87,7 +87,7 @@ stores defaults set by the user himself.
 
 =head1 SEE ALSO
 
-L<pg_default(1)>, L<pg_exec(1)>, L<user_clusters(5)>, L<postgresqlrc(5)>
+L<user_clusters(5)>, L<postgresqlrc(5)>
 
 =head1 AUTHOR
 

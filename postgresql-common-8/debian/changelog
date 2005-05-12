@@ -5,8 +5,12 @@ postgresql-common (8) experimental; urgency=low
     an initgroups() functions. Closes: #305427
   * debian/postgresql-common.postinst: Fix adduser invocation, set home
     directory to /var/lib/postgresql. Closes: #308589
+  * Remove pg_default.1 and pg_exec.1, these programs do not exist.  Closes:
+    #305724
+  * debian/postgresql-common.links: Add a symlink postgresql-common(7) to
+    pg_wrapper(1) to make finding the manpage a bit more obvious.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 12 May 2005 23:56:33 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 13 May 2005 00:15:06 +0200
 
 postgresql-common (7) experimental; urgency=low
 

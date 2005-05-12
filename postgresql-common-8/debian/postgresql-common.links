@@ -11,3 +11,4 @@ usr/share/postgresql-common/pg_wrapper usr/bin/pg_restore
 usr/share/postgresql-common/pg_wrapper usr/bin/psql
 usr/share/postgresql-common/pg_wrapper usr/bin/vacuumdb
 usr/share/postgresql-common/pg_wrapper usr/bin/vacuumlo
+/usr/share/man/man1/pg_wrapper.1.gz /usr/share/man/man7/postgresql-common.7.gz
