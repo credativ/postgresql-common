@@ -1,3 +1,9 @@
+postgresql-common (9) experimental; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 13 May 2005 00:51:18 +0200
+
 postgresql-common (8) experimental; urgency=low
 
   * pg_ctlcluster: Check whether owner is in the shadow group, and keep shadow
