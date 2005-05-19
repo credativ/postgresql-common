@@ -45,9 +45,7 @@ sub move_conffile {
     }
     if (-e $file) {
         print "Moving configuration file $realfile to $target...\n";
-        if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perms, $realfile, $target) {
-            error "move_conffile: could not install $realfile";
-        }
+	install_file $realfile, $target, $uid, $gid, $perms;
         unlink $file, $realfile;
 
         if ($version < 8) {

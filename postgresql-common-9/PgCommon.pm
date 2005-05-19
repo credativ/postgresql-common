@@ -8,7 +8,7 @@ $VERSION = 1.00;
 @ISA = ('Exporter');
 @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version
-    get_version_clusters next_free_port cluster_exists/;
+    get_version_clusters next_free_port cluster_exists install_file/;
 @EXPORT_OK = qw/$confroot/;
 
 # configuration
@@ -272,4 +272,14 @@ sub user_cluster_map {
     # return version of single cluster or latest version if there are no local
     # clusters
     return ((port_version $defaultport) || get_newest_version, undef, undef);
+}
+
+# Copy a file to a destination and setup permissions
+# Arguments: <source file> <destination file or dir> <uid> <gid> <permissions>
+sub install_file {
+    ($source, $dest, $uid, $gid, $perm) = @_;
+    
+    if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perm, $source, $dest) {
+	error "install_file: could not install $source to $dest";
+    }
 }
