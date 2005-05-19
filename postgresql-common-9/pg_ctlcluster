@@ -8,7 +8,7 @@
 
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
-use POSIX qw/setsid/;
+use POSIX qw/setsid setlocale LC_ALL/;
 use PgCommon;
 
 # command line options
@@ -89,7 +89,12 @@ sub start {
     close CTRL;
     $locale or error ('Could not parse locale out of pg_controldata output');
 
-    # set locale used by initdb
+    # check validity of locale
+    unless (setlocale (LC_ALL, $locale)) {
+	error ("The server must be started under the locale $locale which does not exist any more.")
+    }
+
+    # set locale for the postmaster
     $ENV{'LC_ALL'} = $ENV{'LANG'} = $locale;
 
     @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s');

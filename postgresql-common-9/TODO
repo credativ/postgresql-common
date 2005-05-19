@@ -3,6 +3,4 @@ postgresql TODO
 
 - Provide do.maintenance which vacuums all running clusters.
 - Handle configuration files in pg_upgradecluster somehow.
-- Check validity of locale before initdb and pg_ctl start.
-- Handle stale pid files/sockets.
 - add CAN numbers to per-version changelogs(?)

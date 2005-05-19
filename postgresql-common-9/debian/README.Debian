@@ -1,0 +1,84 @@
+PostgreSQL for Debian
+=====================
+
+PostgreSQL is the successor to Postgres95, which in turn succeeded POSTGRES.
+PostgreSQL is a relational database with object-oriented extensions.  It
+implements the greater part of SQL-92 and is intended to implement it in full;
+in addition it supports its own extended facilities.
+
+Since the on-disk data format of all major PostgreSQL versions (like 7.2, 7.4,
+8.0, etc.) is incompatible to each other, Debian's PostgreSQL packaging
+architecture is designed to maintain clusters of different major versions in
+parallel.
+
+This postgresql-common package provides the common infrastructure and all
+frontend programs that users and administrators use. The version specific
+server and client programs are shipped in postgresql-*-<version> packages.
+
+For a detailled description of the architecture, please see
+
+  /usr/share/doc/postgresql-common/architecture.html
+
+First steps for the impatient
+-----------------------------
+Eventually you will not get around reading at least some parts of the manual,
+but if you want to get straight into playing SQL, here are the steps to create
+a database user and a database for the Unix user 'joe':
+
+1. Install a database server with the major version of your choice, preferrably
+   the latest version. This will automatically create a default cluster 'main'
+   with the database superuser 'postgres'.
+
+2. Get a shell for the database superuser 'postgres'. If your system has an
+   active root user, use su:
+
+   $ su -c "su postgres"
+
+   If your system uses sudo to get administrative rights, use sudo instead:
+
+   joe$ sudo -u postgres sh
+
+3. In this postgres shell, create a database user with the same name as your
+   Unix login:
+
+   $ createuser -A -D joe
+
+   For details about the options, see createuser(1).
+
+4. Create a database "joework" which is owned by "joe":
+
+   $ createdb -O joe joework
+
+   For details about the options, see createdb(1).
+
+5. Exit the postgres shell.
+
+6. As user joe, you should now be able to connect to your database with
+
+   $ psql joework
+
+
+Cluster management
+------------------
+For managing clusters, the following commands are provided (each with its own
+manual page):
+
+   pg_createcluster  - Create a new cluster or integrate an existing one into
+                       the postgresql-common architecture.
+   pg_dropcluster    - Completely remove a cluster.
+   pg_ctlcluster     - Control the server process of a cluster (start, stop,
+                       restart).
+   pg_lsclusters     - Show a list of all existing clusters and their status.
+   pg_upgradecluster - Migrate a cluster from one major version to another one.
+
+Further documentation
+---------------------
+All commands shipped by postgresql-common have detailled manpages. See
+postgresql-common(7) for the documentation of the database client program
+wrapping, and user_clusters(5) and postgresqlrc(5) for the cluster
+configuration.
+
+The documentation of the database server and client functions, SQL commands,
+modules, etc.  documented is shipped in the per-version packages
+postgresql-doc-<version>.
+

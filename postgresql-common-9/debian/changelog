@@ -1,8 +1,12 @@
 postgresql-common (9) experimental; urgency=low
 
-  *
+  * Add README.Debian with some general introduction, "first steps for the
+    impatient", and pointers to further documentation.
+  * pg_ctlcluster: Check validity of postmaster locale before setting it.
+  * pg_createcluster: Check validity of locale before calling initdb under it.
+  * pg_wrapper: Support PGCLUSTER environment variable. Closes: #305912
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 13 May 2005 00:51:18 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 19 May 2005 22:21:13 +0200
 
 postgresql-common (8) experimental; urgency=low
 

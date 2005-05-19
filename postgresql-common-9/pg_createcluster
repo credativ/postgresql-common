@@ -8,6 +8,7 @@
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 use Getopt::Long;
+use POSIX qw/setlocale LC_ALL/;
 
 # call initdb 
 # Arguments: <version> <data directory> <owner uid> <owner gid>
@@ -105,6 +106,11 @@ sub add_local_hba_entry {
 # command line arguments
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid);
+
+# check validity of locale
+unless (setlocale (LC_ALL, "")) {
+    error ('The locale requested by the environment is invalid.')
+}
 
 if ($#ARGV < 1) {
     print "Usage: $0 [-u <uid>] [-g <gid>] <version> <cluster name> [<data directory>]\n";

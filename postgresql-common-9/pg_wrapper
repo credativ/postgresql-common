@@ -14,6 +14,14 @@ use PgCommon;
 $cmd = (split '/', $0)[-1];
 grep { $cmd eq $_ } @commands or die "pg_wrapper: invalid command name $cmd";
 
+# Check for PGCLUSTER in %ENV
+if (defined $ENV{PGCLUSTER}) {
+    ($version, $cluster) = split ('/', $ENV{PGCLUSTER}, 2);
+    error 'Invalid version specified with $PGCLUSTER' unless $version;
+    error 'Invalid cluster specified with $PGCLUSTER' unless $cluster;
+    error 'Cluster specified with $PGCLUSTER does not exist' unless cluster_exists $version, $cluster;
+}
+
 # Check for --cluster argument and filter it out
 for ($i = 0; $i <= $#ARGV; ++$i) {
     if ($ARGV[$i] eq '--cluster') {
@@ -66,9 +74,22 @@ configured cluster and database for the user and calls the appropriate version
 of the desired program to connect to that cluster and database, supplying any
 specifed options to that command.
 
-By default, the cluster is determined from the configuration files 
+By default, the cluster is determined from the configuration files
 L<user_clusters(5)> and L<postgresqlrc(5)>. However, this can be overriden by
-specifying the B<--cluster> I<version>/I<cluster> option.
+specifying the B<$PGCLUSTER> environment variable or the B<--cluster>
+I<version>/I<cluster> option.
+
+=head1 ENVIRONMENT
+
+=over
+
+=item B<PGCLUSTER>
+
+If B<$PGCLUSTER> is set, its value (of the form I<version>/I<cluster>)
+specifies the desired cluster, similar to the B<--cluster> option. However, if
+B<--cluster> is specified, it overrides the value of B<$PGCLUSTER>.
+
+=back
 
 =head1 FILES
 
