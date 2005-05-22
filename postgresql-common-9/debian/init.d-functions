@@ -31,6 +31,10 @@ do_ctl_all() {
 # start all clusters of version $1
 # output according to Debian Policy for init scripts
 start() {
+    # create socket directory
+    [ -d /var/run/postgresql ] || \
+	install -d -m 775 -o postgres -g postgres /var/run/postgresql
+
     do_ctl_all start "$1" "Starting PostgreSQL $1 database server:"
 }
 

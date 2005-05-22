@@ -7,6 +7,7 @@ use Exporter;
 $VERSION = 1.00;
 @ISA = ('Exporter');
 @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
+    get_cluster_socketdir set_cluster_socketdir
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file/;
 @EXPORT_OK = qw/$confroot/;
@@ -89,6 +90,19 @@ sub set_cluster_port {
     set_conf_value $_[0], $_[1], 'postgresql.conf', 'port', $_[2];
 }
 
+# Return the socket directory of a particular cluster or undef if the cluster
+# does not exist.
+# Arguments: <version> <cluster>
+sub get_cluster_socketdir {
+    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'unix_socket_directory');
+}
+
+# Set the socket directory of a particular cluster. 
+# Arguments: <version> <cluster> <directory>
+sub set_cluster_socketdir {
+    set_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory', $_[2];
+}
+
 # Return the path of a program of a particular version.
 # Arguments: <program name> <version>
 sub get_program_path {
@@ -111,12 +125,13 @@ sub port_running {
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile, configdir,
-# owneruid, ownergid)
+# owneruid, ownergid, socketdir)
 sub cluster_info {
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = readlink ($result{'configdir'} . "/pgdata");
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
+    $result{'socketdir'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
     $result{'running'} = port_running ($_[0], $result{'port'});
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 

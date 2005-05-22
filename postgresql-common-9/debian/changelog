@@ -10,8 +10,9 @@ postgresql-common (9) experimental; urgency=low
     - Configure the target cluster to use the original port, move the old
       cluster to a previously unused port.
     - Start the new cluster after upgrade.
+  * debian/init.d-functions: Create /var/run/postgresql if it does not exist.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 22 May 2005 15:03:54 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 22 May 2005 20:49:27 +0200
 
 postgresql-common (8) experimental; urgency=low
 
