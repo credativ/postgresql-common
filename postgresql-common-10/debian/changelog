@@ -1,3 +1,9 @@
+postgresql-common (10) experimental; urgency=low
+
+  *
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Sun, 22 May 2005 22:31:47 +0200
+
 postgresql-common (9) experimental; urgency=low
 
   * Add README.Debian with some general introduction, "first steps for the
