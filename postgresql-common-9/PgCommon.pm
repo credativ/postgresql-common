@@ -94,7 +94,7 @@ sub set_cluster_port {
 # does not exist.
 # Arguments: <version> <cluster>
 sub get_cluster_socketdir {
-    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'unix_socket_directory');
+    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
 }
 
 # Set the socket directory of a particular cluster. 
@@ -113,11 +113,12 @@ sub get_program_path {
 }
 
 # Check whether a postmaster server is running at the specified port.
-# Arguments: <version> <port>
+# Arguments: <version> <cluster> <port>
 sub port_running {
-    $psql = get_program_path "psql", $_[0];
-    die "port_running: invalid port $_[1]" if $_[1] !~ /\d+/;
-    $out = `LANG=C $psql -p $_[1] -l 2>&1 > /dev/null`;
+    my $psql = get_program_path 'psql', $_[0];
+    my $socketdir = get_cluster_socketdir $_[0], $_[1];
+    die "port_running: invalid port $_[2]" if $_[2] !~ /\d+/;
+    $out = `LANG=C $psql -h '$socketdir' -p $_[2] -l 2>&1 > /dev/null`;
     return 1 unless $?;
     return (index ($out, "could not connect") < 0);
 }
@@ -132,7 +133,7 @@ sub cluster_info {
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
     $result{'socketdir'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
-    $result{'running'} = port_running ($_[0], $result{'port'});
+    $result{'running'} = port_running ($_[0], $_[1], $result{'port'});
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 
             (stat $result{'pgdata'})[4,5];
