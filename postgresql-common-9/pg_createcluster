@@ -186,6 +186,19 @@ add_local_hba_entry (((getpwuid $owneruid)[0]), 'ident sameuser',
 print "Configuring postgresql.conf to use port $port...\n";
 set_cluster_port $version, $cluster, $port;
 
+# configure socket directory
+$orig_euid = $>;
+$> = $owneruid;
+if (-w '/var/run/postgresql') {
+    set_cluster_socketdir $version, $cluster, '/var/run/postgresql';
+} else {
+    print "Warning: The socket directory for owners other than 'postgres'
+defaults to /tmp. You might want to change the unix_socket_directory parameter
+in postgresql.conf to a more secure directory.
+"
+}
+$> = $orig_euid;
+
 # create log file
 system 'mkdir', '-p', '/var/log/postgresql' and 
     error "could not create log directory";

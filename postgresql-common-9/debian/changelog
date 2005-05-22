@@ -11,8 +11,11 @@ postgresql-common (9) experimental; urgency=low
       cluster to a previously unused port.
     - Start the new cluster after upgrade.
   * debian/init.d-functions: Create /var/run/postgresql if it does not exist.
+  * pg_createcluster: Set the socket directory to /var/run/postgresql for
+    postgres-owned clusters. Print a warning to change the directory for other
+    owners. Closes: #308597
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 22 May 2005 20:49:27 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 22 May 2005 22:02:27 +0200
 
 postgresql-common (8) experimental; urgency=low
 
