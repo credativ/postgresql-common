@@ -47,6 +47,11 @@ if ($cluster) {
 $ENV{'PGPORT'} = "$port" if $port;
 $ENV{'PGDATABASE'} = $db if $db;
 
+unless ($ENV{'PGHOST'}) {
+    # default to cluster specific Unix socket directory
+    $ENV{'PGHOST'} = get_cluster_socketdir $version, $cluster;
+}
+
 @args = (get_program_path ($cmd, $version));
 error 'Invalid PostgreSQL cluster version' unless $args[0];
 push @args, @ARGV;

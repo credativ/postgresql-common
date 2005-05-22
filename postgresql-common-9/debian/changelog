@@ -14,8 +14,11 @@ postgresql-common (9) experimental; urgency=low
   * pg_createcluster: Set the socket directory to /var/run/postgresql for
     postgres-owned clusters. Print a warning to change the directory for other
     owners. Closes: #308597
+  * pg_wrapper: If PGHOST is not defined, set it to the cluster's socket
+    directory to make client programs work with non-default socket
+    directories.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 22 May 2005 22:02:27 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 22 May 2005 22:22:38 +0200
 
 postgresql-common (8) experimental; urgency=low
 
