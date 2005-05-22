@@ -81,6 +81,37 @@ if ($?) {
     exit 1;
 }
 
+# copy configuration files
+print "Copying old configuration files...\n";
+install_file $info{'configdir'}.'/postgresql.conf', $newinfo{'configdir'},
+    $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
+    $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
+    $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+
+print "Stopping target cluster...\n";
+@argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'stop');
+error "Could not stop target cluster" if system @argv;
+
+print "Stopping old cluster...\n";
+@argv = ('pg_ctlcluster', '-s', $version, $cluster, 'stop');
+error "Could not stop old cluster" if system @argv;
+
+$oldport = next_free_port;
+print "Configuring old cluster to use a different port ($oldport)...\n";
+set_cluster_port $version, $cluster, $oldport;
+
+print "Starting target cluster on the original port...\n";
+@argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'start');
+error "Could not start target cluster; please check configuration and log files" if system @argv;
+
+print "Success. Please check that the upgraded cluster works. If it does,
+you can remove the old cluster with
+
+  pg_dropcluster $version $cluster
+"
+
 __END__
 
 =head1 NAME
@@ -95,14 +126,14 @@ B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<data dir>]
 
 B<pg_upgradecluster> upgrades an existing PostgreSQL server cluster (i. e. a
 collection of databases served by a B<postmaster> instance) to a new version
-specified by I<newversion> (default: latest available version).
+specified by I<newversion> (default: latest available version).  The
+configuration files of the old version are copied to the new cluster.
 
-The cluster of the old version will not automatically be removed. After
-upgrade, please verify that the new cluster indeed works as expected; if so,
-you should remove the old cluster with L<pg_dropcluster(8)>. Please be aware
-that the new cluster will listen on a previously unused port; after you removed
-the old cluster, you might want to change the port of the new cluster to the
-port the old version used previously.
+The cluster of the old version will be configured to use a previously unused
+port since the upgraded one will use the original port. The old cluster is not
+automatically be removed. After upgrade, please verify that the new cluster
+indeed works as expected; if so, you should remove the old cluster with
+L<pg_dropcluster(8)>.
 
 =head1 SEE ALSO
 

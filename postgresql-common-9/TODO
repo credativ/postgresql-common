@@ -2,5 +2,5 @@ postgresql TODO
 ===============
 
 - Provide do.maintenance which vacuums all running clusters.
-- Handle configuration files in pg_upgradecluster somehow.
 - add CAN numbers to per-version changelogs(?)
+- pg_wrapper: read out socket dir from cluster config
