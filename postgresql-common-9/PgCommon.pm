@@ -34,7 +34,8 @@ sub get_conf_value {
 
     if (open F, $fname) {
         while (<F>) {
-            return $1 if /^\s*$_[3]\s*=\s*(\w+)\b/;
+            return $1 if /^\s*$_[3]\s*=\s*(\w+)\b/; # simple value
+            return $1 if /^\s*$_[3]\s*=\s*'([^']*)'/; # string value
         }
         close F;
     }
@@ -45,6 +46,13 @@ sub get_conf_value {
 # Arguments: <version> <cluster> <config file name> <parameter name> <value>
 sub set_conf_value {
     my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
+    my $value;
+
+    if ($_[4] =~ /^\w+$/) {
+	$value = $_[4];
+    } else {
+	$value = "'$_[4]'";
+    }
 
     # read configuration file lines
     open (F, $fname) or die "Error: could not open $fname for reading";
@@ -54,11 +62,11 @@ sub set_conf_value {
     my $found = 0;
     for ($i=0; $i <= $#lines; ++$i) {
 	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=/) {
-	    $lines[$i] = "$_[3] = $_[4]\n";
+	    $lines[$i] = "$_[3] = $value\n";
 	    $found = 1;
 	}
     }
-    push (@lines, "$_[3] = $_[4]\n") unless $found;
+    push (@lines, "$_[3] = $value\n") unless $found;
 
     # write configuration file lines
     open (F, '>'.$fname) or die "Error: could not open $fname for writing";
