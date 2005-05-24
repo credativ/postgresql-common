@@ -1,0 +1,108 @@
+#!/usr/bin/perl -w
+
+# Vacuum (and optionally analyze) all databases in all clusters.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+use lib '/usr/share/postgresql-common';
+use Getopt::Long;
+use PgCommon;
+
+$full = 0;
+$analyze = 0;
+$verbose = 0;
+$force = 0;
+exit 1 unless GetOptions ('full|f' => \$full, 'analyze|a' => \$analyze,
+    'verbose|v' => \$verbose, 'force' => \$force);
+
+if ($#ARGV != -1) {
+    print "Usage: $0 [-f|--full] [-a|--analyze] [-v|--verbose] [--force]\n";
+    exit 1;
+}
+
+for $v (get_versions) {
+    for $c (get_version_clusters $v) {
+        %info = cluster_info $v, $c;
+
+        if (!$info{'running'}) {
+            print "Skipping cluster $v/$c which is not running\n" if $verbose;
+            next;
+        }
+        if (!$force && -e $info{'pgdata'}.'/autovacuum.pid') {
+            print "Skipping cluster $v/$c since pg_autovacuum is running on it\n" if $verbose;
+            next;
+        }
+        print "Doing maintenance on cluster $v/$c...\n" if $verbose;
+
+        # fork a vacuumdb subproces, change user id to the cluster owner
+        if (fork) {
+            wait;
+            print STDERR "calling vacuumdb on cluster $v/$c failed\n" if $?;
+        } else {
+            change_ugid $info{'owneruid'}, $info{'ownergid'};
+            @options = ('--cluster', "$v/$c", '-a', '-e');
+            push @options, '-f' if $full;
+            push @options, '-z' if $analyze;
+            push @options, '-v' if $verbose;
+            exec '/usr/bin/vacuumdb', @options or
+                error 'could not execute vacuumdb';
+        }
+    }
+}
+
+__END__
+
+=head1 NAME
+
+pg_maintenance - perform maintenance tasks on all clusters
+
+=head1 SYNOPSIS
+
+B<pg_maintenance> [B<-f>|B<--full>] [B<-a>|B<--analyze>] [B<-v>|B<--verbose>]
+[B<--force>]
+
+=head1 DESCRIPTION
+
+This script performs maintenance actions on all databases in all clusters. In
+particular, this calls B<vacuumdb> on all databases, which frees up unused
+space and helps to improve database performance (if B<--analyze> is specified).
+
+This script is intended to be called regularly in a cronjob.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-f>, B<--full>
+
+Perform a "full vacuum", which is more effective but takes more time
+and needs to completely lock tables while working on it.
+
+=item B<-a>, B<--analyze>
+
+Perform some statistical analyses on the tables which helps to improve
+database performance. This only needs read access to the tables, thus does
+not require any locking.
+
+=item B<-v>, B<--verbose>
+
+Print out the progress and lots of information.
+
+=item B<--force>
+
+By default a cluster is not processed if it already has a running
+B<pg_autovacuum> instance (happens by default if the
+B<postgresql-contrib->I<version> package is installed). If this option is
+specified, the cluster is processed regardless of the autovacuum daemon status.
+
+=back
+  
+
+=head1 SEE ALSO
+
+L<vacuumdb(1)>, L<vacuum(7)>, L<analyze(7)>, L<pg_ctlcluster(1)>
+
+=head1 AUTHOR
+
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
+

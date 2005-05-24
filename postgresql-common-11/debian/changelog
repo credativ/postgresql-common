@@ -2,8 +2,9 @@ postgresql-common (11) experimental; urgency=low
 
   * pg_ctlcluster: Cleaned up variables.
   * Factored out change_ugid() to PgCommon.pm and use it in the scripts.
+  * Added pg_maintenance(8) program.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 25 May 2005 01:03:46 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 25 May 2005 01:36:49 +0200
 
 postgresql-common (10) experimental; urgency=low
 
