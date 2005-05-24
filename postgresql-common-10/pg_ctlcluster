@@ -30,7 +30,7 @@ sub autovacuum_start {
                       'avac_anal_base'  => '-a', 'avac_anal_scale'  => '-A',
                       'avac_log' => '-L');
 
-    @options = ('-p', $info{'port'});
+    @options = ('-p', $info{'port'}, '-H', get_cluster_socketdir($version, $ARGV[1]));
 
     foreach (keys %info) {
 	if (my $option = $avac_flags{$_}) {

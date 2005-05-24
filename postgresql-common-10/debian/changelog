@@ -1,8 +1,8 @@
 postgresql-common (10) experimental; urgency=low
 
-  *
+  * pg_ctlcluster: Supply cluster socket directory to pg_autovacuum.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Sun, 22 May 2005 22:31:47 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 24 May 2005 22:57:33 +0200
 
 postgresql-common (9) experimental; urgency=low
 
