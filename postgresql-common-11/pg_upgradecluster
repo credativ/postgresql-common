@@ -51,11 +51,7 @@ sleep(4);
 print "Dumping the old cluster into the new one...\n";
 
 if (!fork) {
-    POSIX::setgid ($info{'ownergid'});
-    POSIX::setuid ($info{'owneruid'});
-    error 'Could not change user id' if $< != $info{'owneruid'};
-    error 'Could not change group id' if $( != $info{'ownergid'};
-
+    change_ugid $info{'owneruid'}, $info{'ownergid'};
     $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     $psql = get_program_path 'psql', $newversion;
 

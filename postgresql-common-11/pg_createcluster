@@ -27,8 +27,7 @@ sub init_db {
         error 'initdb failed' if $?;
     } else{
         close STDOUT;
-        $( = $) = $_[3];
-        $< = $> = $_[2];
+        change_ugid $_[2], $_[3];
         exec $initdb, '-D', $datadir
     }
 }

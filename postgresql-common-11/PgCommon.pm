@@ -9,7 +9,8 @@ $VERSION = 1.00;
 @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir
     get_program_path cluster_info get_versions get_newest_version
-    get_version_clusters next_free_port cluster_exists install_file/;
+    get_version_clusters next_free_port cluster_exists install_file
+    change_ugid/;
 @EXPORT_OK = qw/$confroot/;
 
 # configuration
@@ -306,4 +307,30 @@ sub install_file {
     if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perm, $source, $dest) {
 	error "install_file: could not install $source to $dest";
     }
+}
+
+# Change effective and real user and group id. If the user id is member of the
+# "shadow" group, then "shadow" will be in the set of effective groups. Exits
+# with an error message if user/group ID cannot be changed.
+# Arguments: <user id> <group id>
+sub change_ugid {
+    my ($uid, $gid) = @_;
+    my $groups = $gid;
+    $groups .= " $groups"; # first additional group
+
+    # check whether owner is in the shadow group, and keep shadow privileges in
+    # this case; this is a poor workaround for the lack of initgroups().
+    my @shadowmembers = split /\s+/, ((getgrnam 'shadow')[3]);
+    for my $m (@shadowmembers) {
+	my $mid = getpwnam $m;
+	if ($mid == $uid) {
+	    $groups .= ' ' . (getgrnam 'shadow');
+	    last;
+	}
+    }
+
+    $( = $) = $groups;
+    $< = $> = $uid;
+    error 'Could not change user id' if $< != $uid;
+    error 'Could not change group id' if $( != $gid;
 }

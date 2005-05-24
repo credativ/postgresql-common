@@ -160,22 +160,7 @@ sub reload {
 error "specified cluster does not exist" unless $info{'pgdata'};
 
 if ($setuid) {
-    my $groups = $info{'ownergid'};
-    $groups .= " $groups"; # first additional group
-
-    # check whether owner is in the shadow group, and keep shadow privileges in
-    # this case; this is a poor workaround for the lack of initgroups().
-    my @shadowmembers = split /\s+/, ((getgrnam 'shadow')[3]);
-    for my $m (@shadowmembers) {
-	my $mid = getpwnam $m;
-	if ($mid == $info{'owneruid'}) {
-	    $groups .= ' ' . (getgrnam 'shadow');
-	    last;
-	}
-    }
-
-    $( = $) = $groups;
-    $< = $> = $info{'owneruid'};
+    change_ugid $info{'owneruid'}, $info{'ownergid'};
 }
 
 if( $> != $info{'owneruid'} ) {
