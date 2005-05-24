@@ -2,4 +2,3 @@ postgresql TODO
 ===============
 
 - Provide do.maintenance which vacuums all running clusters.
-- add CAN numbers to per-version changelogs(?)
