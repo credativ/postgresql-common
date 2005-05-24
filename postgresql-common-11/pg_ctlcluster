@@ -30,7 +30,7 @@ sub autovacuum_start {
                       'avac_anal_base'  => '-a', 'avac_anal_scale'  => '-A',
                       'avac_log' => '-L');
 
-    @options = ('-p', $info{'port'}, '-H', get_cluster_socketdir($version, $ARGV[1]));
+    @options = ('-p', $info{'port'}, '-H', get_cluster_socketdir($version, $cluster));
 
     foreach (keys %info) {
 	if (my $option = $avac_flags{$_}) {
@@ -154,8 +154,8 @@ sub reload {
 # main
 #
 
-$version = $ARGV[0];
-%info = cluster_info ($version, $ARGV[1]);
+($version, $cluster, $action) = @ARGV;
+%info = cluster_info ($version, $cluster);
 
 error "specified cluster does not exist" unless $info{'pgdata'};
 
@@ -183,8 +183,8 @@ if( $> != $info{'owneruid'} ) {
         (getpwuid $info{'owneruid'})[0].')';
 }
 
-$pg_ctl = get_program_path 'pg_ctl', $ARGV[0];
-$pg_autovacuum = get_program_path 'pg_autovacuum', $ARGV[0];
+$pg_ctl = get_program_path 'pg_ctl', $version;
+$pg_autovacuum = get_program_path 'pg_autovacuum', $version;
 
 %actions = ('start' => \&start, 'stop' => \&stop, 'reload' => \&reload,
             'restart' => \&restart, 'status' => \&status,
@@ -192,8 +192,8 @@ $pg_autovacuum = get_program_path 'pg_autovacuum', $ARGV[0];
             'autovac-stop' => \&autovacuum_stop,
             'autovac-restart' => \&autovacuum_restart);
 
-if ($actions{$ARGV[2]}) {
-    $actions{$ARGV[2]}->();
+if ($actions{$action}) {
+    $actions{$action}->();
 } else {
     error 'Error: invalid action (must be one of: '. 
         (join ', ', keys %actions);
