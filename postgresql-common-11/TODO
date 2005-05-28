@@ -1,8 +1,6 @@
 postgresql TODO
 ===============
 
-- pg_wrapper: Fix socket dir for default cluster if there is more than
-  one cluster and no user-cluster map entry.
 - pg_upgradecluster: support binary dumps
 - pg_upgradecluster: support writing into dump file
 - (maybe) use lsb-init functions if they are available

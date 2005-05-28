@@ -15,8 +15,12 @@ postgresql-common (11) experimental; urgency=low
   * PgCommon.pm: Converted to use strict to avoid future errors.
   * pg_maintenance: Removed option '-e' from vacuumdb call (leftover from
     debugging).
+  * PgCommon.pm, user_cluster_map(): If several clusters exist, but no
+    mapping is configured, return not only the default port's cluster version,
+    but also its name. This fixes the socket directory determination for this
+    case.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 15:14:10 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 15:40:09 +0200
 
 postgresql-common (10) experimental; urgency=low
 

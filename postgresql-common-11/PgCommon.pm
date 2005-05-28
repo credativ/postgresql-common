@@ -227,20 +227,6 @@ sub next_free_port {
     return $port;
 }
 
-# Return the major server version that belongs to the given port. Return undef
-# if there is no cluster for this port.
-# Arguments: <port>
-sub port_version {
-    for my $v (get_versions) {
-	for my $c (get_version_clusters $v) {
-	    my $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
-	    return $v if $p == $_[0];
-	}
-    }
-
-    return undef;
-}
-
 # Return the PostgreSQL version, cluster, and database to connect to. version
 # is always set (defaulting to the version of the default port if no matching
 # entry is found, or finally to the latest installed version if there are no
@@ -292,19 +278,29 @@ sub user_cluster_map {
 
     # if only one cluster exists, use that
     my $count = 0;
-    my ($last_version, $last_cluster);
+    my ($last_version, $last_cluster, $defaultport_version, $defaultport_cluster);
     for my $v (get_versions) {
 	for my $c (get_version_clusters $v) {
+	    my $port = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
             $last_version = $v;
             $last_cluster = $c;
+	    if ($port == $defaultport) {
+		$defaultport_version = $v;
+		$defaultport_cluster = $c;
+	    }
             ++$count;
 	}
     }
     return ($last_version, $last_cluster, undef) if $count == 1;
 
-    # return version of single cluster or latest version if there are no local
-    # clusters
-    return ((port_version $defaultport) || get_newest_version, undef, undef);
+    if ($count == 0) {
+	# if there are no local clusters, use latest clients for accessing
+	# network clusters
+	return (get_newest_version, undef, undef);
+    }
+
+    # more than one cluster exists, return cluster at default port
+    return ($defaultport_version, $defaultport_cluster, undef);
 }
 
 # Copy a file to a destination and setup permissions
