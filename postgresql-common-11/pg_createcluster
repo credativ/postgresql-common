@@ -117,7 +117,8 @@ if ($#ARGV < 1) {
 if ($owneruid) {
     $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
 } else {
-    $owneruid = $>;
+    $owneruid = getpwnam 'postgres';
+    error 'User postgresql does not exist' unless $owneruid;
 }
 
 if ($ownergid) {
@@ -264,9 +265,9 @@ file and creating the B<pgdata> link.
 If the log file does not exist, it is created. In any case the permissions are
 adjusted to allow write access to the cluster owner.
 
-By default, the cluster owner will be the user running B<pg_createcluster>.
-However, if this program is called as root, then the cluster owner user and
-group must be set with B<-u> and B<-g>. A cluster must not be owned by root.
+By default, the cluster owner will be the user B<postgres>. The owning user and
+group may be overridden with B<-u> and B<-g>. A cluster must not be owned by
+root.
 
 =head1 SEE ALSO
 

@@ -5,8 +5,10 @@ postgresql-common (11) experimental; urgency=low
   * Added pg_maintenance(8) program.
   * Activated formerly disabled postgresql-common.cron.d which calls
     pg_maintenance.
+  * pg_createcluster: Default to cluster owner 'postgres' if no owner is
+    specified.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 25 May 2005 01:54:34 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 13:32:22 +0200
 
 postgresql-common (10) experimental; urgency=low
 
