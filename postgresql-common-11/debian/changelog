@@ -7,8 +7,10 @@ postgresql-common (11) experimental; urgency=low
     pg_maintenance.
   * pg_createcluster: Default to cluster owner 'postgres' if no owner is
     specified.
+  * pg_ctlcluster: Fix pg_controldata output parsing and call pg_controldata
+    under locale 'C' to work with all locales. Closes: #310716
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 13:32:22 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 13:59:54 +0200
 
 postgresql-common (10) experimental; urgency=low
 

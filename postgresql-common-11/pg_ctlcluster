@@ -77,11 +77,12 @@ sub start {
 
     # get locale used by initdb
     $pg_controldata = get_program_path 'pg_controldata', $version;
+    $ENV{'LC_ALL'} = 'C';
     open (CTRL, '-|', $pg_controldata, $info{'pgdata'}) or 
 	error ("Could not start $pg_controldata");
     my $locale = '';
     while (<CTRL>) {
-	if (/^LC_CTYPE:\s*(\S+)\s*$/) {
+	if (/^LC_CTYPE.*:\s*(\S+)\s*$/) {
 	    $locale = $1;
 	    last;
 	}
