@@ -13,8 +13,10 @@ postgresql-common (11) experimental; urgency=low
   * PgCommon.pm: Fix declaration of @lines in set_conf_value() to avoid
     duplicating the lines in configuration files.
   * PgCommon.pm: Converted to use strict to avoid future errors.
+  * pg_maintenance: Removed option '-e' from vacuumdb call (leftover from
+    debugging).
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 14:57:01 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 15:14:10 +0200
 
 postgresql-common (10) experimental; urgency=low
 

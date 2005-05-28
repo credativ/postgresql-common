@@ -40,7 +40,7 @@ for $v (get_versions) {
             print STDERR "calling vacuumdb on cluster $v/$c failed\n" if $?;
         } else {
             change_ugid $info{'owneruid'}, $info{'ownergid'};
-            @options = ('--cluster', "$v/$c", '-a', '-e');
+            @options = ('--cluster', "$v/$c", '-a');
             push @options, '-f' if $full;
             push @options, '-z' if $analyze;
             push @options, '-v' if $verbose;
