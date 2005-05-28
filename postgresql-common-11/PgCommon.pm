@@ -49,6 +49,7 @@ sub get_conf_value {
 sub set_conf_value {
     my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
     my $value;
+    my @lines;
 
     if ($_[4] =~ /^\w+$/) {
 	$value = $_[4];
@@ -66,6 +67,7 @@ sub set_conf_value {
 	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=/) {
 	    $lines[$i] = "$_[3] = $value\n";
 	    $found = 1;
+	    last;
 	}
     }
     push (@lines, "$_[3] = $value\n") unless $found;
