@@ -2,23 +2,24 @@
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
 package PgCommon;
+use strict;
 
 use Exporter;
-$VERSION = 1.00;
-@ISA = ('Exporter');
-@EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
+our $VERSION = 1.00;
+our @ISA = ('Exporter');
+our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid/;
-@EXPORT_OK = qw/$confroot/;
+our @EXPORT_OK = qw/$confroot/;
 
 # configuration
-$mapfile = "/etc/postgresql-common/user_clusters";
-$confroot = "/etc/postgresql";
-$common_confdir = "/etc/postgresql-common";
-$binroot = "/usr/lib/postgresql";
-$defaultport = 5432;
+my $mapfile = "/etc/postgresql-common/user_clusters";
+our $confroot = "/etc/postgresql";
+my $common_confdir = "/etc/postgresql-common";
+my $binroot = "/usr/lib/postgresql";
+my $defaultport = 5432;
 
 # Print an error message to stderr and exit with status 1
 sub error {
@@ -63,7 +64,7 @@ sub set_conf_value {
     close F;
 
     my $found = 0;
-    for ($i=0; $i <= $#lines; ++$i) {
+    for (my $i=0; $i <= $#lines; ++$i) {
 	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=/) {
 	    $lines[$i] = "$_[3] = $value\n";
 	    $found = 1;
@@ -121,7 +122,7 @@ sub port_running {
     my $psql = get_program_path 'psql', $_[0];
     my $socketdir = get_cluster_socketdir $_[0], $_[1];
     die "port_running: invalid port $_[2]" if $_[2] !~ /\d+/;
-    $out = `LANG=C $psql -h '$socketdir' -p $_[2] -l 2>&1 > /dev/null`;
+    my $out = `LANG=C $psql -h '$socketdir' -p $_[2] -l 2>&1 > /dev/null`;
     return 1 unless $?;
     return (index ($out, "could not connect") < 0);
 }
@@ -131,6 +132,7 @@ sub port_running {
 # Returns: information hash (keys: pgdata, port, running, logfile, configdir,
 # owneruid, ownergid, socketdir)
 sub cluster_info {
+    my %result;
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = readlink ($result{'configdir'} . "/pgdata");
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
@@ -145,7 +147,7 @@ sub cluster_info {
     # autovacuum settings
 
     if (get_program_path 'pg_autovacuum', $_[0]) {
-	$enableval = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start');
+	my $enableval = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start');
 	$enableval ||= 'no';
 	$result{'avac_enable'} = ($enableval eq 'yes');
 	$result{'avac_log'} = readlink ($result{'configdir'} . "/autovacuum_log");
@@ -164,8 +166,9 @@ sub cluster_info {
 sub get_versions {
     my @versions = ();
     if (opendir (D, $binroot)) {
-        while (defined ($f = readdir D)) {
-            push @versions, $f if get_program_path ('psql', $f);
+	my $entry;
+        while (defined ($entry = readdir D)) {
+            push @versions, $entry if get_program_path ('psql', $entry);
         }
         closedir D;
     }
@@ -174,7 +177,7 @@ sub get_versions {
 
 # Return the newest available version
 sub get_newest_version {
-    $newest = 0;
+    my $newest = 0;
     map { $newest = $_ if $newest < $_ } get_versions;
     return $newest;
 }
@@ -185,9 +188,10 @@ sub get_version_clusters {
     my $vdir = $confroot.'/'.$_[0].'/';
     my @clusters = ();
     if (opendir (D, $vdir)) {
-        while (defined ($f = readdir D)) {
-            if (-l $vdir.$f.'/pgdata' && -r $vdir.$f.'/postgresql.conf') {
-                push @clusters, $f;
+	my $entry;
+        while (defined ($entry = readdir D)) {
+            if (-l $vdir.$entry.'/pgdata' && -r $vdir.$entry.'/postgresql.conf') {
+                push @clusters, $entry;
             }
         }
         closedir D;
@@ -198,7 +202,7 @@ sub get_version_clusters {
 # Check if a cluster exists.
 # Arguments: <version> <cluster>
 sub cluster_exists {
-    for $c (get_version_clusters $_[0]) {
+    for my $c (get_version_clusters $_[0]) {
 	return 1 if $c eq $_[1];
     }
     return 0;
@@ -207,13 +211,15 @@ sub cluster_exists {
 # Return the next free PostgreSQL port.
 sub next_free_port {
     # create list of already used ports
-    for $v (get_versions) {
-	for $c (get_version_clusters $v) {
-	    $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
+    my @ports;
+    for my $v (get_versions) {
+	for my $c (get_version_clusters $v) {
+	    my $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
 	    push @ports, $p;
 	}
     }
 
+    my $port;
     for ($port = $defaultport; ; ++$port) {
 	last unless grep { $_ == $port } @ports;
     }
@@ -225,9 +231,9 @@ sub next_free_port {
 # if there is no cluster for this port.
 # Arguments: <port>
 sub port_version {
-    for $v (get_versions) {
-	for $c (get_version_clusters $v) {
-	    $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
+    for my $v (get_versions) {
+	for my $c (get_version_clusters $v) {
+	    my $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
 	    return $v if $p == $_[0];
 	}
     }
@@ -246,13 +252,13 @@ sub user_cluster_map {
     my $group = (getgrgid  $gid)[0];
 
     # check per-user configuration file
-    $home = $ENV{"HOME"} || (getpwuid $>)[7];
-    $homemapfile = $home . '/.postgresqlrc';
+    my $home = $ENV{"HOME"} || (getpwuid $>)[7];
+    my $homemapfile = $home . '/.postgresqlrc';
     if (open MAP, $homemapfile) {
 	while (<MAP>) {
 	    s/(.*?)#.*/$1/;
 	    next if /^\s*$/;
-	    ($v,$c,$db) = split;
+	    my ($v,$c,$db) = split;
 	    if ($db) {
 		close MAP;
 		return ($v, $c, ($db eq "*") ? undef : $db);
@@ -272,7 +278,7 @@ sub user_cluster_map {
     while (<MAP>) {
         s/(.*?)#.*/$1/;
         next if /^\s*$/;
-        ($u,$g,$v,$c,$db) = split;
+        my ($u,$g,$v,$c,$db) = split;
         if (!$db) {
             print  "Warning: ignoring invalid line $. in $mapfile\n";
             next;
@@ -285,10 +291,10 @@ sub user_cluster_map {
     close MAP;
 
     # if only one cluster exists, use that
-    $count = 0;
+    my $count = 0;
     my ($last_version, $last_cluster);
-    for $v (get_versions) {
-	for $c (get_version_clusters $v) {
+    for my $v (get_versions) {
+	for my $c (get_version_clusters $v) {
             $last_version = $v;
             $last_cluster = $c;
             ++$count;
@@ -304,7 +310,7 @@ sub user_cluster_map {
 # Copy a file to a destination and setup permissions
 # Arguments: <source file> <destination file or dir> <uid> <gid> <permissions>
 sub install_file {
-    ($source, $dest, $uid, $gid, $perm) = @_;
+    my ($source, $dest, $uid, $gid, $perm) = @_;
     
     if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perm, $source, $dest) {
 	error "install_file: could not install $source to $dest";
