@@ -9,8 +9,9 @@ postgresql-common (11) experimental; urgency=low
     specified.
   * pg_ctlcluster: Fix pg_controldata output parsing and call pg_controldata
     under locale 'C' to work with all locales. Closes: #310716
+  * pg_createcluster: Added --socket-dir option.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 13:59:54 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 14:23:09 +0200
 
 postgresql-common (10) experimental; urgency=low
 

@@ -102,7 +102,8 @@ sub add_local_hba_entry {
 
 # command line arguments
 
-exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid);
+exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
+    's|socketdir=s' => \$socketdir);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -110,7 +111,7 @@ unless (setlocale (LC_ALL, "")) {
 }
 
 if ($#ARGV < 1) {
-    print "Usage: $0 [-u <uid>] [-g <gid>] <version> <cluster name> [<data directory>]\n";
+    print "Usage: $0 [-u <uid>] [-g <gid>] [-s <socket directory> ] <version> <cluster name> [<data directory>]\n";
     exit 1;
 }
 
@@ -189,14 +190,17 @@ set_cluster_port $version, $cluster, $port;
 # configure socket directory
 $orig_euid = $>;
 $> = $owneruid;
-if (-w '/var/run/postgresql') {
-    set_cluster_socketdir $version, $cluster, '/var/run/postgresql';
-} else {
-    print "Warning: The socket directory for owners other than 'postgres'
-defaults to /tmp. You might want to change the unix_socket_directory parameter
-in postgresql.conf to a more secure directory.
-"
+unless ($socketdir) {
+    if (-w '/var/run/postgresql') {
+	$socketdir = '/var/run/postgresql';
+    } else {
+	print "Warning: The socket directory for owners other than 'postgres'
+    defaults to /tmp. You might want to change the unix_socket_directory parameter
+    in postgresql.conf to a more secure directory.
+    "
+    }
 }
+set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
 $> = $orig_euid;
 
 # create log file
@@ -229,8 +233,8 @@ pg_createcluster - create a new PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_createcluster> [B<-u> I<user>] [B<-g> I<group>] I<version> I<name>
-[I<data dir>]
+B<pg_createcluster> [B<-u> I<user>] [B<-g> I<group>] [B<-s> I<socketdir>]
+I<version> I<name> [I<data dir>]
 
 =head1 DESCRIPTION
 
@@ -268,6 +272,12 @@ adjusted to allow write access to the cluster owner.
 By default, the cluster owner will be the user B<postgres>. The owning user and
 group may be overridden with B<-u> and B<-g>. A cluster must not be owned by
 root.
+
+If no socket directory is specified explicitly, it will default to
+B</var/run/postgresql/> for clusters owned by the user B<postgres>, and B</tmp>
+for clusters owned by other users. Please be aware that B</tmp> is an unsafe
+directory since everybody can create a socket there and impersonate the
+database server.
 
 =head1 SEE ALSO
 
