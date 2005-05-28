@@ -54,9 +54,11 @@ if (!fork) {
     change_ugid $info{'owneruid'}, $info{'ownergid'};
     $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     $psql = get_program_path 'psql', $newversion;
+    $oldsocket = get_cluster_socketdir $version, $cluster;
+    $newsocket = get_cluster_socketdir $newversion, $cluster;
 
-    $src = "$pg_dumpall -p " . $info{'port'} . '|';
-    $sink = "|$psql -q -p " . $newinfo{'port'} . ' -d template1';
+    $src = "$pg_dumpall -h '$oldsocket' -p " . $info{'port'} . '|';
+    $sink = "|$psql -h '$newsocket' -q -p " . $newinfo{'port'} . ' -d template1';
 
     open SOURCE, $src or 
 	error 'Could not execute pg_dumpall for old cluster';
