@@ -19,8 +19,10 @@ postgresql-common (11) experimental; urgency=low
     mapping is configured, return not only the default port's cluster version,
     but also its name. This fixes the socket directory determination for this
     case.
+  * debian/rules: Fix clean target to remove the manpages created from POD
+    again.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 15:40:09 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 May 2005 15:48:12 +0200
 
 postgresql-common (10) experimental; urgency=low
 
