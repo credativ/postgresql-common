@@ -9,6 +9,23 @@ use PgCommon;
 use Getopt::Long;
 use POSIX;
 
+sub adapt_conffiles {
+    # tcpip_socket transition
+    my $tcpip_socket = config_bool (PgCommon::get_conf_value $newversion, $cluster,
+        'postgresql.conf', 'tcpip_socket');
+    my $virtual_host = PgCommon::get_conf_value $newversion, $cluster,
+            'postgresql.conf', 'virtual_host';
+    PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
+            'virtual_host', 'done in 8.0 with listen_addresses';
+
+    if (defined $tcpip_socket) {
+        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
+                'tcpip_socket', 'done in 8.0 with listen_addresses';
+        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+            'listen_addresses', ($tcpip_socket ? ($virtual_host || '*') : '');
+    }
+}
+
 #
 # Execution starts here
 #
@@ -87,6 +104,8 @@ install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
 install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+
+adapt_conffiles;
 
 print "Stopping target cluster...\n";
 @argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'stop');
