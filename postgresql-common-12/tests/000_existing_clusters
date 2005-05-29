@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+# we must perform the tests starting with no clusters
+
+pg_lsclusters

@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+# Drop the pg74 cluster (which was upgraded to 8.0); first without
+# --stop-server (which should fail), then with the option, which should purge
+# away all files.
+
+pg_dropcluster 8.0 pg74 || true
+pg_dropcluster --stop-server 8.0 pg74 || true
+pg_lsclusters
+echo "7.4 configuration directory:"
+ls -aR /etc/postgresql/7.4
+echo "7.4 data directory:"
+ls -aR /var/lib/postgresql/7.4
+echo "8.0 configuration directory:"
+ls -aR /etc/postgresql/8.0
+echo "8.0 data directory:"
+ls -aR /var/lib/postgresql/8.0
+echo "log directory:"
+ls -aR /var/log/postgresql/
+echo "Socket directory:"
+ls -a /var/run/postgresql/

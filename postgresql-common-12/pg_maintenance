@@ -25,14 +25,14 @@ for $v (get_versions) {
         %info = cluster_info $v, $c;
 
         if (!$info{'running'}) {
-            print "Skipping cluster $v/$c which is not running\n" if $verbose;
+            print "Skipping cluster $v/$c which is not running\n";
             next;
         }
         if (!$force && -e $info{'pgdata'}.'/autovacuum.pid') {
-            print "Skipping cluster $v/$c since pg_autovacuum is running on it\n" if $verbose;
+            print "Skipping cluster $v/$c since pg_autovacuum is running on it\n";
             next;
         }
-        print "Doing maintenance on cluster $v/$c...\n" if $verbose;
+        print "Doing maintenance on cluster $v/$c...\n";
 
         # fork a vacuumdb subproces, change user id to the cluster owner
         if (fork) {
@@ -86,7 +86,8 @@ not require any locking.
 
 =item B<-v>, B<--verbose>
 
-Print out the progress and lots of information.
+Passed to B<vacuumdb>, which prints lots of information about the vacuuming and
+analysis.
 
 =item B<--force>
 

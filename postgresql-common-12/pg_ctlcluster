@@ -173,7 +173,7 @@ $pg_ctl = get_program_path 'pg_ctl', $version;
 $pg_autovacuum = get_program_path 'pg_autovacuum', $version;
 
 %actions = ('start' => \&start, 'stop' => \&stop, 'reload' => \&reload,
-            'restart' => \&restart, 'status' => \&status,
+            'restart' => \&restart,
             'autovac-start' => \&autovacuum_start,
             'autovac-stop' => \&autovacuum_stop,
             'autovac-restart' => \&autovacuum_restart);

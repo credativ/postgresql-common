@@ -1,0 +1,77 @@
+#!/bin/sh -e
+
+unset LANGUAGE LANG
+LC_ALL=C
+
+REAL_USER=$(stat -c %u $0)
+REAL_GROUP=$(stat -c %g $0)
+
+START=0
+END=999999
+
+if [ "$1" = "--generate" ]; then
+    GENERATE=1
+elif [ "$1" ]; then
+    START=$1
+fi
+
+if [ "$2" ]; then
+    END=$2
+fi
+
+if [ "$(id -u)" != 0 ]; then
+    echo "Error: this test suite needs to be run as root" >&2
+    exit 1
+fi
+
+TESTSDIR="$(dirname $0)/tests"
+
+OUT=$(mktemp -t testsuite.XXXXXX)
+DIFF=$(mktemp -t testdiff.XXXXXX)
+trap 'rm -f "$OUT" "$DIFF"' 0 1 2 3 5 7 10 13 15
+
+for T in $TESTSDIR/*; do
+    [ -x "$T" ] || continue
+    if [ $(basename "$T" | cut -f 1 -d_) -lt $START ]; then
+	continue
+    fi
+    if [ $(basename "$T" | cut -f 1 -d_) -gt $END ]; then
+	break
+    fi
+
+    echo -n "Running test $T..."
+
+    $T > "$OUT" 2>&1 || {
+	echo "Exited with code $?, output:"
+	cat "$OUT"
+	exit 1
+    }
+
+    TEXPECT="$T.ex"
+    if [ "$GENERATE" ]; then
+	if [ -f "$TEXPECT" ]; then
+	    echo "$TEXPECT already exists."
+	    continue
+	fi
+	cp "$OUT" "$TEXPECT"
+	chown $REAL_USER:$REAL_GROUP "$TEXPECT"
+	echo "$TEXPECT generated"
+	continue
+    fi
+
+    [ -f "$TEXPECT" ] || {
+	echo "FAIL: expected output of test $TEXPECT does not exist" >&2
+	exit 1
+    }
+
+    if diff -u "$TEXPECT" "$OUT" > "$DIFF"; then
+	echo PASS
+    else
+	echo FAIL
+	echo "Expected output: $TEXPECT"
+	echo "actual output: $OUT"
+	echo "Unified diff of the outputs:"
+	cat "$DIFF"
+	exit 1
+    fi
+done

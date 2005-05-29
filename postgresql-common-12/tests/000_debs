@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+deb_installed() {
+    if dpkg -s "$1" >/dev/null 2>/dev/null; then
+	echo "Debian package $1 is installed"
+    else
+	echo "Debian package $1 is missing"
+    fi
+}
+
+# Check that the necessary packages are installed; we want 7.4 and 8.0 servers
+# and contrib for 8.0
+deb_installed postgresql-7.4
+deb_installed postgresql-8.0
+deb_installed postgresql-contrib-7.4
+deb_installed postgresql-contrib-8.0

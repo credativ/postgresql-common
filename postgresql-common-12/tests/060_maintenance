@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+# We call standard and maintenance, which should ignore the 8.0 cluster since
+# there is an autovacuum daemon. With --force, this should vacuum the 8.0
+# cluster as well.
+
+echo pg_maintenance 
+pg_maintenance 
+echo pg_maintenance -f -a
+pg_maintenance -f -a
+echo pg_maintenance --force
+pg_maintenance --force
