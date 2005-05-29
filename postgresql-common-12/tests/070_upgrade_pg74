@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
-su -c 'psql -l' nobody
-su -c 'psql -c "select * from phone" nobodydb' nobody
+su -s /bin/sh -c 'psql -l' nobody
+su -s /bin/sh -c 'psql -c "select * from phone" nobodydb' nobody
 
 pg_upgradecluster 7.4 pg74
 pg_lsclusters
@@ -9,5 +9,5 @@ pg_lsclusters
 pg_dropcluster 7.4 pg74
 pg_lsclusters
 
-su -c 'psql -l' nobody
-su -c 'psql -c "select * from phone" nobodydb' nobody
+su -s /bin/sh -c 'psql -l' nobody
+su -s /bin/sh -c 'psql -c "select * from phone" nobodydb' nobody

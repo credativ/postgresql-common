@@ -9,5 +9,5 @@ pg_ctlcluster -s 7.4 pg74 start
 pg_lsclusters
 echo "Socket directory:"
 ls -a /var/run/postgresql/
-su -c 'psql --version' postgres
-su -c 'psql -l' postgres
+su -s /bin/sh -c 'psql --version' postgres
+su -s /bin/sh -c 'psql -l' postgres

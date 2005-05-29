@@ -3,13 +3,13 @@
 # Create user nobody, a database 'nobodydb' for him, check the database list
 # Then fill nobodydb with some data.
 
-su -c 'createuser nobody -D -A' postgres
-su -c 'createdb -O nobody nobodydb' postgres
+su -s /bin/sh -c 'createuser nobody -D -A' postgres
+su -s /bin/sh -c 'createdb -O nobody nobodydb' postgres
 
-su -c 'psql --version' nobody
-su -c 'psql -l' nobody
+su -s /bin/sh -c 'psql --version' nobody
+su -s /bin/sh -c 'psql -l' nobody
 
-su -c 'psql nobodydb' nobody <<EOF
+su -s /bin/sh -c 'psql nobodydb' nobody <<EOF
 create table phone (
   name varchar(255) PRIMARY KEY,
   tel int NOT NULL
@@ -18,4 +18,4 @@ insert into phone values ('Bob', 1);
 insert into phone values ('Alice', 2);
 EOF
 
-su -c 'psql -c "select * from phone" nobodydb' nobody
+su -s /bin/sh -c 'psql -c "select * from phone" nobodydb' nobody

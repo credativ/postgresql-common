@@ -12,5 +12,5 @@ ps -o user,group,args -C postmaster
 ps -o user,group,args -C pg_autovacuum
 echo "Socket directory:"
 ls -a /var/run/postgresql/
-su -c 'psql --version --cluster 8.0/pg80' postgres
-su -c 'psql -l --cluster 8.0/pg80' postgres
+su -s /bin/sh -c 'psql --version --cluster 8.0/pg80' postgres
+su -s /bin/sh -c 'psql -l --cluster 8.0/pg80' postgres

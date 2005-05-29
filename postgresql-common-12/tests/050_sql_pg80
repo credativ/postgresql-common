@@ -3,13 +3,13 @@
 # Create user nobody, a database 'nobodydb' for him, check the database list
 # Then fill nobodydb with some data.
 
-su -c 'createuser nobody -D -A --cluster 8.0/pg80' postgres
-su -c 'createdb --cluster 8.0/pg80 -O nobody nobodydb' postgres
+su -s /bin/sh -c 'createuser nobody -D -A --cluster 8.0/pg80' postgres
+su -s /bin/sh -c 'createdb --cluster 8.0/pg80 -O nobody nobodydb' postgres
 
-su -c 'psql --cluster 8.0/pg80 --version' nobody
-su -c 'psql --cluster 8.0/pg80 -l' nobody
+su -s /bin/sh -c 'psql --cluster 8.0/pg80 --version' nobody
+su -s /bin/sh -c 'psql --cluster 8.0/pg80 -l' nobody
 
-su -c 'psql --cluster 8.0/pg80 nobodydb' nobody <<EOF
+su -s /bin/sh -c 'psql --cluster 8.0/pg80 nobodydb' nobody <<EOF
 create table phone (
   name varchar(255) PRIMARY KEY,
   tel int NOT NULL
@@ -18,7 +18,7 @@ insert into phone values ('Bob', 1);
 insert into phone values ('Alice', 2);
 EOF
 
-su -c 'psql --cluster 8.0/pg80 -c "select * from phone" nobodydb' nobody
+su -s /bin/sh -c 'psql --cluster 8.0/pg80 -c "select * from phone" nobodydb' nobody
 
-su -c 'dropdb --cluster 8.0/pg80 nobodydb' postgres
-su -c 'dropuser --cluster 8.0/pg80 nobody' postgres
+su -s /bin/sh -c 'dropdb --cluster 8.0/pg80 nobodydb' postgres
+su -s /bin/sh -c 'dropuser --cluster 8.0/pg80 nobody' postgres
