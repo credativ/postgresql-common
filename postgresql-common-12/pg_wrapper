@@ -74,14 +74,14 @@ B<dropdb> [B<--cluster> I<version>/I<cluster>] [...]
 =head1 DESCRIPTION
 
 This program is run only as a link to names which correspond to PostgreSQL
-programs in B</usr/lib/postgresql/>I<version>B</bin>. It determines the
+programs in C</usr/lib/postgresql/>I<version>C</bin>. It determines the
 configured cluster and database for the user and calls the appropriate version
 of the desired program to connect to that cluster and database, supplying any
 specifed options to that command.
 
 By default, the cluster is determined from the configuration files
 L<user_clusters(5)> and L<postgresqlrc(5)>. However, this can be overriden by
-specifying the B<$PGCLUSTER> environment variable or the B<--cluster>
+specifying the C<$PGCLUSTER> environment variable or the B<--cluster>
 I<version>/I<cluster> option.
 
 =head1 ENVIRONMENT
@@ -90,9 +90,9 @@ I<version>/I<cluster> option.
 
 =item B<PGCLUSTER>
 
-If B<$PGCLUSTER> is set, its value (of the form I<version>/I<cluster>)
+If C<$PGCLUSTER> is set, its value (of the form I<version>/I<cluster>)
 specifies the desired cluster, similar to the B<--cluster> option. However, if
-B<--cluster> is specified, it overrides the value of B<$PGCLUSTER>.
+B<--cluster> is specified, it overrides the value of C<$PGCLUSTER>.
 
 =back
 
@@ -100,12 +100,12 @@ B<--cluster> is specified, it overrides the value of B<$PGCLUSTER>.
 
 =over
 
-=item B</etc/postgresql-common/user_clusters>
+=item C</etc/postgresql-common/user_clusters>
 
 stores the default cluster and database for users and groups as set by
 the administrators. 
 
-=item B<$HOME/.postgresqlrc>
+=item C<$HOME/.postgresqlrc>
 
 stores defaults set by the user himself.
 

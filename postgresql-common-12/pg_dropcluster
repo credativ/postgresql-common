@@ -57,8 +57,8 @@ B<pg_dropcluster> [B<--stop-server>] I<cluster-version> I<cluster-name>
 
 This program removes all files that belong to a given PostgreSQL cluster; that
 includes the data directory, the log file, and all configuration files that
-were created by B<pg_createcluster>. If the configuration directory
-(B</etc/postgresql/>I<version>B</>I<cluster>) is empty after this, it is
+were created by L<pg_createcluster(1)>. If the configuration directory
+(C</etc/postgresql/>I<version>C</>I<cluster>) is empty after this, it is
 removed as well.
 
 Usually a cluster which still has a running server attached will not be

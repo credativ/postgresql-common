@@ -247,32 +247,32 @@ B<pg_createcluster> [I<options>] I<version> I<name>
 =head1 DESCRIPTION
 
 B<pg_createcluster> creates a new PostgreSQL server cluster (i. e. a
-collection of databases served by a B<postmaster> instance) and
+collection of databases served by a L<postmaster(1)> instance) and
 integrates it into the multi-version/multi-cluster architecture of the
 B<postgresql-common> package. 
 
 Given a major PostgreSQL I<version> (like "7.4" or "8.0") and a cluster I<name>
 (which must be unique for all clusters of one particular version), it creates
 the necessary configuration files in
-B</etc/postgresql/>I<version>B</>I<name>B</>; in particular these are
-B<postgresql.conf>, B<pg_ident.conf>, B<pg_hba.conf>, a symbolic link
-B<pgdata> which points to the actual data directory I<data dir> (which defaults
-to B</var/lib/postgresql/>I<version>B</>I<name>B</>), and a symbolic link
-B<log> which points to the log file (by default,
-B</var/log/postgresql/postgresql->I<version>B<->I<name>B<.log>).
+C</etc/postgresql/>I<version>C</>I<name>C</>; in particular these are
+C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a symbolic link
+C<pgdata> which points to the actual data directory I<data dir> (which defaults
+to C</var/lib/postgresql/>I<version>C</>I<name>C</>), and a symbolic link
+C<log> which points to the log file (by default,
+C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
 
 To enable easy integration of B<pg_autovacuum>, this program also creates a
-symbolic link B<autovacuum_log> which points to the pg_autuvacuum log file (by
-default, B</var/log/postgresql/pg_autovacuum->I<version>B<->I<name>B<.log>).
+symbolic link C<autovacuum_log> which points to the pg_autuvacuum log file (by
+default, C</var/log/postgresql/pg_autovacuum->I<version>C<->I<name>C<.log>).
 
-B<postgresql.conf> is automatically adapted to use the next available port, i.
+C<postgresql.conf> is automatically adapted to use the next available port, i.
 e. the first port (starting from 5432) which is not yet used by an already
 existing cluster.
 
-If the data directory does not yet exist, PostgreSQL's B<initdb> command is
+If the data directory does not yet exist, PostgreSQL's L<initdb(1)> command is
 used to generate a new cluster structure. If the data directory already exists,
 it is integrated into the B<postgresql-common> structure by moving the
-configuration file and creating the B<pgdata> link.
+configuration file and creating the C<pgdata> link.
 
 If the log file does not exist, it is created. In any case the permissions are
 adjusted to allow write access to the cluster owner.
@@ -302,9 +302,9 @@ C</var/lib/postgresql/>I<version>C</>I<cluster>.
 =item B<-s> I<dir>, B<--socketdir=>I<dir>
 
 Explicitly set the directory where the L<postmaster(1)> server stores the Unix
-socket for local connections. Defaults to B</var/run/postgresql/> for clusters
-owned by the user B<postgres>, and B</tmp> for clusters owned by other users.
-Please be aware that B</tmp> is an unsafe directory since everybody can create
+socket for local connections. Defaults to C</var/run/postgresql/> for clusters
+owned by the user B<postgres>, and C</tmp> for clusters owned by other users.
+Please be aware that C</tmp> is an unsafe directory since everybody can create
 a socket there and impersonate the database server.
 
 =back

@@ -200,8 +200,8 @@ where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<autovac-start>|B<autov
 =head1 DESCRIPTION
 
 This program controls the B<postmaster> server for a particular cluster. It
-essentially wraps the B<pg_ctl> command. It determines the cluster version and
-data path and calls the right version of B<pg_ctl> with appropriate
+essentially wraps the L<pg_ctl(1)> command. It determines the cluster version
+and data path and calls the right version of B<pg_ctl> with appropriate
 configuration parameters and paths.
 
 You have to start this program as the user who owns the database cluster. If
@@ -226,10 +226,10 @@ C<autovacuum.conf> file).
 
 =item B<stop>
 
-Stops the B<postmaster> server (and B<pg_autovacuum>, if running) of the given
-cluster with increasing force. Initially, the B<fast> mode is used which rolls
-back all active transactions and thus shuts down cleanly. If that does not
-work, shutdown is attempted again in B<immediate> mode, which can leave the
+Stops the L<postmaster(1)> server (and B<pg_autovacuum>, if running) of the
+given cluster with increasing force. Initially, the B<fast> mode is used which
+rolls back all active transactions and thus shuts down cleanly. If that does
+not work, shutdown is attempted again in B<immediate> mode, which can leave the
 cluster in an inconsistent state and thus will lead to a recovery run at the
 next start. If this still does not help, the B<postmaster> process is killed.
 
