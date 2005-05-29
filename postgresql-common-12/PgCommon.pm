@@ -11,8 +11,8 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid/;
-our @EXPORT_OK = qw/$confroot/;
+    change_ugid config_bool/;
+our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value/;
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
@@ -79,6 +79,40 @@ sub set_conf_value {
 	print F $_;
     }
     close F;
+}
+
+# Disable a parameter in a PostgreSQL configuration file by prepending it with
+# a '#'. Appends an optional explanatory comment <reason> if given.
+# Arguments: <version> <cluster> <config file name> <parameter name> <reason>
+sub disable_conf_value {
+    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
+    my $value;
+    my @lines;
+
+    # read configuration file lines
+    open (F, $fname) or die "Error: could not open $fname for reading";
+    push @lines, $_ while (<F>);
+    close F;
+
+    my $changed = 0;
+    for (my $i=0; $i <= $#lines; ++$i) {
+	if ($lines[$i] =~ /^\s*$_[3]\s*=/) {
+	    $lines[$i] = '#'.$lines[$i];
+	    chomp $lines[$i];
+            $lines[$i] .= ' #'.$_[4]."\n" if $_[4];
+            $changed = 1;
+	    last;
+	}
+    }
+
+    # write configuration file lines
+    if ($changed) {
+        open (F, '>'.$fname) or die "Error: could not open $fname for writing";
+        foreach (@lines) {
+            print F $_;
+        }
+        close F;
+    }
 }
 
 # Return the port of a particular cluster or undef if the cluster
@@ -338,3 +372,13 @@ sub change_ugid {
     error 'Could not change user id' if $< != $uid;
     error 'Could not change group id' if $( != $gid;
 }
+
+# Returns '1' if the argument is a configuration file value that stands for
+# true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
+# a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
+sub config_bool {
+    return 1 if ($_[0] =~ /^(on|true|yes|1)$/i);
+    return 0 if ($_[0] =~ /^(off|false|no|0)$/i);
+    return undef;
+}
+
