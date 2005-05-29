@@ -1,9 +1,17 @@
 postgresql TODO
 ===============
 
-- pg_upgradecluster: support writing into dump file
-- (maybe) use lsb-init functions if they are available
+Bugs:
+- pg_createcluster: guess correct encoding for 7.4 dbs
+
+Important features:
+- POD: add extra section OPTIONS
 - add infrastructure to support running scripts/SQL commands on all
   databases on upgrading (like necessary for the two recent CANs)
-- POD: add extra section OPTIONS
-- pg_createcluster: guess correct encoding for 7.4 dbs
+
+Wishlist:
+- pg_upgradecluster: support writing into dump file
+- (maybe) use lsb-init functions if they are available
+- test suite: temporarily move away existing clusters
+- ship test suite in package
+
