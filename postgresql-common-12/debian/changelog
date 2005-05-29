@@ -10,8 +10,12 @@ postgresql-common (12) experimental; urgency=low
     - Test scripts are in tests/*.
     - Expected output is in tests/*.ex.
     - Test suite is run with './testsuite' as root.
+  * pg_createcluster:
+    - Converted optional third parameter to option --datadir.
+    - Rework POD to have a separate OPTIONS section.
+    - Add option description to online help.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 29 May 2005 12:16:03 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 29 May 2005 23:28:18 +0200
 
 postgresql-common (11) experimental; urgency=low
 

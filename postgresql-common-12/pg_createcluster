@@ -103,15 +103,24 @@ sub add_local_hba_entry {
 # command line arguments
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
-    's|socketdir=s' => \$socketdir);
+    's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
     error ('The locale requested by the environment is invalid.')
 }
 
-if ($#ARGV < 1) {
-    print "Usage: $0 [-u <uid>] [-g <gid>] [-s <socket directory> ] <version> <cluster name> [<data directory>]\n";
+if ($#ARGV != 1) {
+    print "Usage: $0 [options] <version> <cluster name>
+
+Options:
+  -u <uid>      cluster owner and superuser (default: 'postgres')
+  -g <gid>      group for data files (default: primary group of owner)
+  -d <dir>      data directory (default: 
+                /var/lib/postgresql/<version>/<cluster name>)
+  -s <dir>      socket directory (default: /var/run/postgresql for clusters
+                owned by 'postgres', /tmp for other clusters)
+";
     exit 1;
 }
 
@@ -130,7 +139,7 @@ if ($ownergid) {
 
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 
-($version, $cluster, $datadir) = @ARGV;
+($version, $cluster) = @ARGV;
 $datadir ||= "/var/lib/postgresql/$version/$cluster";
 $confdir = "$PgCommon::confroot/$version/$cluster";
 $pgdata = "$confdir/pgdata";
@@ -233,8 +242,7 @@ pg_createcluster - create a new PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_createcluster> [B<-u> I<user>] [B<-g> I<group>] [B<-s> I<socketdir>]
-I<version> I<name> [I<data dir>]
+B<pg_createcluster> [I<options>] I<version> I<name>
 
 =head1 DESCRIPTION
 
@@ -261,23 +269,45 @@ B<postgresql.conf> is automatically adapted to use the next available port, i.
 e. the first port (starting from 5432) which is not yet used by an already
 existing cluster.
 
-If I<data dir> does not yet exist, PostgreSQL's B<initdb> command is used to
-generate a new cluster structure. If the data directory already exists, it is
-integrated into the B<postgresql-common> structure by moving the configuration
-file and creating the B<pgdata> link.
+If the data directory does not yet exist, PostgreSQL's B<initdb> command is
+used to generate a new cluster structure. If the data directory already exists,
+it is integrated into the B<postgresql-common> structure by moving the
+configuration file and creating the B<pgdata> link.
 
 If the log file does not exist, it is created. In any case the permissions are
 adjusted to allow write access to the cluster owner.
 
-By default, the cluster owner will be the user B<postgres>. The owning user and
-group may be overridden with B<-u> and B<-g>. A cluster must not be owned by
-root.
+=head1 OPTIONS
 
-If no socket directory is specified explicitly, it will default to
-B</var/run/postgresql/> for clusters owned by the user B<postgres>, and B</tmp>
-for clusters owned by other users. Please be aware that B</tmp> is an unsafe
-directory since everybody can create a socket there and impersonate the
-database server.
+=over 4
+
+=item B<-u> I<user>, B<--user=>I<user>
+
+Set the user who owns the cluster and becomes the database superuser to the
+given name or uid.  By default, this is the user B<postgres>.  A cluster must
+not be owned by root.
+
+=item B<-g> I<group>, B<--group=>I<group>
+
+Change the group of the cluster related data files. By default this will be the
+primary group of the database owner.
+
+=item B<-d> I<dir>, B<--datadir=>I<dir>
+
+Explicitly set the data directoy path, which is used to store all the actual
+databases and tables. This will become quite big (easily in the order of five
+times the amount of actual data stored in the cluster). Defaults to
+C</var/lib/postgresql/>I<version>C</>I<cluster>.
+
+=item B<-s> I<dir>, B<--socketdir=>I<dir>
+
+Explicitly set the directory where the L<postmaster(1)> server stores the Unix
+socket for local connections. Defaults to B</var/run/postgresql/> for clusters
+owned by the user B<postgres>, and B</tmp> for clusters owned by other users.
+Please be aware that B</tmp> is an unsafe directory since everybody can create
+a socket there and impersonate the database server.
+
+=back
 
 =head1 SEE ALSO
 
