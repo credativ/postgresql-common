@@ -209,37 +209,56 @@ you start B<pg_ctlcluster> as root, you can also use the option
 B<--setuid>/B<-s> to automatically set the user and group id to the cluster
 owner.
 
-In B<start> mode, a log file for this specific cluster is created if it does
-not exist yet (by default,
-B</var/log/postgresql/postgresql->I<cluster-version>B<->I<cluster-name>B<.log>),
-and a PostreSQL server process (B<postmaster>) is started on it. If the package
-B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum> process is
-started as well (unless this gets disabled in
-B</etc/postgresql-common/autovacuum.conf> or a cluster-specific
-B<autovacuum.conf> file).
+=head1 ACTIONS
 
-B<stop> stops the B<postmaster> server (and B<pg_autovacuum>, if running) of
-the given cluster with increasing force. Initially, the B<fast> mode is used
-which rolls back all active transactions and thus shuts down cleanly. If that
-does not work, shutdown is attempted again in B<immediate> mode, which can
-leave the cluster in an inconsistent state and thus will lead to a recovery run
-at the next start. If this still does not help, the B<postmaster> process is
-killed.
+=over 4
 
-B<restart> stops the server if it is running and starts it (again). If
-B<pg_autovacuum> is running on the server, it is restarted as well.
+=item B<start>
 
-B<reload> will cause the configuration files to be re-read without a full
-shutdown of the server.
+A log file for this specific cluster is created if it does not exist yet (by
+default,
+C</var/log/postgresql/postgresql->I<cluster-version>C<->I<cluster-name>C<.log>),
+and a PostreSQL server process (L<postmaster(1)>) is started on it. If the
+package B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum>
+process is started as well (unless this gets disabled in
+C</etc/postgresql-common/autovacuum.conf> or a cluster-specific
+C<autovacuum.conf> file).
 
-B<autovac-start> starts a B<pg_autovacuum> process for an already running
-cluster. This normally happens automatically along with B<start>.
+=item B<stop>
 
-B<autovac-stop> stops the B<pg_autovacuum> process for a running cluster. This
-normally happens automatically along with B<stop>.
+Stops the B<postmaster> server (and B<pg_autovacuum>, if running) of the given
+cluster with increasing force. Initially, the B<fast> mode is used which rolls
+back all active transactions and thus shuts down cleanly. If that does not
+work, shutdown is attempted again in B<immediate> mode, which can leave the
+cluster in an inconsistent state and thus will lead to a recovery run at the
+next start. If this still does not help, the B<postmaster> process is killed.
 
-B<autovac-restart> restarts a B<pg_autovacuum> process for an already running
-cluster. This normally happens automatically along with B<restart>.
+=item B<restart>
+
+Stops the server if it is running and starts it (again). If B<pg_autovacuum> is
+running on the server, it is restarted as well.
+
+=item B<reload>
+
+Causes the configuration files to be re-read without a full shutdown of the
+server.
+
+=item B<autovac-start> 
+
+Starts a B<pg_autovacuum> process for an already running cluster. This normally
+happens automatically along with B<start>.
+
+=item B<autovac-stop> 
+
+Stops the B<pg_autovacuum> process for a running cluster. This normally happens
+automatically along with B<stop>.
+
+=item B<autovac-restart> 
+
+Restarts a B<pg_autovacuum> process for an already running cluster. This
+normally happens automatically along with B<restart>.
+
+=back
 
 =head1 SEE ALSO
 

@@ -14,8 +14,9 @@ postgresql-common (12) experimental; urgency=low
     - Converted optional third parameter to option --datadir.
     - Rework POD to have a separate OPTIONS section.
     - Add option description to online help.
+  * pg_ctlcluster: Improve POD.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 29 May 2005 23:28:18 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 29 May 2005 23:34:34 +0200
 
 postgresql-common (11) experimental; urgency=low
 
