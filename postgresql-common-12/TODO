@@ -4,6 +4,8 @@ postgresql TODO
 Bugs:
 - pg_createcluster: guess correct encoding for 7.4 dbs
 - pg_upgradecluster: fail if cluster is not running
+- pg_upgradecluster: check if new cluster is really running; if not,
+  cat log file
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
