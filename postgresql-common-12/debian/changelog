@@ -20,8 +20,11 @@ postgresql-common (12) experimental; urgency=low
     - Handle transition of {tcpip_socket, virtual_host} -> listen_addresses.
   * debian/init.d-functions: If /lib/lsb/init-functions is available, use LSB
     init script functions.
+  * pg_ctlcluster: After start, check whether the cluster is really running.
+    If the socket does not exist after a timeout of 5 seconds, fail and print
+    the recent log portion.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 30 May 2005 14:06:15 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 30 May 2005 14:45:02 +0200
 
 postgresql-common (11) experimental; urgency=low
 

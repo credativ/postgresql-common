@@ -10,6 +10,7 @@ use lib '/usr/share/postgresql-common';
 use Getopt::Long;
 use POSIX qw/setsid setlocale LC_ALL/;
 use PgCommon;
+use Fcntl 'SEEK_SET';
 
 # command line options
 $setuid = 0;
@@ -106,11 +107,29 @@ sub start {
         push @options, "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
     }
 
+    # remember current size of the log
+    $logsize = 0;
+    $logsize = (stat $info{'logfile'})[7] if -r $info{'logfile'};
+
     system $pg_ctl @options;
 
-    unless($?) {
-	sleep 3;
+    # wait a bit until the socket exists
+    $socket = $info{'socketdir'} . '/.s.PGSQL.' . $info{'port'};
+    for (my $attempt = 0; $attempt < 25; $attempt++) {
+        select (undef, undef, undef, 0.2);
+        last if -S $socket;
+    }
+
+    if (-S $socket) {
+        # success
 	autovacuum_start;
+    } else {
+        print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
+        open LOG, $info{'logfile'} or 
+            error "Could not open log file " . $info{'logfile'};
+        seek LOG, $logsize, SEEK_SET;
+        print STDERR $_ while <LOG>;
+        exit 1;
     }
 }
 
