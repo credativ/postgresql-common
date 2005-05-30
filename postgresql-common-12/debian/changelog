@@ -15,11 +15,13 @@ postgresql-common (12) experimental; urgency=low
     - Rework POD to have a separate OPTIONS section.
     - Add option description to online help.
   * pg_ctlcluster: Improve POD.
-  * pg_upgradecluster: 
+  * pg_upgradecluster:
     - Initial framework for handling obsolete configuration parameters.
     - Handle transition of {tcpip_socket, virtual_host} -> listen_addresses.
+  * debian/init.d-functions: If /lib/lsb/init-functions is available, use LSB
+    init script functions.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 30 May 2005 00:54:18 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 30 May 2005 14:06:15 +0200
 
 postgresql-common (11) experimental; urgency=low
 

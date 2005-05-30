@@ -15,7 +15,6 @@ Important features:
 
 Wishlist:
 - pg_upgradecluster: support writing into dump file
-- (maybe) use lsb-init functions if they are available
 - test suite: temporarily move away existing clusters
 - ship test suite in package
 
