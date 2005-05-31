@@ -114,14 +114,16 @@ sub start {
     system $pg_ctl @options;
 
     # wait a bit until the socket exists
-    $socket = $info{'socketdir'} . '/.s.PGSQL.' . $info{'port'};
-    for (my $attempt = 0; $attempt < 25; $attempt++) {
-        select (undef, undef, undef, 0.2);
-        last if -S $socket;
+    $success = 0;
+    for (my $attempt = 0; $attempt < 10; $attempt++) {
+        select (undef, undef, undef, 0.5);
+        if (cluster_port_running $version, $cluster, $info{'port'}) {
+            $success = 1;
+            last;
+        }
     }
 
-    if (-S $socket) {
-        # success
+    if ($success) {
 	autovacuum_start;
     } else {
         print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
