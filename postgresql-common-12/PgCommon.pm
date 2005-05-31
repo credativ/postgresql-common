@@ -8,7 +8,7 @@ use Exporter;
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
-    get_cluster_socketdir set_cluster_socketdir
+    get_cluster_socketdir set_cluster_socketdir cluster_port_running
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool/;
@@ -152,7 +152,7 @@ sub get_program_path {
 
 # Check whether a postmaster server is running at the specified port.
 # Arguments: <version> <cluster> <port>
-sub port_running {
+sub cluster_port_running {
     my $psql = get_program_path 'psql', $_[0];
     my $socketdir = get_cluster_socketdir $_[0], $_[1];
     die "port_running: invalid port $_[2]" if $_[2] !~ /\d+/;
@@ -172,7 +172,7 @@ sub cluster_info {
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
     $result{'socketdir'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
-    $result{'running'} = port_running ($_[0], $_[1], $result{'port'});
+    $result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 
             (stat $result{'pgdata'})[4,5];
