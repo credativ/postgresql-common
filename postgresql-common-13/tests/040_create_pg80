@@ -5,8 +5,7 @@
 # socket directory. Since we have contrib installed, there should also be an
 # autovacuum daemon.
 
-pg_createcluster 8.0 pg80
-pg_ctlcluster -s 8.0 pg80 start
+pg_createcluster 8.0 pg80 --start
 pg_lsclusters
 ps -o user,group,args -C postmaster
 ps -o user,group,args -C pg_autovacuum
