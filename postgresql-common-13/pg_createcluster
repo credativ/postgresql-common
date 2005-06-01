@@ -19,8 +19,9 @@ sub init_db {
         error 'could not create data directory';
     }
 
-    $initdb = get_program_path 'initdb', $_[0];
-    die 'Internal error: could not determine initdb path' unless $initdb;
+    @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
+    die 'Internal error: could not determine initdb path' unless $initdb[0];
+    push @initdb, ('--encoding', $encoding) if ($encoding);
 
     if (fork) {
         wait;
@@ -28,7 +29,7 @@ sub init_db {
     } else{
         close STDOUT;
         change_ugid $_[2], $_[3];
-        exec $initdb, '-D', $datadir
+        exec @initdb;
     }
 }
 
@@ -104,7 +105,7 @@ sub add_local_hba_entry {
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
-    'start' => \$start);
+    'start' => \$start, 'e|encoding=s' => \$encoding);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -121,6 +122,7 @@ Options:
                 /var/lib/postgresql/<version>/<cluster name>)
   -s <dir>      socket directory (default: /var/run/postgresql for clusters
                 owned by 'postgres', /tmp for other clusters)
+  -e <encoding> Default encoding (default: derived from locale)
   --start       start the cluster after creating it
 ";
     exit 1;
@@ -313,6 +315,14 @@ socket for local connections. Defaults to C</var/run/postgresql/> for clusters
 owned by the user B<postgres>, and C</tmp> for clusters owned by other users.
 Please be aware that C</tmp> is an unsafe directory since everybody can create
 a socket there and impersonate the database server.
+
+=item B<-e> I<encoding>, B<--encoding> I<encoding>
+
+Select the encoding of the template database. This will also be the default
+encoding of any database you create later, unless you override it there. The
+default is derived from the locale, or SQL_ASCII if that does not work.  The
+character sets supported by the PostgreSQL server are described in the
+documentation.
 
 =item B<--start>
 

@@ -6,13 +6,14 @@ Bugs:
 - pg_ctlcluster: Check if autovacuum daemon is really running, cat log
   if not.
 - pg_upgradecluster: use the same socket directory 
+- pg_upgradecluster: use the same encoding
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
   databases on upgrading (like necessary for the two recent CANs)
 - SSL support out of the box (create certificate)
 - Test suite: Check cluster creation in unicode locale.
-- pg_createcluster: add an --encoding argument
+- Test suite: Check cluster upgrade socket and encoding preservation.
 
 Wishlist:
 - pg_upgradecluster: support writing into dump file

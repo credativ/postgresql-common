@@ -12,8 +12,10 @@ postgresql-common (13) experimental; urgency=low
     they are not successful.
   * pg_createuser: Fix indentation of socket warning.
   * pg_upgradecluster: Check if cluster is running, exit with an error if not.
+  * pg_createcluster: Added option --encoding to override detection from
+    locale.
 
- -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 20:31:31 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 20:42:33 +0200
 
 postgresql-common (12) experimental; urgency=low
 
