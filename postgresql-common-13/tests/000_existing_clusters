@@ -3,3 +3,15 @@
 # we must perform the tests starting with no clusters
 
 pg_lsclusters
+
+# check for stale servers
+if ps -o user,group,args -C postmaster; then
+    echo "There is a stale postmaster running, aborting"
+    exit 1
+fi
+
+if ps -o user,group,args -C pg_autovacuum; then
+    echo "There is a stale autovacuum daemon running, aborting"
+    exit 1
+fi
+
