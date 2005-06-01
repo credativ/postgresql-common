@@ -14,8 +14,12 @@ postgresql-common (13) experimental; urgency=low
   * pg_upgradecluster: Check if cluster is running, exit with an error if not.
   * pg_createcluster: Added option --encoding to override detection from
     locale.
+  * pg_createcluster: Guess default encoding from locale for clusters older
+    than 8.0 to get the same behaviour as for 8.0.
+  * debian/control: Conflict to postgresql-7.4 << 1:7.4.8-5 since earlier
+    versions do not support non-ASCII encodings (due to missing pg_encoding).
 
- -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 20:42:33 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 22:55:37 +0200
 
 postgresql-common (12) experimental; urgency=low
 
