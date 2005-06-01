@@ -103,7 +103,8 @@ sub add_local_hba_entry {
 # command line arguments
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
-    's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir);
+    's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
+    'start' => \$start);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -120,6 +121,7 @@ Options:
                 /var/lib/postgresql/<version>/<cluster name>)
   -s <dir>      socket directory (default: /var/run/postgresql for clusters
                 owned by 'postgres', /tmp for other clusters)
+  --start       start the cluster after creating it
 ";
     exit 1;
 }
@@ -234,6 +236,11 @@ chmod 0660, $real_logfile;
 symlink $real_logfile, $avac_log;
 chown $owneruid, $ownergid, $real_logfile, $avac_log;
 
+# start it if requested
+if ($start) {
+    system '/usr/bin/pg_ctlcluster', '-s', $version, $cluster, 'start';
+}
+
 __END__
 
 =head1 NAME
@@ -306,6 +313,12 @@ socket for local connections. Defaults to C</var/run/postgresql/> for clusters
 owned by the user B<postgres>, and C</tmp> for clusters owned by other users.
 Please be aware that C</tmp> is an unsafe directory since everybody can create
 a socket there and impersonate the database server.
+
+=item B<--start>
+
+Immediately start a server for the cluster after creating it (i. e. call
+C<pg_ctlcluster> I<version cluster> C<start> on it). By default, the cluster is
+not started.
 
 =back
 
