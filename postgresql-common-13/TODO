@@ -6,6 +6,7 @@ Bugs:
 - pg_upgradecluster: fail if cluster is not running
 - pg_ctlcluster: Check if autovacuum daemon is really running, cat log
   if not.
+- pg_upgradecluster: use the same socket directory 
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all

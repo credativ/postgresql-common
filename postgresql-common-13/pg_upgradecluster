@@ -74,18 +74,18 @@ if (!fork) {
     $oldsocket = get_cluster_socketdir $version, $cluster;
     $newsocket = get_cluster_socketdir $newversion, $cluster;
 
-    $src = "$pg_dumpall -h '$oldsocket' -p " . $info{'port'} . '|';
-    $sink = "|$psql -h '$newsocket' -q -p " . $newinfo{'port'} . ' -d template1';
-
-    open SOURCE, $src or 
+    open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'} or 
 	error 'Could not execute pg_dumpall for old cluster';
-    open SINK, $sink or
-	error 'Could not execute psql for new cluster';
+    open SINK, '|-', $psql, '-h', $newsocket, '-q', '-p', $newinfo{'port'},
+        '-d', 'template1' or 
+        error 'Could not execute psql for new cluster';
     while (read SOURCE, $buffer, 16384) {
 	print SINK $buffer;
     }
     close SOURCE;
+    ($? == 0) or exit 1;
     close SINK;
+    ($? == 0) or exit 1;
     exit 0;
 }
 
