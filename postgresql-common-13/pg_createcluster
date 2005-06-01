@@ -206,9 +206,9 @@ unless ($socketdir) {
 	$socketdir = '/var/run/postgresql';
     } else {
 	print "Warning: The socket directory for owners other than 'postgres'
-    defaults to /tmp. You might want to change the unix_socket_directory parameter
-    in postgresql.conf to a more secure directory.
-    "
+defaults to /tmp. You might want to change the unix_socket_directory parameter
+in postgresql.conf to a more secure directory.
+"
     }
 }
 set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
