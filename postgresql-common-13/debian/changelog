@@ -4,8 +4,12 @@ postgresql-common (13) experimental; urgency=low
     creating it.
   * tests/000_existing_clusters: Check for stale postmaster and pg_autovacuum
     processes.
+  * testsuite: 
+    - Temporarily stop existing servers and move away existing files before
+      executing the tests.
+    - Restore the original files after the tests.
 
- -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 18:44:02 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 19:23:31 +0200
 
 postgresql-common (12) experimental; urgency=low
 

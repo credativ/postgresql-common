@@ -28,7 +28,38 @@ TESTSDIR="$(dirname $0)/tests"
 
 OUT=$(mktemp -t testsuite.XXXXXX)
 DIFF=$(mktemp -t testdiff.XXXXXX)
-trap 'rm -f "$OUT" "$DIFF"' 0 1 2 3 5 7 10 13 15
+
+# always clean up behind us
+trap 'rm -f "$OUT" "$DIFF";
+if [ -d /etc/postgresql.testsuite ]; then 
+    rm -rf /etc/postgresql; 
+    mv /etc/postgresql.testsuite /etc/postgresql;
+fi;
+if [ -d /var/lib/postgresql.testsuite ]; then 
+    rm -rf /var/lib/postgresql;
+    mv /var/lib/postgresql.testsuite /var/lib/postgresql;
+fi;
+if [ -d /var/log/postgresql.testsuite ]; then 
+    rm -rf /var/log/postgresql;
+    mv /var/log/postgresql.testsuite /var/log/postgresql;
+fi' 0 1 2 3 5 7 10 13 15
+
+# temporarily move away existing clusters
+if [ -x /etc/init.d/postgresql-7.4 ]; then
+    /etc/init.d/postgresql-7.4 stop
+fi
+if [ -x /etc/init.d/postgresql-8.0 ]; then
+    /etc/init.d/postgresql-8.0 stop
+fi
+if [ -d /etc/postgresql ]; then 
+    mv /etc/postgresql /etc/postgresql.testsuite;
+fi
+if [ -d /var/lib/postgresql ]; then 
+    mv /var/lib/postgresql /var/lib/postgresql.testsuite;
+fi
+if [ -d /var/log/postgresql ]; then 
+    mv /var/log/postgresql /var/log/postgresql.testsuite;
+fi
 
 for T in $TESTSDIR/*; do
     [ -x "$T" ] || continue
