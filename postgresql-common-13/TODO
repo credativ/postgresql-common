@@ -10,7 +10,6 @@ Important features:
 - add infrastructure to support running scripts/SQL commands on all
   databases on upgrading (like necessary for the two recent CANs)
 - SSL support out of the box (create certificate)
-- Test suite: Check cluster creation in unicode locale.
 - Test suite: Check cluster upgrade socket and encoding preservation.
 
 Wishlist:
