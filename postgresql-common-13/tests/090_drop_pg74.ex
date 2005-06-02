@@ -1,5 +1,5 @@
 Error: This cluster is still running. Stop it or supply the --stop-server option
-Version Cluster   Port Status Owner    Data directory                     Log file                      
+Version Cluster   Port Status Owner    Data directory                     Log file                       
 7.4 configuration directory:
 /etc/postgresql/7.4:
 .
@@ -20,6 +20,9 @@ log directory:
 /var/log/postgresql/:
 .
 ..
-Socket directory:
+Default Socket directory /var/run/postgresql:
+.
+..
+This cluster's socket directory /tmp/postgresql-testsuite/:
 .
 ..

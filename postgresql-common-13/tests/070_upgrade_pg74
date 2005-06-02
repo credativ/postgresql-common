@@ -1,13 +1,22 @@
 #!/bin/sh -e
 
+# Upgrade the pg74 cluster to the latest version. Check whether the socket
+# directory has been preserved.
+
+SOCKETDIR=/tmp/postgresql-testsuite/
+
 su -s /bin/sh -c 'psql -l' nobody
 su -s /bin/sh -c 'psql -c "select * from phone" nobodydb' nobody
 
 pg_upgradecluster 7.4 pg74
 pg_lsclusters
-
 pg_dropcluster 7.4 pg74
 pg_lsclusters
+
+echo "Default socket directory /var/run/postgresql:"
+ls -a /var/run/postgresql/
+echo "This cluster's socket directory $SOCKETDIR:"
+ls -a $SOCKETDIR
 
 su -s /bin/sh -c 'psql -l' nobody
 su -s /bin/sh -c 'psql -c "select * from phone" nobodydb' nobody

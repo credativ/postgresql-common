@@ -4,8 +4,8 @@ Moving configuration file /var/lib/postgresql/8.0/en_US/pg_hba.conf to /etc/post
 Moving configuration file /var/lib/postgresql/8.0/en_US/pg_ident.conf to /etc/postgresql/8.0/en_US...
 Moving configuration file /var/lib/postgresql/8.0/en_US/postgresql.conf to /etc/postgresql/8.0/en_US...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-8.0     en_US     5432 online postgres /var/lib/postgresql/8.0/en_US      /var/log/postgresql/postgresql-8.0-en_US.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+8.0     en_US     5432 online postgres /var/lib/postgresql/8.0/en_US      /var/log/postgresql/postgresql-8.0-en_US.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US -c config_file=/etc/postgresql/8.0/en_US/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
@@ -31,8 +31,8 @@ Moving configuration file /var/lib/postgresql/8.0/UTF-8/pg_hba.conf to /etc/post
 Moving configuration file /var/lib/postgresql/8.0/UTF-8/pg_ident.conf to /etc/postgresql/8.0/UTF-8...
 Moving configuration file /var/lib/postgresql/8.0/UTF-8/postgresql.conf to /etc/postgresql/8.0/UTF-8...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-8.0     UTF-8     5432 online postgres /var/lib/postgresql/8.0/UTF-8      /var/log/postgresql/postgresql-8.0-UTF-8.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+8.0     UTF-8     5432 online postgres /var/lib/postgresql/8.0/UTF-8      /var/log/postgresql/postgresql-8.0-UTF-8.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/UTF-8 -c config_file=/etc/postgresql/8.0/UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
@@ -52,8 +52,8 @@ Moving configuration file /var/lib/postgresql/8.0/en_US.UTF-8/pg_hba.conf to /et
 Moving configuration file /var/lib/postgresql/8.0/en_US.UTF-8/pg_ident.conf to /etc/postgresql/8.0/en_US.UTF-8...
 Moving configuration file /var/lib/postgresql/8.0/en_US.UTF-8/postgresql.conf to /etc/postgresql/8.0/en_US.UTF-8...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-8.0     en_US.UTF-85432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8/var/log/postgresql/postgresql-8.0-en_US.UTF-8.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+8.0     en_US.UTF-8 5432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8 /var/log/postgresql/postgresql-8.0-en_US.UTF-8.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
@@ -73,8 +73,8 @@ Moving configuration file /var/lib/postgresql/7.4/en_US/pg_hba.conf to /etc/post
 Moving configuration file /var/lib/postgresql/7.4/en_US/pg_ident.conf to /etc/postgresql/7.4/en_US...
 Moving configuration file /var/lib/postgresql/7.4/en_US/postgresql.conf to /etc/postgresql/7.4/en_US...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-7.4     en_US     5432 online postgres /var/lib/postgresql/7.4/en_US      /var/log/postgresql/postgresql-7.4-en_US.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+7.4     en_US     5432 online postgres /var/lib/postgresql/7.4/en_US      /var/log/postgresql/postgresql-7.4-en_US.log 
 postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/en_US
 USER     GROUP    COMMAND
         List of databases
@@ -93,8 +93,8 @@ Moving configuration file /var/lib/postgresql/7.4/UTF-8/pg_hba.conf to /etc/post
 Moving configuration file /var/lib/postgresql/7.4/UTF-8/pg_ident.conf to /etc/postgresql/7.4/UTF-8...
 Moving configuration file /var/lib/postgresql/7.4/UTF-8/postgresql.conf to /etc/postgresql/7.4/UTF-8...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-7.4     UTF-8     5432 online postgres /var/lib/postgresql/7.4/UTF-8      /var/log/postgresql/postgresql-7.4-UTF-8.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+7.4     UTF-8     5432 online postgres /var/lib/postgresql/7.4/UTF-8      /var/log/postgresql/postgresql-7.4-UTF-8.log 
 postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/UTF-8
 USER     GROUP    COMMAND
         List of databases
@@ -113,8 +113,8 @@ Moving configuration file /var/lib/postgresql/7.4/en_US.UTF-8/pg_hba.conf to /et
 Moving configuration file /var/lib/postgresql/7.4/en_US.UTF-8/pg_ident.conf to /etc/postgresql/7.4/en_US.UTF-8...
 Moving configuration file /var/lib/postgresql/7.4/en_US.UTF-8/postgresql.conf to /etc/postgresql/7.4/en_US.UTF-8...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-7.4     en_US.UTF-85432 online postgres /var/lib/postgresql/7.4/en_US.UTF-8/var/log/postgresql/postgresql-7.4-en_US.UTF-8.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+7.4     en_US.UTF-8 5432 online postgres /var/lib/postgresql/7.4/en_US.UTF-8 /var/log/postgresql/postgresql-7.4-en_US.UTF-8.log 
 postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/en_US.UTF-8
 USER     GROUP    COMMAND
         List of databases
@@ -142,9 +142,9 @@ Success. Please check that the upgraded cluster works. If it does,
 you can remove the old cluster with
 
   pg_dropcluster 7.4 en_US.UTF-8
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-7.4     en_US.UTF-85433 down   postgres /var/lib/postgresql/7.4/en_US.UTF-8/var/log/postgresql/postgresql-7.4-en_US.UTF-8.log
-8.0     en_US.UTF-85432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8/var/log/postgresql/postgresql-8.0-en_US.UTF-8.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+7.4     en_US.UTF-8 5433 down   postgres /var/lib/postgresql/7.4/en_US.UTF-8 /var/log/postgresql/postgresql-7.4-en_US.UTF-8.log 
+8.0     en_US.UTF-8 5432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8 /var/log/postgresql/postgresql-8.0-en_US.UTF-8.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql

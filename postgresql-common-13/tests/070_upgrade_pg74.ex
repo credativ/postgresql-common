@@ -27,13 +27,23 @@ Success. Please check that the upgraded cluster works. If it does,
 you can remove the old cluster with
 
   pg_dropcluster 7.4 pg74
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-7.4     pg74      5434 down   postgres /var/lib/postgresql/7.4/pg74       /var/log/postgresql/postgresql-7.4-pg74.log
-8.0     pg74      5432 online postgres /var/lib/postgresql/8.0/pg74       /var/log/postgresql/postgresql-8.0-pg74.log
-8.0     pg80      5433 online postgres /var/lib/postgresql/8.0/pg80       /var/log/postgresql/postgresql-8.0-pg80.log
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-8.0     pg74      5432 online postgres /var/lib/postgresql/8.0/pg74       /var/log/postgresql/postgresql-8.0-pg74.log
-8.0     pg80      5433 online postgres /var/lib/postgresql/8.0/pg80       /var/log/postgresql/postgresql-8.0-pg80.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+7.4     pg74      5434 down   postgres /var/lib/postgresql/7.4/pg74       /var/log/postgresql/postgresql-7.4-pg74.log 
+8.0     pg74      5432 online postgres /var/lib/postgresql/8.0/pg74       /var/log/postgresql/postgresql-8.0-pg74.log 
+8.0     pg80      5433 online postgres /var/lib/postgresql/8.0/pg80       /var/log/postgresql/postgresql-8.0-pg80.log 
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+8.0     pg74      5432 online postgres /var/lib/postgresql/8.0/pg74       /var/log/postgresql/postgresql-8.0-pg74.log 
+8.0     pg80      5433 online postgres /var/lib/postgresql/8.0/pg80       /var/log/postgresql/postgresql-8.0-pg80.log 
+Default socket directory /var/run/postgresql:
+.
+..
+.s.PGSQL.5433
+.s.PGSQL.5433.lock
+This cluster's socket directory /tmp/postgresql-testsuite/:
+.
+..
+.s.PGSQL.5432
+.s.PGSQL.5432.lock
         List of databases
    Name    |  Owner   | Encoding  
 -----------+----------+-----------

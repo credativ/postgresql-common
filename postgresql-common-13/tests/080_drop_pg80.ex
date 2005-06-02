@@ -1,6 +1,6 @@
 Error: This cluster is still running. Stop it or supply the --stop-server option
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-8.0     pg74      5432 online postgres /var/lib/postgresql/8.0/pg74       /var/log/postgresql/postgresql-8.0-pg74.log
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+8.0     pg74      5432 online postgres /var/lib/postgresql/8.0/pg74       /var/log/postgresql/postgresql-8.0-pg74.log 
 7.4 configuration directory:
 /etc/postgresql/7.4:
 .
@@ -36,5 +36,3 @@ postgresql-8.0-pg74.log
 Socket directory:
 .
 ..
-.s.PGSQL.5432
-.s.PGSQL.5432.lock

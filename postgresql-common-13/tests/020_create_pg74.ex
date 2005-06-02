@@ -3,9 +3,12 @@ Moving configuration file /var/lib/postgresql/7.4/pg74/pg_hba.conf to /etc/postg
 Moving configuration file /var/lib/postgresql/7.4/pg74/pg_ident.conf to /etc/postgresql/7.4/pg74...
 Moving configuration file /var/lib/postgresql/7.4/pg74/postgresql.conf to /etc/postgresql/7.4/pg74...
 Configuring postgresql.conf to use port 5432...
-Version Cluster   Port Status Owner    Data directory                     Log file                      
-7.4     pg74      5432 online postgres /var/lib/postgresql/7.4/pg74       /var/log/postgresql/postgresql-7.4-pg74.log
-Socket directory:
+Version Cluster   Port Status Owner    Data directory                     Log file                       
+7.4     pg74      5432 online postgres /var/lib/postgresql/7.4/pg74       /var/log/postgresql/postgresql-7.4-pg74.log 
+Default socket directory /var/run/postgresql:
+.
+..
+This cluster's socket directory /tmp/postgresql-testsuite/:
 .
 ..
 .s.PGSQL.5432

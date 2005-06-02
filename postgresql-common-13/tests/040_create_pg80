@@ -7,7 +7,7 @@
 
 pg_createcluster 8.0 pg80 --start
 pg_lsclusters
-ps -o user,group,args -C postmaster
+ps -o user,group,args -C postmaster | grep postmaster
 ps -o user,group,args -C pg_autovacuum
 echo "Socket directory:"
 ls -a /var/run/postgresql/

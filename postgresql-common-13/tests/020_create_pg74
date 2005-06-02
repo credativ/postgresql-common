@@ -2,12 +2,20 @@
 
 # Create and start a standard 7.4 cluster which should land on the default
 # port; after starting it, we check that the postmaster actually runs and the
-# correct socket directory.
+# correct socket directory. It also gets a nonstandard socket directory.
 
-pg_createcluster 7.4 pg74
+SOCKETDIR=/tmp/postgresql-testsuite/
+
+rm -rf $SOCKETDIR
+install -d -m 755 -o postgres -g root $SOCKETDIR
+pg_createcluster --socketdir $SOCKETDIR 7.4 pg74
 pg_ctlcluster -s 7.4 pg74 start
 pg_lsclusters
-echo "Socket directory:"
+
+echo "Default socket directory /var/run/postgresql:"
 ls -a /var/run/postgresql/
+echo "This cluster's socket directory $SOCKETDIR:"
+ls -a $SOCKETDIR
+
 su -s /bin/sh -c 'psql --version' postgres
 su -s /bin/sh -c 'psql -l' postgres
