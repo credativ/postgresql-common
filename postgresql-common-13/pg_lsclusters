@@ -10,10 +10,10 @@ $show_header = 1;
 
 @columns = ('Version', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory',
             'Log file');
-@colwidths = qw/8 10 5 7 9 35 30/;
+@colwidths = qw/7 9 4 6 8 34 30/;
 
 foreach $cw (@colwidths) {
-    $fmtstring .= '%-'.$cw.'s';
+    $fmtstring .= '%-'.$cw.'s ';
 }
 $fmtstring .= "\n";
 
