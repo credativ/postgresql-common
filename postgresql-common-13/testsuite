@@ -11,7 +11,9 @@ END=999999
 
 if [ "$1" = "--generate" ]; then
     GENERATE=1
-elif [ "$1" ]; then
+    shift
+fi
+if [ "$1" ]; then
     START=$1
 fi
 
