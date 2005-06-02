@@ -4,7 +4,6 @@ postgresql TODO
 Bugs:
 - pg_ctlcluster: Check if autovacuum daemon is really running, cat log
   if not.
-- pg_upgradecluster: use the same socket directory 
 - pg_upgradecluster: use the same encoding and locale
 
 Important features:

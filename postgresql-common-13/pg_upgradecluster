@@ -53,7 +53,7 @@ error "target cluster $newversion/$cluster already exists" if $newinfo{'pgdata'}
 # create new cluster
 
 @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
-$newversion, $cluster);
+    '--socketdir', $info{'socketdir'}, $newversion, $cluster);
 push @argv, $datadir if $datadir;
 error "Could not create target cluster" if system @argv;
 
