@@ -124,6 +124,7 @@ sub start {
     }
 
     if ($success) {
+        select (undef, undef, undef, 0.5);
 	autovacuum_start;
     } else {
         print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
