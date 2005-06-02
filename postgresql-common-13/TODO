@@ -5,6 +5,8 @@ Bugs:
 - pg_ctlcluster: Check if autovacuum daemon is really running, cat log
   if not.
 - pg_upgradecluster: use the same encoding and locale
+- Check whether mutually exclusive log_*_stats are enabled both in a
+  7.4 cluster to avoid the "FATAL:  invalid cache id: 30" error
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
