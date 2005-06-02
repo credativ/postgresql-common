@@ -181,6 +181,14 @@ sub reload {
 
 error "specified cluster does not exist" unless $info{'pgdata'};
 
+# check that owner uig/gid is valid
+unless (getpwuid $info{'owneruid'}) {
+    error 'The cluster is owned by user id '.$info{'owneruid'}.' which does not exist any more'
+}
+unless (getgrgid $info{'ownergid'}) {
+    error 'The cluster is owned by group id '.$info{'ownergid'}.' which does not exist any more'
+}
+
 if ($setuid) {
     change_ugid $info{'owneruid'}, $info{'ownergid'};
 }

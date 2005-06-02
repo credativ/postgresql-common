@@ -18,8 +18,10 @@ postgresql-common (13) experimental; urgency=low
     than 8.0 to get the same behaviour as for 8.0.
   * debian/control: Conflict to postgresql-7.4 << 1:7.4.8-5 since earlier
     versions do not support non-ASCII encodings (due to missing pg_encoding).
+  * pg_ctlcluster: Check that the cluster owner uid/gid really exist.
+    Closes: #311546
 
- -- Martin Pitt <mpitt@debian.org>  Wed,  1 Jun 2005 22:55:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu,  2 Jun 2005 18:47:53 +0200
 
 postgresql-common (12) experimental; urgency=low
 
