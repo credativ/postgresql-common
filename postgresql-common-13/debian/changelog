@@ -21,8 +21,10 @@ postgresql-common (13) experimental; urgency=low
   * pg_ctlcluster: Check that the cluster owner uid/gid really exist.
     Closes: #311546
   * pg_lsclusters: Ensure that there is at least one space between the colums.
+  * Added tests/100_encodings which checks cluster creation and updates
+    for different encodings and locales.
 
- -- Martin Pitt <mpitt@debian.org>  Fri,  3 Jun 2005 00:03:57 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri,  3 Jun 2005 00:28:01 +0200
 
 postgresql-common (12) experimental; urgency=low
 

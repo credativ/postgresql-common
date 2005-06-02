@@ -1,0 +1,54 @@
+#!/bin/sh -e
+
+# Create 7.4 and 8.0 clusters with different encodings and locales. Check that
+# they are maintained on upgrading.
+
+# shows all clusters and running server processes
+show_clusters() {
+    pg_lsclusters
+    ps -o user,group,args -C postmaster | grep postmaster
+    ps -o user,group,args -C pg_autovacuum || true
+}
+
+# create a test cluster
+# args: $version $LANG $delete $encoding
+create_cluster() {
+    version="$1"
+    lang="$2"
+    delete="$3"
+    enc="$4"
+
+    if [ "$enc" ]; then
+        echo "*** creating $version cluster with locale $lang and encoding $enc ***"
+        cluster="$lang_$enc"
+        LANG="$lang" pg_createcluster --encoding "$enc" --start "$version" "$cluster"
+    else
+        echo "*** creating $version cluster with locale $lang and default encoding ***"
+        cluster="$lang"
+        LANG="$lang" pg_createcluster --start "$version" "$cluster"
+    fi
+    show_clusters
+    su -s /bin/sh -c "psql -l --cluster $version/$cluster" postgres
+    /usr/lib/postgresql/$version/bin/pg_controldata /var/lib/postgresql/$version/$cluster | grep ^LC_
+    [ -z "$delete" ] || pg_dropcluster --stop-server $version $cluster
+    echo
+}
+
+create_cluster 8.0 "en_US" 1
+create_cluster 8.0 "en_US" 1 "UTF-8"
+create_cluster 8.0 "en_US.UTF-8" 1
+
+create_cluster 7.4 "en_US" 1
+create_cluster 7.4 "en_US" 1 "UTF-8"
+create_cluster 7.4 "en_US.UTF-8"
+
+# test upgrading
+pg_upgradecluster 7.4 $cluster
+show_clusters
+
+# show the encoding and locale of the upgraded cluster
+su -s /bin/sh -c "psql -l --cluster 8.0/$cluster" postgres
+/usr/lib/postgresql/8.0/bin/pg_controldata /var/lib/postgresql/8.0/$cluster | grep ^LC_
+
+pg_dropcluster --stop-server 8.0 $cluster
+
