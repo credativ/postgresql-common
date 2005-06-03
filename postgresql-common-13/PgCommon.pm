@@ -11,7 +11,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid config_bool/;
+    change_ugid config_bool get_db_encoding/;
 our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value/;
 
 # configuration
@@ -382,3 +382,19 @@ sub config_bool {
     return undef;
 }
 
+# Return the encoding of a particular database in a cluster. This requires
+# access privileges to that database, so this function should be called as the
+# cluster owner.
+# Arguments: <version> <cluster> <database>
+# Returns: Encoding or undef if it cannot be determined.
+sub get_db_encoding {
+    my ($version, $cluster, $db) = @_;
+    my $port = get_cluster_port $version, $cluster;
+    my $socketdir = get_cluster_socketdir $version, $cluster;
+    my $psql = get_program_path 'psql', $version;
+    return undef unless ($port && $socketdir && $psql);
+    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atc 'select getdatabaseencoding()' $db`;
+    chomp $out;
+    return $out unless $?;
+    return undef;
+}
