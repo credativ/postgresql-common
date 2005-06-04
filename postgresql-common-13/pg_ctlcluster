@@ -77,27 +77,16 @@ sub start {
     my $cdir = $info{'configdir'};
 
     # get locale used by initdb
-    $pg_controldata = get_program_path 'pg_controldata', $version;
-    $ENV{'LC_ALL'} = 'C';
-    open (CTRL, '-|', $pg_controldata, $info{'pgdata'}) or 
-	error ("Could not start $pg_controldata");
-    my $locale = '';
-    while (<CTRL>) {
-	if (/^LC_CTYPE.*:\s*(\S+)\s*$/) {
-	    $locale = $1;
-	    last;
-	}
-    }
-    close CTRL;
-    $locale or error ('Could not parse locale out of pg_controldata output');
+    my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
+    $lc_ctype or error ('Could not parse locale out of pg_controldata output');
 
     # check validity of locale
-    unless (setlocale (LC_ALL, $locale)) {
-	error ("The server must be started under the locale $locale which does not exist any more.")
+    unless (setlocale (LC_ALL, $lc_ctype)) {
+	error ("The server must be started under the locale $lc_ctype which does not exist any more.")
     }
 
     # set locale for the postmaster
-    $ENV{'LC_ALL'} = $ENV{'LANG'} = $locale;
+    $ENV{'LC_ALL'} = $ENV{'LANG'} = $lc_ctype;
 
     @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'}, '-s');
 

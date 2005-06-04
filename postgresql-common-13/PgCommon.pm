@@ -11,7 +11,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid config_bool get_db_encoding/;
+    change_ugid config_bool get_db_encoding get_cluster_locales/;
 our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value/;
 
 # configuration
@@ -161,6 +161,12 @@ sub cluster_port_running {
     return (index ($out, "could not connect") < 0);
 }
 
+# Return cluster data directory.
+# Arguments: <version> <cluster name>
+sub cluster_data_directory {
+    return readlink ("$confroot/$_[0]/$_[1]/pgdata");
+}
+
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile, configdir,
@@ -168,7 +174,7 @@ sub cluster_port_running {
 sub cluster_info {
     my %result;
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
-    $result{'pgdata'} = readlink ($result{'configdir'} . "/pgdata");
+    $result{'pgdata'} = cluster_data_directory $_[0], $_[1];
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
     $result{'socketdir'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
@@ -397,4 +403,26 @@ sub get_db_encoding {
     chomp $out;
     return $out unless $?;
     return undef;
+}
+
+# Return the CTYPE and COLLATE locales of a cluster. This needs to be called
+# as root or as the cluster owner.
+# Arguments: <version> <cluster> 
+# Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
+sub get_cluster_locales {
+    my ($version, $cluster) = @_;
+    my ($lc_ctype, $lc_collate) = (undef, undef);
+
+    my $pg_controldata = get_program_path 'pg_controldata', $version;
+    open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster)) or 
+	return (undef, undef);
+    while (<CTRL>) {
+	if (/^LC_CTYPE.*:\s*(\S+)\s*$/) {
+	    $lc_ctype = $1;
+	} elsif (/^LC_COLLATE.*:\s*(\S+)\s*$/) {
+	    $lc_collate = $1;
+	}
+    }
+    close CTRL;
+    return ($lc_ctype, $lc_collate);
 }
