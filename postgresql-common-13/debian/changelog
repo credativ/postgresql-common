@@ -23,9 +23,10 @@ postgresql-common (13) experimental; urgency=low
   * pg_lsclusters: Ensure that there is at least one space between the colums.
   * Added tests/100_encodings which checks cluster creation and updates
     for different encodings and locales.
-  * pg_upgradecluster: Preserve socket directory.
+  * pg_upgradecluster: Preserve socket directory, locales, and encoding.
+  * tests/100_encodings: Check the locale the postmaster is running under.
 
- -- Martin Pitt <mpitt@debian.org>  Fri,  3 Jun 2005 00:34:14 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat,  4 Jun 2005 15:44:40 +0200
 
 postgresql-common (12) experimental; urgency=low
 

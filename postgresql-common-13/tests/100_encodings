@@ -8,6 +8,10 @@ show_clusters() {
     pg_lsclusters
     ps -o user,group,args -C postmaster | grep postmaster
     ps -o user,group,args -C pg_autovacuum || true
+    echo "locales of postmaster server processes:"
+    for p in $(pidof postmaster); do
+	tr "\000" "\n" < /proc/$p/environ | grep ^LC_ || true
+    done
 }
 
 # create a test cluster
@@ -44,6 +48,7 @@ create_cluster 7.4 "en_US.UTF-8"
 
 # test upgrading
 pg_upgradecluster 7.4 $cluster
+pg_dropcluster 7.4 $cluster
 show_clusters
 
 # show the encoding and locale of the upgraded cluster

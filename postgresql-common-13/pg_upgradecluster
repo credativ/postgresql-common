@@ -43,18 +43,28 @@ if ($#ARGV < 1) {
 
 ($version, $cluster, $datadir) = @ARGV;
 %info = cluster_info ($version, $cluster);
-
-error "specified cluster does not exist" unless $info{'pgdata'};
+error 'specified cluster does not exist' unless $info{'pgdata'};
 error 'specified cluster is not running' unless $info{'running'};
+
+$encoding = get_db_encoding $version, $cluster, 'template1';
+error 'could not get cluster default encoding' unless $encoding;
+($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
+error 'could not get cluster locale' unless $lc_ctype;
+error 'could not get cluster collating locale' unless $lc_ctype;
 
 %newinfo = cluster_info($newversion, $cluster);
 error "target cluster $newversion/$cluster already exists" if $newinfo{'pgdata'};
 
-# create new cluster
+# create new cluster, preserving encoding and locales
 
 @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
-    '--socketdir', $info{'socketdir'}, $newversion, $cluster);
+    '--socketdir', $info{'socketdir'}, '--encoding', $encoding, $newversion,
+    $cluster);
 push @argv, $datadir if $datadir;
+
+delete $ENV{'LC_ALL'};
+$ENV{'LC_CTYPE'} = $lc_ctype;
+$ENV{'LC_COLLATE'} = $lc_collate;
 error "Could not create target cluster" if system @argv;
 
 @argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'start');
