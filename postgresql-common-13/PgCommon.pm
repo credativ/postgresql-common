@@ -399,7 +399,12 @@ sub get_db_encoding {
     my $socketdir = get_cluster_socketdir $version, $cluster;
     my $psql = get_program_path 'psql', $version;
     return undef unless ($port && $socketdir && $psql);
-    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atc 'select getdatabaseencoding()' $db`;
+
+    # try to swich to cluster owner
+    my $orig_euid = $>;
+    $> = (stat (cluster_data_directory $version, $cluster))[4];
+    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atc 'select getdatabaseencoding()' $db 2>/dev/null`;
+    $> = $orig_euid;
     chomp $out;
     return $out unless $?;
     return undef;
