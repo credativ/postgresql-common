@@ -8,7 +8,7 @@ Version Cluster   Port Status Owner    Data directory                     Log fi
 8.0     en_US     5432 online postgres /var/lib/postgresql/8.0/en_US      /var/log/postgresql/postgresql-8.0-en_US.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US -c config_file=/etc/postgresql/8.0/en_US/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US/pg_ident.conf
 USER     GROUP    COMMAND
-postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
+postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-en_US.log
 locales of postmaster server processes:
 LC_ALL=en_US
         List of databases
@@ -37,7 +37,7 @@ Version Cluster   Port Status Owner    Data directory                     Log fi
 8.0     UTF-8     5432 online postgres /var/lib/postgresql/8.0/UTF-8      /var/log/postgresql/postgresql-8.0-UTF-8.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/UTF-8 -c config_file=/etc/postgresql/8.0/UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
-postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
+postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-UTF-8.log
 locales of postmaster server processes:
 LC_ALL=en_US
         List of databases
@@ -60,7 +60,7 @@ Version Cluster   Port Status Owner    Data directory                     Log fi
 8.0     en_US.UTF-8 5432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8 /var/log/postgresql/postgresql-8.0-en_US.UTF-8.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
-postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
+postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-en_US.UTF-8.log
 locales of postmaster server processes:
 LC_ALL=en_US.UTF-8
         List of databases
@@ -158,7 +158,7 @@ Version Cluster   Port Status Owner    Data directory                     Log fi
 8.0     en_US.UTF-8 5432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8 /var/log/postgresql/postgresql-8.0-en_US.UTF-8.log 
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
-postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql
+postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-en_US.UTF-8.log
 locales of postmaster server processes:
 LC_ALL=en_US.UTF-8
 LC_COLLATE=en_US.UTF-8

@@ -9,7 +9,7 @@ Version Cluster   Port Status Owner    Data directory                     Log fi
 postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/pg74
 postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/pg80 -c config_file=/etc/postgresql/8.0/pg80/postgresql.conf -c hba_file=/etc/postgresql/8.0/pg80/pg_hba.conf -c ident_file=/etc/postgresql/8.0/pg80/pg_ident.conf
 USER     GROUP    COMMAND
-postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5433 -H /var/run/postgresql
+postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5433 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-pg80.log
 Socket directory:
 .
 ..
