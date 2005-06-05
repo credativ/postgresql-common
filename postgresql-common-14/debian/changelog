@@ -1,8 +1,9 @@
 postgresql-common (14) experimental; urgency=low
 
-  *
+  * pg_ctlcluster: Check whether mutually exclusive log_*_stats are enabled
+    to avoid the "FATAL:  invalid cache id: 30" error on client invocations.
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  4 Jun 2005 15:49:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun,  5 Jun 2005 09:09:41 +0200
 
 postgresql-common (13) experimental; urgency=low
 

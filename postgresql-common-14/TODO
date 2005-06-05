@@ -4,9 +4,7 @@ postgresql TODO
 Bugs:
 - pg_ctlcluster: Check if autovacuum daemon is really running, cat log
   if not.
-- Check whether mutually exclusive log_*_stats are enabled both in a
-  7.4 cluster to avoid the "FATAL:  invalid cache id: 30" error
-
+ 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
   databases on upgrading (like necessary for the two recent CANs)

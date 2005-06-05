@@ -21,6 +21,24 @@ if ($#ARGV != 2) {
     exit 1;
 }
 
+# Check for known broken configurations of this cluster
+sub check_valid_config {
+    my $log_statement_stats = config_bool (PgCommon::get_conf_value $version,
+    $cluster, 'postgresql.conf', 'log_statement_stats');
+    my $log_parser_stats = config_bool (PgCommon::get_conf_value $version,
+	$cluster, 'postgresql.conf', 'log_parser_stats');
+    my $log_planner_stats = config_bool (PgCommon::get_conf_value $version,
+	$cluster, 'postgresql.conf', 'log_planner_stats');
+    my $log_executor_stats = config_bool (PgCommon::get_conf_value $version,
+	$cluster, 'postgresql.conf', 'log_executor_stats');
+
+    # statement and other statistics are mutually exclusive
+    if ($log_statement_stats && ($log_parser_stats || $log_planner_stats ||
+	$log_executor_stats)) {
+	error 'invalid postgresql.conf: log_statement_stats and the other log_*_stats options are mutually exclusive';
+    }
+}
+
 sub autovacuum_start {
     return unless $info{'avac_enable'};
 
@@ -75,6 +93,8 @@ sub autovacuum_restart {
 
 sub start {
     my $cdir = $info{'configdir'};
+
+    check_valid_config;
 
     # get locale used by initdb
     my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
