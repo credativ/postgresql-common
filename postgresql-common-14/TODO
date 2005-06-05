@@ -9,4 +9,3 @@ Important features:
 - SSL support out of the box (create certificate)
 
 Wishlist:
-- pg_upgradecluster: support writing into dump file
