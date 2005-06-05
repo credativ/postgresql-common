@@ -8,7 +8,7 @@
 
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
-use POSIX qw/setsid setlocale LC_ALL/;
+use POSIX qw/setsid setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
@@ -57,13 +57,31 @@ sub autovacuum_start {
 	}
     }
 
-    if (!($pid = fork())) {
+    # remember current size of the log
+    my $logsize = 0;
+    $logsize = (stat $info{'avac_logfile'})[7] if -r $info{'avac_logfile'};
+
+    if (!($pid = fork)) {
+	setsid or die "setsid failed(): $!";
         close $_ for(STDOUT, STDIN, STDERR);
-	setsid;
         chdir '/';
         exec $pg_autovacuum, @options;
 	exit -1;
     } else {
+	# wait a bit and check whether the daemon really started
+        select (undef, undef, undef, 0.5);
+	# clean up process if it exited
+	waitpid($pid, WNOHANG);
+	unless (kill 0, $pid) {
+	    print STDERR "The PostgreSQL autovacuum daemon failed to start. Please check the log output:\n";
+	    open LOG, $info{'avac_logfile'} or 
+		error "Could not open log file " . $info{'avac_logfile'};
+	    seek LOG, $logsize, SEEK_SET;
+	    print STDERR $_ while <LOG>;
+	    exit 1;
+	}
+
+	# write PID file
         if(open my $AVAC_PID, '>', $info{'pgdata'}.'/autovacuum.pid') {
             print $AVAC_PID "$pid\n";
             close $AVAC_PID;
