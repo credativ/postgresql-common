@@ -1,3 +1,9 @@
+postgresql-common (15) experimental; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sun,  5 Jun 2005 11:40:37 +0200
+
 postgresql-common (14) experimental; urgency=low
 
   * pg_ctlcluster: Check whether mutually exclusive log_*_stats are enabled
