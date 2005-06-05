@@ -4,8 +4,9 @@ postgresql-common (14) experimental; urgency=low
     to avoid the "FATAL:  invalid cache id: 30" error on client invocations.
   * Added test 110_invalid_conf: test checking of invalid configurations.
   * Ship test suite in /usr/share/postgresql-common.
+  * pg_ctlcluster: Fix logging of autovacuum daemon.
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  5 Jun 2005 09:24:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun,  5 Jun 2005 10:49:47 +0200
 
 postgresql-common (13) experimental; urgency=low
 
