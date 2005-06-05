@@ -88,6 +88,7 @@ for T in $TESTSDIR/*; do
 	fi
 	cp "$OUT" "$TEXPECT"
 	chown $REAL_USER:$REAL_GROUP "$TEXPECT"
+	chmod 644 "$TEXPECT"
 	echo "$TEXPECT generated"
 	continue
     fi
