@@ -10,3 +10,5 @@ pg_dropcluster usr/bin
 pg_ctlcluster usr/bin
 pg_upgradecluster usr/bin
 pg_maintenance usr/sbin
+testsuite usr/share/postgresql-common
+tests/* usr/share/postgresql-common/tests

@@ -12,5 +12,3 @@ Important features:
 
 Wishlist:
 - pg_upgradecluster: support writing into dump file
-- ship test suite in package
-
