@@ -177,7 +177,7 @@ sub cluster_info {
     $result{'pgdata'} = cluster_data_directory $_[0], $_[1];
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
-    $result{'socketdir'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
+    $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
     $result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 
