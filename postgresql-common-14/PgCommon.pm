@@ -383,6 +383,7 @@ sub change_ugid {
 # true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
 # a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
 sub config_bool {
+    return undef unless defined($_[0]);
     return 1 if ($_[0] =~ /^(on|true|yes|1)$/i);
     return 0 if ($_[0] =~ /^(off|false|no|0)$/i);
     return undef;
