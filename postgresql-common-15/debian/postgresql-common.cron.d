@@ -12,10 +12,10 @@
 
 # Run VACUUM ANALYSE on all databases every 5 hours if pg_autovacuum is not
 # running
-2 0,5,10,15,20 * * 1-6 root /usr/sbin/pg_maintenance --analyze
+2 0,5,10,15,20 * * 1-6 root /usr/sbin/pg_maintenance --analyze >/dev/null
 
 # On Sunday you may wish to run a VACUUM FULL ANALYSE as well
 # If you do not run a 24/7 site, you may want to uncomment the next line
 # so as to do a regular VACUUM FULL.  If you need 24/7 connectivity, save 
 # VACUUM FULL for when you think you really need it.
-# 10 3 * * Sun root /usr/sbin/pg_maintenance --full --analyze
+# 10 3 * * Sun root /usr/sbin/pg_maintenance --full --analyze >/dev/null

@@ -44,6 +44,7 @@ for $v (get_versions) {
             push @options, '-f' if $full;
             push @options, '-z' if $analyze;
             push @options, '-v' if $verbose;
+            push @options, '-q' unless $verbose;
             exec '/usr/bin/vacuumdb', @options or
                 error 'could not execute vacuumdb';
         }

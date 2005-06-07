@@ -1,8 +1,12 @@
 postgresql-common (15) experimental; urgency=low
 
-  *
+  * Quiet maintenance:
+    - pg_maintenance: Supply -q to vacuumdb unless in verbose mode.
+    - postgresql-common.cron.d: Direct stdout to /dev/null.
+    - Adapted tests/060_maintenance expected output.
+    - Closes: #312298
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  5 Jun 2005 11:40:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue,  7 Jun 2005 11:07:50 +0200
 
 postgresql-common (14) experimental; urgency=low
 
