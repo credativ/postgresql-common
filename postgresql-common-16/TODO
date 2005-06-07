@@ -4,6 +4,7 @@ postgresql TODO
 Bugs:
 - parse and use avac_debug
 - pg_upgradecluster: handle 7.4->8.0 syslog option transition
+- pg_upgradecluster: handle 7.4->8.0 log_pid option transition
 - pg_upgradecluster: try to start the new cluster on temp port with
   new conffiles before changing the ports
 
