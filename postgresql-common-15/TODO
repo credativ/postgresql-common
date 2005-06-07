@@ -2,6 +2,7 @@ postgresql TODO
 ===============
 
 Bugs:
+- parse and use avac_debug
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
