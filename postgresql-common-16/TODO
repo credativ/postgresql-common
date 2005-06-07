@@ -3,10 +3,15 @@ postgresql TODO
 
 Bugs:
 - parse and use avac_debug
-- pg_upgradecluster: handle 7.4->8.0 syslog option transition
-- pg_upgradecluster: handle 7.4->8.0 log_pid option transition
 - pg_upgradecluster: try to start the new cluster on temp port with
   new conffiles before changing the ports
+- pg_upgradecluster: handle 7.4->8.0 option transitions:
+  * syslog=0/1/2 -> log_destination=stderr/'stderr,syslog'/syslog
+  * log_statement=false/true -> none/all
+  * log_pid=false/true -> (nothing)/log_line_prefix='%p'
+  * log_timestamp=false/true -> (nothing)/log_line_prefix='%t'
+  * log_hostname=false/true -> (nothing)/log_line_prefix='%r'
+  * log_source_port=false/true -> (nothing)/log_line_prefix='%r'
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
