@@ -12,7 +12,6 @@ Bugs:
   * log_timestamp=false/true -> (nothing)/log_line_prefix='%t'
   * log_hostname=false/true -> (nothing)/log_line_prefix='%r'
   * log_source_port=false/true -> (nothing)/log_line_prefix='%r'
-- Link README.Debian to the server packages.
 
 Transition bugs:
 - Continue to use the old log file.
