@@ -65,11 +65,10 @@ pg_wrapper - wrapper for PostgreSQL client commands
 
 =head1 SYNOPSIS
 
-B<psql> [B<--cluster> I<version>/I<cluster>] [...]
+I<client-program> [B<--cluster> I<version>/I<cluster>] [...]
 
-B<createdb> [B<--cluster> I<version>/I<cluster>] [...]
-
-B<dropdb> [B<--cluster> I<version>/I<cluster>] [...]
+(I<client-program>: B<psql>, B<createdb>, B<dropuser>, and all other client
+programs installed in C</usr/lib/postgreqsl/>I<version>C</bin>).
 
 =head1 DESCRIPTION
 

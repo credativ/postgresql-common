@@ -13,8 +13,6 @@ Bugs:
   * log_hostname=false/true -> (nothing)/log_line_prefix='%r'
   * log_source_port=false/true -> (nothing)/log_line_prefix='%r'
 - Link README.Debian to the server packages.
-- pg_wrapper(1) synopsis: make clear that this is valid for all client
-  programs
 
 Transition bugs:
 - Continue to use the old log file.

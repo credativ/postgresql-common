@@ -1,8 +1,9 @@
 postgresql-common (16) unstable; urgency=low
 
   * pg_createcluster: Add --logfile parameter.
+  * pg_wrapper(1): Clarify synopsis.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 10 Jun 2005 18:48:53 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 10 Jun 2005 18:55:07 +0200
 
 postgresql-common (15) unstable; urgency=low
 
