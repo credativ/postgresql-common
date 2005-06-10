@@ -135,7 +135,8 @@ sub add_local_hba_entry {
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
-    'start' => \$start, 'e|encoding=s' => \$encoding);
+    'start' => \$start, 'e|encoding=s' => \$encoding, 
+    'l|logfile=s' => \$custom_logfile);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -152,6 +153,8 @@ Options:
                 /var/lib/postgresql/<version>/<cluster name>)
   -s <dir>      socket directory (default: /var/run/postgresql for clusters
                 owned by 'postgres', /tmp for other clusters)
+  -l <dir>      path to desired log file (default:
+                /var/log/postgresql/postgresql-<version>-<cluster>.log)
   -e <encoding> Default encoding (default: derived from locale)
   --start       start the cluster after creating it
 ";
@@ -249,9 +252,9 @@ $> = $orig_euid;
 # create log file
 system 'mkdir', '-p', '/var/log/postgresql' and 
     error "could not create log directory";
-$real_logfile = "/var/log/postgresql/postgresql-$version-$cluster.log";
+$real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 if (! -e $real_logfile) {
-    open L, ">$real_logfile" or error "could not create log file $real_logfile";
+    open L, ">>$real_logfile" or error "could not create log file $real_logfile";
     close L;
 }
 chmod 0660, $real_logfile;
@@ -345,6 +348,11 @@ socket for local connections. Defaults to C</var/run/postgresql/> for clusters
 owned by the user B<postgres>, and C</tmp> for clusters owned by other users.
 Please be aware that C</tmp> is an unsafe directory since everybody can create
 a socket there and impersonate the database server.
+
+=item B<-l> I<path>, B<--logfile=>I<path>
+
+Explicitly set the path for the L<postmaster(1)> server log file. Defaults to
+C</var/log/postgresql/postgresql->I<version>C<->I<cluster>C<.log>.
 
 =item B<-e> I<encoding>, B<--encoding> I<encoding>
 
