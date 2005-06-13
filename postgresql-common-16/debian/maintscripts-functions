@@ -14,6 +14,7 @@ _unlink_manpages() {
     update-alternatives --remove $3 /usr/share/postgresql/$1/man/man1/$3
 }
 
+# arguments: <major version> <most recently configured package version>
 configure_version() {
     VERSION="$1"
 
@@ -21,7 +22,8 @@ configure_version() {
     # for that version.
     [ "$VERSION" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
     if [ ! -d /etc/postgresql/$VERSION ] || [ -z "$(ls /etc/postgresql/$VERSION)" ]; then
-        /usr/bin/pg_createcluster -u postgres $VERSION main
+	# Only create the cluster on installation, not on upgrade.
+        [ "$2" ] || /usr/bin/pg_createcluster -u postgres $VERSION main
     fi
 
     _link_manpages "$VERSION" "postgresql-$VERSION" postmaster.1.gz
