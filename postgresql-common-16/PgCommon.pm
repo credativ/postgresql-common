@@ -175,11 +175,23 @@ sub set_cluster_port {
     set_conf_value $_[0], $_[1], 'postgresql.conf', 'port', $_[2];
 }
 
+# Return cluster data directory.
+# Arguments: <version> <cluster name>
+sub cluster_data_directory {
+    return readlink ("$confroot/$_[0]/$_[1]/pgdata");
+}
+
 # Return the socket directory of a particular cluster or undef if the cluster
 # does not exist.
 # Arguments: <version> <cluster>
 sub get_cluster_socketdir {
-    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'unix_socket_directory') || '/tmp';
+    my $datadir = cluster_data_directory $_[0], $_[1];
+    my $socketdir = '/var/run/postgresql';
+    unless (-d $socketdir && (stat $socketdir)[4] == (stat $datadir)[4]) {
+        $socketdir = '/tmp';
+    }
+    return get_conf_value($_[0], $_[1], 'postgresql.conf',
+        'unix_socket_directory') || $socketdir;
 }
 
 # Set the socket directory of a particular cluster. 
@@ -206,12 +218,6 @@ sub cluster_port_running {
     my $out = `LANG=C $psql -h '$socketdir' -p $_[2] -l 2>&1 > /dev/null`;
     return 1 unless $?;
     return (index ($out, "could not connect") < 0);
-}
-
-# Return cluster data directory.
-# Arguments: <version> <cluster name>
-sub cluster_data_directory {
-    return readlink ("$confroot/$_[0]/$_[1]/pgdata");
 }
 
 # Return a hash with information about a specific cluster.
