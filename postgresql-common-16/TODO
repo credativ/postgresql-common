@@ -2,14 +2,12 @@ postgresql TODO
 ===============
 
 Bugs:
-- pg_upgradecluster: try to start the new cluster on temp port with
-  new conffiles before changing the ports
-- pg_upgradecluster: Fix log rotation of old log file.
 
 Transition bugs:
 - Continue to use the old log file.
 - Print a very short help after the transition is complete and make it
   more verbose.
+- Remove /etc/logrotate.d/postgresql.
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
