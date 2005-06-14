@@ -21,9 +21,9 @@ postgresql-common (16) unstable; urgency=low
     if /var/run/postgresql is not writable by the cluster owner.
   * PgCommon.pm, get_cluster_socketdir(): If unix_socket_directory is not
     specified explicitly in postgresql.conf, default to /var/run/postgresql
-    for postgresql-owned clusters. Closes: #313651
+    for postgres-owned clusters. Closes: #313651
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 15 Jun 2005 00:31:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 15 Jun 2005 00:34:15 +0200
 
 postgresql-common (15) unstable; urgency=low
 
