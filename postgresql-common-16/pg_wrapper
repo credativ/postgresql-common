@@ -42,15 +42,15 @@ for ($i = 0; $i <= $#ARGV; ++$i) {
 ($version, $cluster, $db) = user_cluster_map() unless $cluster;
 if ($cluster) {
     $port = get_cluster_port($version, $cluster);
+
+    unless ($ENV{'PGHOST'}) {
+        # default to cluster specific Unix socket directory
+        $ENV{'PGHOST'} = get_cluster_socketdir $version, $cluster;
+    }
 }
 
 $ENV{'PGPORT'} = "$port" if $port;
 $ENV{'PGDATABASE'} = $db if $db;
-
-unless ($ENV{'PGHOST'}) {
-    # default to cluster specific Unix socket directory
-    $ENV{'PGHOST'} = get_cluster_socketdir $version, $cluster;
-}
 
 @args = (get_program_path ($cmd, $version));
 error 'Invalid PostgreSQL cluster version' unless $args[0];
