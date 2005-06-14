@@ -185,9 +185,12 @@ sub cluster_data_directory {
 # does not exist.
 # Arguments: <version> <cluster>
 sub get_cluster_socketdir {
-    my $datadir = cluster_data_directory $_[0], $_[1];
     my $socketdir = '/var/run/postgresql';
-    unless (-d $socketdir && (stat $socketdir)[4] == (stat $datadir)[4]) {
+    return $socketdir unless $_[0] && $_[1];
+
+    my $datadir = cluster_data_directory $_[0], $_[1];
+
+    unless ($datadir && -d $socketdir and (stat $socketdir)[4] == (stat $datadir)[4]) {
         $socketdir = '/tmp';
     }
     return get_conf_value($_[0], $_[1], 'postgresql.conf',
