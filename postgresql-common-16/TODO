@@ -6,7 +6,6 @@ Bugs:
 - pg_upgradecluster: try to start the new cluster on temp port with
   new conffiles before changing the ports
 - pg_upgradecluster: handle 7.4->8.0 option transitions:
-  * log_statement=false/true -> none/all
   * log_pid=false/true -> (nothing)/log_line_prefix='%p'
   * log_timestamp=false/true -> (nothing)/log_line_prefix='%t'
   * log_hostname=false/true -> (nothing)/log_line_prefix='%r'
