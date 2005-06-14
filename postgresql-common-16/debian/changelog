@@ -7,8 +7,10 @@ postgresql-common (16) unstable; urgency=low
     upgrading a server package.
   * pg_upgradecluster: Handle more configuration parameter transitions:
     - syslog -> log_destination
+  * pg_upgradecluster: Use new replace_conf_value() function which
+    produces nicer configuration files with transitioned parameters.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 14 Jun 2005 20:52:39 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Jun 2005 21:16:57 +0200
 
 postgresql-common (15) unstable; urgency=low
 

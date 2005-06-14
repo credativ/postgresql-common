@@ -15,14 +15,14 @@ sub adapt_conffiles {
         'postgresql.conf', 'tcpip_socket');
     my $virtual_host = PgCommon::get_conf_value $newversion, $cluster,
             'postgresql.conf', 'virtual_host';
-    PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-            'virtual_host', 'done in 8.0 with listen_addresses';
-
-    if (defined $tcpip_socket) {
+    if (defined $virtual_host) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'tcpip_socket', 'deprecated in favor of listen_addresses';
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'listen_addresses', ($tcpip_socket ? ($virtual_host || '*') : '');
+                'virtual_host', 'deprecated in favor of listen_addresses';
+    }
+    if (defined $tcpip_socket) {
+        PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
+                'tcpip_socket', 'deprecated in favor of listen_addresses', 
+                'listen_addresses', ($tcpip_socket ? ($virtual_host || '*') : '');
     }
 
     # syslog transition
@@ -30,9 +30,8 @@ sub adapt_conffiles {
         'postgresql.conf', 'syslog';
     if (defined $syslog) {
         my %syslog_values = (0 => 'stderr', 1 => 'stderr,syslog', 2 => 'syslog');
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-            'syslog', 'deprecated in favor of log_destination';
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+        PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
+            'syslog', 'deprecated in favor of log_destination',
             'log_destination', $syslog_values{$syslog};
     }
 }

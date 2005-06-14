@@ -12,7 +12,8 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_cluster_locales/;
-our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value/;
+our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value
+    replace_conf_value/;
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
@@ -113,6 +114,52 @@ sub disable_conf_value {
         }
         close F;
     }
+}
+
+# Replace a parameter in a PostgreSQL configuration file. The old parameter is
+# prepended with a '#' and  gets an optional explanatory comment <reason>
+# appended, if given. The new parameter is inserted directly after the old one.
+# Arguments: <version> <cluster> <config file name> <old parameter name>
+#            <reason> <new parameter name> <new value>
+sub replace_conf_value {
+    my ($version, $cluster, $configfile, $oldparam, $reason, $newparam, $val) = @_;
+    my $fname = "$confroot/$version/$cluster/$configfile";
+    my @lines;
+
+    # quote $val if necessary
+    unless ($val =~ /^\w+$/) {
+	$val = "'$val'";
+    }
+
+    # read configuration file lines
+    open (F, $fname) or die "Error: could not open $fname for reading";
+    push @lines, $_ while (<F>);
+    close F;
+
+    my $found = 0;
+    for (my $i = 0; $i <= $#lines; ++$i) {
+	if ($lines[$i] =~ /^\s*$oldparam\s*=/) {
+	    $lines[$i] = '#'.$lines[$i];
+	    chomp $lines[$i];
+            $lines[$i] .= ' #'.$reason."\n" if $reason;
+
+            # insert the new param
+            splice @lines, $i+1, 0, "$newparam = $val\n";
+            ++$i;
+
+            $found = 1;
+	    last;
+	}
+    }
+
+    push (@lines, "$newparam = $val\n") unless $found;
+
+    # write configuration file lines
+    open (F, '>'.$fname) or die "Error: could not open $fname for writing";
+    foreach (@lines) {
+        print F $_;
+    }
+    close F;
 }
 
 # Return the port of a particular cluster or undef if the cluster
