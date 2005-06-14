@@ -2,7 +2,6 @@ postgresql TODO
 ===============
 
 Bugs:
-- parse and use avac_debug
 - pg_upgradecluster: try to start the new cluster on temp port with
   new conffiles before changing the ports
 - pg_upgradecluster: Fix log rotation of old log file.

@@ -14,8 +14,10 @@ postgresql-common (16) unstable; urgency=low
     produces nicer configuration files with transitioned parameters.
   * Add test 120_obsolete_confparams: Upgrade a 7.4 cluster with all
     possible 7.4 options enabled.
+  * PgCommon.pm: Fix parsing of autovacuum parameters.
+  * pg_ctlcluster: Respect the avac_debug autovacuum configuration option.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 14 Jun 2005 23:18:01 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 15 Jun 2005 00:03:37 +0200
 
 postgresql-common (15) unstable; urgency=low
 

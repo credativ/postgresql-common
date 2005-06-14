@@ -238,12 +238,13 @@ sub cluster_info {
 	my $enableval = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start');
 	$enableval ||= 'no';
 	$result{'avac_enable'} = ($enableval eq 'yes');
-	$result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'sleep_base_value');
-	$result{'avac_sleep_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'sleep_scaling_factor');
-	$result{'avac_vac_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'vacuum_base_thresold');
-	$result{'avac_vac_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'vacuum_scaling_factor');
-	$result{'avac_anal_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'analyze_base_threshold');
-	$result{'avac_anal_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'analyze_scaling_factor');
+	$result{'avac_debug'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_debug');
+	$result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_base');
+	$result{'avac_sleep_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_scale');
+	$result{'avac_vac_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_base');
+	$result{'avac_vac_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_scale');
+	$result{'avac_anal_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_base');
+	$result{'avac_anal_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_scale');
     }
     
     return %result;

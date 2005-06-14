@@ -47,7 +47,7 @@ sub autovacuum_start {
     my %avac_flags = ('avac_sleep_base' => '-s', 'avac_sleep_scale' => '-S',
                       'avac_vac_base'   => '-v', 'avac_vac_scale'   => '-V',
                       'avac_anal_base'  => '-a', 'avac_anal_scale'  => '-A',
-                      'avac_logfile' => '-L');
+                      'avac_logfile' => '-L', 'avac_debug' => '-d');
 
     @options = ('-p', $info{'port'}, '-H', $info{'socketdir'});
 
