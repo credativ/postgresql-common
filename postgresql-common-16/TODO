@@ -2,6 +2,8 @@ postgresql TODO
 ===============
 
 Bugs:
+- PgCommon.pm: never ask for a password when checking if a cluster
+  runs
 
 Transition bugs:
 - Continue to use the old log file.
