@@ -3,6 +3,7 @@
 
 package PgCommon;
 use strict;
+use Socket;
 
 use Exporter;
 our $VERSION = 1.00;
@@ -215,12 +216,15 @@ sub get_program_path {
 # Check whether a postmaster server is running at the specified port.
 # Arguments: <version> <cluster> <port>
 sub cluster_port_running {
-    my $psql = get_program_path 'psql', $_[0];
-    my $socketdir = get_cluster_socketdir $_[0], $_[1];
     die "port_running: invalid port $_[2]" if $_[2] !~ /\d+/;
-    my $out = `LANG=C $psql -h '$socketdir' -p $_[2] -l 2>&1 > /dev/null`;
-    return 1 unless $?;
-    return (index ($out, "could not connect") < 0);
+    my $socketdir = get_cluster_socketdir $_[0], $_[1];
+    my $socketpath = "$socketdir/.s.PGSQL.$_[2]";
+    return 0 unless -S $socketpath;
+
+    socket(SRV, PF_UNIX, SOCK_STREAM, 0) or die "socket: $!";
+    my $running = connect(SRV, sockaddr_un($socketpath));
+    close SRV;
+    return $running ? 1 : 0;
 }
 
 # Return a hash with information about a specific cluster.

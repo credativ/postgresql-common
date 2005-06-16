@@ -1,8 +1,11 @@
 postgresql-common (17) unstable; urgency=low
 
-  *
+  * PgCommon.pm, cluster_port_running(): Attempt to connect() to the server
+    socket for probing if the server is running. The previous method of using
+    'psql -l' asked for a password if md5/password authentication is used
+    locally. Closes: #314292
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 10:24:34 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 10:29:33 +0200
 
 postgresql-common (16) unstable; urgency=low
 
