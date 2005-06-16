@@ -1,3 +1,9 @@
+postgresql-common (18) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 11:48:56 +0200
+
 postgresql-common (17) unstable; urgency=low
 
   * PgCommon.pm, cluster_port_running(): Attempt to connect() to the server
