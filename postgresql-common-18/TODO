@@ -4,10 +4,10 @@ postgresql TODO
 Bugs:
 
 Transition bugs:
-- Continue to use the old log file.
 - Print a very short help after the transition is complete and make it
   more verbose.
-- Remove /etc/logrotate.d/postgresql.
+- Check that we are upgrading from << 7.5.
+- Get rid of postgres' .profile (#312514)
 
 Important features:
 - add infrastructure to support running scripts/SQL commands on all
