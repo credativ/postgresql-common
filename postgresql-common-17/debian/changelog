@@ -4,8 +4,9 @@ postgresql-common (17) unstable; urgency=low
     socket for probing if the server is running. The previous method of using
     'psql -l' asked for a password if md5/password authentication is used
     locally. Closes: #314292
+  * testsuite: Ignore whitespace changes in expected vs. actual output.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 10:29:33 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 10:42:03 +0200
 
 postgresql-common (16) unstable; urgency=low
 
