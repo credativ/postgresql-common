@@ -5,8 +5,11 @@ postgresql-common (17) unstable; urgency=low
     'psql -l' asked for a password if md5/password authentication is used
     locally. Closes: #314292
   * testsuite: Ignore whitespace changes in expected vs. actual output.
+  * tests/100_encodings: Fix race condition when showing postmaster processes:
+    If we catch the postmaster right at fork() time, ps shows two postmaster
+    instances instead of one. Filter them away to get the expected output.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 10:42:03 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 11:44:08 +0200
 
 postgresql-common (16) unstable; urgency=low
 
