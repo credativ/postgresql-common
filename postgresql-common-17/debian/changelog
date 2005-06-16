@@ -1,3 +1,9 @@
+postgresql-common (17) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 16 Jun 2005 10:24:34 +0200
+
 postgresql-common (16) unstable; urgency=low
 
   * pg_createcluster: Add --logfile parameter.
