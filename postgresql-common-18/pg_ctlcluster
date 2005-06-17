@@ -220,6 +220,7 @@ unless (getgrgid $info{'ownergid'}) {
 }
 
 if ($setuid) {
+    chdir ('/var/lib/postgresql');
     change_ugid $info{'owneruid'}, $info{'ownergid'};
 }
 
