@@ -3,8 +3,11 @@ postgresql-common (18) unstable; urgency=low
   * pg_ctlcluster: Change directory to /var/lib/postgresql to avoid error
     messages when doing an operation in a directory which the database owner
     cannot access.
+  * pg_ctlcluster: Pass the default socket directory to the postmaster,
+    otherwise it will always be /tmp if unix_socket_directory is not specified
+    in postgresql.conf. Closes: #314537
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 17 Jun 2005 18:55:11 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 18 Jun 2005 18:31:05 +0200
 
 postgresql-common (17) unstable; urgency=low
 
