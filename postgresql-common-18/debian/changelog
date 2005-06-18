@@ -12,8 +12,10 @@ postgresql-common (18) unstable; urgency=low
     - On startup, check for a stale or invalid PID file and remove it if
       appropriate.
     - On stop, bail out on an invalid PID file. Closes: #304466.
+  * Added tests/021_invalid_pidfile: Corrupt the pid file in various ways
+    while the server is running and down. Also check double start/stop.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 18 Jun 2005 19:58:38 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 18 Jun 2005 20:30:10 +0200
 
 postgresql-common (17) unstable; urgency=low
 

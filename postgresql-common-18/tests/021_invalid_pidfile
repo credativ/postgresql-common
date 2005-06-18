@@ -1,0 +1,39 @@
+#!/bin/sh -e
+
+# Check handling of corrupted pid files on cluster pg74.
+
+echo 'Corrupt pid file while server is running...'
+mv /var/lib/postgresql/7.4/pg74/postmaster.pid /var/lib/postgresql/7.4/pg74/postmaster.pid.orig
+echo foo > /var/lib/postgresql/7.4/pg74/postmaster.pid
+chown postgres:postgres /var/lib/postgresql/7.4/pg74/postmaster.pid
+chmod 700 /var/lib/postgresql/7.4/pg74/postmaster.pid
+
+pg_ctlcluster 7.4 pg74 stop -s && exit 1
+pg_lsclusters
+
+echo 'Restoring pid file and reattempt stop...'
+cp /var/lib/postgresql/7.4/pg74/postmaster.pid.orig /var/lib/postgresql/7.4/pg74/postmaster.pid
+pg_ctlcluster 7.4 pg74 stop -s
+pg_lsclusters
+
+echo 'Stopping stopped server...'
+pg_ctlcluster 7.4 pg74 stop -s || true
+pg_lsclusters
+
+echo 'Simulating crashed server...'
+mv /var/lib/postgresql/7.4/pg74/postmaster.pid.orig /var/lib/postgresql/7.4/pg74/postmaster.pid
+pg_ctlcluster 7.4 pg74 start -s
+pg_lsclusters
+pg_ctlcluster 7.4 pg74 stop -s
+pg_lsclusters
+
+echo 'Corrupt pid file while server is down...'
+echo foo > /var/lib/postgresql/7.4/pg74/postmaster.pid
+chown postgres:postgres /var/lib/postgresql/7.4/pg74/postmaster.pid
+chmod 700 /var/lib/postgresql/7.4/pg74/postmaster.pid
+pg_ctlcluster 7.4 pg74 start -s
+pg_lsclusters
+
+echo 'Starting already running server...'
+pg_ctlcluster 7.4 pg74 start -s || true
+pg_lsclusters
