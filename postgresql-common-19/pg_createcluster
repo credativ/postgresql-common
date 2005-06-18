@@ -272,6 +272,16 @@ chmod 0660, $real_logfile;
 symlink $real_logfile, $avac_log;
 chown $owneruid, $ownergid, $real_logfile, $avac_log;
 
+# create SSL certificate symlinks to the default certificate if it exists; if
+# so, enable SSL
+if (-e '/etc/postgresql-common/postgresql.crt' && 
+    -e '/etc/postgresql-common/postgresql.pem') {
+    symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
+    symlink '/etc/postgresql-common/postgresql.pem', $datadir.'/server.key';
+
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';
+}
+
 # start it if requested
 if ($start) {
     system '/usr/bin/pg_ctlcluster', '-s', $version, $cluster, 'start';
