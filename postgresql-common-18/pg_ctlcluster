@@ -76,6 +76,17 @@ sub start_check_pid_file {
     print "Removed stale pid file.\n";
 }
 
+# Check if a pid file is not present or it is invalid. If so, abort.
+sub stop_check_pid_file {
+    my $pidfile = $info{'pgdata'}.'/postmaster.pid';
+    my $pid = get_running_pid $pidfile;
+    return if (defined $pid and $pid =~ /^\d+$/); 
+    if ($info{'running'}) {
+	error 'pid file is invalid, please manually kill the stale server process.';
+    }
+    error 'cluster is not running';
+}
+
 sub autovacuum_start {
     return unless $info{'avac_enable'};
 
@@ -207,6 +218,8 @@ sub start {
 
 sub stop {
     autovacuum_stop;
+
+    stop_check_pid_file;
 
     if (!fork()) {
         close STDOUT;
