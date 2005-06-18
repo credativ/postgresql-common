@@ -72,8 +72,10 @@ sub start_check_pid_file {
     }
 
     # Remove invalid or stale PID file
-    unlink $pidfile;
-    print "Removed stale pid file.\n";
+    if (-e $pidfile) {
+	unlink $pidfile;
+	print "Removed stale pid file.\n";
+    }
 }
 
 # Check if a pid file is not present or it is invalid. If so, abort.
