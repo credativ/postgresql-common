@@ -1,8 +1,41 @@
 #!/bin/sh
 
+SSL_BASE=/etc/ssl
+SSL_CERT=$SSL_BASE/certs/postgresql.crt
+SSL_KEY=$SSL_BASE/private/postgresql.pem
+
+# generate SSL certificate and key if openssl is installed and the certificate
+# does not yet exist.
+generate_ssl_key() {
+    [ -x /usr/bin/openssl ] || return 0
+    [ -d $SSL_BASE/certs -a -d $SSL_BASE/private ] || return 0
+
+    if [ ! -e $SSL_KEY -a ! -e $SSL_CERT ]; then
+        echo "Creating generic self-signed certificate: $SSL_CERT"
+        echo "(replace with hand-crafted or authorized one if needed)."
+        HOSTNAME=`hostname -s`
+        FQDN=`hostname -f`
+        MAILNAME=`cat /etc/mailname 2> /dev/null || hostname -f`
+        ( openssl req -new -x509 -days 365 -nodes -out $SSL_CERT -keyout $SSL_KEY > /dev/null 2>&1 <<EOF
+.
+.
+.
+PostgreSQL database server
+$FQDN
+$FQDN
+root@$MAILNAME
+EOF
+        chmod 0644 $SSL_CERT
+        chmod 0600 $SSL_KEY
+        ) || echo "Warning : Bad SSL config, can't generate certificate"
+    fi
+}
+
 if [ "$1" = configure ]; then
     # Make sure the administrative user exists
     adduser --system --quiet --no-create-home --home /var/lib/postgresql --group --gecos "PostgreSQL administrator" postgres
+
+    generate_ssl_key
 fi
 
 if [ -x "/etc/init.d/postgresql-7.4" ]; then
