@@ -1,15 +1,12 @@
 #!/bin/sh
 
-SSL_BASE=/etc/ssl
-SSL_CERT=$SSL_BASE/certs/postgresql.crt
-SSL_KEY=$SSL_BASE/private/postgresql.pem
+SSL_CERT=/etc/postgresql-common/postgresql.crt
+SSL_KEY=/etc/postgresql-common/postgresql.pem
 
 # generate SSL certificate and key if openssl is installed and the certificate
 # does not yet exist.
 generate_ssl_key() {
     [ -x /usr/bin/openssl ] || return 0
-    [ -d $SSL_BASE/certs -a -d $SSL_BASE/private ] || return 0
-
     if [ ! -e $SSL_KEY -a ! -e $SSL_CERT ]; then
         echo "Creating generic self-signed certificate: $SSL_CERT"
         echo "(replace with hand-crafted or authorized one if needed)."
@@ -26,7 +23,8 @@ $FQDN
 root@$MAILNAME
 EOF
         chmod 0644 $SSL_CERT
-        chmod 0600 $SSL_KEY
+	chown root:postgres $SSL_KEY
+        chmod 0640 $SSL_KEY
         ) || echo "Warning : Bad SSL config, can't generate certificate"
     fi
 }
