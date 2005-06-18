@@ -1,3 +1,9 @@
+postgresql-common (19) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 18 Jun 2005 20:55:21 +0200
+
 postgresql-common (18) unstable; urgency=low
 
   * pg_ctlcluster: Change directory to /var/lib/postgresql to avoid error
