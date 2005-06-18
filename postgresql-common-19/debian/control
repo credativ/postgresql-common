@@ -11,10 +11,14 @@ Architecture: all
 Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-7.4 (<< 1:7.4.8-5)
 Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5)
 Depends: ${shlibs:Depends}
+Recommends: openssl
 Description: manager for PostgreSQL database clusters
  postgresql-common provides a structure under which multiple versions of
  PostgreSQL may be installed and/or multiple clusters maintained at one
  time.
+ .
+ If you have openssl installed, this package will automatically create a (self
+ signed) SSL certificate so that SSL works out of the box.
  .
  PostgreSQL is a fully featured object-relational database management
  system.  It supports a large part of the SQL standard and is designed
