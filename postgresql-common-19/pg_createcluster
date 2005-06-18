@@ -330,6 +330,13 @@ configuration file and creating the C<pgdata> link.
 If the log file does not exist, it is created. In any case the permissions are
 adjusted to allow write access to the cluster owner.
 
+If an SSL certificate exists in C</etc/postgresql-common> (C<postgresql.crt>
+and C<postgresql.pem>), this program creates symlinks to these files in the
+data directory (C<server.crt> and C<server.key>) and enables SSL for that
+cluster (option B<ssl> in C<postgresql.conf>). Therefore all clusters will use
+the same SSL certificate by default. Of course you can replace these symlinks
+with a cluster specific certificate.
+
 =head1 OPTIONS
 
 =over 4
