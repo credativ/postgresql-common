@@ -39,6 +39,43 @@ sub check_valid_config {
     }
 }
 
+# Return the PID from an existing PID file or undef if it does not exist.
+# Arguments: <pid file path>
+sub get_running_pid {
+    return undef unless -e $_[0];
+
+    if (open PIDFILE, $_[0]) {
+	my $pid = <PIDFILE>;
+	chomp $pid if defined $pid;
+	close PIDFILE;
+	return $pid;
+    } else {
+	return undef;
+    }
+}
+
+# If a pid file is already present, delete it if it is stale/invalid, or exit
+# with an error if it belongs to an already running postmaster.
+sub start_check_pid_file {
+    my $pidfile = $info{'pgdata'}.'/postmaster.pid';
+    my $pid = get_running_pid $pidfile;
+    if (defined $pid and $pid =~ /^\d+$/) {
+	if (open PS, '-|', '/bin/ps', '-o', 'comm', 'h', 'p', $pid) {
+	    my $process = <PS>;
+	    chomp $process if defined $process;
+	    close PS;
+	    if (defined $process and $process eq 'postmaster') {
+		print "Cluster is already running.\n";
+		exit (0);
+	    }
+	}
+    }
+
+    # Remove invalid or stale PID file
+    unlink $pidfile;
+    print "Removed stale pid file.\n";
+}
+
 sub autovacuum_start {
     return unless $info{'avac_enable'};
 
@@ -113,6 +150,8 @@ sub start {
     my $cdir = $info{'configdir'};
 
     check_valid_config;
+
+    start_check_pid_file;
 
     # get locale used by initdb
     my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;

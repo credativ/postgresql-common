@@ -8,8 +8,10 @@ postgresql-common (18) unstable; urgency=low
     in postgresql.conf. Closes: #314537
   * Added tests/041_server_default_socketdir: Check that the socket is created
     in /var/run/postgresql if unix_socket_directory is not specified.
+  * pg_ctlcluster: Check for stale and invalid PID files and remove them if
+    appropriate.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 18 Jun 2005 18:43:06 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 18 Jun 2005 19:38:34 +0200
 
 postgresql-common (17) unstable; urgency=low
 
