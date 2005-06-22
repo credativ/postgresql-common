@@ -10,8 +10,11 @@ postgresql-common (19) unstable; urgency=low
   * debian/init.d-functions: "pg_ctl restart" does not seem to re-read certain
     configuration parameters like the socket directory, so replace it with
     stop+start.
+  * debian/postgresql-common.postinst: Create /var/run/postgresql before
+    creating the initial cluster to ensure that the socket directory will be
+    present. Closes: #312899
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 16:52:59 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 17:22:24 +0200
 
 postgresql-common (18) unstable; urgency=low
 

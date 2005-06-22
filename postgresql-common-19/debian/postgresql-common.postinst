@@ -33,6 +33,10 @@ if [ "$1" = configure ]; then
     # Make sure the administrative user exists
     adduser --system --quiet --no-create-home --home /var/lib/postgresql --group --gecos "PostgreSQL administrator" postgres
 
+    # create socket directory
+    [ -d /var/run/postgresql ] || \
+	install -d -m 775 -o postgres -g postgres /var/run/postgresql
+
     generate_ssl_key
 
     # restart all servers
