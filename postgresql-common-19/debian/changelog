@@ -13,8 +13,9 @@ postgresql-common (19) unstable; urgency=low
   * debian/postgresql-common.postinst: Create /var/run/postgresql before
     creating the initial cluster to ensure that the socket directory will be
     present. Closes: #312899
+  * Added debian/postgresql-common.postrm: Clean up on purge.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 17:22:24 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 17:30:57 +0200
 
 postgresql-common (18) unstable; urgency=low
 

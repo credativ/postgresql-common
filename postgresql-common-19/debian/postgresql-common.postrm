@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+if [ "$1" = purge ]; then
+    # remove socket directory
+    rm -rf /var/run/postgresql
+
+    # remove SSL keys
+    rm -rf /etc/postgresql-common/postgresql.crt /etc/postgresql-common/postgresql.pem
+
+    rmdir --ignore-fail-on-non-empty /etc/postgresql-common
+fi
+
+#DEBHELPER#
+
