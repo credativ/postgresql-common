@@ -34,23 +34,25 @@ if [ "$1" = configure ]; then
     adduser --system --quiet --no-create-home --home /var/lib/postgresql --group --gecos "PostgreSQL administrator" postgres
 
     generate_ssl_key
+
+    # restart all servers
+    if [ -x "/etc/init.d/postgresql-7.4" ]; then
+            if [ -x /usr/sbin/invoke-rc.d ]; then
+                    invoke-rc.d postgresql-7.4 restart || exit 0
+            else
+                    /etc/init.d/postgresql-7.4 restart || exit 0
+            fi
+    fi
+
+    if [ -x "/etc/init.d/postgresql-8.0" ]; then
+            if [ -x /usr/sbin/invoke-rc.d ]; then
+                    invoke-rc.d postgresql-8.0 restart || exit 0
+            else
+                    /etc/init.d/postgresql-8.0 restart || exit 0
+            fi
+    fi
 fi
 
-if [ -x "/etc/init.d/postgresql-7.4" ]; then
-        if [ -x /usr/sbin/invoke-rc.d ]; then
-                invoke-rc.d postgresql-7.4 restart || exit 0
-        else
-                /etc/init.d/postgresql-7.4 restart || exit 0
-        fi
-fi
-
-if [ -x "/etc/init.d/postgresql-8.0" ]; then
-        if [ -x /usr/sbin/invoke-rc.d ]; then
-                invoke-rc.d postgresql-8.0 restart || exit 0
-        else
-                /etc/init.d/postgresql-8.0 restart || exit 0
-        fi
-fi
 
 #DEBHELPER#
 

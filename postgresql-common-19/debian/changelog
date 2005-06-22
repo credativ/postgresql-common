@@ -6,8 +6,9 @@ postgresql-common (19) unstable; urgency=low
   * pg_createcluster: If SSL certificate and key exist, symlink it to the
     cluster directory where the postmaster looks for them and enable SSL in
     the configuration.
+  * debian/postgresql-common.postinst: Only restart servers when configuring.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 19 Jun 2005 01:02:48 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 16:45:46 +0200
 
 postgresql-common (18) unstable; urgency=low
 
