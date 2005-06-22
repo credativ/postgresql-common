@@ -7,8 +7,11 @@ postgresql-common (19) unstable; urgency=low
     cluster directory where the postmaster looks for them and enable SSL in
     the configuration.
   * debian/postgresql-common.postinst: Only restart servers when configuring.
+  * debian/init.d-functions: "pg_ctl restart" does not seem to re-read certain
+    configuration parameters like the socket directory, so replace it with
+    stop+start.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 16:45:46 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 16:52:59 +0200
 
 postgresql-common (18) unstable; urgency=low
 

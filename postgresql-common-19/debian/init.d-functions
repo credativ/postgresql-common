@@ -60,7 +60,8 @@ stop() {
 # restart all clusters of version $1
 # output according to Debian Policy for init scripts
 restart() {
-    do_ctl_all restart "$1" "Restarting PostgreSQL $1 database server:"
+    do_ctl_all stop "$1" "Stopping PostgreSQL $1 database server:"
+    do_ctl_all start "$1" "Starting PostgreSQL $1 database server:"
 }
 
 # reload all clusters of version $1
