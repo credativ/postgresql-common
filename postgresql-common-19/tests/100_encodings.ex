@@ -81,7 +81,7 @@ Moving configuration file /var/lib/postgresql/7.4/en_US/postgresql.conf to /etc/
 Configuring postgresql.conf to use port 5432...
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 7.4     en_US     5432 online postgres /var/lib/postgresql/7.4/en_US      /var/log/postgresql/postgresql-7.4-en_US.log 
-postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/en_US
+postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -c unix_socket_directory=/var/run/postgresql -D /var/lib/postgresql/7.4/en_US
 USER     GROUP    COMMAND
 locales of postmaster server processes:
 LC_ALL=en_US
@@ -103,7 +103,7 @@ Moving configuration file /var/lib/postgresql/7.4/UTF-8/postgresql.conf to /etc/
 Configuring postgresql.conf to use port 5432...
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 7.4     UTF-8     5432 online postgres /var/lib/postgresql/7.4/UTF-8      /var/log/postgresql/postgresql-7.4-UTF-8.log 
-postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/UTF-8
+postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -c unix_socket_directory=/var/run/postgresql -D /var/lib/postgresql/7.4/UTF-8
 USER     GROUP    COMMAND
 locales of postmaster server processes:
 LC_ALL=en_US
@@ -125,7 +125,7 @@ Moving configuration file /var/lib/postgresql/7.4/en_US.UTF-8/postgresql.conf to
 Configuring postgresql.conf to use port 5432...
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 7.4     en_US.UTF-8 5432 online postgres /var/lib/postgresql/7.4/en_US.UTF-8 /var/log/postgresql/postgresql-7.4-en_US.UTF-8.log 
-postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -D /var/lib/postgresql/7.4/en_US.UTF-8
+postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -c unix_socket_directory=/var/run/postgresql -D /var/lib/postgresql/7.4/en_US.UTF-8
 USER     GROUP    COMMAND
 locales of postmaster server processes:
 LC_ALL=en_US.UTF-8
