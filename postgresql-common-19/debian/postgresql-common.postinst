@@ -31,7 +31,9 @@ EOF
 
 if [ "$1" = configure ]; then
     # Make sure the administrative user exists
-    adduser --system --quiet --no-create-home --home /var/lib/postgresql --group --gecos "PostgreSQL administrator" postgres
+    if ! getent passwd postgres > /dev/null; then
+        adduser --system --quiet --no-create-home --home /var/lib/postgresql --group --gecos "PostgreSQL administrator" postgres
+    fi
 
     # create socket directory
     [ -d /var/run/postgresql ] || \

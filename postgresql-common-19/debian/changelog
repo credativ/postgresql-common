@@ -14,8 +14,10 @@ postgresql-common (19) unstable; urgency=low
     creating the initial cluster to ensure that the socket directory will be
     present. Closes: #312899
   * Added debian/postgresql-common.postrm: Clean up on purge.
+  * debian/postgresql-common.postinst: Check whether the user postgres exists
+    before calling adduser to avoid confusing warning messages.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 17:30:57 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Jun 2005 17:33:50 +0200
 
 postgresql-common (18) unstable; urgency=low
 
