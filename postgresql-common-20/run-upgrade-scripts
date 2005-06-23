@@ -14,7 +14,10 @@ error "Usage: $0 <version upgraded from>" if $#ARGV != 0;
 sub dbs_from_scope {
     my ($v, $c, $scope) = @_;
     my @dbs = get_cluster_databases $v, $c;
-    return () unless @dbs;
+    unless (defined $dbs[0]) {
+        print ' Error: cluster is not running';
+        return ();
+    }
     return @dbs if $scope eq 't0';
     return grep { $_ ne 'template0' } @dbs if $scope eq 't1';
     return grep { $_ ne 'template0' && $_ ne 'template1' } @dbs if $scope eq 'db';
