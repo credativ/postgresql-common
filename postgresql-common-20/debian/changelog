@@ -8,6 +8,8 @@ postgresql-common (20) unstable; urgency=low
     - Add /usr/share/postgresql-common/upgrade-scripts/ where scripts are
       stored into.
     - Add /usr/share/postgresql-common/upgrade-scripts/SPECIFICATION.
+    - This checks for available databases, thus will not fail on a nonexisting
+      template0. Closes: #312707
   * pg_ctlcluster: pg_ctl's -o option is not cumulative, fix postmaster
     argument passing. This ensures that "-c unix_socket_directory" is always
     passed to the postmaster.
