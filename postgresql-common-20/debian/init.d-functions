@@ -86,6 +86,6 @@ autovac-stop() {
 
 # restart pg_autovacuum for all clusters of version $1
 autovac-restart() {
-    do_ctl_all autovac-restart "$1" "Retarting PostgreSQL $1 autovacuum daemon:"
+    do_ctl_all autovac-restart "$1" "Restarting PostgreSQL $1 autovacuum daemon:"
 }
 
