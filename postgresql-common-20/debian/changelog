@@ -14,8 +14,10 @@ postgresql-common (20) unstable; urgency=low
   * pg_createcluster: Do not configure a cluster for SSL if the owner is not
     the owner of /etc/postgresql-common/postgresql.pem. This fixes cluster
     creation for non-postgres owners.
+  * Add test 130_nonpostgres_clusters: Check cluster creation and operation
+    for a cluster owned by "nobody".
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 22:26:58 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 22:39:07 +0200
 
 postgresql-common (19) unstable; urgency=low
 

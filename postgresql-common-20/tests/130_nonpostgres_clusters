@@ -1,0 +1,28 @@
+#!/bin/sh -e
+
+# Create and test a 7.4 and 8.0 cluster which is not owned by postgres, but by
+# nobody.
+
+pg_createcluster -u nobody --start 7.4 pg74
+pg_lsclusters
+ps -o user,group,args -C postmaster | grep postmaster
+ps -o user,group,args -C pg_autovacuum || true
+echo "Socket directory:"
+ls -a /var/run/postgresql/ /tmp/.s.*
+su -s /bin/sh -c 'psql -l' nobody
+pg_dropcluster --stop-server 7.4 pg74
+pg_lsclusters
+ps -o user,group,args -C postmaster | grep postmaster || true
+ps -o user,group,args -C pg_autovacuum || true
+
+pg_createcluster -u nobody --start 8.0 pg80
+pg_lsclusters
+ps -o user,group,args -C postmaster | grep postmaster
+ps -o user,group,args -C pg_autovacuum
+echo "Socket directory:"
+ls -a /var/run/postgresql/ /tmp/.s.*
+su -s /bin/sh -c 'psql -l' nobody
+pg_dropcluster --stop-server 8.0 pg80
+pg_lsclusters
+ps -o user,group,args -C postmaster | grep postmaster || true
+ps -o user,group,args -C pg_autovacuum || true
