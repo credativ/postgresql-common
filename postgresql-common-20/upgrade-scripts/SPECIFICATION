@@ -1,0 +1,59 @@
+postgresql-common upgrade script infrastructure
+===============================================
+
+Purpose
+-------
+
+These scripts are executed on upgrades of postgresql-common. They can be used
+to perform version-specific or common tasks on all databases or all clusters
+(like doing security updates on already existing databases, do format
+conversions, and so on).
+
+Conventions
+-----------
+
+File names must have the following format:
+
+  version_name_scope.suffix
+
+Files can either be SQL scripts with a "sql" suffix, or executable scripts with
+any other suffix.
+
+Files not following these conventions (like this README file) are ignored.
+
+version: 
+  This specifies a version number of postgresql-common. If the package
+  is upgraded from a version less than or equal to this number, the script is
+  applied. If version is "all", the script is always applied regardless of the
+  already installed version.
+
+name:
+  This name is displayed when calling the script as an information for the
+  user.
+
+scope:
+  db: The script is called/applied for each existing database of all clusters,
+      but not to template1 and template0.
+  t1: The script is additionally applied to all template1 databases.
+  t0: The script is additionally applied to all template0 databases.
+  cluster: The script is called once for each existing cluster.
+
+suffix:
+  ".sql" for SQL scripts, arbitrary (also empty) for executable scripts.
+
+SQL Scripts
+-----------
+Per-database scripts are fed to psql which is called as cluster superuser on
+the currently processed database. Per-cluster scripts are called with
+connecting to template1.
+
+Executable scripts
+------------------
+Scripts receive the following arguments:
+
+  <version> <cluster> <database name>
+
+<database name> will always be "template1" for cluster-scope scripts.
+On success, they must exit with 0; on error, they should write error
+messages to stdout and exit with nonzero. stdout is then displayed as
+a failure message.

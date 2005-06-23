@@ -57,6 +57,10 @@ if [ "$1" = configure ]; then
                     /etc/init.d/postgresql-8.0 restart || exit 0
             fi
     fi
+
+    if [ "$2" ]; then
+        /usr/share/postgresql-common/run-upgrade-scripts "$2" || true
+    fi
 fi
 
 

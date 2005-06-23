@@ -1,0 +1,78 @@
+#!/usr/bin/perl -w
+# Run all upgrade scripts.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+use strict;
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+
+error "Usage: $0 <version upgraded from>" if $#ARGV != 0;
+
+# Return the cluster's databases that match the given scope.
+# Arguments: <version> <cluster> <scope>
+sub dbs_from_scope {
+    my ($v, $c, $scope) = @_;
+    my @dbs = get_cluster_databases $v, $c;
+    return () unless @dbs;
+    return @dbs if $scope eq 't0';
+    return grep { $_ ne 'template0' } @dbs if $scope eq 't1';
+    return grep { $_ ne 'template0' && $_ ne 'template1' } @dbs if $scope eq 'db';
+    return grep { $_ eq 'template1' } @dbs if $scope eq 'cluster';
+}
+
+# Arguments: <script> <scope> <version> <cluster> <database>
+sub call_sql {
+    my ($script, $scope, $version, $cluster, $db) = @_;
+    $cluster =~ s/'/''/g; # escape ' in cluster name
+    my $orig_euid = $>;
+    $> = (stat (PgCommon::cluster_data_directory $version, $cluster))[4];
+    my $out = `ON_ERROR_STOP=1 /usr/bin/psql --cluster '$version/$cluster' -f '$script' '$db' 2>&1`;
+    $> = $orig_euid;
+    print "[FAIL]\n$out" if $?;
+}
+
+# Arguments: <script> <scope> <version> <cluster> <database>
+sub call_script {
+    my ($script, $scope, $version, $cluster, $db) = @_;
+    $cluster =~ s/'/\\'/g; # escape ' in cluster name
+    my $out = `$script '$version' '$cluster' '$db' 2>&1`;
+    print "[FAIL]\n$out" if $?;
+}
+
+my $upgraded_version  = $ARGV[0];
+
+# determine path of upgrade scripts
+my @f = split(/\//, $0);
+pop @f;
+@f = ('.') if $#f == -1;
+push @f, 'upgrade-scripts';
+my $scriptpath = join ('/', @f);
+
+opendir S, $scriptpath or error "Could not open script path '$scriptpath'";
+for my $script (readdir S) {
+    my ($fname, $ext) = split /\./, $script;
+    my ($version, $name, $scope) = split /_/, $fname;
+    my $is_sql = (defined $ext && $ext eq 'sql');
+    next unless defined ($scope) && ($is_sql || -x "$scriptpath/$script");
+
+    next unless ($version eq 'all' || $upgraded_version <= $version);
+    print "Executing upgrade script $name...\n";
+
+    for my $v (get_versions) {
+	for my $c (get_version_clusters $v) {
+	    print "  cluster $v/$c:";
+	    for my $db (dbs_from_scope $v, $c, $scope) {
+		print " $db";
+		if ($is_sql) {
+		    call_sql "$scriptpath/$script", $scope, $v, $c, $db;
+		} else {
+		    call_script "$scriptpath/$script", $scope, $v, $c, $db;
+		}
+	    }
+            print "\n";
+	}
+    }
+
+}
+closedir S;

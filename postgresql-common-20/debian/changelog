@@ -1,8 +1,15 @@
 postgresql-common (20) unstable; urgency=low
 
-  *
+  * Add infrastructure for executing SQL or executable scripts on clusters and
+    databases on upgrade. This can be useful to apply security updates which
+    need to change database layouts (like for CAN-2005-1409), do checks on
+    upgrades, and maybe other things.
+    - Add run-upgrade-scripts and call it in the postinst.
+    - Add /usr/share/postgresql-common/upgrade-scripts/ where scripts are
+      stored into.
+    - Add /usr/share/postgresql-common/upgrade-scripts/SPECIFICATION.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 18:07:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 19:56:15 +0200
 
 postgresql-common (19) unstable; urgency=low
 
