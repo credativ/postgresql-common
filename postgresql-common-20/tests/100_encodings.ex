@@ -6,7 +6,7 @@ Moving configuration file /var/lib/postgresql/8.0/en_US/postgresql.conf to /etc/
 Configuring postgresql.conf to use port 5432...
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 8.0     en_US     5432 online postgres /var/lib/postgresql/8.0/en_US      /var/log/postgresql/postgresql-8.0-en_US.log 
-postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US -c config_file=/etc/postgresql/8.0/en_US/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US/pg_ident.conf
+postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US -c unix_socket_directory=/var/run/postgresql -c config_file=/etc/postgresql/8.0/en_US/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-en_US.log
 locales of postmaster server processes:
@@ -35,7 +35,7 @@ Moving configuration file /var/lib/postgresql/8.0/UTF-8/postgresql.conf to /etc/
 Configuring postgresql.conf to use port 5432...
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 8.0     UTF-8     5432 online postgres /var/lib/postgresql/8.0/UTF-8      /var/log/postgresql/postgresql-8.0-UTF-8.log 
-postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/UTF-8 -c config_file=/etc/postgresql/8.0/UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/UTF-8/pg_ident.conf
+postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/UTF-8 -c unix_socket_directory=/var/run/postgresql -c config_file=/etc/postgresql/8.0/UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-UTF-8.log
 locales of postmaster server processes:
@@ -58,7 +58,7 @@ Moving configuration file /var/lib/postgresql/8.0/en_US.UTF-8/postgresql.conf to
 Configuring postgresql.conf to use port 5432...
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 8.0     en_US.UTF-8 5432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8 /var/log/postgresql/postgresql-8.0-en_US.UTF-8.log 
-postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
+postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c unix_socket_directory=/var/run/postgresql -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-en_US.UTF-8.log
 locales of postmaster server processes:
@@ -156,7 +156,8 @@ you can remove the old cluster with
   pg_dropcluster 7.4 en_US.UTF-8
 Version Cluster   Port Status Owner    Data directory                     Log file                       
 8.0     en_US.UTF-8 5432 online postgres /var/lib/postgresql/8.0/en_US.UTF-8 /var/log/postgresql/postgresql-8.0-en_US.UTF-8.log 
-postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
+postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/en_US.UTF-8 -c unix_socket_directory=/var/run/postgresql -c config_file=/etc/postgresql/8.0/en_US.UTF-8/postgresql.conf -c hba_file=/etc/postgresql/8.0/en_US.UTF-8/pg_hba.conf -c ident_file=/etc/postgresql/8.0/en_US.UTF-8/pg_ident.conf
+postgres postgres [postmaster]
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-en_US.UTF-8.log
 locales of postmaster server processes:

@@ -7,7 +7,7 @@ Version Cluster   Port Status Owner    Data directory                     Log fi
 7.4     pg74      5432 online postgres /var/lib/postgresql/7.4/pg74       /var/log/postgresql/postgresql-7.4-pg74.log 
 8.0     pg80      5433 online postgres /var/lib/postgresql/8.0/pg80       /var/log/postgresql/postgresql-8.0-pg80.log 
 postgres postgres /usr/lib/postgresql/7.4/bin/postmaster -c unix_socket_directory=/tmp/postgresql-testsuite/ -D /var/lib/postgresql/7.4/pg74
-postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/pg80 -c config_file=/etc/postgresql/8.0/pg80/postgresql.conf -c hba_file=/etc/postgresql/8.0/pg80/pg_hba.conf -c ident_file=/etc/postgresql/8.0/pg80/pg_ident.conf
+postgres postgres /usr/lib/postgresql/8.0/bin/postmaster -D /var/lib/postgresql/8.0/pg80 -c unix_socket_directory=/var/run/postgresql -c config_file=/etc/postgresql/8.0/pg80/postgresql.conf -c hba_file=/etc/postgresql/8.0/pg80/pg_hba.conf -c ident_file=/etc/postgresql/8.0/pg80/pg_ident.conf
 USER     GROUP    COMMAND
 postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5433 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-pg80.log
 Socket directory:
