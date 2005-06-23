@@ -15,7 +15,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     change_ugid config_bool get_db_encoding get_cluster_locales
     get_cluster_databases/;
 our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value
-    replace_conf_value/;
+    replace_conf_value cluster_data_directory/;
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
