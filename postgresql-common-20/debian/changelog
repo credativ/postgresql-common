@@ -11,8 +11,11 @@ postgresql-common (20) unstable; urgency=low
   * pg_ctlcluster: pg_ctl's -o option is not cumulative, fix postmaster
     argument passing. This ensures that "-c unix_socket_directory" is always
     passed to the postmaster.
+  * pg_createcluster: Do not configure a cluster for SSL if the owner is not
+    the owner of /etc/postgresql-common/postgresql.pem. This fixes cluster
+    creation for non-postgres owners.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 21:18:34 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 22:26:58 +0200
 
 postgresql-common (19) unstable; urgency=low
 

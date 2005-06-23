@@ -275,7 +275,8 @@ chown $owneruid, $ownergid, $real_logfile, $avac_log;
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
 if (-e '/etc/postgresql-common/postgresql.crt' && 
-    -e '/etc/postgresql-common/postgresql.pem') {
+    -e '/etc/postgresql-common/postgresql.pem' &&
+    (stat '/etc/postgresql-common/postgresql.pem')[4] == (stat $datadir)[4]) {
     symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
     symlink '/etc/postgresql-common/postgresql.pem', $datadir.'/server.key';
 
