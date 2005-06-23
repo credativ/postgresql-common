@@ -2,6 +2,7 @@ postgresql TODO
 ===============
 
 Bugs:
+- Do not symlink SSL keys to non-postgres clusters and disable SSL.
 
 Transition bugs:
 
