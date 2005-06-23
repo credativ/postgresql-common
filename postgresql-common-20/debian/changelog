@@ -8,8 +8,11 @@ postgresql-common (20) unstable; urgency=low
     - Add /usr/share/postgresql-common/upgrade-scripts/ where scripts are
       stored into.
     - Add /usr/share/postgresql-common/upgrade-scripts/SPECIFICATION.
+  * pg_ctlcluster: pg_ctl's -o option is not cumulative, fix postmaster
+    argument passing. This ensures that "-c unix_socket_directory" is always
+    passed to the postmaster.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 19:56:15 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 21:18:34 +0200
 
 postgresql-common (19) unstable; urgency=low
 

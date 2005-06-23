@@ -178,14 +178,15 @@ sub start {
     # set locale for the postmaster
     $ENV{'LC_ALL'} = $ENV{'LANG'} = $lc_ctype;
 
-    @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'},
-	'-s', '-o', '-c unix_socket_directory="'.$info{'socketdir'}.'"');
+    my $postmaster_opts = '-c unix_socket_directory="' . $info{'socketdir'} . '"';
 
     # versions 8.0+ support configurable conffile locations
     if ($version >= 8) {
-	push @options, '-o';
-        push @options, "-c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
+        $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
     }
+
+    @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'},
+	'-s', '-o', $postmaster_opts);
 
     # remember current size of the log
     $logsize = 0;
