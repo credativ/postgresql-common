@@ -1,3 +1,9 @@
+postgresql-common (20) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 18:07:37 +0200
+
 postgresql-common (19) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Generate an SSL certificate and key if
