@@ -12,7 +12,8 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid config_bool get_db_encoding get_cluster_locales/;
+    change_ugid config_bool get_db_encoding get_cluster_locales
+    get_cluster_databases/;
 our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value
     replace_conf_value/;
 
@@ -492,4 +493,31 @@ sub get_cluster_locales {
     }
     close CTRL;
     return ($lc_ctype, $lc_collate);
+}
+
+# Return an array with all databases of a cluster. This requires connection
+# privileges to template1, so this function should be called as the
+# cluster owner.
+# Arguments: <version> <cluster> 
+# Returns: array of database names or undef on error.
+sub get_cluster_databases {
+    my ($version, $cluster) = @_;
+    my $port = get_cluster_port $version, $cluster;
+    my $socketdir = get_cluster_socketdir $version, $cluster;
+    my $psql = get_program_path 'psql', $version;
+    return undef unless ($port && $socketdir && $psql);
+
+    # try to swich to cluster owner
+    my $orig_euid = $>;
+    $> = (stat (cluster_data_directory $version, $cluster))[4];
+    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atl 2>/dev/null`;
+    $> = $orig_euid;
+    return undef if $?;
+    my @dbs;
+    my $i = 0;
+    foreach (split "\n", $out) {
+        chomp;
+        $dbs[$i++] = (split '\|')[0];
+    }
+    return @dbs;
 }
