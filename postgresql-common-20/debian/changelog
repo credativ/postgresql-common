@@ -18,8 +18,11 @@ postgresql-common (20) unstable; urgency=low
     creation for non-postgres owners.
   * Add test 130_nonpostgres_clusters: Check cluster creation and operation
     for a cluster owned by "nobody".
+  * Add upgrade-scripts/all_vacuum_t1.sql: Upgrade script that will just
+    vacuum all available databases. This is pretty useful and harmless, and is
+    a good thing to test upgrade scripts at a larger scale.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 22:39:07 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 23:51:51 +0200
 
 postgresql-common (19) unstable; urgency=low
 
