@@ -1,3 +1,9 @@
+postgresql-common (21) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Sun, 26 Jun 2005 15:30:38 +0200
+
 postgresql-common (20) unstable; urgency=low
 
   * Add infrastructure for executing SQL or executable scripts on clusters and
