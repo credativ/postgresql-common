@@ -24,8 +24,10 @@ postgresql-common (20) unstable; urgency=low
   * Add upgrade-scripts/all_vacuum_t1.sql: Upgrade script that will just
     vacuum all available databases. This is pretty useful and harmless, and is
     a good thing to test upgrade scripts at a larger scale.
+  * init.d-functions: Rename autovac-* to autovac_* to comply to POSIX shell
+    identifier rules. Closes: #315551
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jun 2005 23:51:51 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 26 Jun 2005 14:26:56 +0200
 
 postgresql-common (19) unstable; urgency=low
 

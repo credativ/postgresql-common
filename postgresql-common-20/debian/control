@@ -8,7 +8,7 @@ Build-Depends-Indep: cdbs, debhelper (>= 4.1.29)
 
 Package: postgresql-common
 Architecture: all
-Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-7.4 (<< 1:7.4.8-5)
+Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-7.4 (<< 1:7.4.8-10), postgresql-8.0 (<< 8.0.3-7)
 Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5)
 Depends: ${shlibs:Depends}
 Recommends: openssl

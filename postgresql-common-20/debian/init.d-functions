@@ -75,17 +75,17 @@ status() {
 }
 
 # start pg_autovacuum for all clusters of version $1
-autovac-start() {
+autovac_start() {
     do_ctl_all autovac-start "$1" "Starting PostgreSQL $1 autovacuum daemon:"
 }
 
 # stop pg_autovacuum for all clusters of version $1
-autovac-stop() {
+autovac_stop() {
     do_ctl_all autovac-stop "$1" "Stopping PostgreSQL $1 autovacuum daemon:"
 }
 
 # restart pg_autovacuum for all clusters of version $1
-autovac-restart() {
+autovac_restart() {
     do_ctl_all autovac-restart "$1" "Restarting PostgreSQL $1 autovacuum daemon:"
 }
 
