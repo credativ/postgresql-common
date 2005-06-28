@@ -25,9 +25,10 @@ Eventually you will not get around reading at least some parts of the manual,
 but if you want to get straight into playing SQL, here are the steps to create
 a database user and a database for the Unix user 'joe':
 
-1. Install a database server with the major version of your choice, preferrably
-   the latest version. This will automatically create a default cluster 'main'
-   with the database superuser 'postgres'.
+1. Install a database server with the major version of your choice,
+   preferrably the latest version (e. g. 'postgresql-8.0'). This will
+   automatically create a default cluster 'main' with the database
+   superuser 'postgres'.
 
 2. Get a shell for the database superuser 'postgres'. If your system has an
    active root user, use su:

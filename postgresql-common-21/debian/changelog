@@ -1,8 +1,10 @@
 postgresql-common (21) unstable; urgency=low
 
-  *
+  * README.Debian: Explain that a server is required, give postgresql-8.0
+    example. (The descriptions of the packages have been updated in
+    postgresql-{7.4,8.0}.) Closes: #313247
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Sun, 26 Jun 2005 15:30:38 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 28 Jun 2005 23:49:00 +0200
 
 postgresql-common (20) unstable; urgency=low
 
