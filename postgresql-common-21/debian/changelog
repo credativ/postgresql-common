@@ -5,8 +5,9 @@ postgresql-common (21) unstable; urgency=low
     postgresql-{7.4,8.0}.) Closes: #313247
   * README.Debian: Add "-s /bin/sh" to su command to also work with disabled
     shells for postgres.
+  * README.Debian: Document autovacuum handling.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 12 Jul 2005 09:27:04 +0300
+ -- Martin Pitt <mpitt@debian.org>  Tue, 12 Jul 2005 09:41:30 +0300
 
 postgresql-common (20) unstable; urgency=low
 

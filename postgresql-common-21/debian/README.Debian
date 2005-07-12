@@ -93,6 +93,19 @@ created in the data directory which point to the certificate in
 default. Of course you can replace these symlinks by cluster-specific
 certificates.
 
+Autovacuum daemon
+-----------------
+
+If you install the "postgresql-contrib-<version>" package, a "pg_autovacuum"
+daemon will be automatically started for every cluster. You can configure (or
+even disable) the autovacuum parameters globally in
+/etc/postgresql-common/autovacuum.conf. If you want to configure a cluster
+individually, copy this file into /etc/postgresql/<version>/<cluster>.
+
+Please note that the cron job that vacuums databases every 5 hours (see
+/etc/cron.d/postgresql-common) does not do anything for clusters with a running
+autovacuum daemon.
+
 Further documentation
 ---------------------
 All commands shipped by postgresql-common have detailled manpages. See
