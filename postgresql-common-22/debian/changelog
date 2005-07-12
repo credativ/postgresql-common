@@ -1,3 +1,9 @@
+postgresql-common (22) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 12 Jul 2005 23:59:35 +0300
+
 postgresql-common (21) unstable; urgency=low
 
   * README.Debian: Explain that a server is required, give postgresql-8.0
