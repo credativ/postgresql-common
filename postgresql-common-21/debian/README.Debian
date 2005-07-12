@@ -33,7 +33,7 @@ a database user and a database for the Unix user 'joe':
 2. Get a shell for the database superuser 'postgres'. If your system has an
    active root user, use su:
 
-   $ su -c "su postgres"
+   $ su -c "su -s /bin/sh postgres"
 
    If your system uses sudo to get administrative rights, use sudo instead:
 

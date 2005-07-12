@@ -3,7 +3,6 @@ postgresql TODO
 
 Bugs:
 - Broken symlinks in doc/postgresql-X.Y (gzipped README.Debian)
-- README.Debian. Add "-s /bin/sh" to su command.
 
 Transition bugs:
 

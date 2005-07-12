@@ -3,8 +3,10 @@ postgresql-common (21) unstable; urgency=low
   * README.Debian: Explain that a server is required, give postgresql-8.0
     example. (The descriptions of the packages have been updated in
     postgresql-{7.4,8.0}.) Closes: #313247
+  * README.Debian: Add "-s /bin/sh" to su command to also work with disabled
+    shells for postgres.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 28 Jun 2005 23:49:00 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 12 Jul 2005 09:27:04 +0300
 
 postgresql-common (20) unstable; urgency=low
 
