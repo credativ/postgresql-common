@@ -2,7 +2,6 @@ postgresql TODO
 ===============
 
 Bugs:
-- Broken symlinks in doc/postgresql-X.Y (gzipped README.Debian)
 
 Transition bugs:
 
