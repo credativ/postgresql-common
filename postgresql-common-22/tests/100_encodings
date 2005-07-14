@@ -6,7 +6,7 @@
 # shows all clusters and running server processes
 show_clusters() {
     pg_lsclusters
-    ps -o user,group,args -C postmaster | grep postmaster | uniq
+    ps -o user,group,args -C postmaster | grep bin/postmaster | uniq
     ps -o user,group,args -C pg_autovacuum || true
     echo "locales of postmaster server processes:"
     for p in $(pidof postmaster); do

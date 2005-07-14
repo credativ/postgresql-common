@@ -4,8 +4,9 @@ postgresql-common (22) unstable; urgency=low
     instead of the old "ident sameuser" default since it makes a lot more
     sense.
   * tests/000_debs: Fix detection of whether a package is installed.
+  * tests/100_encodings: Fix filtering of postmaster processes.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 14 Jul 2005 11:13:17 +0300
+ -- Martin Pitt <mpitt@debian.org>  Thu, 14 Jul 2005 12:00:16 +0300
 
 postgresql-common (21) unstable; urgency=low
 
