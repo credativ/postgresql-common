@@ -1,3 +1,9 @@
+postgresql-common (23) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 14 Jul 2005 13:58:41 +0300
+
 postgresql-common (22) unstable; urgency=low
 
   * pg_createcluster: Set default authentication for TCP connections to "md5"
