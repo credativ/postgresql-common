@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 deb_installed() {
-    if dpkg -s "$1" >/dev/null 2>/dev/null; then
+    if dpkg -s "$1" | grep -q ^Version: 2>/dev/null; then
 	echo "Debian package $1 is installed"
     else
 	echo "Debian package $1 is missing"
