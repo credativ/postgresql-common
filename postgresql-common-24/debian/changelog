@@ -1,3 +1,9 @@
+postgresql-common (24) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 21 Jul 2005 00:54:54 +0200
+
 postgresql-common (23) unstable; urgency=low
 
   * pg_maintenance: Change directory to / before changing uid to avoid "could
