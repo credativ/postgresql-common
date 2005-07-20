@@ -2,8 +2,13 @@ postgresql-common (23) unstable; urgency=low
 
   * pg_maintenance: Change directory to / before changing uid to avoid "could
     not change directory" errors. Closes: #318604.
+  * Drop upgrade-scripts/all_vacuum_t1.sql since it causes too much trouble
+    with big databases. Replace it with upgrade-scripts/all_test_t1.sql which
+    just counts the tables in the database. This should be unintrusive, fast,
+    and still appropriate for testing the upgrade scripts mechanism.
+    Closes: #319035
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 19 Jul 2005 22:56:21 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jul 2005 23:13:37 +0200
 
 postgresql-common (22) unstable; urgency=low
 
