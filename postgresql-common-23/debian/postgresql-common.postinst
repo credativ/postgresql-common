@@ -2,6 +2,7 @@
 
 SSL_CERT=/etc/postgresql-common/postgresql.crt
 SSL_KEY=/etc/postgresql-common/postgresql.pem
+SSL_ROOT=/etc/postgresql-common/root.crt
 
 # generate SSL certificate and key if openssl is installed and the certificate
 # does not yet exist.
@@ -40,6 +41,23 @@ if [ "$1" = configure ]; then
 	install -d -m 775 -o postgres -g postgres /var/run/postgresql
 
     generate_ssl_key
+
+    # create default dummy root.crt if not present
+    if ! [ -e "$SSL_ROOT" ]; then
+        cat > "$SSL_ROOT" <<EOF
+This is a dummy root certificate file for PostgreSQL. To enable client side
+authentication, add some certificates to it. Client certificates must be signed
+with any certificate in this file to be accepted. 
+
+A reasonable choice is to just symlink this file to postgresql.crt; in this
+case, client certificates need to be signed by the postgresql server
+certificate, which might be desirable in many cases. See
+
+  file:///usr/share/doc/postgresql-doc-8.0/html/ssl-tcp.html
+
+for details (in package postgresql-doc-8.0).
+EOF
+    fi
 
     # restart all servers
     if [ -x "/etc/init.d/postgresql-7.4" ]; then

@@ -289,6 +289,11 @@ if (-e '/etc/postgresql-common/postgresql.crt' &&
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';
 }
 
+# create SSL client certificate root symlink if appropriate
+if (-e '/etc/postgresql-common/root.crt') {
+    symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+}
+
 # start it if requested
 if ($start) {
     system '/usr/bin/pg_ctlcluster', '-s', $version, $cluster, 'start';

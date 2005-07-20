@@ -86,12 +86,25 @@ certificate with customized information fields and a signature from an official
 Certification Authority, you should replace these files with your own
 certificate and key.
 
-When a cluster is created with pg_createcluster, SSL support will automatically
-be enabled in that cluster, and symlinks "server.key" and "server.crt" are
-created in the data directory which point to the certificate in
-/etc/postgresql-common; therefore all clusters use the same certificate by
-default. Of course you can replace these symlinks by cluster-specific
-certificates.
+When a cluster is created with pg_createcluster, SSL support will
+automatically be enabled in that cluster, and symlinks "server.key"
+and "server.crt" are created in the data directory which point to the
+certificate in /etc/postgresql-common; therefore all clusters use the
+same certificate by default. Of course you can replace these symlinks
+by cluster-specific certificates. 
+
+In addition, if /etc/postgresql-common/root.crt exists, a symbolic
+link "root.crt" will be created in the data directory.
+/etc/postgresql-common/root.crt is a dummy file by default, so that
+client-side authentication is not performed. To enable it, you should
+add some root certificates to it. A reasonable choice is to just
+symlink the file to /etc/postgresql-common/postgresql.crt; in this
+case, client certificates need to be signed by the postgresql server
+certificate, which might be desirable in many cases. See
+
+  file:///usr/share/doc/postgresql-doc-8.0/html/ssl-tcp.html
+
+for details (in package postgresql-doc-8.0).
 
 Autovacuum daemon
 -----------------

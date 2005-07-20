@@ -6,6 +6,7 @@ if [ "$1" = purge ]; then
 
     # remove SSL keys
     rm -rf /etc/postgresql-common/postgresql.crt /etc/postgresql-common/postgresql.pem
+    rm -rf /etc/postgresql-common/root.crt 
 
     rmdir --ignore-fail-on-non-empty /etc/postgresql-common
 fi
