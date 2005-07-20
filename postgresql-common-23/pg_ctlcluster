@@ -108,8 +108,10 @@ sub autovacuum_start {
     }
 
     # remember current size of the log
-    my $logsize = 0;
-    $logsize = (stat $info{'avac_logfile'})[7] if -r $info{'avac_logfile'};
+    my $logsize = -1;
+    if (defined $info{'avac_logfile'}) {
+        $logsize = (stat $info{'avac_logfile'})[7] if -r $info{'avac_logfile'};
+    }
 
     if (!($pid = fork)) {
 	setsid or die "setsid failed(): $!";
@@ -123,11 +125,16 @@ sub autovacuum_start {
 	# clean up process if it exited
 	waitpid($pid, WNOHANG);
 	unless (kill 0, $pid) {
-	    print STDERR "The PostgreSQL autovacuum daemon failed to start. Please check the log output:\n";
-	    open LOG, $info{'avac_logfile'} or 
-		error "Could not open log file " . $info{'avac_logfile'};
-	    seek LOG, $logsize, SEEK_SET;
-	    print STDERR $_ while <LOG>;
+            print STDERR "The PostgreSQL autovacuum daemon failed to start.\n";
+            if ($logsize >= 0) {
+                print STDERR "Please check the log output:\n";
+                open LOG, $info{'avac_logfile'} or 
+                    error "Could not open log file " . $info{'avac_logfile'};
+                seek LOG, $logsize, SEEK_SET;
+                print STDERR $_ while <LOG>;
+            } else {
+                print STDERR "/etc/postgresql/$version/$cluster/autovacuum_log is missing or a dangling symlink.\n\n";
+            }
 	    exit 1;
 	}
 

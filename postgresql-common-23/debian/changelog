@@ -7,8 +7,11 @@ postgresql-common (23) unstable; urgency=low
     just counts the tables in the database. This should be unintrusive, fast,
     and still appropriate for testing the upgrade scripts mechanism.
     Closes: #319035
+  * pg_ctlcluster: Check if autovacuum log file symlink is dangling and avoid
+    warnings about uninitialized warnings. Instead print out a meaningful
+    error message. Closes: #318717
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jul 2005 23:13:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jul 2005 23:58:34 +0200
 
 postgresql-common (22) unstable; urgency=low
 
