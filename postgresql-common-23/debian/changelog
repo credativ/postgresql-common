@@ -11,11 +11,11 @@ postgresql-common (23) unstable; urgency=low
     warnings about uninitialized warnings. Instead print out a meaningful
     error message. Closes: #318717
   * debian/postgresql-common.postinst: Generate a dummy
-    /etc/postgresql-common/root.crt if not present.
+    /etc/postgresql-common/root.crt if not present. Closes: #319110
   * debian/postgresql-common.postrm: Remove /etc/postgresql-common/root.crt on
     purge.
   * pg_createcluster: If /etc/postgresql-common/root.crt exists, symlink
-    root.crt from the data directory. Closes: #319110, #318818
+    root.crt from the data directory. Closes: #318818
   * debian/README.Debian: Document root.crt handling.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 21 Jul 2005 00:44:52 +0200
