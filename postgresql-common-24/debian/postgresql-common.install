@@ -14,3 +14,4 @@ testsuite usr/share/postgresql-common
 tests/* usr/share/postgresql-common/tests
 upgrade-scripts/* usr/share/postgresql-common/upgrade-scripts
 run-upgrade-scripts usr/share/postgresql-common
+pg_checksystem usr/share/postgresql-common

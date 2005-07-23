@@ -1,0 +1,47 @@
+#!/usr/bin/perl -w
+
+# Check various system parameters for PostgreSQL. This needs to be run as root.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+use strict;
+
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+
+# Check write cache setting for given drive.
+# Arguments: <device>
+# Returns: 0 = disabled, 1 = enabled, -1: could not determine
+sub get_device_write_cache {
+    open DRV, $_[0] or return -1;
+    sub HDIO_GET_WCACHE () {0x30e;}
+    my $pval = pack 'l', 0;
+    ioctl DRV, &HDIO_GET_WCACHE, $pval or return -1;
+    my ($val) = unpack 'l', $pval;
+    close DRV;
+    return $val;
+}
+
+# collect write cache-enabled drives with databases
+my %drive_wcache;
+my %seen;
+for my $v (get_versions) {
+    for my $c (get_version_clusters $v) {
+	my $datadir = PgCommon::cluster_data_directory $v, $c;
+	my $drv = PgCommon::get_file_device $datadir;
+	$drv =~ s/[0-9]+$//;
+	unless (exists $seen{$drv}) {
+	    $drive_wcache{$drv} = 1 if (get_device_write_cache $drv) > 0;
+	    $seen{$drv} = 1;
+	}
+    }
+}
+my @unsave_drives = keys %drive_wcache;
+
+if (@unsave_drives) {
+    print 'Warning: The following devices contain databases and have write
+caching enabled: ', (join ' ', @unsave_drives), '
+This could destroy the integrity of your databases in the event of power
+failure. Consider disabling the write cache with "hdparm -W 0 <device>".
+';
+}

@@ -79,6 +79,8 @@ EOF
     if [ "$2" ]; then
         /usr/share/postgresql-common/run-upgrade-scripts "$2" || true
     fi
+
+    /usr/share/postgresql-common/pg_checksystem || true
 fi
 
 

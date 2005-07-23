@@ -1,8 +1,11 @@
 postgresql-common (24) unstable; urgency=low
 
-  *
+  * Add /usr/share/postgresql-common/pg_checksystem: Check system parameters
+    which are relevant to PostgreSQL. Right now this checks if write caching
+    is enabled on any disk containing PostgreSQL clusters.
+  * debian/postgresql-common.postinst: Call pg_checksystem. Closes: #318928
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 21 Jul 2005 00:54:54 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 24 Jul 2005 00:59:58 +0200
 
 postgresql-common (23) unstable; urgency=low
 
