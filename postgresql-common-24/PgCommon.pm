@@ -15,7 +15,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     change_ugid config_bool get_db_encoding get_cluster_locales
     get_cluster_databases/;
 our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value
-    replace_conf_value cluster_data_directory/;
+    replace_conf_value cluster_data_directory get_file_device/;
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
@@ -520,4 +520,20 @@ sub get_cluster_databases {
         $dbs[$i++] = (split '\|')[0];
     }
     return @dbs;
+}
+
+# Return the device name a file is stored at.
+# Arguments: <file path>
+# Returns:  device name, or '' if it cannot be determined.
+sub get_file_device {
+    my $dev = '';
+    if (open DF, '-|', '/bin/df', $_[0]) {
+        while (<DF>) {
+            if (/^\/dev/) {
+                $dev = (split)[0];
+            }
+        }
+    }
+    close DF;
+    return $dev;
 }
