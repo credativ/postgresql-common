@@ -4,8 +4,9 @@ postgresql-common (24) unstable; urgency=low
     which are relevant to PostgreSQL. Right now this checks if write caching
     is enabled on any disk containing PostgreSQL clusters.
   * debian/postgresql-common.postinst: Call pg_checksystem. Closes: #318928
+  * Bump Standards-Version to 3.6.2.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 24 Jul 2005 00:59:58 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 28 Jul 2005 13:44:42 +0200
 
 postgresql-common (23) unstable; urgency=low
 
