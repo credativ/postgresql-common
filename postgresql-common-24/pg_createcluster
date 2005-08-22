@@ -108,7 +108,7 @@ sub setup_pg_hba {
 # super user can access the database using some other method.
 # Noninteractive
 # access to all databases is required during automatic maintenance
-# (pg_autovacuum or daily cronjob).
+# (autovacuum, daily cronjob, replication, and similar tasks).
 #
 # Database administrative login by UNIX sockets
 ";
