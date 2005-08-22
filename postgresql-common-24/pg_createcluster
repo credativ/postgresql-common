@@ -98,6 +98,11 @@ sub move_conffile {
 # Version specific default configuration
 #
 
+sub configure_8_0 {
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'listen_addresses', '*';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
+}
+
 sub configure_8_1 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'listen_addresses', '*';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
