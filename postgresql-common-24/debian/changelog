@@ -22,8 +22,9 @@ postgresql-common (24) unstable; urgency=low
     - listen_addresses = '*'
     - stats_row_level = on
     - autovacuum = on
+  * PgCommon.pm, set_conf_value(): Preserve comments.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 00:45:22 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 01:19:16 +0200
 
 postgresql-common (23) unstable; urgency=low
 

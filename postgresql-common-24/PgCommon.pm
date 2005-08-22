@@ -78,8 +78,9 @@ sub set_conf_value {
 
     my $found = 0;
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=/) {
-	    $lines[$i] = "$_[3] = $value\n";
+	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=\s*\w+\b((?:\s*#.*)?)/ or
+	    $lines[$i] =~ /^\s*#?\s*$_[3]\s*=\s*'[^']*'((?:\s*#.*)?)/) {
+	    $lines[$i] = "$_[3] = $value$1\n";
 	    $found = 1;
 	    last;
 	}
