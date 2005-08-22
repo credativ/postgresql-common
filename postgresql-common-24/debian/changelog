@@ -7,8 +7,10 @@ postgresql-common (24) unstable; urgency=low
   * Bump Standards-Version to 3.6.2.
   * debian/postgresql-common.postinst: Setup user 'postgres' with /bin/bash as
     default shell. Closes: #320810
+  * pg_wrapper, debian/postgresql-common.links: Wrap reindexdb, it is a
+    standard client program in 8.1.
 
- -- Martin Pitt <mpitt@debian.org>  Mon,  1 Aug 2005 18:50:03 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 22 Aug 2005 23:30:05 +0200
 
 postgresql-common (23) unstable; urgency=low
 

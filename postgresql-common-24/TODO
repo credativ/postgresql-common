@@ -12,5 +12,4 @@ Important features:
 Wishlist:
 
 8.1 features: 
-- wrap reindexdb
 - internal autovacuum (cron + init.d)
