@@ -61,20 +61,14 @@ EOF
     fi
 
     # restart all servers
-    if [ -x "/etc/init.d/postgresql-7.4" ]; then
-            if [ -x /usr/sbin/invoke-rc.d ]; then
-                    invoke-rc.d postgresql-7.4 restart || exit 0
-            else
-                    /etc/init.d/postgresql-7.4 restart || exit 0
-            fi
-    fi
-
-    if [ -x "/etc/init.d/postgresql-8.0" ]; then
-            if [ -x /usr/sbin/invoke-rc.d ]; then
-                    invoke-rc.d postgresql-8.0 restart || exit 0
-            else
-                    /etc/init.d/postgresql-8.0 restart || exit 0
-            fi
+    for v in $(ls /usr/lib/postgresql/); do
+        if [ -x "/etc/init.d/postgresql-$v" ]; then
+                if [ -x /usr/sbin/invoke-rc.d ]; then
+                        invoke-rc.d postgresql-$v restart || exit 0
+                else
+                        /etc/init.d/postgresql-$v restart || exit 0
+                fi
+        fi
     fi
 
     if [ "$2" ]; then

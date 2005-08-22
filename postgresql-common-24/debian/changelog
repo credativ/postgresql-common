@@ -23,8 +23,10 @@ postgresql-common (24) unstable; urgency=low
     - stats_row_level = on
     - autovacuum = on
   * PgCommon.pm, set_conf_value(): Preserve comments.
+  * debian/postgresql-common.postinst: Generalized restarting of all clusters
+    to make it automatically work for future versions.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 01:19:16 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 01:26:23 +0200
 
 postgresql-common (23) unstable; urgency=low
 
