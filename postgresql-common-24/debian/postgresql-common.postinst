@@ -69,7 +69,7 @@ EOF
                         /etc/init.d/postgresql-$v restart || exit 0
                 fi
         fi
-    fi
+    done
 
     if [ "$2" ]; then
         /usr/share/postgresql-common/run-upgrade-scripts "$2" || true
