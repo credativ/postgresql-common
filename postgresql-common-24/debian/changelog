@@ -9,8 +9,9 @@ postgresql-common (24) unstable; urgency=low
     default shell. Closes: #320810
   * pg_wrapper, debian/postgresql-common.links: Wrap reindexdb, it is a
     standard client program in 8.1.
+  * pg_createcluster: Do not create autovacuum log file for servers >= 8.1.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 22 Aug 2005 23:30:05 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 22 Aug 2005 23:44:33 +0200
 
 postgresql-common (23) unstable; urgency=low
 

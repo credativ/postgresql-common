@@ -268,15 +268,17 @@ chmod 0660, $real_logfile;
 symlink $real_logfile, $logfile;
 chown $owneruid, $ownergid, $real_logfile, $logfile;
 
-# create autovacuum log file
-$real_logfile = "/var/log/postgresql/pg_autovacuum-$version-$cluster.log";
-if (! -e $real_logfile) {
-    open L, ">$real_logfile" or error "could not create log file $real_logfile";
-    close L;
+# create autovacuum log file for servers < 8.1
+if ($version < 8.1) {
+    $real_logfile = "/var/log/postgresql/pg_autovacuum-$version-$cluster.log";
+    if (! -e $real_logfile) {
+        open L, ">$real_logfile" or error "could not create log file $real_logfile";
+        close L;
+    }
+    chmod 0660, $real_logfile;
+    symlink $real_logfile, $avac_log;
+    chown $owneruid, $ownergid, $real_logfile, $avac_log;
 }
-chmod 0660, $real_logfile;
-symlink $real_logfile, $avac_log;
-chown $owneruid, $ownergid, $real_logfile, $avac_log;
 
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
@@ -326,9 +328,11 @@ to C</var/lib/postgresql/>I<version>C</>I<name>C</>), and a symbolic link
 C<log> which points to the log file (by default,
 C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
 
-To enable easy integration of B<pg_autovacuum>, this program also creates a
-symbolic link C<autovacuum_log> which points to the pg_autuvacuum log file (by
-default, C</var/log/postgresql/pg_autovacuum->I<version>C<->I<name>C<.log>).
+To enable easy integration of B<pg_autovacuum> for Servers prior to 8.1, this
+program also creates a symbolic link C<autovacuum_log> which points to the
+pg_autuvacuum log file (by default,
+C</var/log/postgresql/pg_autovacuum->I<version>C<->I<name>C<.log>). PostgreSQL
+8.1 and later has an integrated autovacuuming which does not need this.
 
 C<postgresql.conf> is automatically adapted to use the next available port, i.
 e. the first port (starting from 5432) which is not yet used by an already
