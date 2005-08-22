@@ -28,7 +28,7 @@ for $v (get_versions) {
             print "Skipping cluster $v/$c which is not running\n";
             next;
         }
-        if (!$force && -e $info{'avac_enable'}) {
+        if (!$force && $info{'avac_enable'}) {
             print "Skipping cluster $v/$c since autovacuuming is enabled for it\n";
             next;
         }
