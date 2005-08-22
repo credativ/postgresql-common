@@ -28,8 +28,8 @@ for $v (get_versions) {
             print "Skipping cluster $v/$c which is not running\n";
             next;
         }
-        if (!$force && -e $info{'pgdata'}.'/autovacuum.pid') {
-            print "Skipping cluster $v/$c since pg_autovacuum is running on it\n";
+        if (!$force && -e $info{'avac_enable'}) {
+            print "Skipping cluster $v/$c since autovacuuming is enabled for it\n";
             next;
         }
         print "Doing maintenance on cluster $v/$c...\n";
@@ -93,10 +93,9 @@ analysis.
 
 =item B<--force>
 
-By default a cluster is not processed if it already has a running
-B<pg_autovacuum> instance (happens by default if the
-B<postgresql-contrib->I<version> package is installed). If this option is
-specified, the cluster is processed regardless of the autovacuum daemon status.
+By default a cluster is not processed if autovacuuming is enabled for it. If
+this option is specified, the cluster is processed regardless of the autovacuum
+daemon status.
 
 =back
   
