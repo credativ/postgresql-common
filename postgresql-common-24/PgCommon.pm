@@ -30,6 +30,16 @@ sub error {
     exit 1;
 }
 
+# Returns '1' if the argument is a configuration file value that stands for
+# true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
+# a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
+sub config_bool {
+    return undef unless defined($_[0]);
+    return 1 if ($_[0] =~ /^(on|true|yes|1)$/i);
+    return 0 if ($_[0] =~ /^(off|false|no|0)$/i);
+    return undef;
+}
+
 # Return parameter from a PostgreSQL configuration file, or undef if the parameter
 # does not exist.
 # Arguments: <version> <cluster> <config file name> <parameter name>
@@ -247,18 +257,22 @@ sub cluster_info {
 
     # autovacuum settings
 
-    $result{'avac_logfile'} = readlink ($result{'configdir'} . "/autovacuum_log");
-    if (get_program_path 'pg_autovacuum', $_[0]) {
-	my $enableval = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start');
-	$enableval ||= 'no';
-	$result{'avac_enable'} = ($enableval eq 'yes');
-	$result{'avac_debug'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_debug');
-	$result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_base');
-	$result{'avac_sleep_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_scale');
-	$result{'avac_vac_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_base');
-	$result{'avac_vac_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_scale');
-	$result{'avac_anal_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_base');
-	$result{'avac_anal_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_scale');
+    if ($version < 8.1) {
+        $result{'avac_logfile'} = readlink ($result{'configdir'} . "/autovacuum_log");
+        if (get_program_path 'pg_autovacuum', $_[0]) {
+            $result{'avac_enable'} = config_bool (get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start'));
+            $result{'avac_debug'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_debug');
+            $result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_base');
+            $result{'avac_sleep_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_scale');
+            $result{'avac_vac_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_base');
+            $result{'avac_vac_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_scale');
+            $result{'avac_anal_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_base');
+            $result{'avac_anal_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_scale');
+        } else {
+            $result{'avac_enable'} = 0;
+        }
+    } else {
+        $result{'avac_enable'} = config_bool (get_conf_value ($_[0], $_[1], 'postgresql.conf', 'autovacuum'));
     }
     
     return %result;
@@ -439,16 +453,6 @@ sub change_ugid {
     $< = $> = $uid;
     error 'Could not change user id' if $< != $uid;
     error 'Could not change group id' if $( != $gid;
-}
-
-# Returns '1' if the argument is a configuration file value that stands for
-# true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
-# a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
-sub config_bool {
-    return undef unless defined($_[0]);
-    return 1 if ($_[0] =~ /^(on|true|yes|1)$/i);
-    return 0 if ($_[0] =~ /^(off|false|no|0)$/i);
-    return undef;
 }
 
 # Return the encoding of a particular database in a cluster. This requires
