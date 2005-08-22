@@ -94,6 +94,16 @@ sub move_conffile {
     }
 }
 
+#
+# Version specific default configuration
+#
+
+sub configure_8_1 {
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'listen_addresses', '*';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
+}
+
 # Set up the default pg_hba.conf file:
 # - Add a "local all" entry to pg_hba.conf for the db superuser before all
 # other entries. 
@@ -279,6 +289,11 @@ if ($version < 8.1) {
     symlink $real_logfile, $avac_log;
     chown $owneruid, $ownergid, $real_logfile, $avac_log;
 }
+
+# version specific default configuration tweaking
+$conf_fn = "configure_$version";
+$conf_fn =~tr/./_/;
+&$conf_fn if defined &$conf_fn;
 
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
