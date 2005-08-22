@@ -7,5 +7,10 @@ Transition bugs:
 - Clean away /etc/cron.d/postgresql.
 
 Important features:
+- Replace version specific patches to config files with p-common code
 
 Wishlist:
+
+8.1 features: 
+- wrap reindexdb
+- internal autovacuum (cron + init.d)
