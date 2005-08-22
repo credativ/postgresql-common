@@ -90,7 +90,7 @@ sub stop_check_pid_file {
 }
 
 sub autovacuum_start {
-    return unless $info{'avac_enable'};
+    return unless $info{'avac_enable'} and $version < 8.1;
 
     return if -f $info{'pgdata'}.'/autovacuum.pid';
 
@@ -148,7 +148,7 @@ sub autovacuum_start {
 }
 
 sub autovacuum_stop {
-    return unless ($info{'avac_enable'});
+    return unless $info{'avac_enable'} and $version < 8.1;
 
     if (open my $AVAC_PID, $info{'pgdata'}.'/autovacuum.pid') {
         $pid = <$AVAC_PID>;
@@ -212,7 +212,7 @@ sub start {
     }
 
     if ($success) {
-        if ($info{'avac_enable'}) {
+        if ($version < 8.1 && $info{'avac_enable'}) {
             sleep 1;
             autovacuum_start;
         }
@@ -345,7 +345,8 @@ and a PostreSQL server process (L<postmaster(1)>) is started on it. If the
 package B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum>
 process is started as well (unless this gets disabled in
 C</etc/postgresql-common/autovacuum.conf> or a cluster-specific
-C<autovacuum.conf> file).
+C<autovacuum.conf> file). Please note that server version 8.1 and above does
+internal autovacuuming.
 
 =item B<stop>
 
@@ -369,17 +370,20 @@ server.
 =item B<autovac-start> 
 
 Starts a B<pg_autovacuum> process for an already running cluster. This normally
-happens automatically along with B<start>.
+happens automatically along with B<start>. This is ignored for PostgreSQL 8.1
+and above since they do autovacuuming internally.
 
 =item B<autovac-stop> 
 
 Stops the B<pg_autovacuum> process for a running cluster. This normally happens
-automatically along with B<stop>.
+automatically along with B<stop>. This is ignored for PostgreSQL 8.1 and above
+since they do autovacuuming internally.
 
 =item B<autovac-restart> 
 
 Restarts a B<pg_autovacuum> process for an already running cluster. This
-normally happens automatically along with B<restart>.
+normally happens automatically along with B<restart>. This is ignored for
+PostgreSQL 8.1 and above since they do autovacuuming internally.
 
 =back
 

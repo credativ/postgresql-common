@@ -15,8 +15,9 @@ postgresql-common (24) unstable; urgency=low
   * pg_maintenance: Use avac_enable flag instead of checking for the
     pg_autovacuum pid file to determine whether autovacuuming is enabled. This
     is a more general approach and works for all server versions.
+  * pg_ctlcluster: Do not attempt to start pg_autovacuum on 8.1+ servers.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 22 Aug 2005 23:58:18 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 00:21:19 +0200
 
 postgresql-common (23) unstable; urgency=low
 
