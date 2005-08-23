@@ -47,6 +47,9 @@ sub init_db {
     }
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
+    if ($_[0] >= 8) {
+        push @initdb, ('-A', 'ident sameuser');
+    }
     die 'Internal error: could not determine initdb path' unless $initdb[0];
     if (!$encoding and $version < 8) { 
         $encoding = get_encoding_from_locale();
@@ -146,9 +149,14 @@ sub setup_pg_hba {
 	    $search = 0;
 	}
 
+	# default authentication for Unix socket connections
+	if ($line =~ /^local/) {
+	    $line =~ s/trust/ident sameuser/;
+	}
+
 	# default authentication for TCP connections
 	if ($line =~ /^host/) {
-	    $line =~ s/ident sameuser/md5/;
+	    $line =~ s/(ident sameuser|trust)/md5/;
 	}
 	push @lines, $line;
     }
