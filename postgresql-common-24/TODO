@@ -7,7 +7,6 @@ Transition bugs:
 - Clean away /etc/cron.d/postgresql.
 
 Important features:
-- Replace version specific patches to config files with p-common code
 
 Wishlist:
 
