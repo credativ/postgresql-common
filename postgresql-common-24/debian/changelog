@@ -34,10 +34,13 @@ postgresql-common (24) unstable; urgency=low
   * pg_createcluster: Adapt pg_hba.conf to the current default (md5 for host
     connections, ident sameuser for local ones); this obsoletes the
     default-pg_hba.conf patches in the server packages.
-  * user_clusters: Update comments, throw out bogus documentation. 
+  * user_clusters: Update comments, throw out bogus documentation.
     Closes: #324749
+  * pg_createcluster: Only mangle configuration files (pg_hba.conf, SSL
+    enabling, etc.) if we create a new cluster, not if we integrate an already
+    existing one. Closes: #323878
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 22:47:20 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 22:51:50 +0200
 
 postgresql-common (23) unstable; urgency=low
 

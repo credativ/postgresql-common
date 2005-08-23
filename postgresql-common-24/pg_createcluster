@@ -238,6 +238,8 @@ chown $owneruid, $ownergid, $pgdata;
 
 $port = next_free_port;
 
+$newcluster = 0;
+
 if (-f "$pgdata/PG_VERSION") {
     if (open F, "$pgdata/PG_VERSION") {
         $existingver = <F>;
@@ -253,6 +255,7 @@ if (-f "$pgdata/PG_VERSION") {
 } else {
     print "Creating new cluster (configuration: $confdir, data: $datadir)...\n";
     init_db $version, $pgdata, $owneruid, $ownergid;
+    $newcluster = 1;
 }
 
 # move conffiles, setup permissions
@@ -261,7 +264,7 @@ move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, "640";
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
 
 # add access for database superuser
-setup_pg_hba;
+setup_pg_hba if $newcluster;
 
 # configure port
 print "Configuring postgresql.conf to use port $port...\n";
@@ -311,11 +314,11 @@ if ($version < 8.1) {
 # version specific default configuration tweaking
 $conf_fn = "configure_$version";
 $conf_fn =~tr/./_/;
-&$conf_fn if defined &$conf_fn;
+&$conf_fn if defined &$conf_fn and $newcluster;
 
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
-if (-e '/etc/postgresql-common/postgresql.crt' && 
+if ($newcluster && -e '/etc/postgresql-common/postgresql.crt' && 
     -e '/etc/postgresql-common/postgresql.pem' &&
     (stat '/etc/postgresql-common/postgresql.pem')[4] == (stat $datadir)[4]) {
     symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
@@ -325,7 +328,7 @@ if (-e '/etc/postgresql-common/postgresql.crt' &&
 }
 
 # create SSL client certificate root symlink if appropriate
-if (-e '/etc/postgresql-common/root.crt') {
+if ($newcluster && -e '/etc/postgresql-common/root.crt') {
     symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
 }
 
