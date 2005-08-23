@@ -7,6 +7,7 @@ Transition bugs:
 - Clean away /etc/cron.d/postgresql.
 
 Important features:
+- Tool for manipulating pg_hba.conf
 
 Wishlist:
 
