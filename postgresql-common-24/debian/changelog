@@ -39,8 +39,10 @@ postgresql-common (24) unstable; urgency=low
   * pg_createcluster: Only mangle configuration files (pg_hba.conf, SSL
     enabling, etc.) if we create a new cluster, not if we integrate an already
     existing one. Closes: #323878
+  * Add debian/postgresql-common.logrotate: Simple log rotation. 
+    Closes: #316100
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 22:51:50 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 23 Aug 2005 23:10:09 +0200
 
 postgresql-common (23) unstable; urgency=low
 
