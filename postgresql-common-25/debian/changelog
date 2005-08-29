@@ -1,3 +1,9 @@
+postgresql-common (25) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 29 Aug 2005 11:53:56 +0200
+
 postgresql-common (24) unstable; urgency=low
 
   * Add /usr/share/postgresql-common/pg_checksystem: Check system parameters
