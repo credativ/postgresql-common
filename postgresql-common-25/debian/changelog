@@ -20,8 +20,10 @@ postgresql-common (25) unstable; urgency=low
   * pg_ctlcluster: When starting the autovacuum daemon, don't just wait for 1
     second, but actually test if the server is running  (timeout: 5 seconds);
     this should make the daemon startup much more reliable.
+  * Remove test upgrade script upgrade-scripts/all_test_t1.sql, it has done
+    its purpose now.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 31 Aug 2005 00:57:07 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 31 Aug 2005 01:01:49 +0200
 
 postgresql-common (24) unstable; urgency=low
 
