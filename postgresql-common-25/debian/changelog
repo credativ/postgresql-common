@@ -11,8 +11,14 @@ postgresql-common (25) unstable; urgency=low
     cluster already exists.
   * debian/control: Add adduser dependency.
   * testsuite: Generalize stopping of servers to work with all versions.
+  * Avoid whinging during log rotation if there is no log file at all:
+    - debian/postgresql-common.logrotate: Add "missingok".
+    - debian/postgresql-common.dirs: Create /var/log/postgresql/.
+    - Server packges have been changed to not clean away /var/log/postgresql/
+      on purge.
+    - Closes: #325330
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 30 Aug 2005 23:54:17 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 31 Aug 2005 00:28:46 +0200
 
 postgresql-common (24) unstable; urgency=low
 
