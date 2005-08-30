@@ -9,8 +9,9 @@ postgresql-common (25) unstable; urgency=low
   * pg_upgradecluster: Don't call cluster_info() on the yet nonexistant
     new cluster, just check for the data directory for determining if the new
     cluster already exists.
+  * debian/control: Add adduser dependency.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 30 Aug 2005 23:31:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 30 Aug 2005 23:49:52 +0200
 
 postgresql-common (24) unstable; urgency=low
 
