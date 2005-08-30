@@ -10,8 +10,9 @@ postgresql-common (25) unstable; urgency=low
     new cluster, just check for the data directory for determining if the new
     cluster already exists.
   * debian/control: Add adduser dependency.
+  * testsuite: Generalize stopping of servers to work with all versions.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 30 Aug 2005 23:49:52 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 30 Aug 2005 23:54:17 +0200
 
 postgresql-common (24) unstable; urgency=low
 

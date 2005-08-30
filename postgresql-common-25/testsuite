@@ -47,12 +47,12 @@ if [ -d /var/log/postgresql.testsuite ]; then
 fi' 0 1 2 3 5 7 10 13 15
 
 # temporarily move away existing clusters
-if [ -x /etc/init.d/postgresql-7.4 ]; then
-    /etc/init.d/postgresql-7.4 stop
-fi
-if [ -x /etc/init.d/postgresql-8.0 ]; then
-    /etc/init.d/postgresql-8.0 stop
-fi
+for v in $(ls /usr/lib/postgresql/); do
+    if [ -x "/etc/init.d/postgresql-$v" ]; then
+        /etc/init.d/postgresql-$v stop
+    fi
+done
+
 if [ -d /etc/postgresql ]; then 
     mv /etc/postgresql /etc/postgresql.testsuite;
 fi
