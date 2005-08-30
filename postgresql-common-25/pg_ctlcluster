@@ -107,6 +107,17 @@ sub autovacuum_start {
 	}
     }
 
+    # check that the cluster is actually running
+    my $running = 0;
+    for (my $attempt = 0; $attempt < 10; $attempt++) {
+        select (undef, undef, undef, 0.5);
+        if (cluster_port_running $version, $cluster, $info{'port'}) {
+            $running = 1;
+            last;
+        }
+    }
+    error "Cannot start autovacuum daemon: cluster is not running" unless $running;
+
     # remember current size of the log
     my $logsize = -1;
     if (defined $info{'avac_logfile'}) {
