@@ -115,8 +115,9 @@ error 'could not get cluster default encoding' unless $encoding;
 error 'could not get cluster locale' unless $lc_ctype;
 error 'could not get cluster collating locale' unless $lc_ctype;
 
-%newinfo = cluster_info($newversion, $cluster);
-error "target cluster $newversion/$cluster already exists" if $newinfo{'pgdata'};
+if (PgCommon::cluster_data_directory $newversion, $cluster) {
+    error "target cluster $newversion/$cluster already exists";
+}
 
 # create new cluster, preserving encoding and locales
 

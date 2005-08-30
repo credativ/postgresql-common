@@ -198,16 +198,28 @@ sub cluster_data_directory {
 # does not exist.
 # Arguments: <version> <cluster>
 sub get_cluster_socketdir {
-    my $socketdir = '/var/run/postgresql';
-    return $socketdir unless $_[0] && $_[1];
+    # if it is explicitly configured, just return it
+    my $socketdir = get_conf_value($_[0], $_[1], 'postgresql.conf',
+        'unix_socket_directory');
+    return $socketdir if $socketdir;
 
-    my $datadir = cluster_data_directory $_[0], $_[1];
+    # try to determine whether this is a postgres owned cluster and we default
+    # to /var/run/postgresql
+    $socketdir = '/var/run/postgresql';
+    my @socketdirstat = stat $socketdir;
 
-    unless ($datadir && -d $socketdir and (stat $socketdir)[4] == (stat $datadir)[4]) {
-        $socketdir = '/tmp';
+    error "Cannot stat $socketdir" unless @socketdirstat;
+
+    if ($_[0] && $_[1]) {
+        my $datadir = cluster_data_directory $_[0], $_[1];
+        error "Invalid symbolic link $confroot/$_[0]/$_[1]/pgdata" unless $datadir;
+        my @datadirstat = stat $datadir;
+        error "Cannot stat $datadir" unless @datadirstat;
+
+        $socketdir = '/tmp' if $socketdirstat[4] != $datadirstat[4];
     }
-    return get_conf_value($_[0], $_[1], 'postgresql.conf',
-        'unix_socket_directory') || $socketdir;
+
+    return $socketdir;
 }
 
 # Set the socket directory of a particular cluster. 
