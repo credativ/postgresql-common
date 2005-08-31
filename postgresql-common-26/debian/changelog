@@ -1,3 +1,9 @@
+postgresql-common (26) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 31 Aug 2005 11:37:18 +0200
+
 postgresql-common (25) unstable; urgency=low
 
   * PgCommon.pm, get_cluster_socketdir():
