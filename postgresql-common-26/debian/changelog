@@ -1,8 +1,14 @@
 postgresql-common (26) unstable; urgency=low
 
-  *
+  * Fix permissions of socket directory:
+    - debian/postgresql-common.postinst: Drop creation of socket directory
+      since we do it in the init script anyway.
+    - debian/init.d-functions: Create directory with permissions 2775 instead
+      of 755 and also correct the permissions of an already existing
+      directory.
+    - Closes: #326049
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 31 Aug 2005 11:37:18 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu,  1 Sep 2005 16:41:53 +0200
 
 postgresql-common (25) unstable; urgency=low
 
