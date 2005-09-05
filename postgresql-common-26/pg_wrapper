@@ -52,6 +52,8 @@ if ($cluster) {
 $ENV{'PGPORT'} = "$port" if $port;
 $ENV{'PGDATABASE'} = $db if $db;
 
+error 'You must install at least one postgresql-client-<version> package.' unless $version; 
+
 @args = (get_program_path ($cmd, $version));
 error 'Invalid PostgreSQL cluster version' unless $args[0];
 push @args, @ARGV;
