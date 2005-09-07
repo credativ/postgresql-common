@@ -13,8 +13,10 @@ postgresql-common (26) unstable; urgency=low
   * pg_wrapper: Give a meaningful error message if no client packages are
     installed, instead of "Invalid PostgreSQL cluster version".
     Closes: #326771
+  * debian/README.Devel: Explain the structure and development of Debian's
+    PostgreSQL packages.
 
- -- Martin Pitt <mpitt@debian.org>  Mon,  5 Sep 2005 23:07:40 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed,  7 Sep 2005 10:50:31 +0200
 
 postgresql-common (25) unstable; urgency=low
 
