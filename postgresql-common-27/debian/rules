@@ -9,6 +9,9 @@ build/postgresql-common::
 	for p in $(POD1PROGS); do $(POD2MAN) --quotes=none --section 1 $$p > $$p.1; done
 	for p in $(POD8PROGS); do $(POD2MAN) --quotes=none --section 8 $$p > $$p.8; done
 
+install/postgresql-common::
+	install -D -m 644 debian/postgresql-common.lintian $(DEB_DESTDIR)/usr/share/lintian/overrides/postgresql-common
+
 cleanbuilddir/postgresql-common::
 	for p in $(POD1PROGS); do rm -f $$p.1; done
 	for p in $(POD8PROGS); do rm -f $$p.8; done

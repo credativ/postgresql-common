@@ -1,0 +1,14 @@
+postgresql-common: binary-without-manpage clusterdb
+postgresql-common: binary-without-manpage createdb
+postgresql-common: binary-without-manpage createlang
+postgresql-common: binary-without-manpage createuser
+postgresql-common: binary-without-manpage dropdb
+postgresql-common: binary-without-manpage droplang
+postgresql-common: binary-without-manpage dropuser
+postgresql-common: binary-without-manpage pg_dump
+postgresql-common: binary-without-manpage pg_dumpall
+postgresql-common: binary-without-manpage pg_restore
+postgresql-common: binary-without-manpage psql
+postgresql-common: binary-without-manpage reindexdb
+postgresql-common: binary-without-manpage vacuumdb
+postgresql-common: binary-without-manpage vacuumlo
