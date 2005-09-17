@@ -1,8 +1,9 @@
 postgresql-common (27) unstable; urgency=low
 
-  *
+  * Changed my debuild alias to explicitly ignore .arch-ids directories (a
+    mere -i catched some, but not all arch directories). Closes: #328204
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 12 Sep 2005 09:36:33 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 17 Sep 2005 11:02:51 +0200
 
 postgresql-common (26) unstable; urgency=low
 
