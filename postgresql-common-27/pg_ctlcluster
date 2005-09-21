@@ -54,21 +54,34 @@ sub get_running_pid {
     }
 }
 
-# If a pid file is already present, delete it if it is stale/invalid, or exit
-# with an error if it belongs to an already running postmaster.
-sub start_check_pid_file {
-    my $pidfile = $info{'pgdata'}.'/postmaster.pid';
-    my $pid = get_running_pid $pidfile;
+# Check whether a pid file for the %info cluster is present and belongs to a
+# running postmaster.
+# Arguments: <pid file path>
+sub check_running_postmaster {
+    my $pid = get_running_pid $_[0];
     if (defined $pid and $pid =~ /^\d+$/) {
 	if (open PS, '-|', '/bin/ps', '-o', 'comm', 'h', 'p', $pid) {
 	    my $process = <PS>;
 	    chomp $process if defined $process;
 	    close PS;
 	    if (defined $process and $process eq 'postmaster') {
-		print "Cluster is already running.\n";
-		exit (0);
-	    }
-	}
+                return 1;
+            }
+        } else {
+            error "Could not exec /bin/ps";
+        }
+    }
+    return 0;
+
+}
+
+# If a pid file is already present, delete it if it is stale/invalid, or exit
+# with a notice if it belongs to an already running postmaster.
+sub start_check_pid_file {
+    my $pidfile = $info{'pgdata'}.'/postmaster.pid';
+    if (check_running_postmaster $pidfile) {
+        print "Cluster is already running.\n";
+        exit (0);
     }
 
     # Remove invalid or stale PID file
@@ -220,12 +233,19 @@ sub start {
 
     # wait a bit until the socket exists
     $success = 0;
-    for (my $attempt = 0; $attempt < 10; $attempt++) {
+    $currlogsize = 0;
+    my $pidfile = $info{'pgdata'}.'/postmaster.pid';
+    for (my $attempt = 0; $attempt < 40; $attempt++) {
         select (undef, undef, undef, 0.5);
+        $currlogsize = (stat $info{'logfile'})[7] if -r $info{'logfile'};
         if (cluster_port_running $version, $cluster, $info{'port'}) {
             $success = 1;
             last;
         }
+
+        # if the postmaster wrote something, but the process does not exist any
+        # more, there must be a problem and we can stop immediately
+        last if ($currlogsize > $logsize && !check_running_postmaster $pidfile);
     }
 
     if ($success) {
