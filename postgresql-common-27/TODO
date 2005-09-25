@@ -9,5 +9,22 @@ Important features:
 - Tool for manipulating pg_hba.conf
 
 Wishlist:
+- add programs for web applications, which configure pg_hba.conf:
+
+  pg_add_hba [options] yourwebappdb yourwebappuser
+  pg_remove_hba [options] yourwebappdb yourwebappuser
+
+  Options:
+
+  --cluster: self-explanatory, defaults to default cluster
+  --ip: IP and netmask for host socket; if not given, defaults to Unix
+    socket (local)
+  --method: defaults to "md5" for TCP connections, and "ident" for
+    Unix socket connections
+  --force-ssl: If given, create a "hostssl" entry, otherwise a "host"
+    entry
+
+  For pg_remove_hba, only --cluster is allowed; it will remove all hba
+  entries that refer to the given db/user pair.
 
 8.1 features: 
