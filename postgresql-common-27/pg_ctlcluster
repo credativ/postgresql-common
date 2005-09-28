@@ -235,7 +235,7 @@ sub start {
     $success = 0;
     $currlogsize = 0;
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
-    for (my $attempt = 0; $attempt < 40; $attempt++) {
+    for (my $attempt = 0; $attempt < 60; $attempt++) {
         select (undef, undef, undef, 0.5);
         $currlogsize = (stat $info{'logfile'})[7] if -r $info{'logfile'};
         if (cluster_port_running $version, $cluster, $info{'port'}) {

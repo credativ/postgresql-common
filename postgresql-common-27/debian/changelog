@@ -7,7 +7,7 @@ postgresql-common (27) unstable; urgency=low
   * pg_ctlcluster: Have autovac-* commands error out with a meaningful message
     instead of claiming success if pg_autovacuum is not available.
   * pg_ctlcluster:
-    - Increase the timeout for the started postmaster to 20 seconds to cope
+    - Increase the timeout for the started postmaster to 30 seconds to cope
       with slow startup. Closes: #320444
     - Immediately fail if the postmaster produced log output and does not run
       any more. This avoids unnecessary timeouts on configuration errors and
@@ -16,7 +16,7 @@ postgresql-common (27) unstable; urgency=low
     considers listening on all interfaces by default not safe enough.
     Closes: #318820
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 28 Sep 2005 22:26:46 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 28 Sep 2005 22:38:21 +0200
 
 postgresql-common (26) unstable; urgency=low
 
