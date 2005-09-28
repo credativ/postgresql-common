@@ -12,8 +12,11 @@ postgresql-common (27) unstable; urgency=low
     - Immediately fail if the postmaster produced log output and does not run
       any more. This avoids unnecessary timeouts on configuration errors and
       the like.
+  * pg_createcluster: Listen on localhost by default only since upstream
+    considers listening on all interfaces by default not safe enough.
+    Closes: #318820
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 21 Sep 2005 21:15:45 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 28 Sep 2005 22:26:46 +0200
 
 postgresql-common (26) unstable; urgency=low
 

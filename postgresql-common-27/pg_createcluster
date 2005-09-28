@@ -102,17 +102,14 @@ sub move_conffile {
 #
 
 sub configure_7_4 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'tcpip_socket', 'true';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
 }
 
 sub configure_8_0 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'listen_addresses', '*';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
 }
 
 sub configure_8_1 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'listen_addresses', '*';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
 }
