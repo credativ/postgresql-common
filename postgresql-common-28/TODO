@@ -12,6 +12,7 @@ Wishlist:
 - add programs for web applications, which configure pg_hba.conf:
 
   pg_add_hba [options] yourwebappdb yourwebappuser
+  pg_test_hba [options] yourwebappdb yourwebappuser
   pg_remove_hba [options] yourwebappdb yourwebappuser
 
   Options:
@@ -19,12 +20,15 @@ Wishlist:
   --cluster: self-explanatory, defaults to default cluster
   --ip: IP and netmask for host socket; if not given, defaults to Unix
     socket (local)
-  --method: defaults to "md5" for TCP connections, and "ident" for
+  --method: defaults to "md5" for TCP connections, and "ident sameuser" for
     Unix socket connections
   --force-ssl: If given, create a "hostssl" entry, otherwise a "host"
     entry
 
   For pg_remove_hba, only --cluster is allowed; it will remove all hba
-  entries that refer to the given db/user pair.
+  entries that refer to the given db/user pair. pg_test_hba checks whether the
+  given connection is allowed; if so, it exits with 0, otherwise it prints the
+  required pg_hba.conf line to stdout and exits with 1. If pg_hba.conf has a
+  scrambled format that cannot be parsed by pg_*_hba, the scripts exit with 2.
 
 8.1 features: 
