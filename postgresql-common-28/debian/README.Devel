@@ -17,30 +17,31 @@ major version as small as possible.
 
 Revision control system
 -----------------------
-Package development happens with the "bazaar" distributed revision
+Package development happens with the "bazaar-ng" distributed revision
 control system. This allows anybody to create and develop a personal
 branch of the official archive without having write access to the
 official archive.
 
 If you want to help with developing the packages, you should work with
-bazaar to benefit from the features of a revision control system; this
+bazaar-ng to benefit from the features of a revision control system; this
 will also allow the Debian maintainers to easily merge your changes
 into the official packages.
 
-bazaar is shipped with Debian Sarge and later in the "bazaar" package,
-the program name is "baz".
+For more information about bazaar-ng and getting Debian packages,
+please see http://www.bazaar-ng.org.
 
-The archive of the official packages is at
+The official Debian packages are built from Martin Pitt's branches
+which are available at
 
-  http://arch.debian.org/arch/pkg-postgresql/pkg-postgresql-private@lists.alioth.debian.org--2005
+  http://arch.debian.org/arch/pkg-postgresql/mpitt
 
-This contains the following projects:
+This directory contains the following repositories:
 
-  postgresql-common--devel--1     (postgresql-common package)
-  postgresql-transition--devel--1 (postgresql Sarge->Etch transition package)
-  postgresql--devel--7.4          (all available major versions)
-  postgresql--devel--8.0
-  postgresql--devel--8.1
+  common     (postgresql-common package)
+  transition (postgresql Sarge->Etch transition package)
+  7.4        (all available major versions)
+  8.0
+  8.1
 
 The orig.tar.gz files are not kept under revision control since they
 would only bloat the archive. They need to be downloaded separately
@@ -52,79 +53,46 @@ or from any Debian mirror.
 
 Creating your personal branch
 -----------------------------
+First, please make sure that bzr can figure out a correct email
+address with
+
+ $ bzr whoami
+
+If it is not correct, please set the $EMAIL environment variable.
+
 If you want to help with the package development or just want to
 develop a feature you need, you should create your own branch where
-you can commit to. 
+you can commit to. As an example, let's create a branch of the
+postgresql-common package:
 
-1. If you never used tla or baz before, you need to introduce yourself
-   to it:
+  $ bzr branch http://arch.debian.org/arch/pkg-postgresql/mpitt/common/
 
-   $ baz my-id "Joe Developer <joe.dev@foo.org>"
+Now you can happily use "bzr diff", "bzr commit", "bzr add", "baz
+pull", "bzr merge", and all the other features of revision control.
 
-2. Create your personal archive if you don't yet have an already
-   existing arch archive you want to use for the PostgreSQL package
-   branch.
+Publishing your branch
+----------------------
+The prefered method of publishing your branch is to put it to a
+http-accessible directory. Basically, you just need to copy the
+directory that contains your personal branch to a directory of your
+webserver; you can use "scp -r", rsync, or any other method of your
+choice for that (just make sure that you copy the hidden .bzr
+directory, too). However, if you install the "bzrtools" package and
+want to push your changes to an ssh-accessible remote directory, you
+can do this more conveniently with e. g.
 
-   The easiest method is to create an archive on your local hard disk,
-   which will work fine for working offline:
+  bzr push myuser@my.server.com:public_html/bzr/psql/common
 
-   $ mkdir ~/arch
-   $ baz make-archive joe.dev@foo.org--2005 ~/arch/joe.dev@foo.org--2005
+This will use rsync over ssh to create or update the remote branch.
 
-   The first parameter is the name of the archive (common practice is
-   "email--year"), the second one the path where the archive should be
-   created (the directory name should match the archive name to not
-   confuse people too much).
-
-   However, if you have ssh access to a remote web server and you want
-   your changes to be merged into the official postgresql package, you
-   might prefer to create your archive on that web server using sftp
-   instead:
-
-   $ baz make-archive -l joe.dev@foo.org--2005 \
-       sftp://joe@foo.org/home/joe/public_html/arch/joe.dev@foo.org--2005
-
-   (Do not forget the -l option, otherwise baz cannot read the archive
-   over HTTP).
-
-   If you still want a local archive, you can also set up the
-   HTTP-accessible archive as a mirror; read the bazaar documentation
-   if you want to do this.
-
-3. For convenience, register the location of the official packages:
-
-   $ baz register-archive http://arch.debian.org/arch/pkg-postgresql/pkg-postgresql-private@lists.alioth.debian.org--2005
-
-4. Create the branch. The postgresql-common package is shown as an
-   example:
-
-  $ baz branch pkg-postgresql-private@lists.alioth.debian.org--2005/postgresql-common--devel--1 \
-        joe.dev@foo.org--2005/postgresql-common--mybranch--1
-
-  "mybranch" should be a descriptive branch name. If you want to help
-  out with packaging in general, you should use your abbreviated name
-  ("joe" in this example). If you create a branch to develop a certain
-  feature, name the branch after the feature. Be generous with
-  branching.
-
-5. Check out your new branch into a working directory:
-
-  $ cd /path/to/my/development/directory
-  $ baz get joe.dev@foo.org--2005/postgresql-common--mybranch--1 [dirname]
-  
-  If you don't specify "dirname", the created working directory will
-  be named like the branch (postgresql-common--mybranch--1--base-0);
-  You might want to use a nicer name for it (like "common-mybranch"),
-  so either specify it directly as a second parameter, or just rename
-  the directory after the "get" command.
-
-Now the hard part is done, and you can happily use "baz diff", "baz
-commit", "baz add", "baz merge" and all the other features of revision
-control.
+After this initial command, "bzr push" is enough for subsequent
+pushes, bzr remembers the last push location. This way you can keep
+your remote branch up to date.
 
 If you developed a particular feature or bug fix and would like to see
 it in the official package, please send a mail to
-pkg-postgresql-public@lists.alioth.debian.org or to mpitt@debian.org.
+pkg-postgresql-public@lists.alioth.debian.org or to mpitt@debian.org,
+and state the URL of your branch.
 
 Test suite
 ----------
