@@ -1,5 +1,7 @@
-postgresql-common (28) unstable; urgency=low
+postgresql-common (28) unstable; urgency=high
 
+  * Urgency high since this version only fixes a very important bug with a
+    safe patch.
   * Moved package development to bazaar-ng, updated debian/README.Devel.
   * debian/postgresql-common.postinst: Revert change of version 26: Do create
     the socket directory in the postinst, otherwise clusters will default to
