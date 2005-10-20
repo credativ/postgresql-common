@@ -37,6 +37,10 @@ if [ "$1" = configure ]; then
             --shell /bin/bash --group --gecos "PostgreSQL administrator" postgres
     fi
 
+    # create socket directory
+    [ -d /var/run/postgresql ] || \
+       install -d -m 2775 -o postgres -g postgres /var/run/postgresql
+
     generate_ssl_key
 
     # create default dummy root.crt if not present
