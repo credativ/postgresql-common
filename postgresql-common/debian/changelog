@@ -2,8 +2,11 @@ postgresql-common (29) unstable; urgency=low
 
   * pg_wrapper: Do not override an already defined PGPORT environment
     variable. Closes: #335692
+  * debian/postgresql-common.cron: Check if pg_maintenance is available before
+    calling it, to avoid errors when package is removed, but not purged.
+    Closes: #333803
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 26 Oct 2005 09:04:35 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 26 Oct 2005 09:14:27 +0200
 
 postgresql-common (28) unstable; urgency=high
 
