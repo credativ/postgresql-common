@@ -316,7 +316,7 @@ $conf_fn =~tr/./_/;
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
 if ($newcluster && -e '/etc/postgresql-common/postgresql.crt' && 
-    -e '/etc/postgresql-common/postgresql.pem' &&
+    -e '/etc/postgresql-common/postgresql.pem' && $version >= 8 &&
     (stat '/etc/postgresql-common/postgresql.pem')[4] == (stat $datadir)[4]) {
     symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
     symlink '/etc/postgresql-common/postgresql.pem', $datadir.'/server.key';

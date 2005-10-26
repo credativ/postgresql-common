@@ -5,8 +5,10 @@ postgresql-common (29) unstable; urgency=low
   * debian/postgresql-common.cron: Check if pg_maintenance is available before
     calling it, to avoid errors when package is removed, but not purged.
     Closes: #333803
+  * pg_createcluster: Do not enable SSL on 7.4 clusters since enabling it
+    without enabling the TCP socket breaks.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 26 Oct 2005 09:14:27 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 26 Oct 2005 19:53:17 +0100
 
 postgresql-common (28) unstable; urgency=high
 
