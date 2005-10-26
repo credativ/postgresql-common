@@ -7,6 +7,7 @@ Transition bugs:
 
 Important features:
 - Tool for manipulating pg_hba.conf
+- Add selftest for pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
 
 Wishlist:
 - add programs for web applications, which configure pg_hba.conf:

@@ -49,7 +49,7 @@ if ($cluster) {
     }
 }
 
-$ENV{'PGPORT'} = "$port" if $port;
+$ENV{'PGPORT'} = "$port" if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db;
 
 error 'You must install at least one postgresql-client-<version> package.' unless $version; 
