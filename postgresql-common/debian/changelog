@@ -1,3 +1,9 @@
+postgresql-common (29) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 26 Oct 2005 09:04:08 +0200
+
 postgresql-common (28) unstable; urgency=high
 
   * Urgency high since this version only fixes a very important bug with a
