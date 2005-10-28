@@ -255,6 +255,22 @@ if (-f "$pgdata/PG_VERSION") {
     $newcluster = 1;
 }
 
+# create default "start" file
+if (open F, ">$confdir/start.conf") {
+    print F "# Automatic startup configuration
+# auto: automatically start/stop the cluster in the init script
+# manual: do not start/stop in init scripts, but allow manual startup with
+#         pg_ctlcluster
+# disabled: do not allow manual startup with pg_ctlcluster (this can be easily
+#           circumvented and is only meant to be a small protection for
+#           accidents).
+
+manual";
+    close F;
+} else {
+    error "could not create $confdir/start.conf: $!";
+}
+
 # move conffiles, setup permissions
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, "640";
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, "640";
@@ -355,10 +371,11 @@ Given a major PostgreSQL I<version> (like "7.4" or "8.0") and a cluster I<name>
 (which must be unique for all clusters of one particular version), it creates
 the necessary configuration files in
 C</etc/postgresql/>I<version>C</>I<name>C</>; in particular these are
-C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a symbolic link
-C<pgdata> which points to the actual data directory I<data dir> (which defaults
-to C</var/lib/postgresql/>I<version>C</>I<name>C</>), and a symbolic link
-C<log> which points to the log file (by default,
+C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a postgresql-common
+specific configuration file C<start.conf> (see B<STARTUP CONTROL> below), a
+symbolic link C<pgdata> which points to the actual data directory I<data dir>
+(which defaults to C</var/lib/postgresql/>I<version>C</>I<name>C</>), and a
+symbolic link C<log> which points to the log file (by default,
 C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
 
 To enable easy integration of B<pg_autovacuum> for Servers prior to 8.1, this
@@ -434,6 +451,35 @@ documentation.
 Immediately start a server for the cluster after creating it (i. e. call
 C<pg_ctlcluster> I<version cluster> C<start> on it). By default, the cluster is
 not started.
+
+=back
+
+=head1 STARTUP CONTROL
+
+The C<start.conf> file in the cluster configuration directory controls the
+start/stop behavior of that cluster's postmaster process. The file can contain
+comment lines (started with '#'), empty lines, and must have exactly one
+line with one of the following keywords:
+
+=over 4
+
+=item B<auto>
+
+The postmaster process is started/stopped automatically in the init script.
+This is also the default if the file is missing.
+
+=item B<manual>
+
+The postmaster process is not handled by the init script, but manually
+controlling the cluster with L<pg_ctlcluster(1)> is permitted.
+
+=item B<disable>
+
+Neither the init script nor L<pg_ctlcluster(1)> are permitted to start/stop the
+cluster. Please be aware that this will not stop the cluster owner from calling
+lower level tools to control the postmaster process; this option is only meant
+to prevent accidentially controlling the postmaster during maintenance and to
+prevent accidents, not more.
 
 =back
 

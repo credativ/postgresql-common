@@ -101,7 +101,11 @@ default version/cluster and database; overrides
   installed). If this directory contains <code>autovacuum.conf</code>, this is
   used as the cluster specific autovacuum daemon configuration; if it does not
   exist, <code>/etc/postgresql-common/autovaccum.conf</code> is used as a
-  fallback.</td>
+  fallback. If this directory contains <code>start.conf</code>, that file
+  configures the startup mode of the cluster: <i>audo</i> (start/stop in init
+  script), <i>manual</i> (do not start/stop in init script, but manual control
+  with <code>pg_ctlcluster</code> is possible), <i>disabled</i>
+  (<code>pg_ctlcluster</code> is not allowed).</td>
 </tr>
 
 </table>

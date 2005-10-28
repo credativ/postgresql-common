@@ -21,6 +21,14 @@ do_ctl_all() {
 	[ -e "$c/pgdata" ] || continue
 	name=$(basename "$c")
 
+	# evaluate start.conf
+	if [ -e "$c/start.conf" ]; then
+	    start=$(sed 's/#.*$//; /^[[:space:]]*$/d; s/^\s*//; s/\s*$//' "$c/start.conf")
+	else
+	    start=auto
+	fi
+	[ "$start" = "auto" ] || continue
+
         if [ "$USE_LSBINIT" ]; then
             log_begin_msg "$3 $name"
             pg_ctlcluster -s "$2" "$name" $1

@@ -8,6 +8,7 @@ Transition bugs:
 Important features:
 - Tool for manipulating pg_hba.conf
 - Add selftest for pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
+- Add selftest for start.conf
 
 Wishlist:
 - add programs for web applications, which configure pg_hba.conf:
@@ -31,12 +32,6 @@ Wishlist:
   given connection is allowed; if so, it exits with 0, otherwise it prints the
   required pg_hba.conf line to stdout and exits with 1. If pg_hba.conf has a
   scrambled format that cannot be parsed by pg_*_hba, the scripts exit with 2.
-
-- add "start" configuration file to cluster directory: 
-  absent or "auto" -> start with init.d
-  "manual" -> no automatic start with init.d
-  "disabled" -> cluster cannot be started at all
-  (#224047, suggestion from Dale Kemp)
 
 8.1 features: 
 - check for obsolete 8.1 configuration items

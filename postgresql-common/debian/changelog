@@ -7,8 +7,16 @@ postgresql-common (29) unstable; urgency=low
     Closes: #333803
   * pg_createcluster: Do not enable SSL on 7.4 clusters since enabling it
     without enabling the TCP socket breaks.
+  * Add support for configuring the start/stop behavior in start.conf:
+    - debian/init.d-functions: Only start/stop the cluster in 'auto' mode.
+    - pg_ctlcluster: Only operate in 'auto' and 'manual' modes, print an error
+      in 'disabled' mode.
+    - pg_createcluster: Create a default start.conf file.
+    - architecture.html, pg_createcluster POD: Document the file and the
+      possible options.
+    - Closes: #224047
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 26 Oct 2005 19:53:17 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 27 Oct 2005 23:01:23 -0400
 
 postgresql-common (28) unstable; urgency=high
 

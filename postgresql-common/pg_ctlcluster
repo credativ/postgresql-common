@@ -329,6 +329,25 @@ if( $> != $info{'owneruid'} ) {
         (getpwuid $info{'owneruid'})[0].')';
 }
 
+# check start.conf file
+my $start = 'auto';
+my $start_conf = $info{'configdir'} . '/start.conf';
+if (-e $start_conf) {
+    open F, $start_conf or error "Could not open $start_conf";
+    while (<F>) {
+	s/#.*$//;
+	s/^\s*//;
+	s/\s*$//;
+	next unless $_;
+	$start = $_;
+	last;
+    }
+    close F;
+
+    error 'Cluster is disabled' if $start eq 'disabled';
+    error 'Invalid mode in start.conf' if $start ne 'auto' && $start ne 'manual';
+}
+
 $pg_ctl = get_program_path 'pg_ctl', $version;
 $pg_autovacuum = get_program_path 'pg_autovacuum', $version;
 
