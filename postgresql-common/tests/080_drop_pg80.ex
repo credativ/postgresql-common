@@ -23,6 +23,7 @@ pg_hba.conf
 pg_ident.conf
 pgdata
 postgresql.conf
+start.conf
 8.0 data directory:
 .
 ..
