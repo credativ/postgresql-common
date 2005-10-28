@@ -9,6 +9,8 @@ Important features:
 - Tool for manipulating pg_hba.conf
 - Add selftest for pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
 - Add selftest for start.conf
+- Add handling of obsolete major versions: Display a debconf note which points
+  to pg_upgradecluster and the necessary procedure.
 
 Wishlist:
 - add programs for web applications, which configure pg_hba.conf:
