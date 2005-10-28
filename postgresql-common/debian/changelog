@@ -1,3 +1,9 @@
+postgresql-common (30) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 27 Oct 2005 23:42:05 -0400
+
 postgresql-common (29) unstable; urgency=low
 
   * pg_wrapper: Do not override an already defined PGPORT environment
