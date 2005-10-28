@@ -15,7 +15,7 @@ Socket directory:
 ..
 .s.PGSQL.5433
 .s.PGSQL.5433.lock
-psql (PostgreSQL) 8.0.3
+psql (PostgreSQL) 8.0.4
 contains support for command-line editing
         List of databases
    Name    |  Owner   | Encoding  

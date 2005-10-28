@@ -15,8 +15,9 @@ postgresql-common (29) unstable; urgency=low
     - architecture.html, pg_createcluster POD: Document the file and the
       possible options.
     - Closes: #224047
+  * Fix testsuite expected output for new upstream versions (7.4.9 and 8.0.4).
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 27 Oct 2005 23:01:23 -0400
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 27 Oct 2005 23:05:56 -0400
 
 postgresql-common (28) unstable; urgency=high
 

@@ -1,6 +1,6 @@
 CREATE USER
 CREATE DATABASE
-psql (PostgreSQL) 8.0.3
+psql (PostgreSQL) 8.0.4
 contains support for command-line editing
         List of databases
    Name    |  Owner   | Encoding  

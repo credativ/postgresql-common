@@ -15,7 +15,7 @@ This cluster's socket directory /tmp/postgresql-testsuite/:
 ..
 .s.PGSQL.5432
 .s.PGSQL.5432.lock
-psql (PostgreSQL) 7.4.8
+psql (PostgreSQL) 7.4.9
 contains support for command-line editing
         List of databases
    Name    |  Owner   | Encoding  
