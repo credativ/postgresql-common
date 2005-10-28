@@ -12,12 +12,13 @@ postgresql-common (29) unstable; urgency=low
     - pg_ctlcluster: Only operate in 'auto' and 'manual' modes, print an error
       in 'disabled' mode.
     - pg_createcluster: Create a default start.conf file.
+    - pg_dropcluster: Remove start.conf file.
     - architecture.html, pg_createcluster POD: Document the file and the
       possible options.
     - Closes: #224047
   * Fix testsuite expected output for new upstream versions (7.4.9 and 8.0.4).
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 27 Oct 2005 23:05:56 -0400
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 27 Oct 2005 23:09:45 -0400
 
 postgresql-common (28) unstable; urgency=high
 
