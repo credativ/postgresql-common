@@ -35,5 +35,7 @@ Wishlist:
   required pg_hba.conf line to stdout and exits with 1. If pg_hba.conf has a
   scrambled format that cannot be parsed by pg_*_hba, the scripts exit with 2.
 
+  Add libnet-cidr-perl dependency!
+
 8.1 features: 
 - check for obsolete 8.1 configuration items
