@@ -5,8 +5,9 @@
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
+use Getopt::Long;
 
-$show_header = 1;
+exit 1 unless GetOptions ('h|no-header' => \$no_header);
 
 @columns = ('Version', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory',
             'Log file');
@@ -17,7 +18,7 @@ foreach $cw (@colwidths) {
 }
 $fmtstring .= "\n";
 
-printf $fmtstring, @columns;
+printf $fmtstring, @columns unless $no_header;
 
 foreach $v (get_versions) {
     foreach $c (get_version_clusters $v) {

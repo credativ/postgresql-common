@@ -1,8 +1,8 @@
 postgresql-common (30) unstable; urgency=low
 
-  *
+  * pg_lsclusters: Add -h/--no-header option to suppress header output.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 27 Oct 2005 23:42:05 -0400
+ -- Martin Pitt <mpitt@debian.org>  Sat, 29 Oct 2005 23:54:44 -0400
 
 postgresql-common (29) unstable; urgency=low
 
