@@ -1,0 +1,197 @@
+#!/usr/bin/perl -w
+
+# Add, remove, or test a pg_hba.conf entry.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+use Getopt::Long;
+use Net::CIDR;
+use strict;
+
+my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
+
+# global variables
+
+my $ip = ''; # default to local unix socket
+my $force_ssl = 0;
+my ($method, $ver_cluster, $db, $user);
+my $mode = (split '/', $0)[-1];
+my @hba;
+
+# Print an error message to stderr and exit with status 2
+sub error2 {
+    print STDERR 'Error: ', $_[0], "\n";
+    exit 2;
+}
+
+# Parse a single pg_hba.conf line.
+# Arguments: <line>
+# Returns: Hash reference; 'type' key (comment, local, host, hostssl,
+#   hostnossl) is always present, other keys depend on type.
+sub parse_hba_line {
+    my $l = $_[0];
+
+    # comment line?
+    return { 'type' => 'comment', 'line' => $l } if ($l =~ /^\s*($|#)/);
+
+    # not yet supported features
+    return undef if $l =~ /("|\+|@)/;
+
+    my @tok = split /\s+/, $l;
+    return undef if $#tok < 3;
+    my $res = { 
+	'type' => shift @tok,
+	'database' => shift @tok,
+	'user' => shift @tok,
+	'line' => $l
+    };
+
+    # local connection?
+    if ($$res{'type'} eq 'local') {
+	return undef if $#tok > 1;
+	return undef unless $valid_methods{$tok[0]};
+	$$res{'method'} = join (' ', @tok);
+	return $res;
+    } 
+
+    # host connection?
+    if ($$res{'type'} =~ /^host((no)?ssl)?$/) {
+	my ($i, $c) = split '/', (shift @tok);
+	$i = Net::CIDR::cidrvalidate $i;
+	return undef unless $i;
+
+	# CIDR mask given?
+	if (defined $c) {
+	    return undef if $c !~ /^(\d+)$/;
+	    $$res{'ip'} = "$i/$c";
+	} else {
+	    my $m = Net::CIDR::cidrvalidate (shift @tok);
+	    return undef unless $m;
+	    $$res{'ip'} = Net::CIDR::addrandmask2cidr ($i, $m);
+	    return undef unless $$res{'ip'};
+	}
+
+	return undef if $#tok > 1;
+	return undef unless $valid_methods{$tok[0]};
+	$$res{'method'} = join (' ', @tok);
+	return $res;
+    }
+
+    print "Parse error: invalid line: $l";
+    return undef;
+}
+
+# Check if s1 is equal to s2 or s2 is 'all'.
+# Arguments: <s1> <s2>
+sub match_all {
+    return ($_[1] eq 'all' || $_[0] eq $_[1]);
+}
+
+# Check if given IP matches the specification in the HBA record.
+# Arguments: <ip> <ref to hba hash>
+sub match_ip {
+    my ($ip, $hba) = @_;
+
+    # Don't try to mix IPv4 and IPv6 addresses since that will make cidrlookup
+    # croak
+    return 0 if ((index $ip, ':') < 0) ^ ((index $$hba{'ip'}, ':') < 0);
+
+    return Net::CIDR::cidrlookup ($ip, $$hba{'ip'});
+}
+
+# Check if arguments match any line 
+# Return: 1 if match was found, 0 otherwise.
+sub mode_test {
+    foreach my $hbarec (@hba) {
+	next if $$hbarec{'type'} eq 'comment';
+	next unless match_all ($user, $$hbarec{'user'}) &&
+		match_all ($db, $$hbarec{'database'}) &&
+		$$hbarec{'method'} eq $method;
+
+	if ($ip) {
+	    return 1 if 
+		(($force_ssl && $$hbarec{'type'} eq 'hostssl') || 
+		 $$hbarec{'type'} =~ /^host/) &&
+		match_ip ($ip, $hbarec);
+	} else {
+	    return 1 if $$hbarec{'type'} eq 'local';
+	}
+    }
+
+    return 0;
+}
+
+# Parse given pg_hba.conf file.
+# Arguments: <pg_hba.conf path>
+# Returns: Array with hash refs; for hash contents, see parse_hba_line().
+sub read_pg_hba {
+    open HBA, $_[0] or return undef;
+    my @hba;
+    while (<HBA>) {
+	my $r = parse_hba_line $_;
+	return undef unless defined $r;
+	push @hba, $r;
+    }
+    close HBA;
+    return @hba;
+}
+
+# Generate a pg_hba.conf line that matches the command line args.
+sub create_hba_line {
+    if ($ip) {
+	return sprintf "%-7s %-11s %-11s %-35s %s\n", 
+	    $force_ssl ? 'hostssl' : 'host', $db, $user, $ip, $method;
+    } else {
+	return sprintf "%-7s %-11s %-47s %s\n", 'local', $db, $user, $method;
+    }
+}
+
+# parse arguments
+
+my $ip_arg;
+exit 3 unless GetOptions (
+    'cluster=s' => \$ver_cluster, 
+    'ip=s' => \$ip_arg, 
+    'method=s' => \$method,
+    'force-ssl' => \$force_ssl
+);
+
+if ($#ARGV != 1) {
+    print STDERR "Usage: $mode [options] <database> <user>\n";
+    exit 2;
+}
+($db, $user) = @ARGV;
+
+error2 '--cluster must be specified' unless $ver_cluster;
+my ($version, $cluster) = split ('/', $ver_cluster);
+error2 'No version specified with --cluster' unless $version;
+error2 'No cluster specified with --cluster' unless $cluster;
+error2 'Cluster does not exist' unless cluster_exists $version, $cluster;
+if (defined $ip_arg) {
+    $ip = Net::CIDR::cidrvalidate $ip_arg;
+    error2 'Invalid --ip argument' unless defined $ip;
+}
+
+unless (defined $method) {
+    $method = ($ip ? 'md5' : 'ident sameuser');
+}
+error2 'Invalid --method argument' unless $valid_methods{(split /\s+/, $method)[0]};
+
+# parse file
+
+my $hbafile = "/etc/postgresql/$version/$cluster/pg_hba.conf";
+@hba = read_pg_hba $hbafile;
+error2 "Could not read $hbafile" unless $#hba;
+
+if ($mode eq 'pg_test_hba') { 
+    if (mode_test) {
+	exit 0;
+    } else {
+	print create_hba_line();
+	exit 1;
+    }
+} else {
+    error2 "Unknown mode: $mode";
+}
