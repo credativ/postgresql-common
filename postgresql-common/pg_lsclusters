@@ -38,11 +38,19 @@ pg_lsclusters - show information about all PostgreSQL clusters
 
 =head1 SYNOPSIS
 
-B<pg_lsclusters>
+B<pg_lsclusters> [I<options>]
 
 =head1 DESCRIPTION
 
 This command shows a list about the configuration and status of all clusters.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-h>, B<--no-header>
+
+Do not print the column header line.
 
 =head1 AUTHOR
 
