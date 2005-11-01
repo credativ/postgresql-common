@@ -1,8 +1,12 @@
 postgresql-common (30) unstable; urgency=low
 
   * pg_lsclusters: Add -h/--no-header option to suppress header output.
+  * Support ecpg binary:
+    - pg_wrapper: Add ecpg to the list of wrapped binaries.
+    - debian/postgresql-common.links: Add ecpg symlink to pg_wrapper.
+    - Closes: #336571
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 29 Oct 2005 23:54:44 -0400
+ -- Martin Pitt <mpitt@debian.org>  Tue,  1 Nov 2005 08:03:22 -0500
 
 postgresql-common (29) unstable; urgency=low
 
