@@ -265,7 +265,7 @@ if (open F, ">$confdir/start.conf") {
 #           circumvented and is only meant to be a small protection for
 #           accidents).
 
-manual";
+auto";
     close F;
 } else {
     error "could not create $confdir/start.conf: $!";
