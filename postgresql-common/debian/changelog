@@ -2,8 +2,10 @@ postgresql-common (30) unstable; urgency=low
 
   * pg_lsclusters: Add -h/--no-header option to suppress header output.
   * pg_createcluster: Fix the default start.conf to contain "auto" by default.
+  * PgCommon.pm, [sg]et_conf_value: Regard fractional and negative values as
+    simple values that do not need quoting. Closes: #336675
 
- -- Martin Pitt <mpitt@debian.org>  Thu,  3 Nov 2005 16:13:42 -0500
+ -- Martin Pitt <mpitt@debian.org>  Thu,  3 Nov 2005 16:17:39 -0500
 
 postgresql-common (29) unstable; urgency=low
 

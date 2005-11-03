@@ -50,7 +50,7 @@ sub get_conf_value {
 
     if (open F, $fname) {
         while (<F>) {
-            return $1 if /^\s*$_[3]\s*=\s*(\w+)\b/; # simple value
+            return $1 if /^\s*$_[3]\s*=\s*(-?[\w.]+)\b/; # simple value
             return $1 if /^\s*$_[3]\s*=\s*'([^']*)'/; # string value
         }
         close F;
@@ -65,7 +65,7 @@ sub set_conf_value {
     my $value;
     my @lines;
 
-    if ($_[4] =~ /^\w+$/) {
+    if ($_[4] =~ /^-?[\w.]+$/) {
 	$value = $_[4];
     } else {
 	$value = "'$_[4]'";
