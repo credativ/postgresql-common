@@ -8,8 +8,8 @@
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-@commands = qw/clusterdb createdb createlang createuser dropdb droplang dropuser pg_dump
-    pg_dumpall pg_restore psql reindexdb vacuumdb vacuumlo/;
+@commands = qw/clusterdb createdb createlang createuser dropdb droplang
+    dropuser pg_dump pg_dumpall pg_restore psql reindexdb vacuumdb vacuumlo/;
 
 $cmd = (split '/', $0)[-1];
 grep { $cmd eq $_ } @commands or die "pg_wrapper: invalid command name $cmd";
