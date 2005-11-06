@@ -24,7 +24,7 @@ LC_CTYPE:                             en_US
 *** creating 8.0 cluster with locale en_US and encoding UTF-8 ***
 Creating new cluster (configuration: /etc/postgresql/8.0/UTF-8, data: /var/lib/postgresql/8.0/UTF-8)...
 initdb: warning: encoding mismatch
-The encoding you selected (UNICODE) and the encoding that the selected
+The encoding you selected (UTF8) and the encoding that the selected
 locale uses (ISO-8859-1) are not known to match.  This may lead to
 misbehavior in various character string processing functions.  To fix
 this situation, rerun initdb and either do not specify an encoding
