@@ -2,13 +2,17 @@ postgresql TODO
 ===============
 
 Bugs:
+- pg_upgradecluster: bail out for disabled clusters.
 
 Transition bugs:
+- check for obsolete 8.1 configuration items
+
+Missing selftest:
+- pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
+- start.conf handling
+- start.conf upgrades
 
 Important features:
-- Tool for manipulating pg_hba.conf
-- Add selftest for pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
-- Add selftest for start.conf
 - Add handling of obsolete major versions: Display a debconf note which points
   to pg_upgradecluster and the necessary procedure.
 
@@ -36,6 +40,3 @@ Wishlist:
   scrambled format that cannot be parsed by pg_*_hba, the scripts exit with 2.
 
   Add libnet-cidr-perl dependency!
-
-8.1 features: 
-- check for obsolete 8.1 configuration items
