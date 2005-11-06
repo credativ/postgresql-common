@@ -1,10 +1,11 @@
 postgresql-common (31) unstable; urgency=low
 
   * Fix test suite expected output for new encoding names in libpq4 8.1.
-  * pg_upgradecluster: Disable automatic startup of old backup cluster in
-    start.conf.
+  * Fix start.conf handling of pg_upgradecluster: 
+    - Disable automatic startup of old backup cluster in start.conf.
+    - Preserve the original start.conf in new cluster.
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  6 Nov 2005 14:27:57 -0500
+ -- Martin Pitt <mpitt@debian.org>  Sun,  6 Nov 2005 14:37:21 -0500
 
 postgresql-common (30) unstable; urgency=high
 

@@ -179,6 +179,11 @@ install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
 install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+if ( -e $info{'configdir'}.'/start.conf') {
+    print "Copying old start.conf...\n";
+    install_file $info{'configdir'}.'/start.conf', $newinfo{'configdir'},
+	$newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+}
 
 adapt_conffiles;
 
