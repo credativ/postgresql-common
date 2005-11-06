@@ -190,6 +190,19 @@ print "Stopping old cluster...\n";
 @argv = ('pg_ctlcluster', '-s', $version, $cluster, 'stop');
 error "Could not stop old cluster" if system @argv;
 
+print "Disabling automatic startup of old cluster...\n";
+my $startconf = $info{'configdir'}.'/start.conf';
+if (open F, ">$startconf") {
+    print F "# This cluster was upgraded to a newer major version. The old
+# cluster has been preserved for backup purposes, but is not started
+# automatically.
+
+manual";
+    close F;
+} else {
+    error "could not create $startconf: $!";
+}
+
 $oldport = next_free_port;
 print "Configuring old cluster to use a different port ($oldport)...\n";
 set_cluster_port $version, $cluster, $oldport;
