@@ -1,0 +1,42 @@
+# postgresql-common debconf templates.
+# Copyright (C) 2005 Martin Pitt <mpitt@debian.org>
+# This file is distributed under the same license as the postgresql-common package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: postgresql-common\n"
+"Report-Msgid-Bugs-To: mpitt@debian.org\n"
+"POT-Creation-Date: 2005-11-06 23:15-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3
+msgid "Obsolete major version ${old}"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3
+msgid ""
+"The PostgreSQL version ${old} is obsolete, but you still have the server and/"
+"or client package installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade your existing "
+"${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3
+msgid ""
+"The old server and client packages are not supported any more. After having "
+"upgraded the existing clusters, you should remove the postgresql-${old} and "
+"postgresql-client-${old} packages."
+msgstr ""
