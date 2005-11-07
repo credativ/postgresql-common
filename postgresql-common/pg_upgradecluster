@@ -108,6 +108,7 @@ if ($#ARGV < 1) {
 %info = cluster_info ($version, $cluster);
 error 'specified cluster does not exist' unless $info{'pgdata'};
 error 'specified cluster is not running' unless $info{'running'};
+error 'cluster is disabled' if $info{'start'} eq 'disabled';
 
 $encoding = get_db_encoding $version, $cluster, 'template1';
 error 'could not get cluster default encoding' unless $encoding;

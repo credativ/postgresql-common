@@ -2,7 +2,6 @@ postgresql TODO
 ===============
 
 Bugs:
-- pg_upgradecluster: bail out for disabled clusters.
 
 Transition bugs:
 - check for obsolete 8.1 configuration items
