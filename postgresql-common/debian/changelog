@@ -5,8 +5,10 @@ postgresql-common (31) unstable; urgency=low
     - Disable automatic startup of old backup cluster in start.conf.
     - Preserve the original start.conf in new cluster.
     - Error out if original cluster is disabled.
+  * Add debconf note about upgrading from obsolete version 8.0.
+  * debian/control: Add debconf dependency.
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  6 Nov 2005 22:22:44 -0500
+ -- Martin Pitt <mpitt@debian.org>  Sun,  6 Nov 2005 23:11:29 -0500
 
 postgresql-common (30) unstable; urgency=high
 

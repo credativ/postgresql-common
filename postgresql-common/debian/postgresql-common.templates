@@ -1,0 +1,11 @@
+Template: postgresql-common/obsolete-major
+Type: note
+Description: Obsolete major version ${old}
+ The PostgreSQL version ${old} is obsolete, but you still have the
+ server and/or client package installed. Please install the latest packages
+ (postgresql-${latest} and postgresql-client-${latest}) and upgrade your 
+ existing ${oldversion} clusters with pg_upgradecluster (see manpage).
+ .
+ The old server and client packages are not supported any more. After having
+ upgraded the existing clusters, you should remove the postgresql-${old} and
+ postgresql-client-${old} packages.

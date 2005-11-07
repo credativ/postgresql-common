@@ -12,8 +12,6 @@ Missing selftest:
 - start.conf upgrades
 
 Important features:
-- Add handling of obsolete major versions: Display a debconf note which points
-  to pg_upgradecluster and the necessary procedure.
 
 Wishlist:
 - add programs for web applications, which configure pg_hba.conf:
