@@ -14,6 +14,7 @@ Missing selftest:
 Important features:
 
 Wishlist:
+- pg_upgradecluster: call ANALYZE after upgrade 
 - add programs for web applications, which configure pg_hba.conf:
 
   pg_add_hba [options] yourwebappdb yourwebappuser
