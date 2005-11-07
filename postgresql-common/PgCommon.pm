@@ -268,6 +268,26 @@ sub cluster_info {
             (stat $result{'pgdata'})[4,5];
     }
 
+    # start.conf setting
+    my $start = 'auto';
+    my $start_conf = $result{'configdir'} . '/start.conf';
+    if (-e $start_conf) {
+	open F, $start_conf or error "Could not open $start_conf: $!";
+	while (<F>) {
+	    s/#.*$//;
+	    s/^\s*//;
+	    s/\s*$//;
+	    next unless $_;
+	    $start = $_;
+	    last;
+	}
+	close F;
+
+	error 'Invalid mode in start.conf' unless $start eq 'auto' || 
+	    $start eq 'manual' || $start eq 'disabled';
+    }
+    $result{'start'} = $start;
+
     # autovacuum settings
 
     if ($_[0] < 8.1) {
