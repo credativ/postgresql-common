@@ -13,7 +13,7 @@ use TestLib;
 open (OUT, '-|', 'psql', '--version') or die "call psql: $!";
 $_ = <OUT>;
 my @F = split;
-is ($F[-1], '8.0.4', 'pg_wrapper selects highest available version number');
+like ($F[-1], qr/$LATEST_MAJOR\.\d/, 'pg_wrapper selects highest available version number');
 close OUT;
 is ($?, 0, 'psql --version exits successfully'); # check exit code
 
@@ -21,7 +21,7 @@ close STDERR;
 open (OUT, '-|', 'psql', '-h', '127.0.0.1', '-l') or die "call psql: $!";
 <OUT>;
 @F = split;
-ok ($F[-1] =~ /8\.0\.\d+/, 'pg_wrapper selects highest available version number');
+like ($F[-1], qr/$LATEST_MAJOR\.\d/, 'pg_wrapper selects highest available version number');
 close OUT;
 is ($? >> 8, 2, 'connecting to localhost fails with no clusters'); # check failure exit code
 
