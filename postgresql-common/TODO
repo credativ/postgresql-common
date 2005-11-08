@@ -6,6 +6,7 @@ Bugs:
 Transition bugs:
 - check for obsolete 8.1 configuration items
 - postgresql.conf: sort_mem -> work_mem
+- automatically set "autovacuum = yes/no" value
 
 Missing selftest:
 - pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
