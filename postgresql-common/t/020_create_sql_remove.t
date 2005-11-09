@@ -7,7 +7,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 24 * ($#MAJORS+1);
+use Test::More tests => 25 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -15,6 +15,15 @@ sub check_major {
     # create cluster
     ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
 	"pg_createcluster $v main");
+
+    # verify that pg_autovacuum is running for 8.0
+    if ($v eq '8.0') {
+	is ((ps 'pg_autovacuum'), 
+	    "postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-main.log\n", 
+	    'pg_autovacuum is running for version 8.0');
+    } else {
+	is ((ps 'pg_autovacuum'), '', "No pg_autovacuum for $v");
+    }
 
     # verify that the correct client version is selected
     open (OUT, '-|', 'psql', '--version') or die "call psql: $!";
