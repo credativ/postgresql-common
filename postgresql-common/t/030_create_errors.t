@@ -6,7 +6,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 9;
+use Test::More tests => 14;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -37,6 +37,28 @@ is ((system "pg_ctlcluster -s $version main start"), 0,
 # check socket
 ok_dir '/var/run/postgresql', [], 'No sockets in /var/run/postgresql';
 ok_dir $socketdir, ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], "Socket is in $socketdir";
+
+# stop cluster, check sockets
+ok ((system "pg_ctlcluster -s $version main stop") == 0,
+    'cluster stops after removing unix_socket_dir');
+ok_dir $socketdir, [], "No sockets in $socketdir after stopping cluster";
+
+# remove default socket dir and check that the socket defaults to
+# /var/run/postgresql
+open F, "+</etc/postgresql/$version/main/postgresql.conf" or
+    die "could not open postgresql.conf for r/w: $!";
+my @lines = <F>;
+seek F, 0, 0 or die "seek: $!";
+truncate F, 0;
+@lines = grep !/^unix_socket_directory/, @lines;
+print F @lines;
+close F;
+
+ok ((system "pg_ctlcluster -s $version main start") == 0,
+    'cluster starts after removing unix_socket_dir');
+ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
+    'Socket is in default dir /var/run/postgresql';
+ok_dir $socketdir, [], "No sockets in $socketdir";
 
 # remove cluster and directory
 ok ((system "pg_dropcluster $version main --stop-server") == 0, 
