@@ -44,11 +44,13 @@ sub ok_dir {
 # Returns: Program exit code
 sub exec_as {
     my $uid = getpwnam $_[0] or die "TestLib::exec_as: target user '$_[0]' does not exist";
+    $< = $uid;
     $> = $uid;
     die "changing euid: $!" if $!;
     my $out = `$_[1] 2>&1`;
     my $result = $? >> 8;
     $> = 0;
+    $< = 0;
     die "changing euid back to root: $!" if $> != 0;
     $_[2] = \$out;
     return $result;

@@ -14,8 +14,17 @@ use PgCommon;
 my $version = '7.4';
 
 my $socketdir = '/tmp/postgresql-testsuite/';
+my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
 mkdir $socketdir or die "mkdir: $!";
-chown scalar (getpwnam 'postgres'), 0, $socketdir or die "chown: $!";
+chown $pg_uid, 0, $socketdir or die "chown: $!";
+
+sub create_foo_pid {
+    open F, ">/var/lib/postgresql/$version/main/postmaster.pid" or die "open: $!";
+    print F 'foo';
+    close F;
+    chown $pg_uid, $pg_gid, "/var/lib/postgresql/$version/main/postmaster.pid" or die "chown: $!";
+    chmod 0700, "/var/lib/postgresql/$version/main/postmaster.pid" or die "chmod: $!";
+}
 
 # create cluster
 ok ((system "pg_createcluster --socketdir '$socketdir' $version main >/dev/null") == 0,
@@ -59,6 +68,50 @@ ok ((system "pg_ctlcluster -s $version main start") == 0,
 ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
     'Socket is in default dir /var/run/postgresql';
 ok_dir $socketdir, [], "No sockets in $socketdir";
+
+# server should not stop with corrupt file
+rename "/var/lib/postgresql/$version/main/postmaster.pid",
+    "/var/lib/postgresql/$version/main/postmaster.pid.orig" or die "rename: $!";
+create_foo_pid;
+is ((exec_as 'postgres', "pg_ctlcluster $version main stop", my $outref), 1, 
+    'pg_ctlcluster fails with corrupted PID file');
+is $$outref, "Error: pid file is invalid, please manually kill the stale server process.\n",
+    'correct pg_ctlcluster error message';
+like (`pg_lsclusters -h`, qr/online/, 'cluster is still online');
+
+# restore PID file
+(system "cp /var/lib/postgresql/$version/main/postmaster.pid.orig /var/lib/postgresql/$version/main/postmaster.pid") == 0 or die "cp: $!";
+is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 
+    'pg_ctlcluster succeeds with restored PID file');
+like (`pg_lsclusters -h`, qr/down/, 'cluster is down');
+
+# stop stopped server
+is ((exec_as 'postgres', "pg_ctlcluster $version main stop", $outref), 1, 
+    'pg_ctlcluster stop fails on stopped cluster');
+is $$outref, "Error: cluster is not running\n",
+    'correct pg_ctlcluster error message';
+
+# simulate crashed server
+rename "/var/lib/postgresql/$version/main/postmaster.pid.orig",
+    "/var/lib/postgresql/$version/main/postmaster.pid" or die "rename: $!";
+is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 0, 
+    'pg_ctlcluster succeeds with already existing PID file');
+is $$outref, "Removed stale pid file.\n", 'correct pg_ctlcluster warning message';
+like (`pg_lsclusters -h`, qr/online/, 'cluster is online');
+is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 
+    'pg_ctlcluster stop succeeds');
+
+# corrupt PID file while server is down
+create_foo_pid;
+is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 0, 
+    'pg_ctlcluster succeeds with corrupted PID file');
+is $$outref, "Removed stale pid file.\n", 'correct pg_ctlcluster warning message';
+like (`pg_lsclusters -h`, qr/online/, 'cluster is online');
+
+# start running server
+is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 1, 
+    'pg_ctlcluster start fails on running cluster');
+is $$outref, "Cluster is already running.\n", 'correct pg_ctlcluster error message';
 
 # remove cluster and directory
 ok ((system "pg_dropcluster $version main --stop-server") == 0, 
