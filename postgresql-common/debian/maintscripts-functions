@@ -42,6 +42,9 @@ remove_client_version() {
 }
 
 configure_contrib_version() {
+    # later versions have integrated autovacuuming
+    [ "$1" = "7.4" -o "$1" = "8.0" ] || return 0
+
     if [ "$2" ]; then
 	cmd="autovac-restart"
     else
@@ -56,6 +59,9 @@ configure_contrib_version() {
 }
 
 remove_contrib_version() {
+    # later versions have integrated autovacuuming
+    [ "$1" = "7.4" -o "$1" = "8.0" ] || return 0
+
     if [ -x /usr/sbin/invoke-rc.d ]; then
 	    invoke-rc.d postgresql-$1 autovac-stop || exit 0
     else

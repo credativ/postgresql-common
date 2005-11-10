@@ -7,8 +7,14 @@ postgresql-common (31) unstable; urgency=low
     - Error out if original cluster is disabled.
   * Add debconf note about upgrading from obsolete version 8.0.
   * debian/control: Add debconf dependency.
+  * Disable automatic autovacuum invocation for -contrib-8.1:
+    - pg_ctlcluster: Check version before (not after) complaining about a
+      missing pg_autovacuum
+    - debian/maintscripts-functions: Check version before trying to call
+      autovac-{start,stop}
+    - Closes: #337925
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  6 Nov 2005 23:11:29 -0500
+ -- Martin Pitt <mpitt@debian.org>  Wed,  9 Nov 2005 19:50:14 -0500
 
 postgresql-common (30) unstable; urgency=high
 

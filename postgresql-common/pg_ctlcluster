@@ -103,10 +103,10 @@ sub stop_check_pid_file {
 }
 
 sub autovacuum_start {
+    return unless $info{'avac_enable'} and $version < 8.1;
+
     error "pg_autovacuum not found. Install postgresql-contrib-$version to get it" 
         unless $pg_autovacuum;
-
-    return unless $info{'avac_enable'} and $version < 8.1;
 
     return if -f $info{'pgdata'}.'/autovacuum.pid';
 
@@ -175,10 +175,10 @@ sub autovacuum_start {
 }
 
 sub autovacuum_stop {
+    return unless $info{'avac_enable'} and $version < 8.1;
+
     error "pg_autovacuum not found. Install postgresql-contrib-$version to get it" 
         unless $pg_autovacuum;
-
-    return unless $info{'avac_enable'} and $version < 8.1;
 
     if (open my $AVAC_PID, $info{'pgdata'}.'/autovacuum.pid') {
         $pid = <$AVAC_PID>;
