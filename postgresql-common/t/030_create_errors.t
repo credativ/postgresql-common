@@ -11,7 +11,7 @@ use Test::More tests => 14;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-my $version = '7.4';
+my $version = $LATEST_MAJOR;
 
 my $socketdir = '/tmp/postgresql-testsuite/';
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
