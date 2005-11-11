@@ -54,10 +54,15 @@ sub ok_dir {
 # Arguments: <user> <system command> <ref to output>
 # Returns: Program exit code
 sub exec_as {
-    my $uid = getpwnam $_[0] or die "TestLib::exec_as: target user '$_[0]' does not exist";
+    my $uid;
+    if ($_[0] =~ /\d+/) {
+	$uid = int($_[0]);
+    } else {
+	$uid = getpwnam $_[0] or die "TestLib::exec_as: target user '$_[0]' does not exist";
+    }
     $< = $uid;
     $> = $uid;
-    die "changing euid: $!" if $!;
+    die "changing euid: $!" if $> != $uid;
     my $out = `$_[1] 2>&1`;
     my $result = $? >> 8;
     $> = 0;

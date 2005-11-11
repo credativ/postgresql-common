@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 25 * ($#MAJORS+1);
+use Test::More tests => 29 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -75,6 +75,17 @@ template1|postgres|UNICODE
     is ($$outref, 'Alice|2
 Bob|1
 ', 'SQL command output: select');
+
+    # Check pg_maintenance
+    is ((exec_as 0, 'pg_maintenance', $outref), 0, 'pg_maintenance succeeds');
+    if ($pg_autovacuum || $v ge '8.1') {
+	like $$outref, qr/^Skipping/, 'pg_maintenance skips autovacuumed cluster';
+    } else {
+	like $$outref, qr/^Doing/, 'pg_maintenance handles non-autovacuumed cluster';
+    }
+    is ((exec_as 0, 'pg_maintenance --force', $outref), 0, 
+	'pg_maintenance --force succeeds');
+    like $$outref, qr/^Doing/, 'pg_maintenance --force always handles cluster';
 
     # Drop database and user again.
     is ((exec_as 'nobody', 'dropdb nobodydb'), 0, 'dropdb nobodydb');
