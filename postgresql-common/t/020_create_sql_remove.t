@@ -7,6 +7,9 @@ use strict;
 use lib 't';
 use TestLib;
 
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+
 use Test::More tests => 25 * ($#MAJORS+1);
 
 sub check_major {
@@ -16,13 +19,13 @@ sub check_major {
     ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
 	"pg_createcluster $v main");
 
-    # verify that pg_autovacuum is running for 8.0
-    if ($v eq '8.0') {
-	is ((ps 'pg_autovacuum'), 
-	    "postgres postgres /usr/lib/postgresql/8.0/bin/pg_autovacuum -p 5432 -H /var/run/postgresql -L /var/log/postgresql/pg_autovacuum-8.0-main.log\n", 
-	    'pg_autovacuum is running for version 8.0');
+    # verify that pg_autovacuum is running if it is available
+    my $pg_autovacuum = get_program_path 'pg_autovacuum', $v;
+
+    if ($pg_autovacuum) {
+	like ((ps 'pg_autovacuum'), qr/$pg_autovacuum/, 'pg_autovacuum is running');
     } else {
-	is ((ps 'pg_autovacuum'), '', "No pg_autovacuum for $v");
+	is ((ps 'pg_autovacuum'), '', "No pg_autovacuum available for version $v");
     }
 
     # verify that the correct client version is selected
