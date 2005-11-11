@@ -12,43 +12,60 @@ $full = 0;
 $analyze = 0;
 $verbose = 0;
 $force = 0;
+$cluster = '';
+
+# Vacuum/analyze a cluster according to the $fulll, $analyze, $verbose, $force
+# settings.
+# Arguments: <version> <cluster>
+sub vacuum_cluster {
+    my ($v, $c) = @_;
+
+    %info = cluster_info $v, $c;
+
+    if (!$info{'running'}) {
+	print "Skipping cluster $v/$c which is not running\n";
+	return;
+    }
+    if (!$force && $info{'avac_enable'}) {
+	print "Skipping cluster $v/$c since autovacuuming is enabled for it\n";
+	return;
+    }
+    print "Doing maintenance on cluster $v/$c...\n";
+
+    # fork a vacuumdb subproces, change user id to the cluster owner
+    if (fork) {
+	wait;
+	print STDERR "calling vacuumdb on cluster $v/$c failed\n" if $?;
+    } else {
+	chdir '/';
+	change_ugid $info{'owneruid'}, $info{'ownergid'};
+	@options = ('--cluster', "$v/$c", '-a');
+	push @options, '-f' if $full;
+	push @options, '-z' if $analyze;
+	push @options, '-v' if $verbose;
+	push @options, '-q' unless $verbose;
+	exec '/usr/bin/vacuumdb', @options or
+	    error 'could not execute vacuumdb';
+    }
+}
+
 exit 1 unless GetOptions ('full|f' => \$full, 'analyze|a' => \$analyze,
-    'verbose|v' => \$verbose, 'force' => \$force);
+    'verbose|v' => \$verbose, 'force' => \$force, 'cluster|c=s' => \$cluster);
 
 if ($#ARGV != -1) {
-    print "Usage: $0 [-f|--full] [-a|--analyze] [-v|--verbose] [--force]\n";
+    print "Usage: $0 [--cluster <version/cluster>] [-f|--full] [-a|--analyze] [-v|--verbose] [--force]\n";
     exit 1;
 }
 
-for $v (get_versions) {
-    for $c (get_version_clusters $v) {
-        %info = cluster_info $v, $c;
-
-        if (!$info{'running'}) {
-            print "Skipping cluster $v/$c which is not running\n";
-            next;
-        }
-        if (!$force && $info{'avac_enable'}) {
-            print "Skipping cluster $v/$c since autovacuuming is enabled for it\n";
-            next;
-        }
-        print "Doing maintenance on cluster $v/$c...\n";
-
-        # fork a vacuumdb subproces, change user id to the cluster owner
-        if (fork) {
-            wait;
-            print STDERR "calling vacuumdb on cluster $v/$c failed\n" if $?;
-        } else {
-            chdir '/';
-            change_ugid $info{'owneruid'}, $info{'ownergid'};
-            @options = ('--cluster', "$v/$c", '-a');
-            push @options, '-f' if $full;
-            push @options, '-z' if $analyze;
-            push @options, '-v' if $verbose;
-            push @options, '-q' unless $verbose;
-            exec '/usr/bin/vacuumdb', @options or
-                error 'could not execute vacuumdb';
-        }
+if ($cluster) {
+    my ($v, $c) = split ('/', $cluster, 2);
+    error 'Cluster does not exist' unless cluster_exists $v, $c;
+    vacuum_cluster $v, $c;
+} else {
+    for $v (get_versions) {
+	for $c (get_version_clusters $v) {
+	    vacuum_cluster $v, $c;
+	}
     }
 }
 
@@ -74,6 +91,11 @@ This script is intended to be called regularly in a cronjob.
 =head1 OPTIONS
 
 =over 4
+
+=item B<-c>, B<--cluster> I<version/cluster>
+
+Perform maintenance only on specified cluster. By default, all clusters are
+handled.
 
 =item B<-f>, B<--full>
 
