@@ -8,10 +8,21 @@ use Test::More;
 
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
-our @EXPORT = qw/ps ok_dir exec_as @MAJORS $LATEST_MAJOR/;
+our @EXPORT = qw/ps ok_dir exec_as deb_installed @MAJORS $LATEST_MAJOR/;
 
 our @MAJORS = ('7.4', '8.0', '8.1');
 our $LATEST_MAJOR = $MAJORS[-1];
+
+# Return whether a given deb is installed.
+# Arguments: <deb name>
+sub deb_installed {
+    open (DPKG, '-|', 'dpkg', '-s', $_[0]) or die "call dpkg: $!";
+    while (<DPKG>) {
+	return 1 if /^Version:/;
+    }
+
+    return 0;
+}
 
 # Return the user, group, and command line of running processes for the given
 # program.

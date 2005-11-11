@@ -9,20 +9,11 @@ use TestLib;
 
 use Test::More tests => 2 + ($#MAJORS+1);
 
-sub deb_installed {
-    open (DPKG, '-|', 'dpkg', '-s', $_[0]) or die "call dpkg: $!";
-    while (<DPKG>) {
-	return 1 if /^Version:/;
-    }
-
-    return 0;
-}
-
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
 }
 
-ok ((!deb_installed 'postgresql-contrib-7.4'), 'postgresql-7.4 not installed');
+ok ((!deb_installed 'postgresql-contrib-7.4'), 'postgresql-contrib-7.4 not installed');
 ok ((deb_installed 'postgresql-contrib-8.0'), 'postgresql-contrib-8.0 installed');
 
 # vim: filetype=perl
