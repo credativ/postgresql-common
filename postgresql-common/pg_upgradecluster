@@ -218,7 +218,7 @@ print "Starting target cluster on the original port...\n";
 error "Could not start target cluster; please check configuration and log files" if system @argv;
 
 print "Vacuuming and analyzing target cluster...\n";
-@argv = ('pg_maintenance', '--cluster', "$newversion/$cluster");
+@argv = ('pg_maintenance', '--cluster', "$newversion/$cluster", '--force');
 error "Could not vacuum/analyze target cluster; please check configuration and log files" if system @argv;
 
 print "Success. Please check that the upgraded cluster works. If it does,
