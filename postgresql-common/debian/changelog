@@ -14,8 +14,10 @@ postgresql-common (31) unstable; urgency=low
       autovac-{start,stop}
     - Closes: #337925
   * pg_maintenance: Add --cluster option to work only on selected cluster.
+  * pg_upgradecluster: Vacuum and analyze the target cluster after upgrade.
+    Closes: #338010
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 11 Nov 2005 09:00:22 -0500
+ -- Martin Pitt <mpitt@debian.org>  Fri, 11 Nov 2005 09:46:32 -0500
 
 postgresql-common (30) unstable; urgency=high
 
