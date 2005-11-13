@@ -6,7 +6,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 14;
+use Test::More tests => 33;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -113,8 +113,20 @@ is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 1,
     'pg_ctlcluster start fails on running cluster');
 is $$outref, "Cluster is already running.\n", 'correct pg_ctlcluster error message';
 
+# stop server, test various invalid configurations
+is ((exec_as 'postgres', "pg_ctlcluster $version main stop", $outref), 0, 
+    'pg_ctlcluster stop');
+PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
+    'log_statement_stats', 'true';
+PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
+    'log_planner_stats', 'true';
+is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 1, 
+    'pg_ctlcluster start fails with invalid configuration');
+is $$outref, "Error: invalid postgresql.conf: log_statement_stats and the other log_*_stats options are mutually exclusive\n", 
+    'correct pg_ctlcluster error message';
+
 # remove cluster and directory
-ok ((system "pg_dropcluster $version main --stop-server") == 0, 
+ok ((system "pg_dropcluster $version main") == 0, 
     'pg_dropcluster');
 ok_dir $socketdir, [], 'No sockets any more';
 rmdir $socketdir or die "rmdir: $!";
