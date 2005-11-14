@@ -88,6 +88,7 @@ Bob|1
     like $$outref, qr/^Doing/, 'pg_maintenance --force always handles cluster';
 
     # Drop database and user again.
+    sleep 1;
     is ((exec_as 'nobody', 'dropdb nobodydb'), 0, 'dropdb nobodydb');
     is ((exec_as 'postgres', 'dropuser nobody'), 0, 'dropuser nobody');
 
