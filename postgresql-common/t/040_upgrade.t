@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
-# Test upgrading from the oldest version to all majors.
+# Test upgrading from the oldest version to the latest, using the default
+# configuration file.
 
 use strict; 
 
