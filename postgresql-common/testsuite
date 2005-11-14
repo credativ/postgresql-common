@@ -1,0 +1,45 @@
+#!/bin/sh -e
+
+if [ "$(id -u)" != 0 ]; then
+    echo "Error: this test suite needs to be run as root" >&2
+    exit 1
+fi
+
+TESTSDIR="$(dirname $0)/t"
+
+# always clean up behind us
+trap '
+if [ -d /etc/postgresql.testsuite ]; then 
+    rm -rf /etc/postgresql; 
+    mv /etc/postgresql.testsuite /etc/postgresql;
+fi;
+if [ -d /var/lib/postgresql.testsuite ]; then 
+    rm -rf /var/lib/postgresql;
+    mv /var/lib/postgresql.testsuite /var/lib/postgresql;
+fi;
+if [ -d /var/log/postgresql.testsuite ]; then 
+    rm -rf /var/log/postgresql;
+    mv /var/log/postgresql.testsuite /var/log/postgresql;
+fi' 0 1 2 3 5 7 10 13 15
+
+# temporarily move away existing clusters
+for v in $(ls /usr/lib/postgresql/); do
+    if [ -x "/etc/init.d/postgresql-$v" ]; then
+        /etc/init.d/postgresql-$v stop
+    fi
+done
+
+if [ -d /etc/postgresql ]; then 
+    mv /etc/postgresql /etc/postgresql.testsuite;
+fi
+if [ -d /var/lib/postgresql ]; then 
+    mv /var/lib/postgresql /var/lib/postgresql.testsuite;
+fi
+if [ -d /var/log/postgresql ]; then 
+    mv /var/log/postgresql /var/log/postgresql.testsuite;
+fi
+
+for T in $TESTSDIR/*; do
+    echo "=== Running test `basename $T`... ==="
+    perl $T
+done
