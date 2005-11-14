@@ -16,7 +16,7 @@ our $LATEST_MAJOR = $MAJORS[-1];
 # Return whether a given deb is installed.
 # Arguments: <deb name>
 sub deb_installed {
-    open (DPKG, '-|', 'dpkg', '-s', $_[0]) or die "call dpkg: $!";
+    open (DPKG, "dpkg -s $_[0] 2>/dev/null|") or die "call dpkg: $!";
     while (<DPKG>) {
 	return 1 if /^Version:/;
     }
