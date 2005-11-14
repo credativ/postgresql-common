@@ -81,7 +81,7 @@ sub start_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     if (check_running_postmaster $pidfile) {
         print "Cluster is already running.\n";
-        exit (0);
+        exit 1;
     }
 
     # Remove invalid or stale PID file
