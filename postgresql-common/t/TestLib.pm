@@ -8,7 +8,7 @@ use Test::More;
 
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
-our @EXPORT = qw/ps ok_dir exec_as deb_installed @MAJORS $LATEST_MAJOR/;
+our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out like_program_out @MAJORS $LATEST_MAJOR/;
 
 our @MAJORS = ('7.4', '8.0', '8.1');
 our $LATEST_MAJOR = $MAJORS[-1];
@@ -52,7 +52,7 @@ sub ok_dir {
 
 # Execute a command as a different user and return the output. Prints the
 # output of the command if exit code differs from expected one.
-# Arguments: <user> <system command> <ref to output> <expected exit code>
+# Arguments: <user> <system command> <ref to output> [<expected exit code>]
 # Returns: Program exit code
 sub exec_as {
     my $uid;
@@ -78,3 +78,22 @@ sub exec_as {
     return $result;
 }
 
+# Execute a command as a particular user, and check the exit code and output
+# (merged stdout/stderr).
+# Arguments: <user> <command> <expected exit code> <expected output> [<description>]
+sub is_program_out {
+    my $outref;
+    my $result = exec_as $_[0], $_[1], $outref;
+    is $result, $_[2], $_[1];
+    is ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]"));
+}
+
+# Execute a command as a particular user, and check the exit code and output
+# against a regular expression (merged stdout/stderr).
+# Arguments: <user> <command> <expected exit code> <expected output re> [<description>]
+sub like_program_out {
+    my $outref;
+    my $result = exec_as $_[0], $_[1], $outref;
+    is $result, $_[2], $_[1];
+    like ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]"));
+}
