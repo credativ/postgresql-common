@@ -13,3 +13,5 @@ pg_maintenance usr/sbin
 upgrade-scripts/* usr/share/postgresql-common/upgrade-scripts
 run-upgrade-scripts usr/share/postgresql-common
 pg_checksystem usr/share/postgresql-common
+testsuite usr/share/postgresql-common
+t/* usr/share/postgresql-common/t
