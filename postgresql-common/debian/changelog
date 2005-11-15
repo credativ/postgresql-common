@@ -1,6 +1,8 @@
 postgresql-common (31) unstable; urgency=low
 
-  * Fix test suite expected output for new encoding names in libpq4 8.1.
+  * Completely new test suite rewritten from scratch; the new suite now uses
+    perl instead of shell, can be extented more easily, handles changing of
+    supported major versions and does more tests.
   * Fix start.conf handling of pg_upgradecluster:
     - Disable automatic startup of old backup cluster in start.conf.
     - Preserve the original start.conf in new cluster.
@@ -20,7 +22,7 @@ postgresql-common (31) unstable; urgency=low
   * pg_upgradecluster: When upgrading to 8.1, disable obsolete
     'rendezvous_name' option.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 15 Nov 2005 09:53:13 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 15 Nov 2005 12:18:49 +0100
 
 postgresql-common (30) unstable; urgency=high
 

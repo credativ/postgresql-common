@@ -1,9 +1,21 @@
-#!/bin/sh -e
+#!/usr/bin/perl -w
+# Test upgrading from the oldest version to all majors with all possible
+# configuration parameters set. This checks that they are correctly
+# transitioned.
 
-# Test transitioning of obsolete configuration parameters.
+use strict; 
 
-pg_createcluster 7.4 pg74
-cat <<EOF > /etc/postgresql/7.4/pg74/postgresql.conf
+use lib 't';
+use TestLib;
+
+use Test::More tests => 7 + $#MAJORS * 5;
+
+# create cluster
+is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
+
+open F, ">/etc/postgresql/$MAJORS[0]/main/postgresql.conf" or 
+    die "could not open /etc/postgresql/$MAJORS[0]/main/postgresql.conf";
+print F "
 tcpip_socket = true
 max_connections = 100
 superuser_reserved_connections = 2
@@ -98,16 +110,35 @@ add_missing_from = true
 regex_flavor = advanced
 sql_inheritance = true
 transform_null_equals = false
-EOF
+";
 
-pg_ctlcluster -s 7.4 pg74 start
-pg_lsclusters
-pg_upgradecluster 7.4 pg74
-pg_dropcluster 7.4 pg74
-pg_lsclusters
-echo "New configuration:"
-echo "--------------------"
-cat /etc/postgresql/8.0/pg74/postgresql.conf
-echo "--------------------"
-pg_dropcluster --stop-server 8.0 pg74
+is ((exec_as 'postgres', "pg_ctlcluster $MAJORS[0] main start 2>/dev/null"), 0,
+    'pg_ctlcluster start');
 
+# Check clusters
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$MAJORS[0].*online/;
+
+my $oldv = $MAJORS[0];
+my @testv = @MAJORS;
+shift @testv;
+for my $v (@testv) {
+    # Upgrade cluster
+    like_program_out 0, "pg_upgradecluster -v $v $oldv main", 0, qr/^Success/im;
+
+    # remove old cluster and directory
+    is ((system "pg_dropcluster $oldv main"), 0, 'pg_dropcluster old cluster');
+
+    # Check clusters
+    like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$v.*online/, 
+        'pg_lsclusters shows running upgraded cluster';
+
+    $oldv = $v;
+}
+
+# remove latest cluster and directory
+is ((system "pg_dropcluster $MAJORS[-1] main --stop-server"), 0, 'pg_dropcluster');
+
+# Check clusters
+is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';
+
+# vim: filetype=perl
