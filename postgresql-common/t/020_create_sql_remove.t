@@ -47,10 +47,10 @@ sub check_major {
     # Create user nobody, a database 'nobodydb' for him, check the database list
     my $outref;
     is ((exec_as 'nobody', 'psql -l 2>/dev/null', $outref), 2, 'psql -l fails for nobody');
-    is ((exec_as 'postgres', 'createuser nobody -D ' . (($v > 8.09) ? '-R -s' : '-A')), 0, 'createuser nobody');
+    is ((exec_as 'postgres', 'createuser nobody -D ' . (($v ge '8.1') ? '-R -s' : '-A')), 0, 'createuser nobody');
     is ((exec_as 'postgres', 'createdb -O nobody nobodydb'), 0, 'createdb nobodydb');
     is ((exec_as 'nobody', 'psql -ltA', $outref), 0, 'psql -ltA succeeds for nobody');
-    if ($v > 8.09) {
+    if ($v ge '8.1') {
 	is ($$outref, 'nobodydb|nobody|UTF8
 postgres|postgres|UTF8
 template0|postgres|UTF8

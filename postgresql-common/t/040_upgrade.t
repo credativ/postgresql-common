@@ -17,7 +17,7 @@ ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
     "pg_createcluster $MAJORS[0] upgr");
 
 # Create nobody user, test database, and put a table into it
-is ((exec_as 'postgres', 'createuser nobody -D ' . (($MAJORS[0] > 8.09) ? '-R -s' : '-A') . '; createdb -O nobody test'), 
+is ((exec_as 'postgres', 'createuser nobody -D ' . (($MAJORS[0] ge '8.1') ? '-R -s' : '-A') . '; createdb -O nobody test'), 
 	0, 'Create nobody user and test database');
 is ((exec_as 'nobody', 'psql test -c "create table phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)"'), 
     0, 'create table');
