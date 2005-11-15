@@ -79,6 +79,16 @@ sub adapt_conffiles {
             'log_line_prefix', $log_line_prefix;
     }
 
+    # obsolete rendezvous_name 
+    if ($newversion ge '8.1') {
+        my $rendezvous_name = PgCommon::get_conf_value $newversion, $cluster,
+                'postgresql.conf', 'rendezvous_name';
+        if (defined $rendezvous_name) {
+            PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
+                    'rendezvous_name', 'obsolete in 8.1';
+        }
+    }
+
     # obsolete max_expr_depth
     my $max_expr_depth = PgCommon::get_conf_value $newversion, $cluster,
             'postgresql.conf', 'max_expr_depth';
