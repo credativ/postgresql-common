@@ -35,6 +35,17 @@ sub adapt_conffiles {
             'log_destination', $syslog_values{$syslog};
     }
 
+    # sort_mem -> work_mem transition
+    if ($newversion ge '8.0') {
+        my $sort_mem = PgCommon::get_conf_value $newversion, $cluster,
+                'postgresql.conf', 'sort_mem';
+        if (defined $sort_mem) {
+            PgCommon::replace_conf_value $newversion, $cluster,
+                'postgresql.conf', 'sort_mem', 'deprecated in favor of work_mem', 
+                'work_mem', $sort_mem;
+        }
+    }
+
     # log_statement transition
     my $log_statement = config_bool (PgCommon::get_conf_value $newversion,
         $cluster, 'postgresql.conf', 'log_statement');

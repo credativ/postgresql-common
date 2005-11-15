@@ -19,10 +19,11 @@ postgresql-common (31) unstable; urgency=low
   * pg_upgradecluster: Vacuum and analyze the target cluster after upgrade.
     Closes: #338010
   * pg_ctlcluster: Exit with nonzero if cluster is already running.
-  * pg_upgradecluster: When upgrading to 8.1, disable obsolete
-    'rendezvous_name' option.
+  * pg_upgradecluster configuration parameter upgrading:
+    - When upgrading to 8.1+, disable obsolete 'rendezvous_name' option.
+    - When upgrading to 8.0+, rename sort_mem to work_mem.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 15 Nov 2005 12:18:49 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 15 Nov 2005 12:38:48 +0100
 
 postgresql-common (30) unstable; urgency=high
 
