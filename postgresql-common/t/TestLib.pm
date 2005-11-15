@@ -50,8 +50,9 @@ sub ok_dir {
     }
 }
 
-# Execute a command as a different user and return the output.
-# Arguments: <user> <system command> <ref to output>
+# Execute a command as a different user and return the output. Prints the
+# output of the command if exit code differs from expected one.
+# Arguments: <user> <system command> <ref to output> <expected exit code>
 # Returns: Program exit code
 sub exec_as {
     my $uid;
@@ -69,6 +70,11 @@ sub exec_as {
     $< = 0;
     die "changing euid back to root: $!" if $> != 0;
     $_[2] = \$out;
+
+    if (defined $_[3] && $_[3] != $result) {
+        print "command '$_[1]' did not exit with expected code $_[3]:\n";
+        print $out;
+    }
     return $result;
 }
 
