@@ -218,7 +218,7 @@ sub start {
     my $postmaster_opts = '-c unix_socket_directory="' . $info{'socketdir'} . '"';
 
     # versions 8.0+ support configurable conffile locations
-    if ($version >= 8) {
+    if ($version ge '8.0') {
         $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
     }
 

@@ -47,7 +47,7 @@ sub init_db {
     }
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
-    if ($_[0] >= 8) {
+    if ($_[0] ge '8.0') {
         push @initdb, ('-A', 'ident sameuser');
     }
     die 'Internal error: could not determine initdb path' unless $initdb[0];
@@ -332,7 +332,7 @@ $conf_fn =~tr/./_/;
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
 if ($newcluster && -e '/etc/postgresql-common/postgresql.crt' && 
-    -e '/etc/postgresql-common/postgresql.pem' && $version >= 8 &&
+    -e '/etc/postgresql-common/postgresql.pem' && $version ge '8.0' &&
     (stat '/etc/postgresql-common/postgresql.pem')[4] == (stat $datadir)[4]) {
     symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
     symlink '/etc/postgresql-common/postgresql.pem', $datadir.'/server.key';
