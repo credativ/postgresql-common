@@ -1,3 +1,9 @@
+postgresql-common (32) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 15 Nov 2005 12:47:29 +0100
+
 postgresql-common (31) unstable; urgency=low
 
   * Completely new test suite rewritten from scratch; the new suite now uses
