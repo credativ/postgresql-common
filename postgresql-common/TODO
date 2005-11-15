@@ -2,6 +2,7 @@ postgresql TODO
 ===============
 
 Bugs:
+- add --analyze-only to pg_maintenance and use it in pg_upgradecluster
 
 Transition bugs:
 - check for obsolete 8.1 configuration items
