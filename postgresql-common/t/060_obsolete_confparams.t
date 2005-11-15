@@ -8,11 +8,10 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 7 + $#MAJORS * 4;
+use Test::More tests => 7 + $#MAJORS * 5;
 
 # create cluster
-ok ((system "pg_createcluster $MAJORS[0] main >/dev/null") == 0,
-    "pg_createcluster $MAJORS[0] main");
+is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
 
 open F, ">/etc/postgresql/$MAJORS[0]/main/postgresql.conf" or 
     die "could not open /etc/postgresql/$MAJORS[0]/main/postgresql.conf";
@@ -116,38 +115,30 @@ transform_null_equals = false
 is ((exec_as 'postgres', "pg_ctlcluster $MAJORS[0] main start 2>/dev/null"), 0,
     'pg_ctlcluster start');
 
-my $outref;
-
 # Check clusters
-is ((exec_as 'postgres', 'pg_lsclusters -h', $outref), 0, 'pg_lsclusters succeeds');
-like $$outref, qr/$MAJORS[0].*online/, 'pg_lsclusters shows running cluster';
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$MAJORS[0].*online/;
 
 my $oldv = $MAJORS[0];
 my @testv = @MAJORS;
 shift @testv;
 for my $v (@testv) {
     # Upgrade cluster
-    is ((exec_as 0, "pg_upgradecluster -v $v $oldv main", $outref), 0,
-        "pg_upgradecluster from $oldv to $v succeeds");
-    print $$outref if $$outref !~ /^Success/im;
+    like_program_out 0, "pg_upgradecluster -v $v $oldv main", 0, qr/^Success/im;
 
     # remove old cluster and directory
-    ok ((system "pg_dropcluster $oldv main") == 0, 
-        'pg_dropcluster old cluster');
+    is ((system "pg_dropcluster $oldv main"), 0, 'pg_dropcluster old cluster');
 
     # Check clusters
-    is ((exec_as 'postgres', 'pg_lsclusters -h', $outref), 0, 'pg_lsclusters succeeds');
-    like $$outref, qr/$v.*online/, 'pg_lsclusters shows running upgraded cluster';
+    like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$v.*online/, 
+        'pg_lsclusters shows running upgraded cluster';
 
     $oldv = $v;
 }
 
 # remove latest cluster and directory
-ok ((system "pg_dropcluster $MAJORS[-1] main --stop-server") == 0, 
-    'pg_dropcluster');
+is ((system "pg_dropcluster $MAJORS[-1] main --stop-server"), 0, 'pg_dropcluster');
 
 # Check clusters
-is ((exec_as 'postgres', 'pg_lsclusters -h', $outref), 0, 'pg_lsclusters succeeds');
-is $$outref, '', 'empty pg_lsclusters output';
+is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';
 
 # vim: filetype=perl

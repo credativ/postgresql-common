@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 29 * ($#MAJORS+1);
+use Test::More tests => 30 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -29,12 +29,8 @@ sub check_major {
     }
 
     # verify that the correct client version is selected
-    open (OUT, '-|', 'psql', '--version') or die "call psql: $!";
-    $_ = <OUT>;
-    close OUT;
-    die 'psql --version failed' if $?;
-    my @F = split;
-    like ($F[-1], qr/$v\.\d/, 'pg_wrapper selects version number of cluster');
+    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $v\.\d/,
+        'pg_wrapper selects version number of cluster';
 
     # verify that the cluster is displayed
     my $ls = `pg_lsclusters -h`;
@@ -71,26 +67,24 @@ template1|postgres|UNICODE
     is ((exec_as 'nobody', 'psql nobodydb -c "insert into phone values (\'Bob\', 3)"'), 1, 'primary key violation');
 
     # Check table contents
-    is ((exec_as 'nobody', 'psql -tAc "select * from phone order by name" nobodydb', $outref), 0, 'SQL command: select');
-    is ($$outref, 'Alice|2
+    is_program_out 'nobody', 'psql -tAc "select * from phone order by name" nobodydb', 0,
+        'Alice|2
 Bob|1
-', 'SQL command output: select');
+', 'SQL command output: select';
 
     # Check pg_maintenance
-    is ((exec_as 0, 'pg_maintenance', $outref), 0, 'pg_maintenance succeeds');
     if ($pg_autovacuum || $v ge '8.1') {
-	like $$outref, qr/^Skipping/, 'pg_maintenance skips autovacuumed cluster';
+        like_program_out 0, 'pg_maintenance', 0, qr/^Skipping/, 'pg_maintenance skips autovacuumed cluster';
     } else {
-	like $$outref, qr/^Doing/, 'pg_maintenance handles non-autovacuumed cluster';
+        like_program_out 0, 'pg_maintenance', 0, qr/^Doing/, 'pg_maintenance handles non-autovacuumed cluster';
     }
-    is ((exec_as 0, 'pg_maintenance --force', $outref), 0, 
-	'pg_maintenance --force succeeds');
-    like $$outref, qr/^Doing/, 'pg_maintenance --force always handles cluster';
+    like_program_out 0, 'pg_maintenance --force', 0, qr/^Doing/, 
+        'pg_maintenance --force always handles cluster';
 
     # Drop database and user again.
     sleep 1;
-    is ((exec_as 'nobody', 'dropdb nobodydb'), 0, 'dropdb nobodydb');
-    is ((exec_as 'postgres', 'dropuser nobody'), 0, 'dropuser nobody');
+    is ((exec_as 'nobody', 'dropdb nobodydb', $outref, 0), 0, 'dropdb nobodydb', );
+    is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
 
     # stop server, clean up, check for leftovers
     ok ((system "pg_dropcluster $v main --stop-server") == 0, 

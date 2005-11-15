@@ -6,7 +6,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 33;
+use Test::More tests => 37;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -73,57 +73,49 @@ ok_dir $socketdir, [], "No sockets in $socketdir";
 rename "/var/lib/postgresql/$version/main/postmaster.pid",
     "/var/lib/postgresql/$version/main/postmaster.pid.orig" or die "rename: $!";
 create_foo_pid;
-is ((exec_as 'postgres', "pg_ctlcluster $version main stop", my $outref), 1, 
-    'pg_ctlcluster fails with corrupted PID file');
-is $$outref, "Error: pid file is invalid, please manually kill the stale server process.\n",
-    'correct pg_ctlcluster error message';
-like (`pg_lsclusters -h`, qr/online/, 'cluster is still online');
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 1, 
+    "Error: pid file is invalid, please manually kill the stale server process.\n",
+    'pg_ctlcluster fails with corrupted PID file';
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is still online';
 
 # restore PID file
 (system "cp /var/lib/postgresql/$version/main/postmaster.pid.orig /var/lib/postgresql/$version/main/postmaster.pid") == 0 or die "cp: $!";
 is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 
     'pg_ctlcluster succeeds with restored PID file');
-like (`pg_lsclusters -h`, qr/down/, 'cluster is down');
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # stop stopped server
-is ((exec_as 'postgres', "pg_ctlcluster $version main stop", $outref), 1, 
-    'pg_ctlcluster stop fails on stopped cluster');
-is $$outref, "Error: cluster is not running\n",
-    'correct pg_ctlcluster error message';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 1,
+    "Error: cluster is not running\n", 'pg_ctlcluster stop fails on stopped cluster';
 
 # simulate crashed server
 rename "/var/lib/postgresql/$version/main/postmaster.pid.orig",
     "/var/lib/postgresql/$version/main/postmaster.pid" or die "rename: $!";
-is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 0, 
-    'pg_ctlcluster succeeds with already existing PID file');
-is $$outref, "Removed stale pid file.\n", 'correct pg_ctlcluster warning message';
-like (`pg_lsclusters -h`, qr/online/, 'cluster is online');
+is_program_out 'postgres', "pg_ctlcluster $version main start", 0, 
+    "Removed stale pid file.\n", 'pg_ctlcluster succeeds with already existing PID file';
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
 is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 
     'pg_ctlcluster stop succeeds');
 
 # corrupt PID file while server is down
 create_foo_pid;
-is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 0, 
-    'pg_ctlcluster succeeds with corrupted PID file');
-is $$outref, "Removed stale pid file.\n", 'correct pg_ctlcluster warning message';
-like (`pg_lsclusters -h`, qr/online/, 'cluster is online');
+is_program_out 'postgres', "pg_ctlcluster $version main start", 0,
+    "Removed stale pid file.\n", 'pg_ctlcluster succeeds with corrupted PID file';
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
 
 # start running server
-is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 1, 
-    'pg_ctlcluster start fails on running cluster');
-is $$outref, "Cluster is already running.\n", 'correct pg_ctlcluster error message';
+is_program_out 'postgres', "pg_ctlcluster $version main start", 1,
+    "Cluster is already running.\n", 'pg_ctlcluster start fails on running cluster';
 
-# stop server, test various invalid configurations
-is ((exec_as 'postgres', "pg_ctlcluster $version main stop", $outref), 0, 
-    'pg_ctlcluster stop');
+# stop server, test invalid configuration
+is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 'pg_ctlcluster stop');
 PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
     'log_statement_stats', 'true';
 PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
     'log_planner_stats', 'true';
-is ((exec_as 'postgres', "pg_ctlcluster $version main start", $outref), 1, 
-    'pg_ctlcluster start fails with invalid configuration');
-is $$outref, "Error: invalid postgresql.conf: log_statement_stats and the other log_*_stats options are mutually exclusive\n", 
-    'correct pg_ctlcluster error message';
+like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
+    qr/Error: invalid postgresql.conf.*log_.*mutually exclusive/,
+    'pg_ctlcluster start fails with invalid configuration';
 
 # remove cluster and directory
 ok ((system "pg_dropcluster $version main") == 0, 

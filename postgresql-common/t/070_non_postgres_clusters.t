@@ -13,7 +13,7 @@ my $owner = 'nobody';
 
 # create cluster
 for my $v (@MAJORS[0, -1]) {
-    ok ((system "pg_createcluster -u $owner $v main --start >/dev/null") == 0,
+    is ((system "pg_createcluster -u $owner $v main --start >/dev/null"), 0,
         "pg_createcluster $v main for owner $owner");
 
     # Check cluster

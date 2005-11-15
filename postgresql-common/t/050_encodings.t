@@ -19,10 +19,10 @@ sub check_cluster {
     my $cluster_name = $locale;
     if (defined $enc) {
 	$cluster_name .= "_$enc";
-	ok ((system "LC_ALL='$locale' pg_createcluster --encoding $enc --start $v $cluster_name >/dev/null 2>&1") == 0,
+	is ((system "LC_ALL='$locale' pg_createcluster --encoding $enc --start $v $cluster_name >/dev/null 2>&1"), 0,
 		"pg_createcluster for $locale with --encoding succeeded");
     } else {
-	ok ((system "LC_ALL='$locale' pg_createcluster --start $v $cluster_name >/dev/null 2>&1") == 0,
+	is ((system "LC_ALL='$locale' pg_createcluster --start $v $cluster_name >/dev/null 2>&1"), 0,
 		"pg_createcluster for $locale without --encoding succeeded");
     }
 
@@ -35,7 +35,7 @@ sub check_cluster {
 
     # check encoding
     sleep 1;
-    is ((exec_as 'postgres', "psql -Atl --cluster $v/$cluster_name", $outref), 0,
+    is ((exec_as 'postgres', "psql -Atl --cluster $v/$cluster_name", $outref, 0), 0,
 	'psql -l succeeds');
     my $is_unicode = 0;
     $is_unicode = 1 if defined $enc && $enc =~ /(UNICODE|UTF-8)/;
@@ -48,8 +48,7 @@ sub check_cluster {
 
     # drop cluster again if requested
     if (defined $del) {
-	ok ((system "pg_dropcluster $v $cluster_name --stop-server") == 0, 
-	    'Dropping cluster');
+	is ((system "pg_dropcluster $v $cluster_name --stop-server"), 0, 'Dropping cluster');
     }
 }
 
@@ -62,8 +61,6 @@ check_cluster $LATEST_MAJOR, 'en_US', 1, 'UTF-8';
 check_cluster $LATEST_MAJOR, 'en_US.UTF-8', 1;
 
 # Check clusters
-my $outref;
-is ((exec_as 'postgres', 'pg_lsclusters -h', $outref), 0, 'pg_lsclusters succeeds');
-is $$outref, '', 'empty pg_lsclusters output';
+is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';
 
 # vim: filetype=perl

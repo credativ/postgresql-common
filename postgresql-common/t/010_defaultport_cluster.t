@@ -10,19 +10,10 @@ use Test::More tests => 4;
 use lib 't';
 use TestLib;
 
-open (OUT, '-|', 'psql', '--version') or die "call psql: $!";
-$_ = <OUT>;
-my @F = split;
-like ($F[-1], qr/$LATEST_MAJOR\.\d/, 'pg_wrapper selects highest available version number');
-close OUT;
-is ($?, 0, 'psql --version exits successfully'); # check exit code
+like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $LATEST_MAJOR\.\d\b/, 
+    'pg_wrapper selects highest available version number';
 
-close STDERR;
-open (OUT, '-|', 'psql', '-h', '127.0.0.1', '-l') or die "call psql: $!";
-<OUT>;
-@F = split;
-like ($F[-1], qr/$LATEST_MAJOR\.\d/, 'pg_wrapper selects highest available version number');
-close OUT;
-is ($? >> 8, 2, 'connecting to localhost fails with no clusters'); # check failure exit code
+like_program_out 0, 'psql -h 127.0.0.1 -l', 2, qr/could not connect/, 
+    'connecting to localhost fails with no clusters';
 
 # vim: filetype=perl
