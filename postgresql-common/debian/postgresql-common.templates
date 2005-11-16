@@ -6,6 +6,12 @@ _Description: Obsolete major version ${old}
  (postgresql-${latest} and postgresql-client-${latest}) and upgrade your
  existing ${oldversion} clusters with pg_upgradecluster (see manpage).
  .
+ Please be aware that the installation of postgresql-${latest} will
+ automatically create a default cluster ${latest}/main. If you want to upgrade
+ the ${old}/main cluster, you need to remove the already existing ${latest}
+ cluster (pg_dropcluster --stop-server ${latest} main, see manpage for
+ details).
+ .
  The old server and client packages are not supported any more. After
  having upgraded the existing clusters, you should remove the
  postgresql-${old} and postgresql-client-${old} packages.

@@ -1,14 +1,14 @@
-# postgresql-common debconf templates.
-# Copyright (C) 2005 Martin Pitt <mpitt@debian.org>
-# This file is distributed under the same license as the postgresql-common package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2005-11-06 23:15-0500\n"
+"POT-Creation-Date: 2005-11-16 19:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,6 +30,17 @@ msgid ""
 "or client package installed. Please install the latest packages (postgresql-"
 "${latest} and postgresql-client-${latest}) and upgrade your existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3
+msgid ""
+"Please be aware that the installation of postgresql-${latest} will "
+"automatically create a default cluster ${latest}/main. If you want to "
+"upgrade the ${old}/main cluster, you need to remove the already existing "
+"${latest} cluster (pg_dropcluster --stop-server ${latest} main, see manpage "
+"for details)."
 msgstr ""
 
 #. Type: note
