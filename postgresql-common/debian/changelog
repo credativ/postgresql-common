@@ -1,8 +1,9 @@
 postgresql-common (32) unstable; urgency=low
 
-  *
+  * debian/postgresql-common.config: Fix stderr redirection when checking for
+    installed packages. Closes: #339457
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 15 Nov 2005 12:47:29 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 16 Nov 2005 18:17:22 +0100
 
 postgresql-common (31) unstable; urgency=low
 
