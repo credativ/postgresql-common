@@ -367,9 +367,15 @@ collection of databases served by a L<postmaster(1)> instance) and
 integrates it into the multi-version/multi-cluster architecture of the
 B<postgresql-common> package. 
 
-Given a major PostgreSQL I<version> (like "7.4" or "8.0") and a cluster I<name>
-(which must be unique for all clusters of one particular version), it creates
-the necessary configuration files in
+Every cluster is uniquely identified by its version and name. The name can be
+arbitrary. The default cluster that is created on installation of a server
+package is C<main>. However, you might wish to create other clusters for
+testing, with other superusers, a cluster for each user on a shared server,
+etc. C<pg_createcluster> will abort with an error if you try to create a
+cluster with a name that already exists for that version.
+
+Given a major PostgreSQL I<version> (like "7.4" or "8.0") and a cluster
+I<name>, it creates the necessary configuration files in
 C</etc/postgresql/>I<version>C</>I<name>C</>; in particular these are
 C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a postgresql-common
 specific configuration file C<start.conf> (see B<STARTUP CONTROL> below), a
