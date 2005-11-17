@@ -4,6 +4,7 @@ postgresql TODO
 Bugs:
 - Use pg_dump/pg_restore with custom format in pg_upgradecluster
 - Instead of calling pg_maintenance, call ANALYZE after an upgraded database.
+- check for databases with locked-down connections
 
 Transition bugs:
 - check for obsolete 8.1 configuration items
@@ -17,6 +18,8 @@ Missing selftest:
 Important features:
 
 Wishlist:
+- export environment variables in pg_wrapper (PGCLUSTER, etc.)
+- pg_ctlcluster, pg_createcluster: add option to set/change startup
 - add programs for web applications, which configure pg_hba.conf:
 
   pg_add_hba [options] yourwebappdb yourwebappuser
