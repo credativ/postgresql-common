@@ -8,7 +8,8 @@ use Test::More;
 
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
-our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out like_program_out @MAJORS $LATEST_MAJOR/;
+our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
+    like_program_out unlike_program_out @MAJORS $LATEST_MAJOR/;
 
 our @MAJORS = ('7.4', '8.0', '8.1');
 our $LATEST_MAJOR = $MAJORS[-1];
@@ -96,4 +97,14 @@ sub like_program_out {
     my $result = exec_as $_[0], $_[1], $outref;
     is $result, $_[2], $_[1];
     like ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]"));
+}
+
+# Execute a command as a particular user, check the exit code, and check that
+# the output does not match a regular expression (merged stdout/stderr).
+# Arguments: <user> <command> <expected exit code> <expected output re> [<description>]
+sub unlike_program_out {
+    my $outref;
+    my $result = exec_as $_[0], $_[1], $outref;
+    is $result, $_[2], $_[1];
+    unlike ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]"));
 }

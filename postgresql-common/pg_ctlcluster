@@ -229,7 +229,13 @@ sub start {
     $logsize = 0;
     $logsize = (stat $info{'logfile'})[7] if -r $info{'logfile'};
 
-    system $pg_ctl @options;
+    if (fork) {
+        wait;
+        error "could not exec $pgctl @options: $!" if $?;
+    } else {
+        setsid or error "could not start session: $!";
+        exec $pg_ctl @options or error "could not exec $pgctl @options: $!";
+    }
 
     # wait a bit until the socket exists
     $success = 0;

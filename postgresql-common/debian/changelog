@@ -5,8 +5,12 @@ postgresql-common (32) unstable; urgency=low
   * pg_createcluster: Add a POD stanza about cluster names and their purpose.
   * Explained why and how to delete the main cluster of the new version before
     upgrading the old main cluster. Closes: #339392
+  * pg_ctlcluster: Call setsid() to unbind from controlling terminal before
+    starting the daemon. Closes: #338862
+  * t/020_create_sql_remove.t: Add selftest for associated terminal (bug
+    #338862).
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 16 Nov 2005 19:12:00 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 17 Nov 2005 23:45:47 +0100
 
 postgresql-common (31) unstable; urgency=low
 

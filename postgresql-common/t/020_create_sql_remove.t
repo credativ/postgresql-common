@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 30 * ($#MAJORS+1);
+use Test::More tests => 32 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -39,6 +39,10 @@ sub check_major {
 	'pg_lscluster reports online cluster on port 5432';
 
     ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 'Socket is in /var/run/postgresql';
+
+    # verify that the postmaster does not have an associated terminal
+    unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,
+        'postmaster processes do not have an associated terminal';
 
     # Create user nobody, a database 'nobodydb' for him, check the database list
     my $outref;
