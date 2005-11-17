@@ -9,8 +9,10 @@ postgresql-common (32) unstable; urgency=low
     starting the daemon. Closes: #338862
   * t/020_create_sql_remove.t: Add selftest for associated terminal (bug
     #338862).
+  * debian/control: Version dependency on debconf to (>= 0.5.00) to make
+    lintian happy.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 17 Nov 2005 23:45:47 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 18 Nov 2005 00:42:48 +0100
 
 postgresql-common (31) unstable; urgency=low
 
