@@ -5,8 +5,12 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
+use strict;
+
 use lib '/usr/share/postgresql-common';
 use PgCommon;
+
+my ($version, $cluster, $db, $port);
 
 # Check for PGCLUSTER in %ENV
 if (defined $ENV{PGCLUSTER}) {
@@ -17,7 +21,7 @@ if (defined $ENV{PGCLUSTER}) {
 }
 
 # Check for --cluster argument and filter it out
-for ($i = 0; $i <= $#ARGV; ++$i) {
+for (my $i = 0; $i <= $#ARGV; ++$i) {
     if ($ARGV[$i] eq '--cluster') {
         error '--cluster option needs an argument (<version>/<cluster>)' if ($i >= $#ARGV);
 
@@ -49,7 +53,7 @@ $ENV{'PGDATABASE'} = $db if $db;
 error 'You must install at least one postgresql-client-<version> package.' unless $version; 
 
 error 'Invalid PostgreSQL cluster version' unless -d "/usr/lib/postgresql/$version";
-$cmd = get_program_path (((split '/', $0)[-1]), $version);
+my $cmd = get_program_path (((split '/', $0)[-1]), $version);
 error 'pg_wrapper: invalid command name' unless $cmd;
 unshift @ARGV, $cmd;
 exec @ARGV;
