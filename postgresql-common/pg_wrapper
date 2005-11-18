@@ -8,12 +8,6 @@
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-@commands = qw/clusterdb createdb createlang createuser dropdb droplang
-    dropuser pg_dump pg_dumpall pg_restore psql reindexdb vacuumdb vacuumlo/;
-
-$cmd = (split '/', $0)[-1];
-grep { $cmd eq $_ } @commands or die "pg_wrapper: invalid command name $cmd";
-
 # Check for PGCLUSTER in %ENV
 if (defined $ENV{PGCLUSTER}) {
     ($version, $cluster) = split ('/', $ENV{PGCLUSTER}, 2);
@@ -54,10 +48,11 @@ $ENV{'PGDATABASE'} = $db if $db;
 
 error 'You must install at least one postgresql-client-<version> package.' unless $version; 
 
-@args = (get_program_path ($cmd, $version));
-error 'Invalid PostgreSQL cluster version' unless $args[0];
-push @args, @ARGV;
-exec @args;
+error 'Invalid PostgreSQL cluster version' unless -d "/usr/lib/postgresql/$version";
+$cmd = get_program_path (((split '/', $0)[-1]), $version);
+error 'pg_wrapper: invalid command name' unless $cmd;
+unshift @ARGV, $cmd;
+exec @ARGV;
 
 __END__
 

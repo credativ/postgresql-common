@@ -1,8 +1,11 @@
 postgresql-common (33) unstable; urgency=low
 
-  *
+  * pg_wrapper: Instead of checking $0 against a static list, just check
+    whether the program is available in postgresql's bin dir. This allows
+    other packages which provide stuff in pg_bin to install additional
+    symlinks and get pg_wrapper support for free.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 18 Nov 2005 18:58:52 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 18 Nov 2005 18:59:14 +0100
 
 postgresql-common (32) unstable; urgency=low
 
