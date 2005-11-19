@@ -8,8 +8,11 @@ postgresql-common (33) unstable; urgency=low
     that effective user is root before doing anything to avoid confusing error
     messages.
   * pg_upgradecluster: Fix error message for nonexisting cluster.
+  * pg_upgradecluster: Set correct autovacuum option in postgresql.conf when
+    upgrading to 8.1, depending on whether or not autovacuuming was used for
+    the old cluster.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 19 Nov 2005 12:41:47 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 19 Nov 2005 16:48:13 +0100
 
 postgresql-common (32) unstable; urgency=low
 

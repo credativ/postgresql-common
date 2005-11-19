@@ -108,6 +108,12 @@ sub adapt_conffiles {
                 'max_expr_depth',
                 'does not exist any more, look at max_stack_depth';
     }
+
+    # 8.1+ has internal autovacuum
+    if ($newversion ge '8.1') {
+        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+            'autovacuum', $info{'avac_enable'} ? 'yes' : 'no';
+    }
 }
 
 #
