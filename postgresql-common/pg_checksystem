@@ -22,6 +22,9 @@ sub get_device_write_cache {
     return $val;
 }
 
+
+error 'This command needs to be executed as root' if $> != 0;
+
 # collect write cache-enabled drives with databases
 my %drive_wcache;
 my %seen;

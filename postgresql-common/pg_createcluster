@@ -202,6 +202,8 @@ Options:
     exit 1;
 }
 
+error 'This command needs to be executed as root' if $> != 0;
+
 if ($owneruid) {
     $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
 } else {

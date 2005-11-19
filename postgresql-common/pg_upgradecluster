@@ -125,6 +125,8 @@ if ($#ARGV < 1) {
     exit 1;
 }
 
+error 'This command needs to be executed as root' if $> != 0;
+
 ($version, $cluster, $datadir) = @ARGV;
 %info = cluster_info ($version, $cluster);
 error 'specified cluster does not exist' unless $info{'pgdata'};
