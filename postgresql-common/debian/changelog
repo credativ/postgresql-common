@@ -7,8 +7,9 @@ postgresql-common (33) unstable; urgency=low
   * pg_checksystem, pg_createcluster, pg_dropcluster, pg_upgradecluster: Check
     that effective user is root before doing anything to avoid confusing error
     messages.
- 
- -- Martin Pitt <mpitt@debian.org>  Sat, 19 Nov 2005 12:36:15 +0100
+  * pg_upgradecluster: Fix error message for nonexisting cluster.
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 19 Nov 2005 12:41:47 +0100
 
 postgresql-common (32) unstable; urgency=low
 
