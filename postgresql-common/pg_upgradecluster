@@ -116,6 +116,34 @@ sub adapt_conffiles {
     }
 }
 
+# Save original pg_hba.conf, replace it with one that only allows local access
+# to the owner, and reload postmaster.
+# Arguments: <version> <cluster> <owner>
+sub disable_connections {
+    my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
+
+    rename $hba, "$hba.orig" or error 'could not rename pg_hba.conf';
+    unless (open F, ">$hba") {
+        rename "$hba.orig", $hba; 
+        error "could not create $hba";
+    }
+    print F "local all $_[2] ident sameuser";
+    close F;
+
+    if (system 'pg_ctlcluster', '-s', $_[0], $_[1], 'reload') {
+        rename "$hba.orig", $hba; 
+        error "could not reload cluster $_[0]/$_[1]";
+    }
+}
+
+# Restore original pg_hba.conf, but do not restart postmaster.
+# Arguments: <version> <cluster>
+sub enable_connections {
+    my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
+
+    rename "$hba.orig", $hba or error 'could not rename pg_hba.conf';
+}
+
 #
 # Execution starts here
 #
@@ -168,6 +196,14 @@ sleep(4);
 
 %newinfo = cluster_info($newversion, $cluster);
 
+# Disable access to clusters during upgrade
+my $owner = getpwuid $info{'owneruid'};
+error 'could not get name of cluster owner' unless $owner;
+print "Disabling connections to the old cluster during upgrade...\n";
+disable_connections $version, $cluster, $owner;
+print "Disabling connections to the new cluster during upgrade...\n";
+disable_connections $newversion, $cluster, $owner;
+
 # dump cluster; drop to cluster owner privileges
 
 print "Dumping the old cluster into the new one...\n";
@@ -194,10 +230,20 @@ if (!fork) {
     exit 0;
 }
 
+print "Re-enabling connections to the old cluster...\n";
+enable_connections $version, $cluster;
+print "Re-enabling connections to the new cluster...\n";
+enable_connections $newversion, $cluster;
+
 wait;
 if ($?) {
     print STDERR "Error during cluster dumping, removing new cluster\n";
     system 'pg_dropcluster', '--stop-server', $newversion, $cluster;
+
+    # Reload old cluster to allow connections again
+    if (system 'pg_ctlcluster', '-s', $version, $cluster, 'reload') {
+        error 'could not reload old cluster, please do that manually';
+    }
     exit 1;
 }
 

@@ -11,8 +11,10 @@ postgresql-common (33) unstable; urgency=low
   * pg_upgradecluster: Set correct autovacuum option in postgresql.conf when
     upgrading to 8.1, depending on whether or not autovacuuming was used for
     the old cluster.
+  * pg_upgradecluster: Restrict access to the clusters to the cluster owner
+    and to the local Unix socket. Closes: #338025
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 19 Nov 2005 16:48:13 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 19 Nov 2005 18:03:00 +0100
 
 postgresql-common (32) unstable; urgency=low
 
