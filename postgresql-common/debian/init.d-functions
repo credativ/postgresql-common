@@ -2,10 +2,7 @@
 # package init.d scripts. It is usually included by
 # /etc/init.d/postgresql-X.Y.  
 
-if [ -f /lib/lsb/init-functions ]; then
-    . /lib/lsb/init-functions
-    USE_LSBINIT=1
-fi
+. /lib/lsb/init-functions
 
 # do pg_ctlcluster action $1 to all clusters of version $2 with command
 # description $3; output according to Debian Policy for init scripts
@@ -14,7 +11,6 @@ do_ctl_all() {
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
     [ -d "/etc/postgresql/$2" ] || return
     [ "$(ls /etc/postgresql/$2)" ] || return
-    [ -z "$3" ] || [ "$USE_LSBINIT" ] || echo -n "$3"
 
     unset fail
     for c in /etc/postgresql/"$2"/*; do
@@ -29,24 +25,14 @@ do_ctl_all() {
 	fi
 	[ "$start" = "auto" ] || continue
 
-        if [ "$USE_LSBINIT" ]; then
-            log_begin_msg "$3 $name"
-            pg_ctlcluster -s "$2" "$name" $1
-            log_end_msg $?
-        else
-            echo -n " $name"
-            ERRMSG="$ERRMSG\n"$(pg_ctlcluster -s "$2" "$name" $1 2>&1) || {
-                echo -n "(FAILED)"
-                fail=1 
-            }
-        fi
+        log_begin_msg "$3 $name"
+        pg_ctlcluster -s "$2" "$name" $1
+        log_end_msg $?
     done
     if [ "$fail" ]; then
 	[ -z "$ERRMSG" ] || echo -e "\n$ERRMSG" >&2
 	exit 1
     fi
-
-    [ -z "$3" ] || [ "$USE_LSBINIT" ] || echo "."
 }
 
 # start all clusters of version $1
