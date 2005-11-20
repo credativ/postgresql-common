@@ -290,7 +290,7 @@ sub cluster_info {
 
     # autovacuum settings
 
-    if ($_[0] le '8.1') {
+    if ($_[0] lt '8.1') {
         $result{'avac_logfile'} = readlink ($result{'configdir'} . "/autovacuum_log");
         if (get_program_path 'pg_autovacuum', $_[0]) {
             $result{'avac_enable'} = config_bool (get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start'));
