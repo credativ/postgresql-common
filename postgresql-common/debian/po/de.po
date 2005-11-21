@@ -48,7 +48,7 @@ msgstr ""
 "Bitte beachten Sie, dass die Installation des Pakets postgresql-${latest} "
 "automatisch einen Standard-Cluster ${latest}/main anlegt. Wenn Sie den "
 "Cluster ${old}/main aktualisieren möchten, müssen Sie den schon vorhandenen "
-"${latest} Cluster entfernen (pg_dropcluster --stop-server ${old} main, siehe "
+"${latest} Cluster entfernen (pg_dropcluster --stop-server ${latest} main, siehe "
 "man-Seite für Details)."
 
 #. Type: note

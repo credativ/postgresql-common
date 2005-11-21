@@ -18,8 +18,10 @@ postgresql-common (33) unstable; urgency=low
     on autovacuum startup.
   * debian/init.d-functions: Remove legacy init script output and always use
     LSB functions. Add lsb-base dependency.
+  * debian/po/de.po: Fix cluster version in German translation. 
+    Closes: #340096
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 20 Nov 2005 16:07:19 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Nov 2005 16:11:23 +0100
 
 postgresql-common (32) unstable; urgency=low
 
