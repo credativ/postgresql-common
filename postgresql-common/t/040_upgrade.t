@@ -10,19 +10,22 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 20;
+use Test::More tests => 23;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
     "pg_createcluster $MAJORS[0] upgr");
 
 # Create nobody user, test database, and put a table into it
-is ((exec_as 'postgres', 'createuser nobody -D ' . (($MAJORS[0] ge '8.1') ? '-R -s' : '-A') . '; createdb -O nobody test'), 
-	0, 'Create nobody user and test database');
+is ((exec_as 'postgres', 'createuser nobody -D ' . (($MAJORS[0] ge '8.1') ? '-R -s' : '-A') . 
+    '&& createdb -O nobody test && createdb -O nobody testnc'), 
+	0, 'Create nobody user and test databases');
 is ((exec_as 'nobody', 'psql test -c "create table phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)"'), 
     0, 'create table');
 is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Alice\', 2)"'), 0, 'insert Alice into phone table');
 is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Bob\', 1)"'), 0, 'insert Bob into phone table');
+is ((exec_as 'postgres', 'psql template1 -c "update pg_database set datallowconn = \'f\' where datname = \'testnc\'"'), 
+    0, 'disallow connection to testnc');
 
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -50,6 +53,15 @@ $LATEST_MAJOR     upgr      5432 online postgres /var/lib/postgresql/$LATEST_MAJ
 # Check that SELECT output is identical
 is_program_out 'nobody', 'psql -tAc "select * from phone order by name" test', 0,
     $$select_old, 'SELECT output is the same in original and upgraded cluster';
+
+# Check connection permissions
+is_program_out 'nobody', 'psql -tAc "select datname, datallowconn from pg_database order by datname" template1', 0,
+    'postgres|t
+template0|f
+template1|t
+test|t
+testnc|f
+', 'dataallowconn values';
 
 # stop servers, clean up
 is ((system "pg_dropcluster $MAJORS[0] upgr --stop-server"), 0, 'Dropping original cluster');
