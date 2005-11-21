@@ -8,7 +8,7 @@ if [ "$1" = purge ]; then
     rm -rf /etc/postgresql-common/postgresql.crt /etc/postgresql-common/postgresql.pem
     rm -rf /etc/postgresql-common/root.crt 
 
-    [-d /etc/postgresql-common ] && rmdir --ignore-fail-on-non-empty /etc/postgresql-common || true
+    [ -d /etc/postgresql-common ] && rmdir --ignore-fail-on-non-empty /etc/postgresql-common || true
 fi
 
 #DEBHELPER#

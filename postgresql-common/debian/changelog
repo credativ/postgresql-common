@@ -1,8 +1,8 @@
 postgresql-common (34) unstable; urgency=low
 
-  *
+  * debian/postgresql-common.postrm: Fix syntax error.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:15:55 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:54:45 +0100
 
 postgresql-common (33) unstable; urgency=low
 
