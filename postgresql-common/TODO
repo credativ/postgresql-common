@@ -12,18 +12,6 @@ Missing selftest:
 - start.conf upgrades
 
 Important features:
-- determine supported versions on package installation time:
-  Ubuntu Dapper: 8.1
-    lsb_release -is: Ubuntu
-    lsb_release -rs: 6.04
-  Ubuntu Breezy: 7.4 8.0
-    lsb_release -is: Ubuntu
-    lsb_release -rs: 5.10
-  Debian Sid: 7.4 8.1
-    lsb_release -is: Debian
-    lsb_release -rs: testing/unstable
-  Debian Sarge: 7.4 8.1
-    /etc/debian_version: 3.1
 
 Wishlist:
 - export environment variables in pg_wrapper (PGCLUSTER, etc.)
