@@ -103,9 +103,9 @@ sub stop_check_pid_file {
 }
 
 # check if a cluster reliably connects or fails
-# Arguments: <version> <cluster> <port>
+# Arguments: <version> <cluster> <port> <socket dir>
 sub cluster_port_ready {
-    my ($v, $c, $p) = @_;
+    my ($v, $c, $p, $sd) = @_;
     my $psql = get_program_path 'psql', $v;
     error 'cluster_port_ready: could not find psql binary' unless $psql;
     my $n = 0;
@@ -114,7 +114,7 @@ sub cluster_port_ready {
     # probe until we get three successful or failed connections in a row
     while ($n < 3) {
         select undef, undef, undef, 0.5;
-        system "$psql --port $p -l >/dev/null 2>&1";
+        system "$psql -h '$sd' --port $p -l >/dev/null 2>&1";
         if ($? == $result) {    
             $n++;
         } else {
@@ -269,10 +269,8 @@ sub start {
         select (undef, undef, undef, 0.5);
         $currlogsize = (stat $info{'logfile'})[7] if -r $info{'logfile'};
         if (cluster_port_running $version, $cluster, $info{'port'}) {
-            if (cluster_port_ready $version, $cluster, $info{'port'}) {
-                $success = 1;
-                last;
-            }
+            $success = 1;
+            last;
         }
 
         # if the postmaster wrote something, but the process does not exist any
@@ -280,8 +278,13 @@ sub start {
         last if ($currlogsize > $logsize && !check_running_postmaster $pidfile);
     }
 
+    # OK, the server runs, now wait until it stabilized
+    if ($success)  {
+        $success = cluster_port_ready $version, $cluster, $info{'port'}, $info{'socketdir'};
+    }
+
     if ($success) {
-        if ($version < 8.1 && $info{'avac_enable'} && $pg_autovacuum) {
+        if ($version lt '8.1' && $info{'avac_enable'} && $pg_autovacuum) {
             autovacuum_start;
         }
     } else {
