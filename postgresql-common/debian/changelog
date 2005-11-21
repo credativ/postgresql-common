@@ -1,8 +1,10 @@
 postgresql-common (34) unstable; urgency=low
 
-  *
+  * Add debian/supported-versions: Script to determine the set of supported
+    PostgreSQL major versions for the running distro/release. Currently covers
+    Debian sid/testing, Ubuntu 5.10 and Ubuntu 6.04.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:15:55 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:26:21 +0100
 
 postgresql-common (33) unstable; urgency=low
 
