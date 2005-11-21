@@ -224,7 +224,7 @@ if (!fork) {
          '-g', '-c' or 
         error 'Could not execute pg_dumpall for old cluster';
     open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
-        '-d', 'template1' or 
+        '-q', '-d', 'template1' or 
         error 'Could not execute psql for new cluster';
     my $buffer;
     while (read SOURCE, $buffer, 1048576) {
@@ -237,14 +237,14 @@ if (!fork) {
     
     # Upgrade databases
     for my $db (@databases) {
-        next if $db =~ '^template(0|1)$';
+        next if $db eq 'template0';
 
         print 'Upgrading database ', $db, "...\n";
         open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
-             '-Fc', '-c', $db or 
+             '-Fc', $db or 
             error 'Could not execute pg_dump for old cluster';
         open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-            '-d', 'template1', '-C', '-v' or 
+            '-d', 'template1', '-C' or 
             error 'Could not execute pg_restore for new cluster';
         while (read SOURCE, $buffer, 1048576) {
             print SINK $buffer;
@@ -252,7 +252,8 @@ if (!fork) {
         close SOURCE;
         ($? == 0) or exit 1;
         close SINK;
-        ($? == 0) or exit 1;
+        # FIXME: we will get an error on template1 since it already exists
+        exit 1 if $db ne 'template1' && $? != 0;
         print 'Analyzing database ', $db, "...\n";
         (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
             '-c', 'ANALYZE') == 0 or
