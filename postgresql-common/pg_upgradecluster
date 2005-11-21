@@ -206,27 +206,90 @@ disable_connections $newversion, $cluster, $owner;
 
 # dump cluster; drop to cluster owner privileges
 
-print "Dumping the old cluster into the new one...\n";
-
 if (!fork) {
     change_ugid $info{'owneruid'}, $info{'ownergid'};
-    $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
-    $psql = get_program_path 'psql', $newversion;
-    $oldsocket = get_cluster_socketdir $version, $cluster;
-    $newsocket = get_cluster_socketdir $newversion, $cluster;
+    my $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
+    my $pg_dump = get_program_path 'pg_dump', $newversion;
+    my $pg_restore = get_program_path 'pg_restore', $newversion;
+    my $oldpsql = get_program_path 'psql', $version;
+    my $psql = get_program_path 'psql', $newversion;
+    my $oldsocket = get_cluster_socketdir $version, $cluster;
+    my $newsocket = get_cluster_socketdir $newversion, $cluster;
+    my $buffer;
 
-    open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'} or 
-	error 'Could not execute pg_dumpall for old cluster';
-    open SINK, '|-', $psql, '-h', $newsocket, '-q', '-p', $newinfo{'port'},
-        '-d', 'template1' or 
+    # get list of databases and allowed connections
+    my %databases;
+    open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
+        '-F|', '-d', 'template1', '-Atc', 
+        'select datname, datallowconn from pg_database' or 
+        error 'Could not get pg_database list';
+    while (<F>) {
+        chomp;
+        my ($n, $a) = split '\|';
+        $databases{$n} = ($a eq 't');
+    }
+    close F;
+    error 'could not get list of databases' if $?;
+
+    # Upgrade roles (global objects)
+    print "Creating globals...\n";
+    open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'},
+         '-g', '-c' or 
+        error 'Could not execute pg_dumpall for old cluster';
+    open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
+        '-q', '-d', 'template1' or 
         error 'Could not execute psql for new cluster';
-    while (read SOURCE, $buffer, 16384) {
-	print SINK $buffer;
+    while (read SOURCE, $buffer, 1048576) {
+        print SINK $buffer;
     }
     close SOURCE;
     ($? == 0) or exit 1;
     close SINK;
     ($? == 0) or exit 1;
+    
+    # Upgrade databases
+    for my $db (keys %databases) {
+        next if $db eq 'template0';
+        unless ($databases{$db}) {
+            print "Temporary enabling access to database $db\n";
+            (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "update pg_database set datallowconn = 't' where datname = '$db'") == 0 or
+                error 'Could not enable access to database';
+        }
+
+        print 'Upgrading database ', $db, "...\n";
+        open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
+             '-Fc', $db or 
+            error 'Could not execute pg_dump for old cluster';
+        open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
+            '-d', 'template1', '-C' or 
+            error 'Could not execute pg_restore for new cluster';
+        while (read SOURCE, $buffer, 1048576) {
+            print SINK $buffer;
+        }
+        close SOURCE;
+        ($? == 0) or exit 1;
+        close SINK;
+        # FIXME: we will get an error on template1 since it already exists
+        exit 1 if $db ne 'template1' && $? != 0;
+        print 'Analyzing database ', $db, "...\n";
+        (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
+            '-d', $db, '-c', 'ANALYZE') == 0 or
+            error 'Could not ANALZYE database';
+
+        unless ($databases{$db}) {
+            print "Disabling access to database $db\n";
+            (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "update pg_database set datallowconn = 'f' where datname = '$db'") == 0 or
+                error 'Could not disable access to database in old cluster';
+            (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "update pg_database set datallowconn = 'f' where datname = '$db'") == 0 or
+                error 'Could not disable access to database in new cluster';
+        }
+    }
     exit 0;
 }
 
@@ -291,10 +354,6 @@ set_cluster_port $version, $cluster, $oldport;
 print "Starting target cluster on the original port...\n";
 @argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'start');
 error "Could not start target cluster; please check configuration and log files" if system @argv;
-
-print "Vacuuming and analyzing target cluster...\n";
-@argv = ('pg_maintenance', '--cluster', "$newversion/$cluster", '--force');
-error "Could not vacuum/analyze target cluster; please check configuration and log files" if system @argv;
 
 print "Success. Please check that the upgraded cluster works. If it does,
 you can remove the old cluster with

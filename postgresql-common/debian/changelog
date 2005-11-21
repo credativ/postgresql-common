@@ -22,8 +22,12 @@ postgresql-common (33) unstable; urgency=low
     Closes: #340096
   * debian/postgresql-common.postrm: Check if /etc/postgresql-common exists
     before trying to remove it. Closes: #340187
+  * pg_upgradecluster:
+    - Use pg_dump/pg_restore with custom format to support BLOBs.
+    - Upgrade databases with disabled connection.
+    - Execute ANALYZE after upgrade instead of pg_maintenance.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Nov 2005 22:43:21 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Nov 2005 23:22:30 +0100
 
 postgresql-common (32) unstable; urgency=low
 

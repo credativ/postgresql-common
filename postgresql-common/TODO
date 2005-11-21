@@ -2,9 +2,6 @@ postgresql TODO
 ===============
 
 Bugs:
-- Use pg_dump/pg_restore with custom format in pg_upgradecluster
-- Instead of calling pg_maintenance, call ANALYZE after an upgraded database.
-- check for databases with locked-down connections
 
 Transition bugs:
 - check for obsolete 8.1 configuration items
