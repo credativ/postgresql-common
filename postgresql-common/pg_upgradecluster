@@ -275,7 +275,7 @@ if (!fork) {
         exit 1 if $db ne 'template1' && $? != 0;
         print 'Analyzing database ', $db, "...\n";
         (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
-            '-c', 'ANALYZE') == 0 or
+            '-d', $db, '-c', 'ANALYZE') == 0 or
             error 'Could not ANALZYE database';
 
         unless ($databases{$db}) {
