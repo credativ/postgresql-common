@@ -211,12 +211,25 @@ if (!fork) {
     my $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     my $pg_dump = get_program_path 'pg_dump', $newversion;
     my $pg_restore = get_program_path 'pg_restore', $newversion;
+    my $oldpsql = get_program_path 'psql', $version;
     my $psql = get_program_path 'psql', $newversion;
     my $oldsocket = get_cluster_socketdir $version, $cluster;
     my $newsocket = get_cluster_socketdir $newversion, $cluster;
+    my $buffer;
 
-    my @databases = get_cluster_databases $version, $cluster;
-    error 'could not get list of databases' unless @databases;
+    # get list of databases and allowed connections
+    my %databases;
+    open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
+        '-F|', '-d', 'template1', '-Atc', 
+        'select datname, datallowconn from pg_database' or 
+        error 'Could not get pg_database list';
+    while (<F>) {
+        chomp;
+        my ($n, $a) = split '\|';
+        $databases{$n} = ($a eq 't');
+    }
+    close F;
+    error 'could not get list of databases' if $?;
 
     # Upgrade roles (global objects)
     print "Creating globals...\n";
@@ -226,7 +239,6 @@ if (!fork) {
     open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
         '-q', '-d', 'template1' or 
         error 'Could not execute psql for new cluster';
-    my $buffer;
     while (read SOURCE, $buffer, 1048576) {
         print SINK $buffer;
     }
@@ -236,8 +248,11 @@ if (!fork) {
     ($? == 0) or exit 1;
     
     # Upgrade databases
-    for my $db (@databases) {
-        next if $db eq 'template0';
+    for my $db (keys %databases) {
+        unless ($databases{$db}) {
+            print "Skipping no-connection database $db\n";
+            next;
+        }
 
         print 'Upgrading database ', $db, "...\n";
         open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
