@@ -1,3 +1,9 @@
+postgresql-common (34) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:15:55 +0100
+
 postgresql-common (33) unstable; urgency=low
 
   * pg_wrapper: Instead of checking $0 against a static list, just check
