@@ -26,8 +26,9 @@ postgresql-common (33) unstable; urgency=low
       old cluster.
     - Restrict access to the clusters to the cluster owner and to the local
       Unix socket during upgrade. Closes: #338025
+    - Convert to 'strict' Perl mode.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Nov 2005 23:25:50 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Nov 2005 23:30:34 +0100
 
 postgresql-common (32) unstable; urgency=low
 

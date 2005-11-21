@@ -4,10 +4,15 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
+use strict;
+
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 use Getopt::Long;
 use POSIX;
+
+my ($version, $newversion, $cluster);
+my (%info, %newinfo);
 
 sub adapt_conffiles {
     # tcpip_socket transition
@@ -161,15 +166,15 @@ if ($#ARGV < 1) {
 
 error 'This command needs to be executed as root' if $> != 0;
 
-($version, $cluster, $datadir) = @ARGV;
+($version, $cluster, my $datadir) = @ARGV;
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 error 'specified cluster is not running' unless $info{'running'};
 error 'cluster is disabled' if $info{'start'} eq 'disabled';
 
-$encoding = get_db_encoding $version, $cluster, 'template1';
+my $encoding = get_db_encoding $version, $cluster, 'template1';
 error 'could not get cluster default encoding' unless $encoding;
-($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
+my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
 error 'could not get cluster locale' unless $lc_ctype;
 error 'could not get cluster collating locale' unless $lc_ctype;
 
@@ -179,7 +184,7 @@ if (PgCommon::cluster_data_directory $newversion, $cluster) {
 
 # create new cluster, preserving encoding and locales
 
-@argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
+my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
     '--socketdir', $info{'socketdir'}, '--encoding', $encoding, $newversion,
     $cluster);
 push @argv, $datadir if $datadir;
@@ -347,7 +352,7 @@ manual";
     error "could not create $startconf: $!";
 }
 
-$oldport = next_free_port;
+my $oldport = next_free_port;
 print "Configuring old cluster to use a different port ($oldport)...\n";
 set_cluster_port $version, $cluster, $oldport;
 
