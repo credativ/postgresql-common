@@ -249,9 +249,13 @@ if (!fork) {
     
     # Upgrade databases
     for my $db (keys %databases) {
+        next if $db eq 'template0';
         unless ($databases{$db}) {
-            print "Skipping no-connection database $db\n";
-            next;
+            print "Temporary enabling access to database $db\n";
+            (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "update pg_database set datallowconn = 't' where datname = '$db'") == 0 or
+                error 'Could not enable access to database';
         }
 
         print 'Upgrading database ', $db, "...\n";
@@ -273,6 +277,18 @@ if (!fork) {
         (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
             '-c', 'ANALYZE') == 0 or
             error 'Could not ANALZYE database';
+
+        unless ($databases{$db}) {
+            print "Disabling access to database $db\n";
+            (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "update pg_database set datallowconn = 'f' where datname = '$db'") == 0 or
+                error 'Could not disable access to database in old cluster';
+            (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "update pg_database set datallowconn = 'f' where datname = '$db'") == 0 or
+                error 'Could not disable access to database in new cluster';
+        }
     }
     exit 0;
 }
