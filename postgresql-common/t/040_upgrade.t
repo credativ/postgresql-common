@@ -39,7 +39,6 @@ Bob|1
 my $outref;
 is ((exec_as 0, "pg_upgradecluster $MAJORS[0] upgr", $outref, 0), 0, 'pg_upgradecluster succeeds');
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
-like $$outref, qr/Doing maintenance/, 'pg_upgradecluster reported successful maintenance';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
 # Check clusters
