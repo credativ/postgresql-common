@@ -6,8 +6,12 @@ postgresql-common (35) unstable; urgency=low
   * t/060_obsolete_confparams.t: Start with a full configuration file for
     every tested version, instead of just upgrading the previously upgraded
     version. This gives an exhaustive check for obsolete parameters.
+  * pg_upgradecluster: Handle all outstanding obsolete parameters when
+    upgrading to 8.1:
+    - bgwriter_percent -> bgwriter_{lru,all}_percent
+    - bgwriter_maxpages -> bgwriter_{lru,all}_maxpages
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:09:20 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:22:55 +0100
 
 postgresql-common (34) unstable; urgency=low
 

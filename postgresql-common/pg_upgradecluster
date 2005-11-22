@@ -119,6 +119,30 @@ sub adapt_conffiles {
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
             'autovacuum', $info{'avac_enable'} ? 'yes' : 'no';
     }
+
+    # bgwriter_percent -> bgwriter_{lru,all}_percent transition
+    if ($newversion ge '8.1') {
+        my $bgwriter_percent = PgCommon::get_conf_value $newversion, $cluster,
+                'postgresql.conf', 'bgwriter_percent';
+        if (defined $bgwriter_percent) {
+            PgCommon::replace_conf_value $newversion, $cluster,
+                'postgresql.conf', 'bgwriter_percent', 
+                'deprecated in favor of bgwriter_{lru,all}_percent', 
+                'bgwriter_all_percent', $bgwriter_percent;
+        }
+    }
+
+    # bgwriter_maxpages -> bgwriter_{lru,all}_maxpages transition
+    if ($newversion ge '8.1') {
+        my $bgwriter_maxpages = PgCommon::get_conf_value $newversion, $cluster,
+                'postgresql.conf', 'bgwriter_maxpages';
+        if (defined $bgwriter_maxpages) {
+            PgCommon::replace_conf_value $newversion, $cluster,
+                'postgresql.conf', 'bgwriter_maxpages', 
+                'deprecated in favor of bgwriter_{lru,all}_maxpages', 
+                'bgwriter_all_maxpages', $bgwriter_maxpages;
+        }
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
