@@ -10,8 +10,10 @@ postgresql-common (35) unstable; urgency=low
     upgrading to 8.1:
     - bgwriter_percent -> bgwriter_{lru,all}_percent
     - bgwriter_maxpages -> bgwriter_{lru,all}_maxpages
+  * PgCommon.pm: Add new function set_cluster_start_conf() for easier change
+    of start.conf.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:22:55 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:50:01 +0100
 
 postgresql-common (34) unstable; urgency=low
 

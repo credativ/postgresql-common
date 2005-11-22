@@ -10,7 +10,7 @@ our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
-    get_cluster_start_conf
+    get_cluster_start_conf set_cluster_start_conf
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_cluster_locales
@@ -276,6 +276,46 @@ sub get_cluster_start_conf {
     }
 
     return $start;
+}
+
+# Change start.conf setting.
+# Arguments: <version> <cluster> <value>
+# <value> = auto | manual | disabled
+sub set_cluster_start_conf {
+    my ($v, $c, $val) = @_;
+
+    error "Invalid mode: '$val'" unless $val eq 'auto' || 
+	    $val eq 'manual' || $val eq 'disabled';
+
+    # start.conf setting
+    my $start_conf = "$confroot/$_[0]/$_[1]/start.conf";
+    my $text;
+    if (-e $start_conf) {
+	open F, $start_conf or error "Could not open $start_conf: $!";
+	while (<F>) {
+            if (/^\s*(?:auto|manual|disabled)\b(.*$)/) {
+                $text .= $val . $1 . "\n";
+            } else {
+                $text .= $_;
+            }
+	}
+	close F;
+    } else {
+        $text = "# Automatic startup configuration
+# auto: automatically start/stop the cluster in the init script
+# manual: do not start/stop in init scripts, but allow manual startup with
+#         pg_ctlcluster
+# disabled: do not allow manual startup with pg_ctlcluster (this can be easily
+#           circumvented and is only meant to be a small protection for
+#           accidents).
+
+$val
+";
+    }
+
+    open F, '>' . $start_conf or error "Could not open $start_conf for writing: $!";
+    print F $text;
+    close F;
 }
 
 # Return a hash with information about a specific cluster.
