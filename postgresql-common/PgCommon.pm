@@ -10,6 +10,7 @@ our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
+    get_cluster_start_conf
     get_program_path cluster_info get_versions get_newest_version
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_cluster_locales
@@ -251,6 +252,32 @@ sub cluster_port_running {
     return $running ? 1 : 0;
 }
 
+# Read, verify, and return the current start.conf setting.
+# Arguments: <version> <cluster>
+# Returns: auto | manual | disabled
+sub get_cluster_start_conf {
+    # start.conf setting
+    my $start = 'auto';
+    my $start_conf = "$confroot/$_[0]/$_[1]/start.conf";
+    if (-e $start_conf) {
+	open F, $start_conf or error "Could not open $start_conf: $!";
+	while (<F>) {
+	    s/#.*$//;
+	    s/^\s*//;
+	    s/\s*$//;
+	    next unless $_;
+	    $start = $_;
+	    last;
+	}
+	close F;
+
+	error 'Invalid mode in start.conf' unless $start eq 'auto' || 
+	    $start eq 'manual' || $start eq 'disabled';
+    }
+
+    return $start;
+}
+
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile, configdir,
@@ -267,26 +294,7 @@ sub cluster_info {
         ($result{'owneruid'}, $result{'ownergid'}) = 
             (stat $result{'pgdata'})[4,5];
     }
-
-    # start.conf setting
-    my $start = 'auto';
-    my $start_conf = $result{'configdir'} . '/start.conf';
-    if (-e $start_conf) {
-	open F, $start_conf or error "Could not open $start_conf: $!";
-	while (<F>) {
-	    s/#.*$//;
-	    s/^\s*//;
-	    s/\s*$//;
-	    next unless $_;
-	    $start = $_;
-	    last;
-	}
-	close F;
-
-	error 'Invalid mode in start.conf' unless $start eq 'auto' || 
-	    $start eq 'manual' || $start eq 'disabled';
-    }
-    $result{'start'} = $start;
+    $result{'start'} = get_cluster_start_conf $_[0], $_[1];
 
     # autovacuum settings
 
