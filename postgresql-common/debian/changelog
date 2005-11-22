@@ -1,8 +1,10 @@
 postgresql-common (35) unstable; urgency=low
 
-  *
+  * pg_ctlcluster: If the socket already responds, but connections fail
+    several times in a row, give the postmaster some more time (5s) to
+    actually accept connections.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 01:24:39 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:03:14 +0100
 
 postgresql-common (34) unstable; urgency=low
 

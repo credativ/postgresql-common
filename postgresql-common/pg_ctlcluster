@@ -112,7 +112,7 @@ sub cluster_port_ready {
     my $result = 0;
 
     # probe until we get three successful or failed connections in a row
-    while ($n < 3) {
+    while ($n < ($result ? 10 : 3)) {
         select undef, undef, undef, 0.5;
         system "$psql -h '$sd' --port $p -l >/dev/null 2>&1";
         if ($? == $result) {    
