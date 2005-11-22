@@ -4,7 +4,6 @@ postgresql TODO
 Bugs:
 
 Transition bugs:
-- check for obsolete 8.1 configuration items
 
 Missing selftest:
 - pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
