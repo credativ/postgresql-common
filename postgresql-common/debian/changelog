@@ -14,8 +14,9 @@ postgresql-common (35) unstable; urgency=low
     of start.conf.
   * Rename test 030_create_errors.t to 030_errors.t since it covers more
     errors than just creation failures.
+  * Add test t/080_start.conf.t: Check start.conf handling and upgrading.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:56:09 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 23 Nov 2005 00:25:17 +0100
 
 postgresql-common (34) unstable; urgency=low
 

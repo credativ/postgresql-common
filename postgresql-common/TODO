@@ -7,8 +7,6 @@ Transition bugs:
 
 Missing selftest:
 - pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
-- start.conf handling
-- start.conf upgrades
 
 Important features:
 
