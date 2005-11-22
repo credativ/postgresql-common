@@ -12,8 +12,10 @@ postgresql-common (35) unstable; urgency=low
     - bgwriter_maxpages -> bgwriter_{lru,all}_maxpages
   * PgCommon.pm: Add new function set_cluster_start_conf() for easier change
     of start.conf.
+  * Rename test 030_create_errors.t to 030_errors.t since it covers more
+    errors than just creation failures.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:50:01 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 23:56:09 +0100
 
 postgresql-common (34) unstable; urgency=low
 

@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
-# Create a cluster with a nonstandard socket directory. Also check various
-# error conditions of the cluster state.
+# Check all kinds of error conditions.
 
 use strict; 
 
