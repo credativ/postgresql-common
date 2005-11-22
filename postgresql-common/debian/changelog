@@ -1,8 +1,13 @@
 postgresql-common (34) unstable; urgency=low
 
   * debian/postgresql-common.postrm: Fix syntax error.
+  * Add debian/supported-versions: Script to determine the set of supported
+    PostgreSQL major versions for the running distro/release. Currently covers
+    Debian sid/testing, Ubuntu 5.10 and Ubuntu 6.04.
+  * debian/postgresql-common.config: Remove hardcoded versions, use
+    supported-versions now.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:54:45 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:51:42 +0100
 
 postgresql-common (33) unstable; urgency=low
 

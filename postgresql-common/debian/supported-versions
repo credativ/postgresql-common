@@ -1,0 +1,64 @@
+#!/bin/sh -e
+
+# print a list of PostgreSQL versions that are supported for the platform this
+# script runs on.
+#
+# (C) 2005 Martin Pitt <mpitt@debian.org>
+
+lsb_ubuntu() {
+    case "$1" in
+        5.10)
+            echo -e "7.4\n8.0"
+            ;;
+        6.04)
+            echo -e "8.1"
+            ;;
+        *)
+            echo "Unknown Ubuntu release: $1"
+            exit 1
+            ;;
+    esac
+} 
+
+lsb_debian() {
+    case "$1" in
+        testing/unstable)
+            echo -e "7.4\n8.1"
+            ;;
+        *)
+            echo "Unknown Debian release: $1"
+            exit 1
+            ;;
+    esac
+} 
+
+# If we have lsb_release, use it
+if type -p lsb_release >/dev/null; then
+    DISTRO="`lsb_release -is`"
+    RELEASE="`lsb_release -rs`"
+    
+    # Ubuntu?
+    case "$DISTRO" in
+        Ubuntu)
+            lsb_ubuntu "$RELEASE"
+            ;;
+
+        Debian)
+            lsb_debian "$RELEASE"
+            ;;
+
+        *)
+            echo "Unknown distribution: $DISTRO"
+            exit 1
+            ;;
+    esac
+else
+    # Debian?
+    if [ -e /etc/debian_version ]; then
+        echo -e "7.4\n8.1";
+    else
+        exit 1
+    fi
+fi
+
+exit 0
