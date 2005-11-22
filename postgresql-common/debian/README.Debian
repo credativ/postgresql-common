@@ -6,8 +6,8 @@ PostgreSQL is a relational database with object-oriented extensions.  It
 implements the greater part of SQL-92 and is intended to implement it in full;
 in addition it supports its own extended facilities.
 
-Since the on-disk data format of all major PostgreSQL versions (like 7.2, 7.4,
-8.0, etc.) is incompatible to each other, Debian's PostgreSQL packaging
+Since the on-disk data format of all major PostgreSQL versions (like 7.4,
+8.1, etc.) is incompatible to each other, Debian's PostgreSQL packaging
 architecture is designed to maintain clusters of different major versions in
 parallel.
 
@@ -26,7 +26,7 @@ but if you want to get straight into playing SQL, here are the steps to create
 a database user and a database for the Unix user 'joe':
 
 1. Install a database server with the major version of your choice,
-   preferrably the latest version (e. g. 'postgresql-8.0'). This will
+   preferrably the latest version (e. g. 'postgresql-8.1'). This will
    automatically create a default cluster 'main' with the database
    superuser 'postgres'.
 
@@ -102,9 +102,9 @@ symlink the file to /etc/postgresql-common/postgresql.crt; in this
 case, client certificates need to be signed by the postgresql server
 certificate, which might be desirable in many cases. See
 
-  file:///usr/share/doc/postgresql-doc-8.0/html/ssl-tcp.html
+  file:///usr/share/doc/postgresql-doc-8.1/html/ssl-tcp.html
 
-for details (in package postgresql-doc-8.0).
+for details (in package postgresql-doc-8.1).
 
 Autovacuum daemon
 -----------------
