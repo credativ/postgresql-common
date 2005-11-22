@@ -56,9 +56,9 @@ check_cluster $MAJORS[0], 'en_US', 1;
 check_cluster $MAJORS[0], 'en_US', 1, 'UTF-8';
 check_cluster $MAJORS[0], 'en_US.UTF-8', 1;
 
-check_cluster $LATEST_MAJOR, 'en_US', 1;
-check_cluster $LATEST_MAJOR, 'en_US', 1, 'UTF-8';
-check_cluster $LATEST_MAJOR, 'en_US.UTF-8', 1;
+check_cluster $MAJORS[-1], 'en_US', 1;
+check_cluster $MAJORS[-1], 'en_US', 1, 'UTF-8';
+check_cluster $MAJORS[-1], 'en_US.UTF-8', 1;
 
 # Check clusters
 is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';

@@ -9,10 +9,11 @@ use Test::More;
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
-    like_program_out unlike_program_out @MAJORS $LATEST_MAJOR/;
+    like_program_out unlike_program_out @MAJORS/;
 
-our @MAJORS = ('7.4', '8.0', '8.1');
-our $LATEST_MAJOR = $MAJORS[-1];
+use lib '/usr/share/postgresql-common';
+use PgCommon qw/get_versions/;
+our @MAJORS = get_versions;
 
 # Return whether a given deb is installed.
 # Arguments: <deb name>

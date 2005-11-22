@@ -6,8 +6,9 @@ postgresql-common (34) unstable; urgency=low
     Debian sid/testing, Ubuntu 5.10 and Ubuntu 6.04.
   * debian/postgresql-common.config: Remove hardcoded versions, use
     supported-versions now.
+  * Minor test suite variable cleanup.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 00:51:42 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 22 Nov 2005 01:11:05 +0100
 
 postgresql-common (33) unstable; urgency=low
 

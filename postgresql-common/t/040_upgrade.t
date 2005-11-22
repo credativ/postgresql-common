@@ -47,7 +47,7 @@ like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful
 # Check clusters
 is_program_out 'nobody', 'pg_lsclusters -h', 0, 
     "$MAJORS[0]     upgr      5433 down   postgres /var/lib/postgresql/$MAJORS[0]/upgr       /var/log/postgresql/postgresql-$MAJORS[0]-upgr.log 
-$LATEST_MAJOR     upgr      5432 online postgres /var/lib/postgresql/$LATEST_MAJOR/upgr       /var/log/postgresql/postgresql-$LATEST_MAJOR-upgr.log 
+$MAJORS[-1]     upgr      5432 online postgres /var/lib/postgresql/$MAJORS[-1]/upgr       /var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log 
 ", 'pg_lsclusters output';
 
 # Check that SELECT output is identical
@@ -65,7 +65,7 @@ testnc|f
 
 # stop servers, clean up
 is ((system "pg_dropcluster $MAJORS[0] upgr --stop-server"), 0, 'Dropping original cluster');
-is ((system "pg_dropcluster $LATEST_MAJOR upgr --stop-server"), 0, 'Dropping upgraded cluster');
+is ((system "pg_dropcluster $MAJORS[-1] upgr --stop-server"), 0, 'Dropping upgraded cluster');
 
 # Check clusters
 is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';
