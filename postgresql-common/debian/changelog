@@ -1,3 +1,9 @@
+postgresql-common (36) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 24 Nov 2005 22:33:08 +0100
+
 postgresql-common (35) unstable; urgency=low
 
   * pg_ctlcluster: If the socket already responds, but connections fail
