@@ -15,11 +15,12 @@ postgresql-common (35) unstable; urgency=low
   * Rename test 030_create_errors.t to 030_errors.t since it covers more
     errors than just creation failures.
   * Add test t/080_start.conf.t: Check start.conf handling and upgrading.
-  * debian/supported-versions: Add Debian release 3.1. Closes: #340397
+  * debian/supported-versions: Add Debian release 3.1. 
+    Closes: #340397, #340483
   * debian/postgresql-common.config: Ignore things in /usr/lib/postgresql that
     are not a version-specific postgresql subdirectory. Closes: #340470
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 24 Nov 2005 19:10:25 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 24 Nov 2005 19:51:00 +0100
 
 postgresql-common (34) unstable; urgency=low
 
