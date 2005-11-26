@@ -174,10 +174,12 @@ sub setup_pg_hba {
 
 # command line arguments
 
+my $startconf = 'auto';
+
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
-    'l|logfile=s' => \$custom_logfile);
+    'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -198,9 +200,14 @@ Options:
                 /var/log/postgresql/postgresql-<version>-<cluster>.log)
   -e <encoding> Default encoding (default: derived from locale)
   --start       start the cluster after creating it
+  --start-conf auto|manual|disabled
+                Set automatic startup behaviour in start.conf (default: 'auto')
 ";
     exit 1;
 }
+
+error 'Invalid --start-conf value' if $startconf ne 'auto' &&
+    $startconf ne 'manual' && $startconf ne 'disabled';
 
 error 'This command needs to be executed as root' if $> != 0;
 
@@ -258,7 +265,7 @@ if (-f "$pgdata/PG_VERSION") {
 }
 
 # create default "start" file
-set_cluster_start_conf $version, $cluster, 'auto';
+set_cluster_start_conf $version, $cluster, $startconf;
 
 # move conffiles, setup permissions
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, "640";
@@ -446,6 +453,13 @@ documentation.
 Immediately start a server for the cluster after creating it (i. e. call
 C<pg_ctlcluster> I<version cluster> C<start> on it). By default, the cluster is
 not started.
+
+=item B<--start-conf>  B<auto>|B<manual>|B<disabled>
+
+Set the initial value in the C<start.conf> configuration file. See B<STARTUP
+CONTROL> below. By default, B<auto> is used, which means that the cluster is
+handled by C</etc/init.d/postgresql->I<version>, i. e. starts and stops
+automatically on system boot.
 
 =back
 

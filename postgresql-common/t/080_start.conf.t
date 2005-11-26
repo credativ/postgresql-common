@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 48;
+use Test::More tests => 55;
 
 # Do test with oldest version
 my $v = $MAJORS[0];
@@ -83,6 +83,18 @@ is ((system "pg_dropcluster $v main"), 0,
     'dropping old cluster');
 is ((system "pg_dropcluster $MAJORS[-1] main --stop-server"), 0, 
     'dropping upgraded cluster');
+is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'no clusters any more';
+
+# create cluster with --start-conf option
+is_program_out 0, "pg_createcluster $v main --start-conf foo", 1, 
+    "Error: Invalid --start-conf value\n",
+    'pg_createcluster checks --start-conf validity';
+is ((system "pg_createcluster $v main --start-conf manual >/dev/null"), 0, 
+    'pg_createcluster checks --start-conf manual');
+is ((get_cluster_start_conf $v, 'main'), 'manual', 
+    'get_cluster_start_conf returns manual');
+is ((system "pg_dropcluster $v main"), 0, 
+    'dropping cluster');
 is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'no clusters any more';
 
 # vim: filetype=perl
