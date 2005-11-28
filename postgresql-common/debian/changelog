@@ -1,3 +1,9 @@
+postgresql-common (37) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 28 Nov 2005 23:30:02 +0100
+
 postgresql-common (36) unstable; urgency=low
 
   * pg_createcluster: Add --start-conf option to set start.conf value.
