@@ -26,8 +26,8 @@ $FQDN
 root@$MAILNAME
 EOF
         chmod 0644 $SSL_CERT
-	chown postgres:postgres $SSL_KEY
-        chmod 0600 $SSL_KEY
+	chown root:postgres $SSL_KEY
+        chmod 0640 $SSL_KEY
         ) || echo "Warning : Bad SSL config, can't generate certificate" >&2
     fi
 }

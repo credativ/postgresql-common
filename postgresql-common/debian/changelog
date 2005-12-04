@@ -4,8 +4,11 @@ postgresql-common (37) unstable; urgency=low
     once.
   * Add French debconf translations, thanks to Guilhelm Panaget.
     Closes: #340200, #341267
+  * debian/postgresql-common.postinst: Change default permissions of the
+    private SSL key to root:postgres 0640 to prevent potential modification of
+    the certificate by the postmaster. Closes: #341141
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  4 Dec 2005 14:20:12 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun,  4 Dec 2005 14:32:58 +0100
 
 postgresql-common (36) unstable; urgency=low
 
