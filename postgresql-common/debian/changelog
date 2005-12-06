@@ -8,8 +8,11 @@ postgresql-common (37) unstable; urgency=low
     private SSL key to root:postgres 0640 to prevent potential modification of
     the certificate by the postmaster. Closes: #341141
   * Add Czech debconf translations, thanks to Miroslav Kure. Closes: #341951
+  * debian/postgresql-common.postinst: Check that the postgres user/group is
+    not root; fail installation with a meaningful error message if it is.
+    Closes: #340459
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  4 Dec 2005 14:56:14 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue,  6 Dec 2005 20:33:18 +0100
 
 postgresql-common (36) unstable; urgency=low
 

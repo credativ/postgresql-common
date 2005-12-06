@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 . /usr/share/debconf/confmodule
 db_stop
 
@@ -37,6 +37,18 @@ if [ "$1" = configure ]; then
     if ! getent passwd postgres > /dev/null; then
         adduser --system --quiet --home /var/lib/postgresql \
             --shell /bin/bash --group --gecos "PostgreSQL administrator" postgres
+    fi
+
+    # check validity of postgres user and group
+    if [ "`id -u postgres`" -eq 0 ]; then
+        echo "The postgres system user must not have uid 0 (root).
+Please fix this and reinstall this package." >&2
+        exit 1
+    fi
+    if [ "`id -g postgres`" -eq 0 ]; then
+        echo "The postgres system user must not have root as primary group.
+Please fix this and reinstall this package." >&2
+        exit 1
     fi
 
     # create socket directory
