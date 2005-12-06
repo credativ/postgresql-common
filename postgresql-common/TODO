@@ -12,7 +12,7 @@ Important features:
 
 Wishlist:
 - export environment variables in pg_wrapper (PGCLUSTER, etc.)
-- pg_ctlcluster: add option to change startup
+- Add pg_conf to change startup and possibly other things
 - add programs for web applications, which configure pg_hba.conf:
 
   pg_add_hba [options] yourwebappdb yourwebappuser
