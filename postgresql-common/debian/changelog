@@ -11,8 +11,10 @@ postgresql-common (37) unstable; urgency=low
   * debian/postgresql-common.postinst: Check that the postgres user/group is
     not root; fail installation with a meaningful error message if it is.
     Closes: #340459
+  * t/040_upgrade.t: Check upgrading of sequence and stored PL/PgSQL
+    procedure.
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  6 Dec 2005 20:33:18 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 10 Dec 2005 20:34:52 +0100
 
 postgresql-common (36) unstable; urgency=low
 

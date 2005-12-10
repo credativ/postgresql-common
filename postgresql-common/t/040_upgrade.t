@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 23;
+use Test::More tests => 44;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
@@ -26,6 +26,21 @@ is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Alice\', 2)"')
 is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Bob\', 1)"'), 0, 'insert Bob into phone table');
 is ((exec_as 'postgres', 'psql template1 -c "update pg_database set datallowconn = \'f\' where datname = \'testnc\'"'), 
     0, 'disallow connection to testnc');
+
+# create a sequence
+is ((exec_as 'nobody', 'psql test -c "create sequence odd10 increment by 2 minvalue 1 maxvalue 10 cycle"'),
+    0, 'create sequence');
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "1\n",
+    'check next sequence value';
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "3\n",
+    'check next sequence value';
+
+# create a stored procedure
+is_program_out 'postgres', 'createlang plpgsql test', 0, '', 'createlang plpgsql test';
+is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc2(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 2; END;\';"',
+    0, "CREATE FUNCTION\n", 'create function inc2';
+is_program_out 'nobody', 'psql -Atc "select inc2(3)" test', 0, "5\n", 
+    'call function inc2';
 
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -53,6 +68,20 @@ $MAJORS[-1]     upgr      5432 online postgres /var/lib/postgresql/$MAJORS[-1]/u
 # Check that SELECT output is identical
 is_program_out 'nobody', 'psql -tAc "select * from phone order by name" test', 0,
     $$select_old, 'SELECT output is the same in original and upgraded cluster';
+
+# Check sequence value
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "5\n",
+    'check next sequence value';
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "7\n",
+    'check next sequence value';
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "9\n",
+    'check next sequence value';
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "1\n",
+    'check next sequence value (wrap)';
+
+# check stored procedure
+is_program_out 'nobody', 'psql -Atc "select inc2(-3)" test', 0, "-1\n", 
+    'call function inc2';
 
 # Check connection permissions
 is_program_out 'nobody', 'psql -tAc "select datname, datallowconn from pg_database order by datname" template1', 0,
