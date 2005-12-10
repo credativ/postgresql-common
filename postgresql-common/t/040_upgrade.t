@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 44;
+use Test::More tests => 52;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
@@ -35,12 +35,18 @@ is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "1\n",
 is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "3\n",
     'check next sequence value';
 
-# create a stored procedure
+# create stored procedures
 is_program_out 'postgres', 'createlang plpgsql test', 0, '', 'createlang plpgsql test';
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc2(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 2; END;\';"',
     0, "CREATE FUNCTION\n", 'create function inc2';
+is_program_out 'postgres', "psql -c \"update pg_proc set probin = '/usr/lib/postgresql/$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",
+    0, "UPDATE 1\n", 'hardcoding plpgsql lib path';
+is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc3(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 3; END;\';"',
+    0, "CREATE FUNCTION\n", 'create function inc3';
 is_program_out 'nobody', 'psql -Atc "select inc2(3)" test', 0, "5\n", 
     'call function inc2';
+is_program_out 'nobody', 'psql -Atc "select inc3(3)" test', 0, "6\n", 
+    'call function inc3';
 
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -79,9 +85,11 @@ is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "9\n",
 is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "1\n",
     'check next sequence value (wrap)';
 
-# check stored procedure
+# check stored procedures
 is_program_out 'nobody', 'psql -Atc "select inc2(-3)" test', 0, "-1\n", 
     'call function inc2';
+is_program_out 'nobody', 'psql -Atc "select inc3(1)" test', 0, "4\n", 
+    'call function inc3 (formerly hardcoded path)';
 
 # Check connection permissions
 is_program_out 'nobody', 'psql -tAc "select datname, datallowconn from pg_database order by datname" template1', 0,

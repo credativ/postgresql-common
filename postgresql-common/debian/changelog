@@ -13,8 +13,11 @@ postgresql-common (37) unstable; urgency=low
     Closes: #340459
   * t/040_upgrade.t: Check upgrading of sequence and stored PL/PgSQL
     procedure.
+  * pg_upgradecluster: Change hardcoded and obsolete library paths to
+    '$libdir' in the new cluster. This fixes upgrades of 7.4 clusters that
+    were upgraded from woody. Closes: #338031
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 10 Dec 2005 20:34:52 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 10 Dec 2005 23:36:41 +0100
 
 postgresql-common (36) unstable; urgency=low
 
