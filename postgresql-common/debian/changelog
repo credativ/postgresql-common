@@ -1,3 +1,9 @@
+postgresql-common (38) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 11 Dec 2005 11:40:03 +0100
+
 postgresql-common (37) unstable; urgency=low
 
   * debian/postgresql-common.config: Only show the obsolete version warning
