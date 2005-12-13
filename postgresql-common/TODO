@@ -9,6 +9,7 @@ Missing selftest:
 - pg_wrapper env vars (PGHOST, PGPORT, PGUSER)
 
 Important features:
+- pg_dropcluster --force to clean up inconsistent clusters
 
 Wishlist:
 - export environment variables in pg_wrapper (PGCLUSTER, etc.)
