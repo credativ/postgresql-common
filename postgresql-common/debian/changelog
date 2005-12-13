@@ -1,8 +1,10 @@
 postgresql-common (38) unstable; urgency=low
 
-  *
+  * pg_ctlcluster: Remove --setuid option, it does not make too much sense
+    after all and only confuses users. Closes: #343063
+  * Remove pg_ctlcluster's -s option from all scripts.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 11 Dec 2005 11:40:03 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 13 Dec 2005 21:34:03 +0100
 
 postgresql-common (37) unstable; urgency=low
 

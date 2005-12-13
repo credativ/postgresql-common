@@ -26,7 +26,7 @@ do_ctl_all() {
 	[ "$start" = "auto" ] || continue
 
         log_begin_msg "$3 $name"
-        pg_ctlcluster -s "$2" "$name" $1
+        pg_ctlcluster "$2" "$name" $1
         log_end_msg $?
     done
     if [ "$fail" ]; then

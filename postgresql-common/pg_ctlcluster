@@ -12,12 +12,8 @@ use POSIX qw/setsid setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
-# command line options
-$setuid = 0;
-exit 1 unless GetOptions ("setuid|s" => \$setuid);
-
 if ($#ARGV != 2) {
-    print "Usage: $0 [-s] <version> <cluster> <action>\n";
+    print "Usage: $0 <version> <cluster> <action>\n";
     exit 1;
 }
 
@@ -354,7 +350,7 @@ unless (getgrgid $info{'ownergid'}) {
     error 'The cluster is owned by group id '.$info{'ownergid'}.' which does not exist any more'
 }
 
-if ($setuid) {
+if ($> == 0) {
     chdir ('/var/lib/postgresql');
     change_ugid $info{'owneruid'}, $info{'ownergid'};
 }
@@ -388,7 +384,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_ctlcluster> [B<--setuid>|B<-s>] I<cluster-version> I<cluster-name> I<action>
+B<pg_ctlcluster> I<cluster-version> I<cluster-name> I<action>
 
 where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<autovac-start>|B<autovac-stop>|B<autovac-restart>
 
@@ -399,10 +395,8 @@ essentially wraps the L<pg_ctl(1)> command. It determines the cluster version
 and data path and calls the right version of B<pg_ctl> with appropriate
 configuration parameters and paths.
 
-You have to start this program as the user who owns the database cluster. If
-you start B<pg_ctlcluster> as root, you can also use the option
-B<--setuid>/B<-s> to automatically set the user and group id to the cluster
-owner.
+You have to start this program as the user who owns the database cluster or as
+root.
 
 =head1 ACTIONS
 

@@ -159,7 +159,7 @@ sub disable_connections {
     print F "local all $_[2] ident sameuser";
     close F;
 
-    if (system 'pg_ctlcluster', '-s', $_[0], $_[1], 'reload') {
+    if (system 'pg_ctlcluster', $_[0], $_[1], 'reload') {
         rename "$hba.orig", $hba; 
         error "could not reload cluster $_[0]/$_[1]";
     }
@@ -218,7 +218,7 @@ $ENV{'LC_CTYPE'} = $lc_ctype;
 $ENV{'LC_COLLATE'} = $lc_collate;
 error "Could not create target cluster" if system @argv;
 
-@argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'start');
+@argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
 error "Could not start target cluster" if system @argv;
 
 sleep(4);
@@ -339,7 +339,7 @@ if ($?) {
     system 'pg_dropcluster', '--stop-server', $newversion, $cluster;
 
     # Reload old cluster to allow connections again
-    if (system 'pg_ctlcluster', '-s', $version, $cluster, 'reload') {
+    if (system 'pg_ctlcluster', $version, $cluster, 'reload') {
         error 'could not reload old cluster, please do that manually';
     }
     exit 1;
@@ -362,11 +362,11 @@ if ( -e $info{'configdir'}.'/start.conf') {
 adapt_conffiles;
 
 print "Stopping target cluster...\n";
-@argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'stop');
+@argv = ('pg_ctlcluster', $newversion, $cluster, 'stop');
 error "Could not stop target cluster" if system @argv;
 
 print "Stopping old cluster...\n";
-@argv = ('pg_ctlcluster', '-s', $version, $cluster, 'stop');
+@argv = ('pg_ctlcluster', $version, $cluster, 'stop');
 error "Could not stop old cluster" if system @argv;
 
 print "Disabling automatic startup of old cluster...\n";
@@ -387,7 +387,7 @@ print "Configuring old cluster to use a different port ($oldport)...\n";
 set_cluster_port $version, $cluster, $oldport;
 
 print "Starting target cluster on the original port...\n";
-@argv = ('pg_ctlcluster', '-s', $newversion, $cluster, 'start');
+@argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
 error "Could not start target cluster; please check configuration and log files" if system @argv;
 
 print "Success. Please check that the upgraded cluster works. If it does,

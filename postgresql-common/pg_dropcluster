@@ -27,7 +27,7 @@ error 'This command needs to be executed as root' if $> != 0;
 if ($info{'running'}) {
     if ($stopserver) {
         if ($info{'pgdata'} && -d $info{'pgdata'}) {
-            if (system ('pg_ctlcluster', '-s', $version, $cluster, 'stop')) {
+            if (system ('pg_ctlcluster', $version, $cluster, 'stop')) {
                 error 'could not stop server, aborting';
             }
         } else {
