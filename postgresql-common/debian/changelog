@@ -4,8 +4,10 @@ postgresql-common (38) unstable; urgency=low
     after all and only confuses users. Closes: #343063
   * Remove pg_ctlcluster's -s option from all scripts.
   * pg_wrapper: Fix 'postgreqsl' typo in POD. Closes: #343938
+  * pg_createcluster: Do not simply close STDOUT, but reopen it to /dev/null
+    to avoid initdb complaining about invalid filehandles. Closes: #344180
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 20 Dec 2005 20:00:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 22 Dec 2005 18:31:08 +0100
 
 postgresql-common (37) unstable; urgency=low
 
