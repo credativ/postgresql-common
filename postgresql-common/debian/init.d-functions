@@ -11,6 +11,7 @@ do_ctl_all() {
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
     [ -d "/etc/postgresql/$2" ] || return
     [ "$(ls /etc/postgresql/$2)" ] || return
+    [ -x "/usr/lib/postgresql/$2/bin/postmaster" ] || return
 
     unset fail
     for c in /etc/postgresql/"$2"/*; do
