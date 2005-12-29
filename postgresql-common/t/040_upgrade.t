@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 52;
+use Test::More tests => 60;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
@@ -48,6 +48,12 @@ is_program_out 'nobody', 'psql -Atc "select inc2(3)" test', 0, "5\n",
 is_program_out 'nobody', 'psql -Atc "select inc3(3)" test', 0, "6\n", 
     'call function inc3';
 
+# create user and group with same name to check clashing role name on >= 8.1
+is_program_out 'postgres', "psql -qc 'create user foo' template1", 0, '',
+    'create user foo';
+is_program_out 'postgres', "psql -qc 'create group foo' template1", 0, '', 
+    'create group foo';
+
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
     qr/^$MAJORS[0]\s+upgr\s+5432 online postgres/;
@@ -58,6 +64,12 @@ is ((exec_as 'nobody', 'psql -tAc "select * from phone order by name" test', $se
 is ($$select_old, 'Alice|2
 Bob|1
 ', 'check SELECT output');
+
+# Attempt upgrade, should fail due to clashing user and group
+like_program_out 0, "pg_upgradecluster $MAJORS[0] upgr", 1, qr/uniquely renamed/,
+    'pg_upgradecluster fails due to clashing user and group name';
+# Rename group to fix it
+is_program_out 'postgres', "psql -qc 'alter group foo rename to gfoo' template1", 0, '', 'rename group foo';
 
 # Upgrade to latest version
 my $outref;

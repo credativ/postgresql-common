@@ -206,6 +206,44 @@ if (PgCommon::cluster_data_directory $newversion, $cluster) {
     error "target cluster $newversion/$cluster already exists";
 }
 
+my $oldpsql = get_program_path 'psql', $version;
+my $oldsocket = get_cluster_socketdir $version, $cluster;
+
+# do read-only checks for situations that would make the upgrade fail
+if (!fork) {
+    change_ugid $info{'owneruid'}, $info{'ownergid'};
+
+    # check for users and groups with the same name when upgrading < 8.1 to >=
+    # 8.1
+    if ($version lt '8.1' && $newversion ge '8.1') {
+        my @samename;
+        print "Checking for users and groups with the same name...\n";
+        open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
+            '-F|', '-d', 'template1', '-Atc', 
+            'select usename from pg_user,pg_group where usename = groname' or 
+            error 'Could not execute pg_user/pg_group query';
+        while (<F>) {
+            chomp;
+            push @samename, $_;
+        }
+        close F;
+        error 'could not get list of users/groups' if $?;
+
+        if (@samename) {
+            print 
+"PostgreSQL 8.1 and later subsume users and groups into 'roles'. The following\
+names are both a user and a group, so either the user or the group must be\
+uniquely renamed before the cluster can be upgraded:\n";
+            print ((join ' ', @samename), "\n");
+            exit 1;
+        }
+    }
+
+    exit 0;
+}   
+wait;
+exit 1 if $?;
+
 # create new cluster, preserving encoding and locales
 
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
@@ -240,9 +278,7 @@ if (!fork) {
     my $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     my $pg_dump = get_program_path 'pg_dump', $newversion;
     my $pg_restore = get_program_path 'pg_restore', $newversion;
-    my $oldpsql = get_program_path 'psql', $version;
     my $psql = get_program_path 'psql', $newversion;
-    my $oldsocket = get_cluster_socketdir $version, $cluster;
     my $newsocket = get_cluster_socketdir $newversion, $cluster;
     my $buffer;
 
