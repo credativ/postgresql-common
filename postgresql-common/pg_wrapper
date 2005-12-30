@@ -28,7 +28,7 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
         ($version, $cluster) = split ('/', $ARGV[$i+1], 2);
         error 'Invalid version specified with --cluster' unless version_exists $version;
         error 'No cluster specified with --cluster' unless $cluster;
-	error 'Cluster does not exist' unless cluster_exists $version, $cluster;
+	error 'Cluster specified with --cluster does not exist' unless cluster_exists $version, $cluster;
 
         splice @ARGV, $i, 2;
         last;

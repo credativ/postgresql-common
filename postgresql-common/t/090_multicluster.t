@@ -24,7 +24,7 @@ like_program_out 0, "psql --cluster $new1 --version", 0,
     qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
     'pg_wrapper --cluster works';
 like_program_out 0, "psql --cluster $MAJORS[-1]/foo --version", 1, 
-    qr/Cluster does not exist/, 
+    qr/Cluster specified with --cluster does not exist/, 
     'pg_wrapper --cluster errors out for invalid cluster';
 
 # create a database in new1 and check that it doesn't appear in new2
