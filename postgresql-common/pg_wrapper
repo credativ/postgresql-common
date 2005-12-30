@@ -16,7 +16,7 @@ my ($version, $cluster, $db, $port);
 if (defined $ENV{PGCLUSTER}) {
     ($version, $cluster) = split ('/', $ENV{PGCLUSTER}, 2);
     error 'Invalid version specified with $PGCLUSTER' unless version_exists $version;
-    error 'Invalid cluster specified with $PGCLUSTER' unless $cluster;
+    error 'No cluster specified with $PGCLUSTER' unless $cluster;
     error 'Cluster specified with $PGCLUSTER does not exist' unless cluster_exists $version, $cluster;
 }
 
@@ -28,7 +28,6 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
         ($version, $cluster) = split ('/', $ARGV[$i+1], 2);
         error 'Invalid version specified with --cluster' unless version_exists $version;
         error 'No cluster specified with --cluster' unless $cluster;
-
 	error 'Cluster does not exist' unless cluster_exists $version, $cluster;
 
         splice @ARGV, $i, 2;

@@ -48,7 +48,7 @@ unlike_program_out 'postgres', "psql -Atl", 0, qr/test\|postgres\|/,
     'PGCLUSTER selection (2)';
 $ENV{'PGCLUSTER'} = 'foo';
 like_program_out 'postgres', "psql -l", 1, 
-    qr/Invalid cluster specified with \$PGCLUSTER/, 
+    qr/Invalid version specified with \$PGCLUSTER/, 
     'invalid PGCLUSTER value';
 delete $ENV{'PGCLUSTER'};
 
