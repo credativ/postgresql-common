@@ -2,6 +2,7 @@ postgresql TODO
 ===============
 
 Bugs:
+- pg_upgradecluster: set proper permissions of the temporary hba.conf
 
 Transition bugs:
 
