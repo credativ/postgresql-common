@@ -39,6 +39,14 @@ if [ -d /var/log/postgresql ]; then
     mv /var/log/postgresql /var/log/postgresql.testsuite;
 fi
 
+echo "====== Running all tests with default umask 022 ======="
+umask 022
+for T in $TESTSDIR/*; do
+    echo "=== Running test `basename $T`... ==="
+    perl $T
+done
+echo "====== Running all tests with tight umask 077 ======="
+umask 077
 for T in $TESTSDIR/*; do
     echo "=== Running test `basename $T`... ==="
     perl $T
