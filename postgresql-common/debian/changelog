@@ -9,8 +9,10 @@ postgresql-common (39) unstable; urgency=low
   * testsuite: Run the tests twice; once with umask 022, once with umask 077.
   * Fix operation under umask 077:
     - pg_createcluster: Create /var/log/postgresql with mode 0755.
+    - PgCommon.pm, set_cluster_start_conf(): Always create start.conf with
+      0644 mode by default, but preserve permissions when changing the file.
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  3 Jan 2006 19:58:14 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue,  3 Jan 2006 20:11:44 +0100
 
 postgresql-common (38) unstable; urgency=low
 

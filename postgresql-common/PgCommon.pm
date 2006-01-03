@@ -287,6 +287,8 @@ sub set_cluster_start_conf {
     error "Invalid mode: '$val'" unless $val eq 'auto' || 
 	    $val eq 'manual' || $val eq 'disabled';
 
+    my $perms = 0644;
+
     # start.conf setting
     my $start_conf = "$confroot/$_[0]/$_[1]/start.conf";
     my $text;
@@ -299,6 +301,10 @@ sub set_cluster_start_conf {
                 $text .= $_;
             }
 	}
+
+        # preserve permissions if it already exists
+        $perms = (stat F)[2];
+        error "Could not get permissions of $start_conf: $!" unless $perms;
 	close F;
     } else {
         $text = "# Automatic startup configuration
@@ -314,6 +320,7 @@ $val
     }
 
     open F, '>' . $start_conf or error "Could not open $start_conf for writing: $!";
+    chmod $perms, $start_conf;
     print F $text;
     close F;
 }
