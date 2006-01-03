@@ -147,7 +147,7 @@ sub adapt_conffiles {
 
 # Save original pg_hba.conf, replace it with one that only allows local access
 # to the owner, and reload postmaster.
-# Arguments: <version> <cluster> <owner>
+# Arguments: <version> <cluster> <owner> <owneruid>
 sub disable_connections {
     my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
 
@@ -156,6 +156,8 @@ sub disable_connections {
         rename "$hba.orig", $hba; 
         error "could not create $hba";
     }
+    chmod 0400, $hba;
+    chown $_[3], 0, $hba;
     print F "local all $_[2] ident sameuser";
     close F;
 
@@ -267,9 +269,9 @@ sleep(4);
 my $owner = getpwuid $info{'owneruid'};
 error 'could not get name of cluster owner' unless $owner;
 print "Disabling connections to the old cluster during upgrade...\n";
-disable_connections $version, $cluster, $owner;
+disable_connections $version, $cluster, $owner, $info{'owneruid'};
 print "Disabling connections to the new cluster during upgrade...\n";
-disable_connections $newversion, $cluster, $owner;
+disable_connections $newversion, $cluster, $owner, $newinfo{'owneruid'};
 
 # dump cluster; drop to cluster owner privileges
 
