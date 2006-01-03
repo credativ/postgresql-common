@@ -7,8 +7,10 @@ postgresql-common (39) unstable; urgency=low
   * t/040_upgrade.t: Add self test for above bug (clashing role names on
     upgrade).
   * testsuite: Run the tests twice; once with umask 022, once with umask 077.
+  * Fix operation under umask 077:
+    - pg_createcluster: Create /var/log/postgresql with mode 0755.
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  3 Jan 2006 19:57:10 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue,  3 Jan 2006 19:58:14 +0100
 
 postgresql-common (38) unstable; urgency=low
 

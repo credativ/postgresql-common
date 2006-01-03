@@ -298,7 +298,7 @@ set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
 $> = $orig_euid;
 
 # create log file
-system 'mkdir', '-p', '/var/log/postgresql' and 
+system 'mkdir', '-m', '0755', '-p', '/var/log/postgresql' and 
     error "could not create log directory";
 $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 if (! -e $real_logfile) {
