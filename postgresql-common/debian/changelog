@@ -1,3 +1,9 @@
+postgresql-common (40) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Wed,  4 Jan 2006 16:34:15 +0100
+
 postgresql-common (39) unstable; urgency=low
 
   * Add t/090_multicluster.t: Test multicluster operation and environment
