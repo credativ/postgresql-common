@@ -466,24 +466,22 @@ sub user_cluster_map {
     }
 
     # check global map file
-    if (! open MAP, $mapfile) {
-        print "Warning: could not open $mapfile, connecting to default port\n";
-        return (undef,undef,$user);
-    }
-    while (<MAP>) {
-        s/(.*?)#.*/$1/;
-        next if /^\s*$/;
-        my ($u,$g,$v,$c,$db) = split;
-        if (!$db) {
-            print  "Warning: ignoring invalid line $. in $mapfile\n";
-            next;
+    if (open MAP, $mapfile) {
+        while (<MAP>) {
+            s/(.*?)#.*/$1/;
+            next if /^\s*$/;
+            my ($u,$g,$v,$c,$db) = split;
+            if (!$db) {
+                print  "Warning: ignoring invalid line $. in $mapfile\n";
+                next;
+            }
+            if (($u eq "*" || $u eq $user) && ($g eq "*" || $g eq $group)) {
+                close MAP;
+                return ($v,$c, ($db eq "*") ? undef : $db);
+            }
         }
-        if (($u eq "*" || $u eq $user) && ($g eq "*" || $g eq $group)) {
-	    close MAP;
-            return ($v,$c, ($db eq "*") ? undef : $db);
-        }
+        close MAP;
     }
-    close MAP;
 
     # if only one cluster exists, use that
     my $count = 0;

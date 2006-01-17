@@ -2,8 +2,11 @@ postgresql-common (40) unstable; urgency=low
 
   * debian/supported-versions: Add 8.1 to Ubuntu 5.10 to properly support
     backport.
+  * PgCommon.pm: If /etc/postgresql-common/user_clusters does not exist, use
+    the default cluster instead of returning an invalid value. Also, do not
+    complain if the file does not exist (which is legitime). Closes: #348447
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  7 Jan 2006 12:59:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 17 Jan 2006 20:42:04 +0100
 
 postgresql-common (39) unstable; urgency=low
 
