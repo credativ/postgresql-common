@@ -15,7 +15,7 @@ This postgresql-common package provides the common infrastructure and all
 frontend programs that users and administrators use. The version specific
 server and client programs are shipped in postgresql-*-<version> packages.
 
-For a detailled description of the architecture, please see
+For a detailed description of the architecture, please see
 
   /usr/share/doc/postgresql-common/architecture.html
 
@@ -121,7 +121,7 @@ autovacuum daemon.
 
 Further documentation
 ---------------------
-All commands shipped by postgresql-common have detailled manpages. See
+All commands shipped by postgresql-common have detailed manpages. See
 postgresql-common(7) for the documentation of the database client program
 wrapping, and user_clusters(5) and postgresqlrc(5) for the cluster
 configuration.
