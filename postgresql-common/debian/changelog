@@ -1,3 +1,9 @@
+postgresql-common (41) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 17:49:05 +0100
+
 postgresql-common (40) unstable; urgency=low
 
   * debian/supported-versions: Add 8.1 to Ubuntu 5.10 to properly support
