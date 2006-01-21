@@ -17,10 +17,21 @@ my (%info, %newinfo);
 sub adapt_conffiles {
     my %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
 
+    # Arguments: <ref to conf hash> <name> <comment>
     sub deprecate {
         if (defined ${$_[0]}{$_[1]}) {
             PgCommon::disable_conf_value $newversion, $cluster,
                 'postgresql.conf', $_[1], $_[2];
+        }
+    }
+
+    # Arguments: <ref to conf hash> <old name> <new name>
+    sub rename_ {
+        my ($conf, $old, $new) = @_;
+        if (defined ${$conf}{$old}) {
+            PgCommon::replace_conf_value $newversion, $cluster,
+                'postgresql.conf', $old, "deprecated in favor of $new", 
+                $new, ${$conf}{$old};
         }
     }
 
@@ -42,13 +53,7 @@ sub adapt_conffiles {
     }
 
     # sort_mem -> work_mem transition
-    if ($newversion ge '8.0') {
-        if (defined $c{'sort_mem'}) {
-            PgCommon::replace_conf_value $newversion, $cluster,
-                'postgresql.conf', 'sort_mem', 'deprecated in favor of work_mem', 
-                'work_mem', $c{'sort_mem'};
-        }
-    }
+    rename_ \%c, 'sort_mem', 'work_mem' if $newversion ge '8.0';
 
     # log_statement transition
     if (defined $c{'log_statement'}) {
@@ -73,36 +78,21 @@ sub adapt_conffiles {
             'log_line_prefix', $log_line_prefix;
     }
 
-    # obsolete rendezvous_name 
-    deprecate \%c, 'rendezvous_name', 'obsolete in 8.1' if $newversion ge '8.1';
-
     # obsolete max_expr_depth
     deprecate \%c, 'max_expr_depth', 'does not exist any more, look at max_stack_depth';
 
-    # 8.1+ has internal autovacuum
     if ($newversion ge '8.1') {
+        # obsolete rendezvous_name 
+        deprecate \%c, 'rendezvous_name', 'obsolete in 8.1';
+
+        # 8.1+ has internal autovacuum
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
             'autovacuum', $info{'avac_enable'} ? 'yes' : 'no';
-    }
 
-    # bgwriter_percent -> bgwriter_{lru,all}_percent transition
-    if ($newversion ge '8.1') {
-        if (defined $c{'bgwriter_percent'}) {
-            PgCommon::replace_conf_value $newversion, $cluster,
-                'postgresql.conf', 'bgwriter_percent', 
-                'deprecated in favor of bgwriter_{lru,all}_percent', 
-                'bgwriter_all_percent', $c{'bgwriter_percent'};
-        }
-    }
-
-    # bgwriter_maxpages -> bgwriter_{lru,all}_maxpages transition
-    if ($newversion ge '8.1') {
-        if (defined $c{'bgwriter_maxpages'}) {
-            PgCommon::replace_conf_value $newversion, $cluster,
-                'postgresql.conf', 'bgwriter_maxpages', 
-                'deprecated in favor of bgwriter_{lru,all}_maxpages', 
-                'bgwriter_all_maxpages', $c{'bgwriter_maxpages'};
-        }
+        # bgwriter_percent -> bgwriter_{lru,all}_percent transition
+        rename_ \%c, 'bgwriter_percent', 'bgwriter_all_percent' if $newversion ge '8.1';
+        # bgwriter_maxpages -> bgwriter_{lru,all}_maxpages transition
+        rename_ \%c, 'bgwriter_maxpages', 'bgwriter_all_maxpages';
     }
 }
 
