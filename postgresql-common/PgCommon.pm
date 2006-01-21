@@ -14,9 +14,10 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_cluster_locales
-    get_cluster_databases/;
-our @EXPORT_OK = qw/$confroot get_conf_value set_conf_value disable_conf_value
-    replace_conf_value cluster_data_directory get_file_device/;
+    get_cluster_databases read_cluster_conf_file/;
+our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
+    disable_conf_value replace_conf_value cluster_data_directory
+    get_file_device/;
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
@@ -41,22 +42,54 @@ sub config_bool {
     return undef;
 }
 
+# Read a 'var = value' style configuration file and return a hash with the
+# values. Error out if the file cannot be read.
+# Arguments: <path>
+# Returns: hash (empty if file does not exist)
+sub read_conf_file {
+    my %conf;
+
+    return %conf unless -e $_[0];
+
+    if (open F, $_[0]) {
+        while (<F>) {
+            if (/^\s*(?:#.*)?$/) {
+                next;
+            } elsif (/^\s*([a-zA-Z0-9_-]+)\s*=\s*'([^']*)'\s*(?:#.*)?$/) {
+                # string value
+                $conf{$1} = $2 
+            } elsif (/^\s*([a-zA-Z0-9_-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
+                # simple value
+                $conf{$1} = $2;
+            } else {
+                error "Invalid line $. in $_[0]";
+            }
+        }
+        close F;
+    } else {
+        error "could not read $_[0]: $!";
+    }
+
+    return %conf;
+}
+
+# Read a 'var = value' style configuration file from a cluster configuration
+# directory (with /etc/postgresql-common/<file name> as fallback) and return a
+# hash with the values. Error out if the file cannot be read.
+# Arguments: <version> <cluster> <config file name>
+# Returns: hash (empty if the file does not exist)
+sub read_cluster_conf_file {
+     my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
+     -e $fname or $fname = "$common_confdir/$_[2]";
+    return read_conf_file $fname;
+}
+
 # Return parameter from a PostgreSQL configuration file, or undef if the parameter
 # does not exist.
 # Arguments: <version> <cluster> <config file name> <parameter name>
 sub get_conf_value {
-    return 0 unless $_[0] && $_[1];
-    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
-    -e $fname or $fname = "$common_confdir/$_[2]";
-
-    if (open F, $fname) {
-        while (<F>) {
-            return $1 if /^\s*$_[3]\s*=\s*(-?[\w.]+)\b/; # simple value
-            return $1 if /^\s*$_[3]\s*=\s*'([^']*)'/; # string value
-        }
-        close F;
-    }
-    return undef;
+    my %conf = (read_cluster_conf_file $_[0], $_[1], $_[2]);
+    return $conf{$_[3]};
 }
 
 # Set parameter of a PostgreSQL configuration file.
