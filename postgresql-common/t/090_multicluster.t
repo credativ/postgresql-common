@@ -5,13 +5,20 @@ use strict;
 
 use lib 't';
 use TestLib;
+use Socket;
 
-use Test::More tests => 36;
+use Test::More tests => 38;
+
+# create fake socket at 5433 to verify that this port is skipped
+socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or die "socket: $!";
+bind (SOCK, sockaddr_in(5434, INADDR_ANY)) || die "bind: $! ";
 
 # create clusters
 is ((system "pg_createcluster $MAJORS[0] old --start >/dev/null"), 0, "pg_createcluster $MAJORS[0] old");
 is ((system "pg_createcluster $MAJORS[-1] new1 --start >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new1");
 is ((system "pg_createcluster $MAJORS[-1] new2 --start >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5432.*5433.*5435.*/s,
+    'clusters have the correct ports, skipping used 5434';
 
 my $old = "$MAJORS[0]/old";
 my $new1 = "$MAJORS[-1]/new1";

@@ -19,8 +19,12 @@ postgresql-common (40) unstable; urgency=low
     - Closes: #345516
   * t/020_create_sql_remove.t: Check save environment and correct function of
     the environment file.
+  * PgCommon.pm, next_free_port(): Check if the port is already in use, skip
+    it if so. Closes: #348875.
+  * t/090_multicluster.t: Create a socket bound to port 5434 and check that it
+    is not used by pg_createcluster.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 16:30:22 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 17:16:32 +0100
 
 postgresql-common (39) unstable; urgency=low
 

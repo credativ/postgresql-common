@@ -465,7 +465,14 @@ sub next_free_port {
 
     my $port;
     for ($port = $defaultport; ; ++$port) {
-	last unless grep { $_ == $port } @ports;
+	next if grep { $_ == $port } @ports;
+
+        # check if port is already in use
+        socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or 
+            die "could not create socket: $!";
+        my $res = bind (SOCK, sockaddr_in($port, INADDR_ANY));
+        close SOCK;
+        last if $res;
     }
 
     return $port;
