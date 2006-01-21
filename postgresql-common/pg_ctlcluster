@@ -230,7 +230,8 @@ sub start {
 	error ("The server must be started under the locale $lc_ctype which does not exist any more.")
     }
 
-    # set locale for the postmaster
+    # prepare environment
+    %ENV = read_cluster_conf_file $version, $cluster, 'environment';
     $ENV{'LC_ALL'} = $ENV{'LANG'} = $lc_ctype;
 
     my $postmaster_opts = '-c unix_socket_directory="' . $info{'socketdir'} . '"';

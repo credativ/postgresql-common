@@ -10,8 +10,15 @@ postgresql-common (40) unstable; urgency=low
     function read_cluster_conf_file().
   * pg_upgradecluster: Factorized and cleaned up parameter deprecation/upgrade
     code.
+  * Support auxiliary environment variables for postmaster:
+    - pg_createcluster: Create /etc/postgresql/version/cluster/environment
+      file (empty, just a comment).
+    - pg_dropcluster: Remove environment file.
+    - pg_ctlcluster: Clear environment and only set variables mentioned in
+      environment file and LANG/LC_ALL.
+    - Closes: #345516
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 13:40:31 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 15:14:35 +0100
 
 postgresql-common (39) unstable; urgency=low
 
