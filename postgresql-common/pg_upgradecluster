@@ -15,80 +15,65 @@ my ($version, $newversion, $cluster);
 my (%info, %newinfo);
 
 sub adapt_conffiles {
+    my %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
+
     # tcpip_socket transition
-    my $tcpip_socket = config_bool (PgCommon::get_conf_value $newversion, $cluster,
-        'postgresql.conf', 'tcpip_socket');
-    my $virtual_host = PgCommon::get_conf_value $newversion, $cluster,
-            'postgresql.conf', 'virtual_host';
-    if (defined $virtual_host) {
+    my $tcpip_socket = config_bool $c{'tcpip_socket'};
+    if (defined $c{'virtual_host'}) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                 'virtual_host', 'deprecated in favor of listen_addresses';
     }
     if (defined $tcpip_socket) {
         PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
                 'tcpip_socket', 'deprecated in favor of listen_addresses', 
-                'listen_addresses', ($tcpip_socket ? ($virtual_host || '*') : '');
+                'listen_addresses', ($tcpip_socket ? ($c{'virtual_host'} || '*') : '');
     }
 
     # syslog transition
-    my $syslog = PgCommon::get_conf_value $newversion, $cluster,
-        'postgresql.conf', 'syslog';
-    if (defined $syslog) {
+    if (defined $c{'syslog'}) {
         my %syslog_values = (0 => 'stderr', 1 => 'stderr,syslog', 2 => 'syslog');
         PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
             'syslog', 'deprecated in favor of log_destination',
-            'log_destination', $syslog_values{$syslog};
+            'log_destination', $syslog_values{$c{'syslog'}};
     }
 
     # sort_mem -> work_mem transition
     if ($newversion ge '8.0') {
-        my $sort_mem = PgCommon::get_conf_value $newversion, $cluster,
-                'postgresql.conf', 'sort_mem';
-        if (defined $sort_mem) {
+        if (defined $c{'sort_mem'}) {
             PgCommon::replace_conf_value $newversion, $cluster,
                 'postgresql.conf', 'sort_mem', 'deprecated in favor of work_mem', 
-                'work_mem', $sort_mem;
+                'work_mem', $c{'sort_mem'};
         }
     }
 
     # log_statement transition
-    my $log_statement = config_bool (PgCommon::get_conf_value $newversion,
-        $cluster, 'postgresql.conf', 'log_statement');
-    if (defined $log_statement) {
+    if (defined $c{'log_statement'}) {
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'log_statement', ($log_statement ? 'all' : 'none');
+            'log_statement', ($c{'log_statement'} ? 'all' : 'none');
     }
 
     # log_* transition
     my $log_line_prefix = '';
 
-    my $log_timestamp = PgCommon::get_conf_value $newversion, $cluster,
-            'postgresql.conf', 'log_timestamp';
-    if (defined $log_timestamp) {
+    if (defined $c{'log_timestamp'}) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                 'log_timestamp', 'deprecated in favor of log_line_prefix';
     }
-    my $log_pid = PgCommon::get_conf_value $newversion, $cluster,
-            'postgresql.conf', 'log_pid';
-    if (defined $log_pid) {
+    if (defined $c{'log_pid'}) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                 'log_pid', 'deprecated in favor of log_line_prefix';
     }
-    my $log_hostname = PgCommon::get_conf_value $newversion, $cluster,
-            'postgresql.conf', 'log_hostname';
-    if (defined $log_hostname) {
+    if (defined $c{'log_hostname'}) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                 'log_hostname', 'deprecated in favor of log_line_prefix';
     }
-    my $log_source_port = PgCommon::get_conf_value $newversion, $cluster,
-            'postgresql.conf', 'log_source_port';
-    if (defined $log_source_port) {
+    if (defined $c{'log_source_port'}) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                 'log_source_port', 'deprecated in favor of log_line_prefix';
     }
-    $log_line_prefix .= '%t ' if $log_timestamp;
-    $log_line_prefix .= '[%p] ' if $log_pid;
-    $log_line_prefix .= '%r ' if $log_hostname || $log_source_port;
+    $log_line_prefix .= '%t ' if config_bool $c{'log_timestamp'};
+    $log_line_prefix .= '[%p] ' if config_bool $c{'log_pid'};
+    $log_line_prefix .= '%r ' if config_bool $c{'log_hostname'} || config_bool $c{'log_source_port'};
     chop $log_line_prefix if (substr $log_line_prefix, -1) eq ' ';
     if ($log_line_prefix) {
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
@@ -97,18 +82,14 @@ sub adapt_conffiles {
 
     # obsolete rendezvous_name 
     if ($newversion ge '8.1') {
-        my $rendezvous_name = PgCommon::get_conf_value $newversion, $cluster,
-                'postgresql.conf', 'rendezvous_name';
-        if (defined $rendezvous_name) {
+        if (defined $c{'rendezvous_name'}) {
             PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                     'rendezvous_name', 'obsolete in 8.1';
         }
     }
 
     # obsolete max_expr_depth
-    my $max_expr_depth = PgCommon::get_conf_value $newversion, $cluster,
-            'postgresql.conf', 'max_expr_depth';
-    if (defined $max_expr_depth) {
+    if (defined $c{'max_expr_depth'}) {
         PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
                 'max_expr_depth',
                 'does not exist any more, look at max_stack_depth';
@@ -122,25 +103,21 @@ sub adapt_conffiles {
 
     # bgwriter_percent -> bgwriter_{lru,all}_percent transition
     if ($newversion ge '8.1') {
-        my $bgwriter_percent = PgCommon::get_conf_value $newversion, $cluster,
-                'postgresql.conf', 'bgwriter_percent';
-        if (defined $bgwriter_percent) {
+        if (defined $c{'bgwriter_percent'}) {
             PgCommon::replace_conf_value $newversion, $cluster,
                 'postgresql.conf', 'bgwriter_percent', 
                 'deprecated in favor of bgwriter_{lru,all}_percent', 
-                'bgwriter_all_percent', $bgwriter_percent;
+                'bgwriter_all_percent', $c{'bgwriter_percent'};
         }
     }
 
     # bgwriter_maxpages -> bgwriter_{lru,all}_maxpages transition
     if ($newversion ge '8.1') {
-        my $bgwriter_maxpages = PgCommon::get_conf_value $newversion, $cluster,
-                'postgresql.conf', 'bgwriter_maxpages';
-        if (defined $bgwriter_maxpages) {
+        if (defined $c{'bgwriter_maxpages'}) {
             PgCommon::replace_conf_value $newversion, $cluster,
                 'postgresql.conf', 'bgwriter_maxpages', 
                 'deprecated in favor of bgwriter_{lru,all}_maxpages', 
-                'bgwriter_all_maxpages', $bgwriter_maxpages;
+                'bgwriter_all_maxpages', $c{'bgwriter_maxpages'};
         }
     }
 }

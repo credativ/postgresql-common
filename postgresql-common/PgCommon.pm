@@ -367,7 +367,8 @@ sub cluster_info {
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = cluster_data_directory $_[0], $_[1];
     $result{'logfile'} = readlink ($result{'configdir'} . "/log");
-    $result{'port'} = (get_conf_value $_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
+    my %postgresql_conf = read_cluster_conf_file $_[0], $_[1], 'postgresql.conf';
+    $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
     $result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
     if ($result{'pgdata'}) {
@@ -381,19 +382,20 @@ sub cluster_info {
     if ($_[0] lt '8.1') {
         $result{'avac_logfile'} = readlink ($result{'configdir'} . "/autovacuum_log");
         if (get_program_path 'pg_autovacuum', $_[0]) {
-            $result{'avac_enable'} = config_bool (get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'start'));
-            $result{'avac_debug'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_debug');
-            $result{'avac_sleep_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_base');
-            $result{'avac_sleep_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_sleep_scale');
-            $result{'avac_vac_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_base');
-            $result{'avac_vac_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_vac_scale');
-            $result{'avac_anal_base'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_base');
-            $result{'avac_anal_scale'} = get_conf_value ($_[0], $_[1], 'autovacuum.conf', 'avac_anal_scale');
+            my %autovac_conf = read_cluster_conf_file $_[0], $_[1], 'autovacuum.conf';
+            $result{'avac_enable'} = config_bool $autovac_conf{'start'};
+            $result{'avac_debug'} = $autovac_conf{'avac_debug'};
+            $result{'avac_sleep_base'} = $autovac_conf{'avac_sleep_base'};
+            $result{'avac_sleep_scale'} = $autovac_conf{'avac_sleep_scale'};
+            $result{'avac_vac_base'} = $autovac_conf{'avac_vac_base'};
+            $result{'avac_vac_scale'} = $autovac_conf{'avac_vac_scale'};
+            $result{'avac_anal_base'} = $autovac_conf{'avac_anal_base'};
+            $result{'avac_anal_scale'} = $autovac_conf{'avac_anal_scale'};
         } else {
             $result{'avac_enable'} = 0;
         }
     } else {
-        $result{'avac_enable'} = config_bool (get_conf_value ($_[0], $_[1], 'postgresql.conf', 'autovacuum'));
+        $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'};
     }
     
     return %result;
