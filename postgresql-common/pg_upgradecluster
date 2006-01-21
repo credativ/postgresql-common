@@ -17,12 +17,16 @@ my (%info, %newinfo);
 sub adapt_conffiles {
     my %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
 
+    sub deprecate {
+        if (defined ${$_[0]}{$_[1]}) {
+            PgCommon::disable_conf_value $newversion, $cluster,
+                'postgresql.conf', $_[1], $_[2];
+        }
+    }
+
     # tcpip_socket transition
     my $tcpip_socket = config_bool $c{'tcpip_socket'};
-    if (defined $c{'virtual_host'}) {
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'virtual_host', 'deprecated in favor of listen_addresses';
-    }
+    deprecate \%c, 'virtual_host', 'deprecated in favor of listen_addresses';
     if (defined $tcpip_socket) {
         PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
                 'tcpip_socket', 'deprecated in favor of listen_addresses', 
@@ -55,22 +59,11 @@ sub adapt_conffiles {
     # log_* transition
     my $log_line_prefix = '';
 
-    if (defined $c{'log_timestamp'}) {
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'log_timestamp', 'deprecated in favor of log_line_prefix';
-    }
-    if (defined $c{'log_pid'}) {
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'log_pid', 'deprecated in favor of log_line_prefix';
-    }
-    if (defined $c{'log_hostname'}) {
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'log_hostname', 'deprecated in favor of log_line_prefix';
-    }
-    if (defined $c{'log_source_port'}) {
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'log_source_port', 'deprecated in favor of log_line_prefix';
-    }
+    deprecate \%c, 'log_timestamp', 'deprecated in favor of log_line_prefix';
+    deprecate \%c, 'log_pid', 'deprecated in favor of log_line_prefix';
+    deprecate \%c, 'log_hostname', 'deprecated in favor of log_line_prefix';
+    deprecate \%c, 'log_source_port', 'deprecated in favor of log_line_prefix';
+
     $log_line_prefix .= '%t ' if config_bool $c{'log_timestamp'};
     $log_line_prefix .= '[%p] ' if config_bool $c{'log_pid'};
     $log_line_prefix .= '%r ' if config_bool $c{'log_hostname'} || config_bool $c{'log_source_port'};
@@ -81,19 +74,10 @@ sub adapt_conffiles {
     }
 
     # obsolete rendezvous_name 
-    if ($newversion ge '8.1') {
-        if (defined $c{'rendezvous_name'}) {
-            PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                    'rendezvous_name', 'obsolete in 8.1';
-        }
-    }
+    deprecate \%c, 'rendezvous_name', 'obsolete in 8.1' if $newversion ge '8.1';
 
     # obsolete max_expr_depth
-    if (defined $c{'max_expr_depth'}) {
-        PgCommon::disable_conf_value $newversion, $cluster, 'postgresql.conf',
-                'max_expr_depth',
-                'does not exist any more, look at max_stack_depth';
-    }
+    deprecate \%c, 'max_expr_depth', 'does not exist any more, look at max_stack_depth';
 
     # 8.1+ has internal autovacuum
     if ($newversion ge '8.1') {

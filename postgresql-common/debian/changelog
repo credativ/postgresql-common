@@ -8,8 +8,10 @@ postgresql-common (40) unstable; urgency=low
   * debian/README.Debian: Fix 'detailled' typo. Closes: #346442
   * Replace most calls to get_conf_value() with the much more efficient new
     function read_cluster_conf_file().
+  * pg_upgradecluster: Factorized and cleaned up parameter deprecation/upgrade
+    code.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 13:14:48 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 13:40:31 +0100
 
 postgresql-common (39) unstable; urgency=low
 
