@@ -9,7 +9,7 @@ use Test::More;
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
-    like_program_out unlike_program_out @MAJORS/;
+    like_program_out unlike_program_out pidof pid_env @MAJORS/;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon qw/get_versions/;
@@ -32,12 +32,43 @@ sub ps {
     return `ps h -o user,group,args -C $_[0] | grep '$_[0]' | sort -u`;
 }
 
+# Return array of pids that match the given command line
+sub pidof {
+    open F, '-|', 'ps', 'h', '-C', $_[0], '-o', 'pid,cmd' or die "open: $!";
+    my @pids;
+    while (<F>) {
+        if ((index $_, $_[0]) >= 0) {
+            push @pids, (split)[0];
+        }
+    }
+    close F;
+    return @pids;
+}
+
 # Return an reference to an array of all entries but . and .. of the given directory.
 sub dircontent {
     opendir D, $_[0] or die "opendir: $!";
     my @e = grep { $_ ne '.' && $_ ne '..' } readdir (D);
     closedir D;
     return \@e;
+}
+
+# Return environment of given PID
+sub pid_env {
+    my $path = "/proc/$_[0]/environ";
+    my @lines;
+    open E, $path or die "open $path: $!";
+    {
+        local $/;
+        @lines = split '\0', <E>;
+    }
+    close E;
+    my %env;
+    foreach (@lines) {
+        my ($k, $v) = (split '=');
+        $env{$k} = $v;
+    }
+    return %env;
 }
 
 # Check the contents of a directory.

@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 32 * ($#MAJORS+1);
+use Test::More tests => 38 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -27,6 +27,31 @@ sub check_major {
     } else {
 	is ((ps 'pg_autovacuum'), '', "No pg_autovacuum available for version $v");
     }
+
+    # verify that exactly one postmaster is running
+    my @pm_pids = pidof 'postmaster';
+    is $#pm_pids, 0, 'Exactly one postmaster process running';
+
+    # check environment
+    my %safe_env = qw/LC_ALL 1 LANG 1 PWD 1 PGLOCALEDIR 1 PGSYSCONFDIR 1 SHLVL 1 PGDATA 1 _ 1/;
+    my %env = pid_env $pm_pids[0];
+    foreach (keys %env) {
+        fail "postmaster has unsafe environment variable $_" unless exists $safe_env{$_};
+    }
+
+    # add variable to environment file, restart, check if it's there
+    open E, ">>/etc/postgresql/$v/main/environment" or 
+        die 'could not open environment file for appending';
+    print E "PGEXTRAVAR1 = 1 # short one\nPGEXTRAVAR2='foo bar '\n\n# comment";
+    close E;
+    is_program_out 'postgres', "pg_ctlcluster $v main restart", 0, '',
+        'cluster restarts with new environment file';
+
+    @pm_pids = pidof 'postmaster';
+    is $#pm_pids, 0, 'Exactly one postmaster process running';
+    %env = pid_env $pm_pids[0];
+    is $env{'PGEXTRAVAR1'}, '1', 'correct value of PGEXTRAVAR1 in environment';
+    is $env{'PGEXTRAVAR2'}, 'foo bar ', 'correct value of PGEXTRAVAR2 in environment';
 
     # verify that the correct client version is selected
     like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $v\.\d/,
