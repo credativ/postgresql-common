@@ -3,6 +3,8 @@ postgresql TODO
 
 Bugs:
 - Respect log_* settings in postgresql.conf
+- create cluster if there are only unimportant files (like *.old) in
+  cluster dir
 
 Transition bugs:
 
