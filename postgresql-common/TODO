@@ -2,6 +2,7 @@ postgresql TODO
 ===============
 
 Bugs:
+- Respect log_* settings in postgresql.conf
 
 Transition bugs:
 
