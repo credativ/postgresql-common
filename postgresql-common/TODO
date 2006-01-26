@@ -14,6 +14,7 @@ Important features:
 - pg_dropcluster --force to clean up inconsistent clusters
 
 Wishlist:
+- pg_ctlcluster: add option to disable external connections
 - export environment variables in pg_wrapper (PGCLUSTER, etc.)
 - Add pg_conf to change startup and possibly other things
 - add programs for web applications, which configure pg_hba.conf:
