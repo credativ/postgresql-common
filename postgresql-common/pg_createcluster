@@ -236,7 +236,9 @@ $avac_log = "$confdir/autovacuum_log";
 
 # some sanity checks
 error "invalid version: $version" unless get_program_path 'initdb', $version;
-error 'cluster configuration already exists' if -d $confdir && <$confdir/*>;
+error 'cluster configuration already exists' 
+    if -e "$confdir/postgresql.conf" || -e "$confdir/pg_hba.conf" || 
+        -e "$confdir/pgdata";
 
 # create configuration directory
 error 'could not create data directory' if system ('install', '-d', $confdir);

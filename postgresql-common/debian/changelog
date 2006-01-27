@@ -1,8 +1,10 @@
 postgresql-common (41) unstable; urgency=low
 
-  *
+  * pg_createcluster: Make the definition of 'cluster already exists' less
+    strict: check for files that indicate a cluster configuration instead of
+    requiring the directory to be completely empty.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 21 Jan 2006 17:49:05 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 27 Jan 2006 18:22:24 +0100
 
 postgresql-common (40) unstable; urgency=low
 
