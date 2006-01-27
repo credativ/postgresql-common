@@ -3,8 +3,11 @@ postgresql-common (41) unstable; urgency=low
   * pg_createcluster: Make the definition of 'cluster already exists' less
     strict: check for files that indicate a cluster configuration instead of
     requiring the directory to be completely empty.
+  * debian/maintscripts-functions, configure_version(): Improve check for
+    already existing clusters to not catch subdirectories with non-cluster
+    files (e. g. a single *.old and similar).
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 27 Jan 2006 18:22:24 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 27 Jan 2006 18:41:56 +0100
 
 postgresql-common (40) unstable; urgency=low
 

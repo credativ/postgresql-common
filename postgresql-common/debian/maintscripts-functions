@@ -19,10 +19,10 @@ configure_version() {
     VERSION="$1"
 
     # Create a main cluster for given version ($1) if no cluster already exists
-    # for that version.
+    # for that version and we are installing from scratch.
     [ "$VERSION" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
-    if [ ! -d /etc/postgresql/$VERSION ] || [ -z "$(ls /etc/postgresql/$VERSION)" ]; then
-	# Only create the cluster on installation, not on upgrade.
+    if [ ! -d "/etc/postgresql/$VERSION" ] || [ -z "$(ls /etc/postgresql/$VERSION)" ] || \
+       [ -z "$(ls /etc/postgresql/$VERSION/*/postgresql.conf 2>/dev/null)" ]; then
         [ "$2" ] || /usr/bin/pg_createcluster -u postgres $VERSION main
     fi
 
