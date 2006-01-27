@@ -9,7 +9,6 @@ Transition bugs:
 Missing selftest:
 
 Important features:
-- pg_dropcluster --force to clean up inconsistent clusters
 
 Wishlist:
 - pg_ctlcluster: add option to disable external connections
