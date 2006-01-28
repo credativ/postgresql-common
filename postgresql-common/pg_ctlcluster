@@ -12,11 +12,6 @@ use POSIX qw/setsid setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
-if ($#ARGV != 2) {
-    print "Usage: $0 <version> <cluster> <action>\n";
-    exit 1;
-}
-
 # Check for known broken configurations of this cluster
 sub check_valid_config {
     my %postgresql_conf = read_cluster_conf_file $version, $cluster,
@@ -241,6 +236,8 @@ sub start {
         $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
     }
 
+    $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
+
     @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'},
 	'-s', '-o', $postmaster_opts);
 
@@ -335,6 +332,13 @@ sub reload {
 # main
 #
 
+exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions);
+
+if ($#ARGV != 2) {
+    print "Usage: $0 <version> <cluster> <action>\n";
+    exit 1;
+}
+
 ($version, $cluster, $action) = @ARGV;
 %info = cluster_info ($version, $cluster);
 
@@ -383,7 +387,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_ctlcluster> I<cluster-version> I<cluster-name> I<action>
+B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action>
 
 where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<autovac-start>|B<autovac-stop>|B<autovac-restart>
 
@@ -452,9 +456,21 @@ PostgreSQL 8.1 and above since they do autovacuuming internally.
 
 =back
 
+=head1 OPTIONS
+
+=over 4
+
+=item B<-o> I<option>
+
+Pass given I<option> as command line option to the C<postmaster> process. It is
+possible to specify B<-o> multiple times. See L<postmaster(1)> for a
+description of valid options.
+
+=back
+
 =head1 SEE ALSO
 
-L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>
+L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>, L<postmaster(1)>
 
 =head1 AUTHOR
 

@@ -6,8 +6,9 @@ postgresql-common (41) unstable; urgency=low
   * debian/maintscripts-functions, configure_version(): Improve check for
     already existing clusters to not catch subdirectories with non-cluster
     files (e. g. a single *.old and similar).
+  * pg_ctlcluster: Add option -o to pass parameters to the postmaster process.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 27 Jan 2006 18:41:56 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 28 Jan 2006 14:07:28 +0100
 
 postgresql-common (40) unstable; urgency=low
 
