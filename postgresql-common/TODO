@@ -10,7 +10,6 @@ Missing selftest:
 Important features:
 
 Wishlist:
-- export environment variables in pg_wrapper (PGCLUSTER, etc.)
 - Add pg_conf to change startup and possibly other things
 - add program for web applications, which configure pg_hba.conf:
 
