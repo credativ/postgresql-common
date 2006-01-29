@@ -381,10 +381,10 @@ sub cluster_info {
     if (exists $postgresql_conf{'log_filename'} || 
 	exists $postgresql_conf{'log_directory'}) {
 	my $dir;
-	if ( (substr $postgresql_conf{'log_directory'}, 0, 1) eq '/') {
+	if ( exists $postgresql_conf{'log_directory'} && (substr $postgresql_conf{'log_directory'}, 0, 1) eq '/') {
 	    $dir = $postgresql_conf{'log_directory'} || $result{'pgdata'};
 	} else {
-	    $dir = $result{'pgdata'} . '/' . $postgresql_conf{'log_directory'};
+	    $dir = $result{'pgdata'} . '/' . ($postgresql_conf{'log_directory'} || '');
 	}
 
 	my $fname = $postgresql_conf{'log_filename'} || 'postgresql-%Y-%m-%d_%H%M%S.log';
