@@ -9,8 +9,11 @@ postgresql-common (41) unstable; urgency=low
   * pg_ctlcluster: Add option -o to pass parameters to the postmaster process.
   * debian/postgresql-common.postinst: Avoid error message from ls if
     /usr/lib/postgresql does not exist.
+  * PgCommon.pm, cluster_info(): Respect log_{directory,filename} settings;
+    only use Debian's log directory if neither is set. Thanks to Scott Chapman
+    for discovering this issue.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 29 Jan 2006 10:30:19 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 29 Jan 2006 11:44:51 +0100
 
 postgresql-common (40) unstable; urgency=low
 

@@ -4,6 +4,7 @@
 package PgCommon;
 use strict;
 use Socket;
+use POSIX;
 
 use Exporter;
 our $VERSION = 1.00;
@@ -366,7 +367,6 @@ sub cluster_info {
     my %result;
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = cluster_data_directory $_[0], $_[1];
-    $result{'logfile'} = readlink ($result{'configdir'} . "/log");
     my %postgresql_conf = read_cluster_conf_file $_[0], $_[1], 'postgresql.conf';
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
@@ -376,6 +376,25 @@ sub cluster_info {
             (stat $result{'pgdata'})[4,5];
     }
     $result{'start'} = get_cluster_start_conf $_[0], $_[1];
+
+    # log file
+    if (exists $postgresql_conf{'log_filename'} || 
+	exists $postgresql_conf{'log_directory'}) {
+	my $dir;
+	if ( (substr $postgresql_conf{'log_directory'}, 0, 1) eq '/') {
+	    $dir = $postgresql_conf{'log_directory'} || $result{'pgdata'};
+	} else {
+	    $dir = $result{'pgdata'} . '/' . $postgresql_conf{'log_directory'};
+	}
+
+	my $fname = $postgresql_conf{'log_filename'} || 'postgresql-%Y-%m-%d_%H%M%S.log';
+	$fname .= '.%s' if (index $fname, '%') < 0;
+	$fname = strftime $fname, localtime;
+
+	$result{'logfile'} = "$dir/$fname";
+    } else {
+	$result{'logfile'} = readlink ($result{'configdir'} . "/log");
+    }
 
     # autovacuum settings
 
