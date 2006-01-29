@@ -17,8 +17,10 @@ postgresql-common (41) unstable; urgency=low
     condition with nonexisting files if log_filename contains time macros.
   * pg_createcluster: Explain possibility of overriding the log symlink with
     log_* in postgresql.conf.
+  * architecture.html: Fix some typos, remove obsolete pg_upgradecluster
+    procedure.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Sun, 29 Jan 2006 11:29:34 +0000
+ -- Martin Pitt <mpitt@debian.org>  Sun, 29 Jan 2006 11:38:01 +0000
 
 postgresql-common (40) unstable; urgency=low
 

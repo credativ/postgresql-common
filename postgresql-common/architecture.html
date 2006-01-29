@@ -84,7 +84,7 @@ default version/cluster and database; overrides
 <code>/etc/postgresql-common/user_clusters</code></td></tr>
 
 <tr>
-  <td><code>/etc/postgresql-common/autovaccum.conf</code></td>
+  <td><code>/etc/postgresql-common/autovacuum.conf</code></td>
   <td>Default <code>pg_autovacuum</code> configuration file. This has no effect
   if the package <code>postgresql-contrib-</code><i>version</i> is not
   installed.</td>
@@ -100,9 +100,9 @@ default version/cluster and database; overrides
   daemon (started if <code>postgresql-contrib-</code><i>version</i> is
   installed). If this directory contains <code>autovacuum.conf</code>, this is
   used as the cluster specific autovacuum daemon configuration; if it does not
-  exist, <code>/etc/postgresql-common/autovaccum.conf</code> is used as a
+  exist, <code>/etc/postgresql-common/autovacuum.conf</code> is used as a
   fallback. If this directory contains <code>start.conf</code>, that file
-  configures the startup mode of the cluster: <i>audo</i> (start/stop in init
+  configures the startup mode of the cluster: <i>auto</i> (start/stop in init
   script), <i>manual</i> (do not start/stop in init script, but manual control
   with <code>pg_ctlcluster</code> is possible), <i>disabled</i>
   (<code>pg_ctlcluster</code> is not allowed).</td>
@@ -115,7 +115,7 @@ default version/cluster and database; overrides
 <table cellpadding="6" cellspacing="0" border="0">
 <tr><td><code>/usr/lib/postgresql/<i>version</i></code></td> <td colspan="0" rowspan="3" valign="middle">files for a specific version</td></tr>
 <tr><td><code>/usr/share/postgresql/<i>version</i></code></td></tr>
-<tr><td><code>/usr/share/doc/postgresql/<i>version</i></code></td></tr>
+<tr><td><code>/usr/share/doc/postgresql/postgresql-doc-<i>version</i></code></td></tr>
 </table>
 
 <h3>Common programs</h3>
@@ -173,28 +173,6 @@ cluster. However, most of the actual work is done by the new
 
 <p><code>-v</code> <i>version</i> specifies the version to upgrade to; defaults
 to the newest available version.</p>
-
-<p>Procedure:</p>
-
-<ol>
-  <li>Use <code>pg_createcluster</code> to create the new (&quot;target&quot;)
-   cluster (same name, new version).</li>
-
-  <li>Start a server for the target cluster.</li>
-
-  <li>Call <code>pg_dumpall</code> on the original cluster and feed the output to a
-   <code>psql</code> process for the target cluster.</li>
-
-  <li>On error, use <code>pg_dropcluster</code> to remove the target cluster
-   again and exit.</li>
-
-  <li>Stop the postmaster for the original cluster.</li>
-
-  <li>Configure the original cluster to an unused port.</li>
-
-  <li>Configure the target cluster to use the port of the original
-   cluster.</li>
-</ol>
 
 <p><i><a href="mailto:pkg-postgresql-public@lists.alioth.debian.org">The Debian
 PostgreSQL developers</a> (Oliver Elphick, Martin Pitt)</i></p>
