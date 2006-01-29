@@ -12,11 +12,9 @@ Important features:
 Wishlist:
 - export environment variables in pg_wrapper (PGCLUSTER, etc.)
 - Add pg_conf to change startup and possibly other things
-- add programs for web applications, which configure pg_hba.conf:
+- add program for web applications, which configure pg_hba.conf:
 
-  pg_add_hba [options] yourwebappdb yourwebappuser
-  pg_test_hba [options] yourwebappdb yourwebappuser
-  pg_remove_hba [options] yourwebappdb yourwebappuser
+  pg_hba add|remove|test [options] yourwebappdb yourwebappuser
 
   Options:
 
@@ -28,8 +26,8 @@ Wishlist:
   --force-ssl: If given, create a "hostssl" entry, otherwise a "host"
     entry
 
-  For pg_remove_hba, only --cluster is allowed; it will remove all hba
-  entries that refer to the given db/user pair. pg_test_hba checks whether the
+  For remove, only --cluster is allowed; it will remove all hba
+  entries that refer to the given db/user pair. test checks whether the
   given connection is allowed; if so, it exits with 0, otherwise it prints the
   required pg_hba.conf line to stdout and exits with 1. If pg_hba.conf has a
   scrambled format that cannot be parsed by pg_*_hba, the scripts exit with 2.

@@ -17,7 +17,7 @@ my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 
 my $ip = ''; # default to local unix socket
 my $force_ssl = 0;
 my ($method, $ver_cluster, $db, $user);
-my $mode = (split '/', $0)[-1];
+my $mode;
 my @hba;
 
 # Print an error message to stderr and exit with status 2
@@ -158,11 +158,11 @@ exit 3 unless GetOptions (
     'force-ssl' => \$force_ssl
 );
 
-if ($#ARGV != 1) {
-    print STDERR "Usage: $mode [options] <database> <user>\n";
+if ($#ARGV != 2) {
+    print STDERR "Usage: $0 mode [options] <database> <user>\n";
     exit 2;
 }
-($db, $user) = @ARGV;
+($mode, $db, $user) = @ARGV;
 
 error2 '--cluster must be specified' unless $ver_cluster;
 my ($version, $cluster) = split ('/', $ver_cluster);
