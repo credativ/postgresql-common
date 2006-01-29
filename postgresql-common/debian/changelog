@@ -12,8 +12,11 @@ postgresql-common (41) unstable; urgency=low
   * PgCommon.pm, cluster_info(): Respect log_{directory,filename} settings;
     only use Debian's log directory if neither is set. Thanks to Scott Chapman
     for discovering this issue.
+  * pg_ctlcluster: Create the log file if it does not yet exist; this ensures
+    that we always know the file postmaster really uses and avoids the race
+    condition with nonexisting files if log_filename contains time macros.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 29 Jan 2006 11:44:51 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 29 Jan 2006 12:09:12 +0100
 
 postgresql-common (40) unstable; urgency=low
 
