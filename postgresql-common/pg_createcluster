@@ -408,7 +408,10 @@ it is integrated into the B<postgresql-common> structure by moving the
 configuration file and creating the C<pgdata> link.
 
 If the log file does not exist, it is created. In any case the permissions are
-adjusted to allow write access to the cluster owner.
+adjusted to allow write access to the cluster owner. Please note that
+C<postgresql.conf> can be customized to specify C<log_directory> and/or
+C<log_filename>; if at least one of these options is present, then the symbolic
+link C<log> in the cluster configuration directory is ignored.
 
 If an SSL certificate exists in C</etc/postgresql-common> (C<postgresql.crt>
 and C<postgresql.pem>), this program creates symlinks to these files in the
