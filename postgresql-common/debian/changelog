@@ -1,3 +1,9 @@
+postgresql-common (42) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Fri,  3 Feb 2006 09:10:56 +0000
+
 postgresql-common (41) unstable; urgency=low
 
   * pg_createcluster: Make the definition of 'cluster already exists' less
