@@ -94,13 +94,13 @@ sub exec_as {
     } else {
 	$uid = getpwnam $_[0] or die "TestLib::exec_as: target user '$_[0]' does not exist";
     }
-    $< = $uid;
-    $> = $uid;
+    $) = $( = (getpwuid $uid)[3];
+    $> = $< = $uid;
     die "changing euid: $!" if $> != $uid;
     my $out = `$_[1] 2>&1`;
     my $result = $? >> 8;
-    $> = 0;
-    $< = 0;
+    $< = $> = 0;
+    $( = $) = 0;
     die "changing euid back to root: $!" if $> != 0;
     $_[2] = \$out;
 
