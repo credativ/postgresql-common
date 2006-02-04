@@ -3,8 +3,11 @@ postgresql-common (42) unstable; urgency=low
   * PgCommon.pm, change_ugid(): Implement initgroups() like behaviour to allow
     running the postmaster in auxiliary groups. This is necessary for e. g.
     reading shared SSL certificates.
+  * t/TestLib.pm, exec_as(): Also change group id, in order to be able to read
+    SSL certificates which are only group readable (which previously caused
+    the test suite to fail).
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  4 Feb 2006 15:31:31 +0000
+ -- Martin Pitt <mpitt@debian.org>  Sat,  4 Feb 2006 15:33:06 +0000
 
 postgresql-common (41) unstable; urgency=low
 
