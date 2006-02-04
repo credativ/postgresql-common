@@ -1,8 +1,9 @@
-postgresql-common (42) unstable; urgency=low
+postgresql-common (41ubuntu1) dapper; urgency=low
 
-  *
+  * Create an Ubuntu branch for this package; public bzr archive is at
+    http://people.ubuntu.com/~pitti/bzr/postgresql-common.
 
- -- Martin Pitt <mpitt@debian.org>  Fri,  3 Feb 2006 09:10:56 +0000
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Sat,  4 Feb 2006 10:39:59 +0000
 
 postgresql-common (41) unstable; urgency=low
 
