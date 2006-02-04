@@ -1,8 +1,10 @@
 postgresql-common (42) unstable; urgency=low
 
-  *
+  * PgCommon.pm, change_ugid(): Implement initgroups() like behaviour to allow
+    running the postmaster in auxiliary groups. This is necessary for e. g.
+    reading shared SSL certificates.
 
- -- Martin Pitt <mpitt@debian.org>  Fri,  3 Feb 2006 09:10:56 +0000
+ -- Martin Pitt <mpitt@debian.org>  Sat,  4 Feb 2006 15:31:31 +0000
 
 postgresql-common (41) unstable; urgency=low
 
