@@ -2,35 +2,7 @@
 . /usr/share/debconf/confmodule
 db_stop
 
-SSL_CERT=/etc/postgresql-common/postgresql.crt
-SSL_KEY=/etc/postgresql-common/postgresql.pem
 SSL_ROOT=/etc/postgresql-common/root.crt
-
-# generate SSL certificate and key if openssl is installed and the certificate
-# does not yet exist.
-generate_ssl_key() {
-    [ -x /usr/bin/openssl ] || return 0
-    if [ ! -e $SSL_KEY -a ! -e $SSL_CERT ]; then
-        echo "Creating generic self-signed certificate: $SSL_CERT"
-        echo "(replace with hand-crafted or authorized one if needed)."
-        HOSTNAME=`hostname -s`
-        FQDN=`hostname -f`
-        MAILNAME=`cat /etc/mailname 2> /dev/null || hostname -f`
-        ( openssl req -new -x509 -days 365 -nodes -out $SSL_CERT -keyout $SSL_KEY > /dev/null 2>&1 <<EOF
-.
-.
-.
-PostgreSQL database server
-$FQDN
-$FQDN
-root@$MAILNAME
-EOF
-        chmod 0644 $SSL_CERT
-	chown root:postgres $SSL_KEY
-        chmod 0640 $SSL_KEY
-        ) || echo "Warning : Bad SSL config, can't generate certificate" >&2
-    fi
-}
 
 if [ "$1" = configure ]; then
     # Make sure the administrative user exists
@@ -55,8 +27,6 @@ Please fix this and reinstall this package." >&2
     [ -d /var/run/postgresql ] || \
        install -d -m 2775 -o postgres -g postgres /var/run/postgresql
 
-    generate_ssl_key
-
     # create default dummy root.crt if not present
     if ! [ -e "$SSL_ROOT" ]; then
         cat > "$SSL_ROOT" <<EOF
@@ -72,6 +42,13 @@ certificate, which might be desirable in many cases. See
 
 for details (in package postgresql-doc-8.0).
 EOF
+    fi
+
+    # Add postgres user to the ssl-cert group on upgrades or fresh installs
+    if dpkg --compare-versions "$2" lt "41ubuntu1"; then
+	if getent group ssl-cert >/dev/null; then
+	    adduser postgres ssl-cert
+	fi
     fi
 
     # restart all servers
