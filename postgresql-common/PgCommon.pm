@@ -581,25 +581,27 @@ sub install_file {
     }
 }
 
-# Change effective and real user and group id. If the user id is member of the
-# "shadow" group, then "shadow" will be in the set of effective groups. Exits
-# with an error message if user/group ID cannot be changed.
+# Change effective and real user and group id. Also activates all auxiliary
+# groups the user is in. Exits with an error message if user/group ID cannot be
+# changed.
 # Arguments: <user id> <group id>
 sub change_ugid {
     my ($uid, $gid) = @_;
     my $groups = $gid;
     $groups .= " $groups"; # first additional group
 
-    # check whether owner is in the shadow group, and keep shadow privileges in
-    # this case; this is a poor workaround for the lack of initgroups().
-    my @shadowmembers = split /\s+/, ((getgrnam 'shadow')[3]);
-    for my $m (@shadowmembers) {
-	my $mid = getpwnam $m;
-	if ($mid == $uid) {
-	    $groups .= ' ' . (getgrnam 'shadow');
-	    last;
+    # collect all auxiliary groups the user is in
+    setgrent;
+    for(;;) {
+	my ($name, undef, $gid, $members) = getgrent;
+	last unless defined $gid;
+	for my $m (split /[,\s]/, $members) {
+	    if ((getpwnam $m) == $uid) {
+		$groups .= " $gid";
+	    }
 	}
     }
+    endgrent;
 
     $( = $) = $groups;
     $< = $> = $uid;
