@@ -1,3 +1,9 @@
+postgresql-common (43) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon,  6 Feb 2006 23:45:37 +0100
+
 postgresql-common (42) unstable; urgency=low
 
   * PgCommon.pm, change_ugid(): Implement initgroups() like behaviour to allow
