@@ -437,7 +437,7 @@ primary group of the database owner.
 
 =item B<-d> I<dir>, B<--datadir=>I<dir>
 
-Explicitly set the data directoy path, which is used to store all the actual
+Explicitly set the data directory path, which is used to store all the actual
 databases and tables. This will become quite big (easily in the order of five
 times the amount of actual data stored in the cluster). Defaults to
 C</var/lib/postgresql/>I<version>C</>I<cluster>.
@@ -502,8 +502,7 @@ controlling the cluster with L<pg_ctlcluster(1)> is permitted.
 Neither the init script nor L<pg_ctlcluster(1)> are permitted to start/stop the
 cluster. Please be aware that this will not stop the cluster owner from calling
 lower level tools to control the postmaster process; this option is only meant
-to prevent accidentially controlling the postmaster during maintenance and to
-prevent accidents, not more.
+to prevent accidents during maintenance, not more.
 
 =back
 

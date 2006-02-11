@@ -2,8 +2,9 @@ postgresql-common (43) unstable; urgency=low
 
   * debian/postgresql-common.cron.d: Update documentation for 8.1 and correct
     paths in it. Closes: #351891
+  * pg_createcluster: Fix typos in POD. Closes: #351835
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 11 Feb 2006 12:10:01 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 11 Feb 2006 13:44:22 +0100
 
 postgresql-common (42) unstable; urgency=low
 
