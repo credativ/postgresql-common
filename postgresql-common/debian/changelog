@@ -19,8 +19,10 @@ postgresql-common (43) unstable; urgency=low
     /var/lib/postgresql/<version> if empty.
   * t/TestLib.pm: Added check_clean() method to test for empty PostgreSQL
     related directories and processes, and use it in all tests.
+  * pg_dropcluster: Remove default log file. This avoids leaving it behind if
+    the log file directory was changed in postgresql.conf.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 20:48:01 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 20:59:04 +0100
 
 postgresql-common (42) unstable; urgency=low
 
