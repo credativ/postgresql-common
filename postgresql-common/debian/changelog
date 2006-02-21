@@ -5,8 +5,9 @@ postgresql-common (43) unstable; urgency=low
   * pg_createcluster: Fix typos in POD. Closes: #351835
   * debian/postgresql-common.dirs: Add /var/lib/postgresql to ensure that the
     postgres user always has an existant home directory. Closes: #351985
+  * debian/supported-versions, lsb_debian(): Add 'testing'. Closes: #353754
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 11 Feb 2006 13:50:27 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 19:25:30 +0100
 
 postgresql-common (42) unstable; urgency=low
 
