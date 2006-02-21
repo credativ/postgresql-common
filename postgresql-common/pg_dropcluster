@@ -52,6 +52,7 @@ unlink $info{'logfile'} if defined ($info{'logfile'});
 unlink $info{'avac_logfile'} if defined ($info{'avac_logfile'});
 rmdir $c;
 rmdir "/etc/postgresql/$version";
+rmdir "/var/lib/postgresql/$version";
 exit 0;
 
 __END__
