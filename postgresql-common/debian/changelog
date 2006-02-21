@@ -13,10 +13,11 @@ postgresql-common (43) unstable; urgency=low
       environments. Thanks to Chmouel Boudjnah.
     - Closes: #353674
   * pg_wrapper: Set PGSYSCONFDIR to /etc/postgresql-common if it is unset, to
-    provide a sane default for the location of pg_service.conf. 
+    provide a sane default for the location of pg_service.conf.
     Closes: #353832
+  * pg_dropcluster: Also remove /etc/postgresql/<version> if it is empty.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 19:58:49 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 20:25:42 +0100
 
 postgresql-common (42) unstable; urgency=low
 
