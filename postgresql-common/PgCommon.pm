@@ -595,7 +595,7 @@ sub change_ugid {
     for(;;) {
 	my ($name, undef, $gid, $members) = getgrent;
 	last unless defined $gid;
-	for my $m (split /[,\s]/, $members) {
+	for my $m (split /\s/, $members) {
 	    if ((getpwnam $m) == $uid) {
 		$groups .= " $gid";
 	    }
