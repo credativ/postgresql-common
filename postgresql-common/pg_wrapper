@@ -46,6 +46,7 @@ if ($cluster) {
     }
 }
 
+$ENV{'PGSYSCONFDIR'} = '/etc/postgresql-common' if !$ENV{'PGSYSCONFDIR'};
 $ENV{'PGPORT'} = "$port" if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db;
 
