@@ -1,3 +1,9 @@
+postgresql-common (44) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 22:05:27 +0100
+
 postgresql-common (43) unstable; urgency=low
 
   * debian/postgresql-common.cron.d: Update documentation for 8.1 and correct
