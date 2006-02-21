@@ -9,7 +9,7 @@ use Test::More;
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
-    like_program_out unlike_program_out pidof pid_env @MAJORS/;
+    like_program_out unlike_program_out pidof pid_env check_clean @MAJORS/;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon qw/get_versions/;
@@ -139,4 +139,23 @@ sub unlike_program_out {
     my $result = exec_as $_[0], $_[1], $outref;
     is $result, $_[2], $_[1];
     unlike ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]"));
+}
+
+# Check that all PostgreSQL related directories are empty and no
+# postmaster/pg_autovacuum processes are running. Should be called at the end
+# of all tests. Does 7 tests.
+sub check_clean {
+    is (`pg_lsclusters -h`, '', 'No existing clusters');
+    is ((ps 'postmaster'), '', 'No postmaster processes left behind');
+    is ((ps 'pg_autovacuum'), '', 'No pg_autovacuum processes left behind');
+
+    my @check_dirs = ('/etc/postgresql', '/var/lib/postgresql',
+        '/var/run/postgresql', '/var/log/postgresql');
+    foreach (@check_dirs) {
+        if (-d) {
+            ok_dir $_, [], "No files in $_ left behind";
+        } else {
+            pass "Directory $_ does not exist";
+        }
+    }
 }

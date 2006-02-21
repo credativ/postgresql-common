@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 55;
+use Test::More tests => 60;
 
 # Do test with oldest version
 my $v = $MAJORS[0];
@@ -95,6 +95,7 @@ is ((get_cluster_start_conf $v, 'main'), 'manual',
     'get_cluster_start_conf returns manual');
 is ((system "pg_dropcluster $v main"), 0, 
     'dropping cluster');
-is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'no clusters any more';
+
+check_clean;
 
 # vim: filetype=perl

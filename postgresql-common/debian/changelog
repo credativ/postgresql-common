@@ -17,8 +17,10 @@ postgresql-common (43) unstable; urgency=low
     Closes: #353832
   * pg_dropcluster: Remove /etc/postgresql/<version> and
     /var/lib/postgresql/<version> if empty.
+  * t/TestLib.pm: Added check_clean() method to test for empty PostgreSQL
+    related directories and processes, and use it in all tests.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 20:38:41 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 20:48:01 +0100
 
 postgresql-common (42) unstable; urgency=low
 

@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 38 * ($#MAJORS+1);
+use Test::More tests => 39 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -119,12 +119,7 @@ Bob|1
     ok ((system "pg_dropcluster $v main --stop-server") == 0, 
 	'pg_dropcluster removes cluster');
 
-    ok_dir "/etc/postgresql/$v", [], "No files in /etc/postgresql/$v left behind";
-    ok_dir "/var/lib/postgresql/$v", [], "No files in /var/lib/postgresql/$v left behind";
-    ok_dir '/var/run/postgresql', [], 'No files in /var/run/postgresql left behind';
-    ok_dir '/var/log/postgresql', [], 'No files in /var/log/postgresql left behind';
-    is ((ps 'postmaster'), '', 'No postmaster processes left behind');
-    is ((ps 'pg_autovacuum'), '', 'No pg_autovacuum processes left behind');
+    check_clean;
 }
 
 foreach (@MAJORS) { 

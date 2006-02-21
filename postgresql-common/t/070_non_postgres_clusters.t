@@ -7,7 +7,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 18;
+use Test::More tests => 25;
 
 my $owner = 'nobody';
 
@@ -31,5 +31,7 @@ for my $v (@MAJORS[0, -1]) {
     is_program_out $owner, 'pg_lsclusters -h', 0, '', 'No clusters left';
     is ((ps 'postmaster'), '', 'No postmaster processes left');
 }
+
+check_clean;
 
 # vim: filetype=perl

@@ -5,7 +5,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 37;
+use Test::More tests => 44;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -121,5 +121,7 @@ ok ((system "pg_dropcluster $version main") == 0,
     'pg_dropcluster');
 ok_dir $socketdir, [], 'No sockets any more';
 rmdir $socketdir or die "rmdir: $!";
+
+check_clean;
 
 # vim: filetype=perl
