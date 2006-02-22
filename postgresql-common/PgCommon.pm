@@ -604,8 +604,9 @@ sub change_ugid {
     }
     endgrent;
 
-    $( = $) = $groups;
-    $< = $> = $uid;
+    $) = $groups;
+    $( = $gid;
+    $> = $< = $uid;
     error 'Could not change user id' if $< != $uid;
     error 'Could not change group id' if $( != $gid;
 }

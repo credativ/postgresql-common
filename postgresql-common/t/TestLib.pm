@@ -12,7 +12,7 @@ our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
     like_program_out unlike_program_out pidof pid_env check_clean @MAJORS/;
 
 use lib '/usr/share/postgresql-common';
-use PgCommon qw/get_versions/;
+use PgCommon qw/get_versions change_ugid/;
 our @MAJORS = get_versions;
 
 # Return whether a given deb is installed.
@@ -94,8 +94,7 @@ sub exec_as {
     } else {
 	$uid = getpwnam $_[0] or die "TestLib::exec_as: target user '$_[0]' does not exist";
     }
-    $) = $( = (getpwuid $uid)[3];
-    $> = $< = $uid;
+    change_ugid ($uid, (getpwuid $uid)[3]);
     die "changing euid: $!" if $> != $uid;
     my $out = `$_[1] 2>&1`;
     my $result = $? >> 8;

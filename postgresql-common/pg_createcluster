@@ -328,11 +328,18 @@ $conf_fn = "configure_$version";
 $conf_fn =~tr/./_/;
 &$conf_fn if defined &$conf_fn and $newcluster;
 
+# Check whether we can access the SSL private key as the cluster owner
+my $ssl_key_access;
+change_ugid $owneruid, $ownergid;
+$ssl_key_access = -r '/etc/postgresql-common/postgresql.pem';
+$< = $> = 0;
+$( = $) = 0;
+die "changing euid back to root: $!" if $> != 0;
+
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
 if ($newcluster && -e '/etc/postgresql-common/postgresql.crt' && 
-    -e '/etc/postgresql-common/postgresql.pem' && $version ge '8.0' &&
-    (stat '/etc/postgresql-common/postgresql.pem')[4] == (stat $datadir)[4]) {
+    $ssl_key_access && $version ge '8.0') {
     symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
     symlink '/etc/postgresql-common/postgresql.pem', $datadir.'/server.key';
 

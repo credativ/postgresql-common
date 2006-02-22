@@ -1,8 +1,16 @@
 postgresql-common (44) unstable; urgency=low
 
-  *
+  * PgCommon.pm, change_ugid(): Fix the order of $< and $> assignment so that
+    we don't trash the saved uid and can switch back later. This allows us to
+    make use of this function in the test suite, too.
+  * t/TestLib.pm: Use change_ugid() in exec_as() get auxiliary groups. This
+    makes the test suite work with SSL keys which are only readable by
+    ssl-cert group members.
+  * pg_ctlcluster: Untaint PID value read from autovacuum.pid.
+  * t/020_c: Add check that SSL is automatically enabled on >= 8.0 clusters.
+  * pg_createcluster: Improve SSL key access check to be more robust.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Feb 2006 22:05:27 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 19:05:22 +0100
 
 postgresql-common (43) unstable; urgency=low
 
