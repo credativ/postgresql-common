@@ -10,8 +10,10 @@ postgresql-common (44) unstable; urgency=low
   * t/020_c: Add check that SSL is automatically enabled on >= 8.0 clusters.
   * pg_createcluster: Improve SSL key access check to be more robust.
   * Enable taint checking in all programs and fix the resulting breakage.
+  * PgCommon.pm: Replace backticks program calling with proper |- pipe
+    opening to avoid intermediate shell and argument quoting problems.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 21:37:38 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 22:09:14 +0100
 
 postgresql-common (43) unstable; urgency=low
 

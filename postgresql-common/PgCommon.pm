@@ -632,12 +632,19 @@ sub get_db_encoding {
 
     # try to swich to cluster owner
     my $orig_path = $ENV{'PATH'};
+    my $orig_lc_all = $ENV{'LC_ALL'};
     $ENV{'PATH'} = ''; # untaint
+    $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atc 'select getdatabaseencoding()' $db 2>/dev/null`;
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
+        'select getdatabaseencoding()', $db or 
+        die "Internal error: could not call $psql to determine db encoding: $!";
+    my $out = <PSQL>;
+    close PSQL;
     $> = $orig_euid;
     $ENV{'PATH'} = $orig_path;
+    $ENV{'LC_ALL'} = $orig_lc_all;
     chomp $out;
     ($out) = $out =~ /^([\w.-]+)$/; # untaint
     return $out unless $?;
@@ -682,11 +689,20 @@ sub get_cluster_databases {
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner
+    my $orig_path = $ENV{'PATH'};
+    my $orig_lc_all = $ENV{'LC_ALL'};
+    $ENV{'PATH'} = ''; # untaint
+    $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atl 2>/dev/null`;
+    my $result = open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl';
+    my $out = <PSQL> if $result;
+    close PSQL;
     $> = $orig_euid;
-    return undef if $?;
+    $ENV{'LC_ALL'} = $orig_lc_all;
+    $ENV{'PATH'} = $orig_path;
+    return undef unless $result && !$?;
+
     my @dbs;
     my $i = 0;
     foreach (split "\n", $out) {
