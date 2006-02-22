@@ -16,6 +16,7 @@ postgresql-common (43.1ubuntu1) dapper; urgency=low
       + Update manpage documentation POD.
       + Enable SSL only if SSL key can be accessed with the cluster owner's
         privileges.
+    - t/020_c: Add check that SSL is automatically enabled on >= 8.0 clusters.
   * PgCommon.pm, change_ugid(): Fix the order of $< and $> assignment so that
     we don't trash the saved uid and can switch back later. This allows us to
     make use of this function in the test suite, too.
@@ -24,7 +25,7 @@ postgresql-common (43.1ubuntu1) dapper; urgency=low
     ssl-cert group members.
   * pg_ctlcluster: Untaint PID value read from autovacuum.pid.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 17:44:33 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 17:51:35 +0100
 
 postgresql-common (43) unstable; urgency=low
 

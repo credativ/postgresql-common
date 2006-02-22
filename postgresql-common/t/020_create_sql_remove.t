@@ -10,7 +10,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 39 * ($#MAJORS+1);
+use Test::More tests => 40 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -68,6 +68,15 @@ sub check_major {
     # verify that the postmaster does not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,
         'postmaster processes do not have an associated terminal';
+
+    # verify that SSL is enabled (which should work for user postgres in a
+    # default installation)
+    if ($v ge '8.0') {
+        my $ssl = config_bool (PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'ssl');
+        is $ssl, 1, 'SSL is enabled';
+    } else {
+        pass 'Skipping SSL test for versions before 8.0';
+    }
 
     # Create user nobody, a database 'nobodydb' for him, check the database list
     my $outref;
