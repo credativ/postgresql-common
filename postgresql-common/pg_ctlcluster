@@ -195,11 +195,11 @@ sub autovacuum_stop {
 
     if (open my $AVAC_PID, $info{'pgdata'}.'/autovacuum.pid') {
         $pid = <$AVAC_PID>;
+        ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
+        kill ('TERM', $pid) if $pid;
         close $AVAC_PID;
+        unlink $info{'pgdata'}.'/autovacuum.pid';
     }
-
-    kill ('TERM', $pid) if ($pid);
-    unlink $info{'pgdata'}.'/autovacuum.pid';
 }
 
 sub autovacuum_restart {

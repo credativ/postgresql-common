@@ -20,8 +20,9 @@ postgresql-common (43.1ubuntu1) dapper; urgency=low
   * t/TestLib.pm: Use change_ugid() in exec_as() get auxiliary groups. This
     makes the test suite work with SSL keys which are only readable by
     ssl-cert group members.
+  * pg_ctlcluster: Untaint PID value read from autovacuum.pid.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 17:27:34 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 17:29:13 +0100
 
 postgresql-common (43) unstable; urgency=low
 
