@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 
 # Check various system parameters for PostgreSQL. This needs to be run as root.
 #

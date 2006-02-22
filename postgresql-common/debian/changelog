@@ -9,8 +9,9 @@ postgresql-common (44) unstable; urgency=low
   * pg_ctlcluster: Untaint PID value read from autovacuum.pid.
   * t/020_c: Add check that SSL is automatically enabled on >= 8.0 clusters.
   * pg_createcluster: Improve SSL key access check to be more robust.
+  * Enable taint checking in all programs and fix the resulting breakage.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 19:05:22 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 21:37:38 +0100
 
 postgresql-common (43) unstable; urgency=low
 

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 # Run all upgrade scripts.
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>

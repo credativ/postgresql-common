@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 
 # Upgrade a PostgreSQL cluster to a newer major version.
 #
@@ -10,6 +10,8 @@ use lib '/usr/share/postgresql-common';
 use PgCommon;
 use Getopt::Long;
 use POSIX;
+
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
 
 my ($version, $newversion, $cluster);
 my (%info, %newinfo);
@@ -135,6 +137,7 @@ sub enable_connections {
 $newversion = get_newest_version;
 
 exit 1 unless GetOptions ('v|version=s' => \$newversion);
+($newversion) = $newversion =~ /^(\d+\.\d+)$/; # untaint
 
 if ($#ARGV < 1) {
     print "Usage: $0 [-v <newversion>] <version> <cluster name> [<data directory>]\n";
@@ -143,7 +146,11 @@ if ($#ARGV < 1) {
 
 error 'This command needs to be executed as root' if $> != 0;
 
-($version, $cluster, my $datadir) = @ARGV;
+($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
+my $datadir;
+($datadir) = $ARGV[2] =~ /(.*)/ if defined $ARGV[2];
+
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 error 'specified cluster is not running' unless $info{'running'};

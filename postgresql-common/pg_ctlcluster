@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 
 # multiversion/cluster aware pg_ctl wrapper; this also supplies the correct
 # configuration parameters to 'start', and makes sure that a postmaster really
@@ -237,6 +237,7 @@ sub start {
     }
 
     $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
+    ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
 
     @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'},
 	'-s', '-o', $postmaster_opts);
@@ -350,6 +351,8 @@ if ($#ARGV != 2) {
 
 error 'specified cluster does not exist' unless $info{'pgdata'};
 error 'Cluster is disabled' if $info{'start'} eq 'disabled';
+
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
 
 # check that owner uig/gid is valid
 unless (getpwuid $info{'owneruid'}) {

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 
 # Completely delete a PostgreSQL cluster. Fails if there is still a server
 # process attached.
@@ -8,6 +8,8 @@
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
 use PgCommon;
+
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
 
 $stopserver = 0;
 exit 1 unless GetOptions ('stop-server' => \$stopserver);
@@ -20,7 +22,10 @@ if ($#ARGV != 1) {
 
 error 'This command needs to be executed as root' if $> != 0;
 
-($version, $cluster) = @ARGV;
+($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
+error 'invalid version' unless defined $version;
+error 'invalid cluster name' unless defined $cluster;
 
 %info = cluster_info ($version, $cluster);
 
