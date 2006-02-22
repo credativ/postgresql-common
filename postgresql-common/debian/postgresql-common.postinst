@@ -45,7 +45,7 @@ EOF
     fi
 
     # Add postgres user to the ssl-cert group on upgrades or fresh installs
-    if dpkg --compare-versions "$2" lt "41ubuntu1"; then
+    if dpkg --compare-versions "$2" lt "43ubuntu1"; then
 	if getent group ssl-cert >/dev/null; then
 	    adduser postgres ssl-cert
 	fi
