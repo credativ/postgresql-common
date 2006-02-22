@@ -644,7 +644,11 @@ sub get_db_encoding {
     close PSQL;
     $> = $orig_euid;
     $ENV{'PATH'} = $orig_path;
-    $ENV{'LC_ALL'} = $orig_lc_all;
+    if (defined $orig_lc_all) {
+        $ENV{'LC_ALL'} = $orig_lc_all;
+    } else {
+        delete $ENV{'LC_ALL'};
+    }
     chomp $out;
     ($out) = $out =~ /^([\w.-]+)$/; # untaint
     return $out unless $?;
@@ -699,7 +703,11 @@ sub get_cluster_databases {
     my $out = <PSQL> if $result;
     close PSQL;
     $> = $orig_euid;
-    $ENV{'LC_ALL'} = $orig_lc_all;
+    if (defined $orig_lc_all) {
+        $ENV{'LC_ALL'} = $orig_lc_all;
+    } else {
+        delete $ENV{'LC_ALL'};
+    }
     $ENV{'PATH'} = $orig_path;
     return undef unless $result && !$?;
 
