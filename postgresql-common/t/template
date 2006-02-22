@@ -5,20 +5,26 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 9;
+
+my @versions = ($MAJORS[-1]);
+
+use Test::More tests => 11;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-my $version = $MAJORS[-1];
-
-# create cluster
-is ((system "pg_createcluster $version main >/dev/null"), 0, "pg_createcluster $version main");
+# create clusters
+foreach (@versions) {
+    is ((system "pg_createcluster $_ main --start >/dev/null"), 0, "pg_createcluster $_ main");
+    is_program_out 'postgres', "createdb -q --cluster $_/main XXX", 0, '';
+}
 
 # XXX
 
 # clean up
-is ((system "pg_dropcluster $version main"), 0, 'pg_dropcluster');
+foreach (@versions) {
+    is ((system "pg_dropcluster $_ main --stop-server"), 0, "pg_dropcluster $_ main");
+}
 check_clean;
 
 # vim: filetype=perl
