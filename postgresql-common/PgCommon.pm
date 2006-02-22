@@ -699,9 +699,16 @@ sub get_cluster_databases {
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    my $result = open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl';
-    my $out = <PSQL> if $result;
-    close PSQL;
+
+    my @dbs;
+    if (open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl') {
+        while (<PSQL>) {
+            chomp;
+            push (@dbs, (split '\|')[0]);
+        }
+        close PSQL;
+    }
+
     $> = $orig_euid;
     if (defined $orig_lc_all) {
         $ENV{'LC_ALL'} = $orig_lc_all;
@@ -709,15 +716,8 @@ sub get_cluster_databases {
         delete $ENV{'LC_ALL'};
     }
     $ENV{'PATH'} = $orig_path;
-    return undef unless $result && !$?;
 
-    my @dbs;
-    my $i = 0;
-    foreach (split "\n", $out) {
-        chomp;
-        $dbs[$i++] = (split '\|')[0];
-    }
-    return @dbs;
+    return $? ? undef : @dbs;
 }
 
 # Return the device name a file is stored at.
