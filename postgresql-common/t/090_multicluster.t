@@ -7,7 +7,7 @@ use lib 't';
 use TestLib;
 use Socket;
 
-use Test::More tests => 38;
+use Test::More tests => 43;
 
 # create fake socket at 5433 to verify that this port is skipped
 socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or die "socket: $!";
@@ -78,6 +78,7 @@ is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5432\n",
 is ((system "pg_dropcluster $MAJORS[-1] new1 --stop-server"), 0, "dropping $new1");
 is ((system "pg_dropcluster $MAJORS[-1] new2 --stop-server"), 0, "dropping $new2");
 is ((system "pg_dropcluster $MAJORS[0] old --stop-server"), 0, "dropping $old");
-is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'no clusters any more';
+
+check_clean;
 
 # vim: filetype=perl

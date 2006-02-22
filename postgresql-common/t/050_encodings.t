@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 44;
+use Test::More tests => 49;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it again (unless disabled)
@@ -60,7 +60,6 @@ check_cluster $MAJORS[-1], 'en_US', 1;
 check_cluster $MAJORS[-1], 'en_US', 1, 'UTF-8';
 check_cluster $MAJORS[-1], 'en_US.UTF-8', 1;
 
-# Check clusters
-is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';
+check_clean;
 
 # vim: filetype=perl

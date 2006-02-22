@@ -8,7 +8,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 4 + $#MAJORS * 9;
+use Test::More tests => 9 + $#MAJORS * 9;
 
 # postgresql.conf configuration file with all available options turned on
 my %fullconf;
@@ -260,7 +260,6 @@ while ($#testversions) {
 # remove latest cluster and directory
 is ((system "pg_dropcluster $testversions[0] main"), 0, 'Dropping remaining cluster');
 
-# Check clusters
-is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'empty pg_lsclusters output';
+check_clean;
 
 # vim: filetype=perl

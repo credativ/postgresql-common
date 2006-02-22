@@ -22,10 +22,7 @@ lsb_ubuntu() {
 
 lsb_debian() {
     case "$1" in
-        testing/unstable)
-            echo -e "7.4\n8.1"
-            ;;
-        3.1)
+        testing/unstable | testing | unstable | 3.1)
             echo -e "7.4\n8.1"
             ;;
         *)
