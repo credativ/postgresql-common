@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+# Check XXX
+
+use strict; 
+
+use lib 't';
+use TestLib;
+use Test::More tests => 9;
+
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+
+my $version = $MAJORS[-1];
+
+# create cluster
+is ((system "pg_createcluster $version main >/dev/null"), 0, "pg_createcluster $version main");
+
+# XXX
+
+# clean up
+is ((system "pg_dropcluster $version main"), 0, 'pg_dropcluster');
+check_clean;
+
+# vim: filetype=perl
