@@ -1,4 +1,4 @@
-postgresql-common (43ubuntu1) dapper; urgency=low
+postgresql-common (43.1ubuntu1) dapper; urgency=low
 
   * Create an Ubuntu branch for this package; public bzr archive is at
     http://people.ubuntu.com/~pitti/bzr/postgresql-common.
@@ -15,7 +15,7 @@ postgresql-common (43ubuntu1) dapper; urgency=low
       + Adapt cert/key paths to snakeoil
       + Update manpage documentation POD.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 09:53:40 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 13:22:47 +0100
 
 postgresql-common (43) unstable; urgency=low
 
