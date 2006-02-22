@@ -14,8 +14,11 @@ postgresql-common (43.1ubuntu1) dapper; urgency=low
     - pg_createcluster:
       + Adapt cert/key paths to snakeoil
       + Update manpage documentation POD.
+  * PgCommon.pm, change_ugid(): Fix the order of $< and $> assignment so that
+    we don't trash the saved uid and can switch back later. This allows us to
+    make use of this function in the test suite, too.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 13:22:47 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Feb 2006 17:26:52 +0100
 
 postgresql-common (43) unstable; urgency=low
 
