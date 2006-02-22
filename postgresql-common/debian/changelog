@@ -12,8 +12,9 @@ postgresql-common (44) unstable; urgency=low
   * Enable taint checking in all programs and fix the resulting breakage.
   * PgCommon.pm: Replace backticks program calling with proper |- pipe
     opening to avoid intermediate shell and argument quoting problems.
+  * testsuite: Only execute tests ending with .t.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 22:09:14 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 22:20:27 +0100
 
 postgresql-common (43) unstable; urgency=low
 
