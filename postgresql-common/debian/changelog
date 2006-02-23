@@ -14,8 +14,12 @@ postgresql-common (44) unstable; urgency=low
     opening to avoid intermediate shell and argument quoting problems.
   * testsuite: Only execute tests ending with .t.
   * Add t/100_upgrade_scripts.t: Test upgrade scripts.
+  * run-upgrade-scripts:
+    - Filter out the 'postgres' database on 8.1+ clusters.
+    - Temporarily enable connections to databases which disable them.
+    - Execute scripts in asciibetical order.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Feb 2006 01:37:21 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Feb 2006 01:39:11 +0100
 
 postgresql-common (43) unstable; urgency=low
 
