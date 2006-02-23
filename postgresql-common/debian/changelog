@@ -13,8 +13,9 @@ postgresql-common (44) unstable; urgency=low
   * PgCommon.pm: Replace backticks program calling with proper |- pipe
     opening to avoid intermediate shell and argument quoting problems.
   * testsuite: Only execute tests ending with .t.
+  * Add t/100_upgrade_scripts.t: Test upgrade scripts.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Feb 2006 22:20:27 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 23 Feb 2006 01:37:21 +0100
 
 postgresql-common (43) unstable; urgency=low
 
