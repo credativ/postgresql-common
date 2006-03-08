@@ -7,7 +7,8 @@ postgresql-common (44) unstable; urgency=low
     makes the test suite work with SSL keys which are only readable by
     ssl-cert group members.
   * pg_ctlcluster: Untaint PID value read from autovacuum.pid.
-  * t/020_c: Add check that SSL is automatically enabled on >= 8.0 clusters.
+  * t/020_create_sql_remove.t: Add check that SSL is automatically enabled on
+    >= 8.0 clusters.
   * pg_createcluster: Improve SSL key access check to be more robust.
   * Enable taint checking in all programs and fix the resulting breakage.
   * PgCommon.pm: Replace backticks program calling with proper |- pipe
