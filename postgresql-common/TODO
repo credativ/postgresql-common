@@ -2,6 +2,9 @@ postgresql TODO
 ===============
 
 Bugs:
+- user_clusters with '* * 8.0 * *' breaks pg_wrapper:
+  $ psql -l
+  Error: Invalid symbolic link /etc/postgresql/8.0/*/pgdata
 
 Transition bugs:
 
