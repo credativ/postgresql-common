@@ -18,8 +18,10 @@ postgresql-common (44) unstable; urgency=low
     - Filter out the 'postgres' database on 8.1+ clusters.
     - Temporarily enable connections to databases which disable them.
     - Execute scripts in asciibetical order.
+  * debian/postgresql-common.postinst: Ensure that /var/lib/postgresql is
+    owned by postgres:postgres. (https://launchpad.net/bugs/32696)
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Feb 2006 01:39:11 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed,  8 Mar 2006 13:00:08 +0100
 
 postgresql-common (43) unstable; urgency=low
 
