@@ -1,6 +1,20 @@
 postgresql-common (43.1ubuntu2) dapper; urgency=low
 
-  *
+  * Merge changes from Debian branch (mainly robustness and test suite fixes).
+  * t/020_create_sql_remove.t: Add check that SSL is automatically enabled on
+    >= 8.0 clusters.
+  * pg_createcluster: Improve SSL key access check to be more robust.
+  * Enable taint checking in all programs and fix the resulting bugs.
+  * PgCommon.pm: Replace backticks program calling with proper |- pipe opening
+    to avoid intermediate shell and argument quoting problems.
+  * testsuite: Only execute tests ending with .t.
+  * Add t/100_upgrade_scripts.t: Test upgrade scripts.
+  * run-upgrade-scripts: 
+    - Filter out the 'postgres' database on 8.1+ clusters.  
+    - Temporarily enable connections to databases which disable them.  
+    - Execute scripts in asciibetical order.
+  * debian/postgresql-common.postinst: Ensure that /var/lib/postgresql is
+    owned by postgres:postgres. (https://launchpad.net/bugs/32696)
 
  -- Martin Pitt <martin.pitt@ubuntu.com>  Wed,  8 Mar 2006 13:22:23 +0100
 

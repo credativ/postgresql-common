@@ -226,7 +226,9 @@ sub set_cluster_port {
 # Return cluster data directory.
 # Arguments: <version> <cluster name>
 sub cluster_data_directory {
-    return readlink ("$confroot/$_[0]/$_[1]/pgdata");
+    my $d = readlink "$confroot/$_[0]/$_[1]/pgdata";
+    ($d) = $d =~ /(.*)/ if defined $d; #untaint
+    return $d;
 }
 
 # Return the socket directory of a particular cluster or undef if the cluster
@@ -268,6 +270,7 @@ sub set_cluster_socketdir {
 sub get_program_path {
     return '' unless defined($_[0]) && defined($_[1]);
     my $path = "$binroot/$_[1]/bin/$_[0]";
+    ($path) = $path =~ /(.*)/; #untaint
     return $path if -x $path;
     return '';
 }
@@ -364,6 +367,8 @@ $val
 # Returns: information hash (keys: pgdata, port, running, logfile, configdir,
 # owneruid, ownergid, socketdir)
 sub cluster_info {
+    error 'cluster_info must be called with <version> <cluster> arguments' unless $_[0] && $_[1];
+
     my %result;
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
     $result{'pgdata'} = cluster_data_directory $_[0], $_[1];
@@ -395,11 +400,13 @@ sub cluster_info {
     } else {
 	$result{'logfile'} = readlink ($result{'configdir'} . "/log");
     }
+    ($result{'logfile'}) = $result{'logfile'} =~ /(.*)/; # untaint
 
     # autovacuum settings
 
     if ($_[0] lt '8.1') {
         $result{'avac_logfile'} = readlink ($result{'configdir'} . "/autovacuum_log");
+        ($result{'avac_logfile'}) = $result{'avac_logfile'} =~ /(.*)/; # untaint
         if (get_program_path 'pg_autovacuum', $_[0]) {
             my %autovac_conf = read_cluster_conf_file $_[0], $_[1], 'autovacuum.conf';
             $result{'avac_enable'} = config_bool $autovac_conf{'start'};
@@ -624,11 +631,26 @@ sub get_db_encoding {
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner
+    my $orig_path = $ENV{'PATH'};
+    my $orig_lc_all = $ENV{'LC_ALL'};
+    $ENV{'PATH'} = ''; # untaint
+    $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atc 'select getdatabaseencoding()' $db 2>/dev/null`;
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
+        'select getdatabaseencoding()', $db or 
+        die "Internal error: could not call $psql to determine db encoding: $!";
+    my $out = <PSQL>;
+    close PSQL;
     $> = $orig_euid;
+    $ENV{'PATH'} = $orig_path;
+    if (defined $orig_lc_all) {
+        $ENV{'LC_ALL'} = $orig_lc_all;
+    } else {
+        delete $ENV{'LC_ALL'};
+    }
     chomp $out;
+    ($out) = $out =~ /^([\w.-]+)$/; # untaint
     return $out unless $?;
     return undef;
 }
@@ -642,8 +664,11 @@ sub get_cluster_locales {
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
     my $pg_controldata = get_program_path 'pg_controldata', $version;
-    open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster)) or 
-	return (undef, undef);
+    my $orig_path = $ENV{'PATH'};
+    $ENV{'PATH'} = '';  # untaint
+    my $result = open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster));
+    $ENV{'PATH'} = $orig_path;
+    return (undef, undef) unless defined $result;
     while (<CTRL>) {
 	if (/^LC_CTYPE.*:\s*(\S+)\s*$/) {
 	    $lc_ctype = $1;
@@ -668,18 +693,31 @@ sub get_cluster_databases {
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner
+    my $orig_path = $ENV{'PATH'};
+    my $orig_lc_all = $ENV{'LC_ALL'};
+    $ENV{'PATH'} = ''; # untaint
+    $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    my $out = `LANG=C $psql -h '$socketdir' -p $port -Atl 2>/dev/null`;
-    $> = $orig_euid;
-    return undef if $?;
+
     my @dbs;
-    my $i = 0;
-    foreach (split "\n", $out) {
-        chomp;
-        $dbs[$i++] = (split '\|')[0];
+    if (open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl') {
+        while (<PSQL>) {
+            chomp;
+            push (@dbs, (split '\|')[0]);
+        }
+        close PSQL;
     }
-    return @dbs;
+
+    $> = $orig_euid;
+    if (defined $orig_lc_all) {
+        $ENV{'LC_ALL'} = $orig_lc_all;
+    } else {
+        delete $ENV{'LC_ALL'};
+    }
+    $ENV{'PATH'} = $orig_path;
+
+    return $? ? undef : @dbs;
 }
 
 # Return the device name a file is stored at.

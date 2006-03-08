@@ -23,6 +23,9 @@ Please fix this and reinstall this package." >&2
         exit 1
     fi
 
+    # ensure home directory ownership
+    chown postgres:postgres /var/lib/postgresql
+
     # create socket directory
     [ -d /var/run/postgresql ] || \
        install -d -m 2775 -o postgres -g postgres /var/run/postgresql

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -wT
 
 # Vacuum (and optionally analyze) all databases in all clusters.
 #

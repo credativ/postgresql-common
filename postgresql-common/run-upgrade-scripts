@@ -18,6 +18,10 @@ sub dbs_from_scope {
         print ' Error: cluster is not running';
         return ();
     }
+
+    # filter out the postgres database
+    @dbs = grep { $_ ne 'postgres' } @dbs if $v ge '8.1';
+
     return @dbs if $scope eq 't0';
     return grep { $_ ne 'template0' } @dbs if $scope eq 't1';
     return grep { $_ ne 'template0' && $_ ne 'template1' } @dbs if $scope eq 'db';
@@ -30,7 +34,20 @@ sub call_sql {
     $cluster =~ s/'/''/g; # escape ' in cluster name
     my $orig_euid = $>;
     $> = (stat (PgCommon::cluster_data_directory $version, $cluster))[4];
+
+    # temporarily enable connections
+    my $conallow = `/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc "select datallowconn from pg_database where datname='$db'"`;
+    chomp $conallow;
+    if ($conallow eq 'f') {
+        system "/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc \"update pg_database set datallowconn = 't' where datname='$db'\"";
+    }
+
     my $out = `ON_ERROR_STOP=1 /usr/bin/psql --cluster '$version/$cluster' -f '$script' '$db' 2>&1`;
+
+    # reset allowconn
+    if ($conallow eq 'f') {
+        system "/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc \"update pg_database set datallowconn = 'f' where datname='$db'\"";
+    }
     $> = $orig_euid;
     print "[FAIL]\n$out" if $?;
 }
@@ -53,7 +70,7 @@ push @f, 'upgrade-scripts';
 my $scriptpath = join ('/', @f);
 
 opendir S, $scriptpath or error "Could not open script path '$scriptpath'";
-for my $script (readdir S) {
+for my $script (sort readdir S) {
     my ($fname, $ext) = split /\./, $script;
     my ($version, $name, $scope) = split /_/, $fname;
     my $is_sql = (defined $ext && $ext eq 'sql');

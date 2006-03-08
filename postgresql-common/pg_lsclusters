@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -wT
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>

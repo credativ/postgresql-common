@@ -10,6 +10,8 @@ use PgCommon;
 use Getopt::Long;
 use POSIX qw/setlocale LC_ALL/;
 
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
+
 # Determine the encoding from the current locale and translate it into a valid
 # PostgreSQL locale. Return SQL_ASCII as a default fallback. This copies the
 # functionality of 8.0's initdb to make it available for 7.4.
@@ -227,7 +229,10 @@ if ($ownergid) {
 
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 
-($version, $cluster) = @ARGV;
+($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
+error 'invalid cluster name' unless defined $cluster;
+
 $datadir ||= "/var/lib/postgresql/$version/$cluster";
 $confdir = "$PgCommon::confroot/$version/$cluster";
 $pgdata = "$confdir/pgdata";
