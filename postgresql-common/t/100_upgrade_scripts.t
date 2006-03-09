@@ -63,7 +63,11 @@ for my $n (keys %test_sql_scripts) {
     open F, ">$scriptdir/$n" or die "could not create $scriptdir/$n: $!";
     print F $test_sql_scripts{$n};
     close F;
-    chmod 0755, "$scriptdir/$n" if $n =~ /\.sh$/ && $n !~ /noexec/;
+    if ($n =~ /\.sh$/ && $n !~ /noexec/) {
+	chmod 0755, "$scriptdir/$n";
+    } else {
+	chmod 0644, "$scriptdir/$n";
+    }
 }
 
 # call run-upgrade-scripts
