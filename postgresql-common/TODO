@@ -13,6 +13,8 @@ Missing selftest:
 Important features:
 
 Wishlist:
+- split out postgresql-client-common
+- user_clusters should not be a conffile
 - Add pg_conf to change startup and possibly other things
 - add program for web applications, which configure pg_hba.conf:
 
