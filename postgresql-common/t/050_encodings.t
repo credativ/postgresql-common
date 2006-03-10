@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Test locale and encoding settings in pg_createcluster.
 
 use strict; 

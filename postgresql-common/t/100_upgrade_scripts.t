@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check upgrade scripts
 
 use strict; 

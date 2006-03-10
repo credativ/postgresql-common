@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check that no clusters, postmasters, and pg_autovacuum daemons are present
 # for this test.
 

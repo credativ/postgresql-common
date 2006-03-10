@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Test upgrading from the oldest version to all majors with all possible
 # configuration parameters set. This checks that they are correctly
 # transitioned.

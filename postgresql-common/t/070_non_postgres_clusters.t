@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Test successful operation of clusters which are not owned by
 # postgres. Only check the oldest and newest version.
 

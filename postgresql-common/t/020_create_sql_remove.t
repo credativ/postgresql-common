@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # We create a cluster, execute some basic SQL commands, drop it again, and
 # check that we did not leave anything behind.
 

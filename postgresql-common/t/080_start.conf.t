@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check start.conf handling.
 
 use strict; 

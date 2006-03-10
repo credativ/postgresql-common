@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check that the necessary packages are installed; we want all major servers,
 # no contrib for 7.4, and contrib for 8.0
 

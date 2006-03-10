@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check all kinds of error conditions.
 
 use strict; 

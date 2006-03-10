@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check operation with multiple clusters
 
 use strict; 
