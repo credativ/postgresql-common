@@ -8,6 +8,8 @@ use lib '/usr/share/postgresql-common';
 use Getopt::Long;
 use PgCommon;
 
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
+
 $full = 0;
 $analyze = 0;
 $verbose = 0;
