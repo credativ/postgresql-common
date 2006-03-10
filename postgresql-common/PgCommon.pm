@@ -725,6 +725,8 @@ sub get_cluster_databases {
 # Returns:  device name, or '' if it cannot be determined.
 sub get_file_device {
     my $dev = '';
+    my $orig_path = $ENV{'PATH'};
+    $ENV{'PATH'} = ''; # untaint
     if (open DF, '-|', '/bin/df', $_[0]) {
         while (<DF>) {
             if (/^\/dev/) {
@@ -732,6 +734,7 @@ sub get_file_device {
             }
         }
     }
+    $ENV{'PATH'} = $orig_path;
     close DF;
     return $dev;
 }

@@ -23,7 +23,7 @@ postgresql-common (44) unstable; urgency=low
     owned by postgres:postgres. (https://launchpad.net/bugs/32696)
   * t/*.t: Remove hashbang lines to avoid lintian warnings.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 10 Mar 2006 17:27:28 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 10 Mar 2006 17:31:29 +0100
 
 postgresql-common (43) unstable; urgency=low
 
