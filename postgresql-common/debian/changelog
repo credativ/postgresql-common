@@ -22,8 +22,11 @@ postgresql-common (44) unstable; urgency=low
   * debian/postgresql-common.postinst: Ensure that /var/lib/postgresql is
     owned by postgres:postgres. (https://launchpad.net/bugs/32696)
   * t/*.t: Remove hashbang lines to avoid lintian warnings.
+  * debian/postgresql-common.postinst: Only restart servers if upgrading from
+    a version with important pg_ctlcluster changes in between (currently,
+    prior than 40).
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 10 Mar 2006 17:31:29 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 10 Mar 2006 17:37:45 +0100
 
 postgresql-common (43) unstable; urgency=low
 

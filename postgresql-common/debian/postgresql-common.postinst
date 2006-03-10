@@ -78,16 +78,18 @@ EOF
     fi
 
     # restart all servers
-    if [ -d /usr/lib/postgresql/ ]; then
-	for v in $(ls /usr/lib/postgresql/); do
-	    if [ -x "/etc/init.d/postgresql-$v" ]; then
-		    if [ -x /usr/sbin/invoke-rc.d ]; then
-			    invoke-rc.d postgresql-$v restart || exit 0
-		    else
-			    /etc/init.d/postgresql-$v restart || exit 0
-		    fi
-	    fi
-	done
+    if dpkg --compare-versions "$2" lt-nl 40; then
+	if [ -d /usr/lib/postgresql/ ]; then
+	    for v in $(ls /usr/lib/postgresql/); do
+		if [ -x "/etc/init.d/postgresql-$v" ]; then
+			if [ -x /usr/sbin/invoke-rc.d ]; then
+				invoke-rc.d postgresql-$v restart || exit 0
+			else
+				/etc/init.d/postgresql-$v restart || exit 0
+			fi
+		fi
+	    done
+	fi
     fi
 
     if [ "$2" ]; then
