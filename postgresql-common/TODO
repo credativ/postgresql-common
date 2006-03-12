@@ -4,9 +4,6 @@ postgresql TODO
 Bugs:
 - small typo in pg_hba.conf: "# CIDR-MASK is an integer between 0 and 32 (IPv6)
   or 128(IPv6) -> should be IPv4 the first time
-- user_clusters with '* * 8.0 * *' breaks pg_wrapper:
-  $ psql -l
-  Error: Invalid symbolic link /etc/postgresql/8.0/*/pgdata
 
 Transition bugs:
 

@@ -26,8 +26,11 @@ postgresql-common (44) unstable; urgency=low
     a version with important pg_ctlcluster changes in between (currently,
     prior than 40).
   * t/090_multicluster.t: Add test for user_clusters behaviour.
+  * PgCommon.pm, user_cluster_map(): Print a meaningful error message instead
+    of 'invalid symbolic link' gibberish if a cluster in user_clusters or
+    .postgresqlrc does not exist.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 10 Mar 2006 18:58:54 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 12 Mar 2006 09:06:16 +0100
 
 postgresql-common (43) unstable; urgency=low
 

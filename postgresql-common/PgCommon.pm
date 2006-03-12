@@ -522,6 +522,9 @@ sub user_cluster_map {
 	    s/(.*?)#.*/$1/;
 	    next if /^\s*$/;
 	    my ($v,$c,$db) = split;
+	    if (!cluster_exists $v, $c) {
+		error "$homemapfile line $.: cluster $v/$c does not exist";
+	    }
 	    if ($db) {
 		close MAP;
 		return ($v, $c, ($db eq "*") ? undef : $db);
@@ -543,6 +546,9 @@ sub user_cluster_map {
                 print  "Warning: ignoring invalid line $. in $mapfile\n";
                 next;
             }
+	    if (!cluster_exists $v, $c) {
+		error "$mapfile line $.: cluster $v/$c does not exist";
+	    }
             if (($u eq "*" || $u eq $user) && ($g eq "*" || $g eq $group)) {
                 close MAP;
                 return ($v,$c, ($db eq "*") ? undef : $db);
