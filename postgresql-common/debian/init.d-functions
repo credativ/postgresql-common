@@ -13,7 +13,7 @@ do_ctl_all() {
     [ "$(ls /etc/postgresql/$2)" ] || return
     [ -x "/usr/lib/postgresql/$2/bin/postmaster" ] || return
 
-    status=0    
+    status=0
     log_daemon_msg "$3"
     for c in /etc/postgresql/"$2"/*; do
 	[ -e "$c/pgdata" ] || continue
@@ -28,12 +28,14 @@ do_ctl_all() {
 	[ "$start" = "auto" ] || continue
 
         log_progress_msg "$name"
-        pg_ctlcluster "$2" "$name" $1 >/dev/null
-        status=$(($status || $?))
+        ERRMSG=$(pg_ctlcluster "$2" "$name" $1 2>&1)
+	res=$?
+	# Do not fail on success or if cluster is already/not running
+	[ $res -eq 0 ] || [ $res -eq 2 ] || status=$(($status || $res))
     done
     log_end_msg $status
-    if [ "$fail" ]; then
-	[ -z "$ERRMSG" ] || echo -e "\n$ERRMSG" >&2
+    if [ $status -ne 0 ]; then
+	[ -z "$ERRMSG" ] || echo "$ERRMSG" >&2
 	exit 1
     fi
 }
