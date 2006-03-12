@@ -29,6 +29,10 @@ postgresql-common (44) unstable; urgency=low
   * PgCommon.pm, user_cluster_map(): Print a meaningful error message instead
     of 'invalid symbolic link' gibberish if a cluster in user_clusters or
     .postgresqlrc does not exist.
+  * pg_ctlcluster:
+    - Exit with code 2 if the cluster is already (start)/not (stop) running
+      and fix error messages to be consistent. (See bug #355004)
+    - Document the exit codes in the POD.
   * debian/init.d-functions:
     - Use log_daemon_msg/log_progress_msg to show all clusters of a particular
       version on the same line, to better conform to standards.
@@ -36,7 +40,7 @@ postgresql-common (44) unstable; urgency=low
     - Thanks to Peter Eisentraut for the patch.
     - Closes: #355004
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 12 Mar 2006 09:38:21 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 12 Mar 2006 09:46:13 +0100
 
 postgresql-common (43) unstable; urgency=low
 
