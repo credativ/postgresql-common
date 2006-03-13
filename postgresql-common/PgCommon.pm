@@ -56,10 +56,10 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-            } elsif (/^\s*([a-zA-Z0-9_-]+)\s*=\s*'([^']*)'\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'([^']*)'\s*(?:#.*)?$/) {
                 # string value
                 $conf{$1} = $2 
-            } elsif (/^\s*([a-zA-Z0-9_-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
                 # simple value
                 $conf{$1} = $2;
             } else {
