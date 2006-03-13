@@ -40,6 +40,7 @@ postgresql-common (44) unstable; urgency=low
     - Call restart instead of stop/start.
     - Do not fail if cluster is already (start)/not (stop) running to conform
       to LSB.
+    - t/080_start.conf.t: Adapt test suite.
     - Thanks to Peter Eisentraut for the original patch.
     - Closes: #355004
 
