@@ -83,8 +83,8 @@ is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0,
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # stop stopped server
-is_program_out 'postgres', "pg_ctlcluster $version main stop", 1,
-    "Error: cluster is not running\n", 'pg_ctlcluster stop fails on stopped cluster';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 2,
+    "Cluster is not running.\n", 'pg_ctlcluster stop fails on stopped cluster';
 
 # simulate crashed server
 rename "/var/lib/postgresql/$version/main/postmaster.pid.orig",
@@ -102,7 +102,7 @@ is_program_out 'postgres', "pg_ctlcluster $version main start", 0,
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
 
 # start running server
-is_program_out 'postgres', "pg_ctlcluster $version main start", 1,
+is_program_out 'postgres', "pg_ctlcluster $version main start", 2,
     "Cluster is already running.\n", 'pg_ctlcluster start fails on running cluster';
 
 # stop server, test invalid configuration

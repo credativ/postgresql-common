@@ -33,6 +33,7 @@ postgresql-common (44) unstable; urgency=low
     - Exit with code 2 if the cluster is already (start)/not (stop) running
       and fix error messages to be consistent. (See bug #355004)
     - Document the exit codes in the POD.
+    - t/030_errors.t: Adapt test suite.
   * debian/init.d-functions:
     - Use log_daemon_msg/log_progress_msg to show all clusters of a particular
       version on the same line, to better conform to standards.
