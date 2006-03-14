@@ -1,3 +1,9 @@
+postgresql-common (46) experimental; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:59:03 +0100
+
 postgresql-common (45) experimental; urgency=low
 
   * PgCommon.pm, read_conf_file(): Allow '.' characters in configuration keys.
