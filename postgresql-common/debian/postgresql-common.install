@@ -1,5 +1,4 @@
 debian/init.d-functions usr/share/postgresql-common
-debian/maintscripts-functions usr/share/postgresql-common
 debian/autovacuum.conf etc/postgresql-common
 pg_lsclusters usr/bin
 pg_createcluster usr/bin
