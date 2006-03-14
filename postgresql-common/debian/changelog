@@ -2,8 +2,14 @@ postgresql-common (45) unstable; urgency=low
 
   * PgCommon.pm, read_conf_file(): Allow '.' characters in configuration keys.
     Closes: #352524
+  * debian/rules: Move pg_ctlcluster, pg_createcluster, pg_dropcluster, and
+    pg_upgradecluster man pages from section 1 to 8, since they are only for
+    administrators.
+  * Split off a new package postgresql-client-common. This is to avoid having
+    cron jobs, logrotate scripts, etc. if only the client apps are installed
+    on a box. (https://launchpad.net/bugs/34167)
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 13 Mar 2006 19:44:39 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:10:00 +0100
 
 postgresql-common (44) unstable; urgency=low
 
