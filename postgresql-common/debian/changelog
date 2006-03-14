@@ -1,4 +1,4 @@
-postgresql-common (45) unstable; urgency=low
+postgresql-common (45) experimental; urgency=low
 
   * PgCommon.pm, read_conf_file(): Allow '.' characters in configuration keys.
     Closes: #352524
@@ -11,7 +11,7 @@ postgresql-common (45) unstable; urgency=low
   * debian/postgresql-client-common.{pre,post}inst: Migrate user_clusters
     conffile from postgresql-common to avoid dpkg questions.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:32:28 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:43:04 +0100
 
 postgresql-common (44) unstable; urgency=low
 
