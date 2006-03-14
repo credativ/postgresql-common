@@ -8,8 +8,10 @@ postgresql-common (45) unstable; urgency=low
   * Split off a new package postgresql-client-common. This is to avoid having
     cron jobs, logrotate scripts, etc. if only the client apps are installed
     on a box. (https://launchpad.net/bugs/34167)
+  * debian/postgresql-client-common.{pre,post}inst: Migrate user_clusters
+    conffile from postgresql-common to avoid dpkg questions.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:10:00 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:32:28 +0100
 
 postgresql-common (44) unstable; urgency=low
 
