@@ -2,8 +2,10 @@ postgresql-common (45) unstable; urgency=low
 
   * PgCommon.pm, read_conf_file(): Allow '.' characters in configuration keys.
     Closes: #352524
+  * t/020_create_sql_remove.t: Make check of pg_maintenance output stricter to
+    catch things like taint errors.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 13 Mar 2006 19:44:39 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 15 Mar 2006 17:04:19 +0100
 
 postgresql-common (44) unstable; urgency=low
 
