@@ -1,3 +1,59 @@
+postgresql-common (44ubuntu1) dapper; urgency=low
+
+  * Merge bug fixes from Debian (the upper half of the changes in 44 were
+    already present in Ubuntu):
+    - Fixes taint error in pg_maintenance and PgCommon.pm. (Malone #34369)
+    - postinst only restarts clusters if it is really necessary. 
+      (Malone #34270)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 13 Mar 2006 17:50:17 +0100
+
+postgresql-common (44) unstable; urgency=low
+
+  * PgCommon.pm, change_ugid(): Fix the order of $< and $> assignment so that
+    we don't trash the saved uid and can switch back later. This allows us to
+    make use of this function in the test suite, too.
+  * t/TestLib.pm: Use change_ugid() in exec_as() get auxiliary groups. This
+    makes the test suite work with SSL keys which are only readable by
+    ssl-cert group members.
+  * pg_ctlcluster: Untaint PID value read from autovacuum.pid.
+  * t/020_create_sql_remove.t: Add check that SSL is automatically enabled on
+    >= 8.0 clusters.
+  * pg_createcluster: Improve SSL key access check to be more robust.
+  * Enable taint checking in all programs and fix the resulting breakage.
+  * PgCommon.pm: Replace backticks program calling with proper |- pipe
+    opening to avoid intermediate shell and argument quoting problems.
+  * testsuite: Only execute tests ending with .t.
+  * Add t/100_upgrade_scripts.t: Test upgrade scripts.
+  * run-upgrade-scripts:
+    - Filter out the 'postgres' database on 8.1+ clusters.
+    - Temporarily enable connections to databases which disable them.
+    - Execute scripts in asciibetical order.
+  * debian/postgresql-common.postinst: Ensure that /var/lib/postgresql is
+    owned by postgres:postgres. (https://launchpad.net/bugs/32696)
+  * t/*.t: Remove hashbang lines to avoid lintian warnings.
+  * debian/postgresql-common.postinst: Only restart servers if upgrading from
+    a version with important pg_ctlcluster changes in between (currently,
+    prior than 40).
+  * t/090_multicluster.t: Add test for user_clusters behaviour.
+  * PgCommon.pm, user_cluster_map(): Print a meaningful error message instead
+    of 'invalid symbolic link' gibberish if a cluster in user_clusters or
+    .postgresqlrc does not exist.
+  * pg_ctlcluster:
+    - Exit with code 2 if the cluster is already (start)/not (stop) running
+      and fix error messages to be consistent. (See bug #355004)
+    - Document the exit codes in the POD.
+  * debian/init.d-functions:
+    - Use log_daemon_msg/log_progress_msg to show all clusters of a particular
+      version on the same line, to better conform to standards.
+    - Call restart instead of stop/start.
+    - Do not fail if cluster is already (start)/not (stop) running to conform
+      to LSB.
+    - Thanks to Peter Eisentraut for the original patch.
+    - Closes: #355004
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 12 Mar 2006 09:57:57 +0100
+
 postgresql-common (43.1ubuntu2) dapper; urgency=low
 
   * Merge changes from Debian branch (mainly robustness and test suite fixes).

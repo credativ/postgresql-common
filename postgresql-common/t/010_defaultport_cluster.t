@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # We try to call psql with --version and then on localhost. Since there are no
 # clusters, we expect an error message that the connection to port 5432 is
 # refused. This checks that pg_wrapper correctly picks the default port and

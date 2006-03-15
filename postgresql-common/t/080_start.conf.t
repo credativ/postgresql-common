@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # Check start.conf handling.
 
 use strict; 
@@ -24,11 +23,9 @@ is_program_out 'nobody', "grep '^[^\\s#]' /etc/postgresql/$v/main/start.conf",
     0, "auto\n", 'start.conf contains auto';
 
 # init script should handle auto cluster
-like_program_out 0, "/etc/init.d/postgresql-$v start", 0,
-    qr/Start.*$v.*main/;
+like_program_out 0, "/etc/init.d/postgresql-$v start", 0, qr/Start.*$v/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
-like_program_out 0, "/etc/init.d/postgresql-$v stop", 0,
-    qr/Stop.*$v.*main/;
+like_program_out 0, "/etc/init.d/postgresql-$v stop", 0, qr/Stop.*$v/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # change to manual, verify start.conf contents
@@ -40,7 +37,7 @@ is_program_out 'nobody', "grep '^[^\\s#]' /etc/postgresql/$v/main/start.conf",
     0, "manual\n", 'start.conf contains manual';
 
 # init script should not handle manual cluster ...
-is_program_out 0, "/etc/init.d/postgresql-$v start", 0, '';
+like_program_out 0, "/etc/init.d/postgresql-$v start", 0, qr/Start.*$v/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # pg_ctlcluster should handle manual cluster
@@ -56,7 +53,7 @@ is ((get_cluster_start_conf $v, 'main'), 'disabled',
     'get_cluster_start_conf returns disabled');
 
 # init script should not handle disabled cluster
-is_program_out 0, "/etc/init.d/postgresql-$v start", 0, '';
+like_program_out 0, "/etc/init.d/postgresql-$v start", 0, qr/Start.*$v/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # pg_ctlcluster should not handle disabled cluster

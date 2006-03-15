@@ -70,7 +70,7 @@ sub start_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     if (check_running_postmaster $pidfile) {
         print "Cluster is already running.\n";
-        exit 1;
+        exit 2;
     }
 
     # Remove invalid or stale PID file
@@ -88,7 +88,8 @@ sub stop_check_pid_file {
     if ($info{'running'}) {
 	error 'pid file is invalid, please manually kill the stale server process.';
     }
-    error 'cluster is not running';
+    print "Cluster is not running.\n";
+    exit 2;
 }
 
 # check if a cluster reliably connects or fails
@@ -424,7 +425,8 @@ package B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum>
 process is started as well (unless this gets disabled in
 C</etc/postgresql-common/autovacuum.conf> or a cluster-specific
 C<autovacuum.conf> file). Please note that server version 8.1 and above does
-internal autovacuuming.
+internal autovacuuming. Exits with 0 on success, with 2 if the server is
+already running, and with 1 on other failure conditions.
 
 =item B<stop>
 
@@ -434,6 +436,8 @@ rolls back all active transactions and thus shuts down cleanly. If that does
 not work, shutdown is attempted again in B<immediate> mode, which can leave the
 cluster in an inconsistent state and thus will lead to a recovery run at the
 next start. If this still does not help, the B<postmaster> process is killed.
+Exits with 0 on success, with 2 if the server is not running, and with 1 on
+other failure conditions.
 
 =item B<restart>
 
