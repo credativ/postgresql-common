@@ -433,6 +433,7 @@ sub get_versions {
     if (opendir (D, $binroot)) {
 	my $entry;
         while (defined ($entry = readdir D)) {
+	    ($entry) = $entry =~ /^(\d+\.\d+)$/; # untaint
             push @versions, $entry if get_program_path ('psql', $entry);
         }
         closedir D;
@@ -460,6 +461,7 @@ sub get_version_clusters {
     if (opendir (D, $vdir)) {
 	my $entry;
         while (defined ($entry = readdir D)) {
+	    ($entry) = $entry =~ /^(.*)$/; # untaint
             if (-l $vdir.$entry.'/pgdata' && -r $vdir.$entry.'/postgresql.conf') {
                 push @clusters, $entry;
             }
