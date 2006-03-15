@@ -111,11 +111,11 @@ Bob|1
 
     # Check pg_maintenance
     if ($pg_autovacuum || $v ge '8.1') {
-        like_program_out 0, 'pg_maintenance', 0, qr/^Skipping/, 'pg_maintenance skips autovacuumed cluster';
+        like_program_out 0, 'pg_maintenance', 0, qr/^Skipping.*\n$/, 'pg_maintenance skips autovacuumed cluster';
     } else {
-        like_program_out 0, 'pg_maintenance', 0, qr/^Doing/, 'pg_maintenance handles non-autovacuumed cluster';
+        like_program_out 0, 'pg_maintenance', 0, qr/^Doing.*\n$/, 'pg_maintenance handles non-autovacuumed cluster';
     }
-    like_program_out 0, 'pg_maintenance --force', 0, qr/^Doing/, 
+    like_program_out 0, 'pg_maintenance --force', 0, qr/^Doing.*\n$/, 
         'pg_maintenance --force always handles cluster';
 
     # Drop database and user again.

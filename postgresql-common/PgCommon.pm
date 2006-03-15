@@ -56,10 +56,10 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-            } elsif (/^\s*([a-zA-Z0-9_-]+)\s*=\s*'([^']*)'\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'([^']*)'\s*(?:#.*)?$/) {
                 # string value
                 $conf{$1} = $2 
-            } elsif (/^\s*([a-zA-Z0-9_-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
                 # simple value
                 $conf{$1} = $2;
             } else {
@@ -433,6 +433,7 @@ sub get_versions {
     if (opendir (D, $binroot)) {
 	my $entry;
         while (defined ($entry = readdir D)) {
+	    ($entry) = $entry =~ /^(\d+\.\d+)$/; # untaint
             push @versions, $entry if get_program_path ('psql', $entry);
         }
         closedir D;
@@ -460,6 +461,7 @@ sub get_version_clusters {
     if (opendir (D, $vdir)) {
 	my $entry;
         while (defined ($entry = readdir D)) {
+	    ($entry) = $entry =~ /^(.*)$/; # untaint
             if (-l $vdir.$entry.'/pgdata' && -r $vdir.$entry.'/postgresql.conf') {
                 push @clusters, $entry;
             }

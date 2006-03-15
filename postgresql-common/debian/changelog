@@ -1,6 +1,12 @@
 postgresql-common (44ubuntu2) dapper; urgency=low
 
-  *
+  * PgCommon.pm, read_conf_file(): Allow '.' characters in configuration keys.
+    Closes: #352524
+  * t/020_create_sql_remove.t: Make check of pg_maintenance output stricter to
+    catch things like taint errors.
+  * PgCommon.pm, get_versions() and get_version_clusters(): Check return
+    values to untaint them. Fixes taint error in pg_maintenance (and maybe
+    some more). (https://launchpad.net/bugs/34954)
 
  -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 15 Mar 2006 17:35:47 +0100
 
