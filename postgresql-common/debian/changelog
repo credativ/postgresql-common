@@ -6,7 +6,7 @@ postgresql-common (45) unstable; urgency=low
     catch things like taint errors.
   * PgCommon.pm, get_versions() and get_version_clusters(): Check return
     values to untaint them. Fixes taint error in pg_maintenance (and maybe
-    some more). (https://launchpad.net/bugs/34954)
+    some more). Closes: #357237
   * debian/control: Bump lsb-base dependency to >= 3.0-3 to ensure that
     log_daemon_msg() and friends are available. Closes: #357108
 
