@@ -1,8 +1,10 @@
 postgresql-common (47) unstable; urgency=low
 
-  *
+  * debian/control: Have p-client-common Replace: all versions of
+    postgresql-common; this is a quick workaround for a dpkg bug (orphaned
+    conffiles cause package conflicts). Closes: #357909, #357910
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 20 Mar 2006 07:34:31 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 20 Mar 2006 19:12:29 +0100
 
 postgresql-common (46) unstable; urgency=low
 
