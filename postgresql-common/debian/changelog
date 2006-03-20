@@ -1,3 +1,9 @@
+postgresql-common (47) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 20 Mar 2006 07:34:31 +0100
+
 postgresql-common (46) unstable; urgency=low
 
   * t/020_create_sql_remove.t: Make check of pg_maintenance output stricter to
