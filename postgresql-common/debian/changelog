@@ -1,3 +1,9 @@
+postgresql-common (48) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 20 Mar 2006 19:19:54 +0100
+
 postgresql-common (47) unstable; urgency=low
 
   * debian/control: Have p-client-common Replace: all versions of
