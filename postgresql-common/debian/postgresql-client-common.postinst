@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-if [ "$1" = "configure" -a -z "$2" ]; then
-    # Finish conffile migration
-    if [ -e /etc/postgresql-common/user_clusters.dpkg-tmp ]; then
-	mv /etc/postgresql-common/user_clusters.dpkg-tmp /etc/postgresql-common/user_clusters
-    fi
-fi

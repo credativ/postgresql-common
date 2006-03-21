@@ -31,7 +31,7 @@ Description: manager for PostgreSQL database clusters
 Package: postgresql-client-common
 Architecture: all
 Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-common (<< 45)
-Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-common
+Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-common (<< 45)
 Depends: debconf (>= 0.5.00) | debconf-2.0
 Description: manager for multiple PostgreSQL client versions
  postgresql-client-common provides a structure under which multiple

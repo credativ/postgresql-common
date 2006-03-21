@@ -2,8 +2,10 @@ postgresql-common (48) unstable; urgency=low
 
   * t/001_packages.t: Do not fail if postgresql-8.0 is not installed, so that
     the complete test suite works with just 7.4 and 8.1.
+  * Remove manual conffile transition handling in p-client-common maintainer
+    scripts, since current dpkg now gets it right.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 20 Mar 2006 19:48:28 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Mar 2006 23:08:21 +0100
 
 postgresql-common (47) unstable; urgency=low
 
