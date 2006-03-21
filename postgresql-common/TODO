@@ -2,7 +2,6 @@ postgresql TODO
 ===============
 
 Bugs:
-- Insecure $ENV{CDPATH} while running with -T switch at /usr/bin/pg_ctlcluster line 307
 
 Transition bugs:
 

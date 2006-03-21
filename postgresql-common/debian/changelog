@@ -10,8 +10,11 @@ postgresql-common (48) unstable; urgency=low
     errors (IFS, CDPATH, ENV, BASH_ENV) to catch taint check bugs.
   * PgCommon.pm: Add two functions prepare_exec() and restore_exec() which set
     up a save (untainted) environment for calling external programs.
+  * pg_ctlcluster, pg_maintenance, pg_dropcluster, pg_upgradecluster: Clean
+    environment to not call external programs with potentially tainted
+    variables.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Mar 2006 23:49:46 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Mar 2006 00:03:46 +0100
 
 postgresql-common (47) unstable; urgency=low
 

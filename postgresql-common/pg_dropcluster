@@ -9,7 +9,9 @@ use lib '/usr/share/postgresql-common';
 use Getopt::Long;
 use PgCommon;
 
-$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
+# untaint environment
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 $stopserver = 0;
 exit 1 unless GetOptions ('stop-server' => \$stopserver);
