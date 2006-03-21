@@ -54,7 +54,11 @@ sub error {
     # restore the environment after prepare_exec()
     sub restore_exec {
 	foreach (keys %saved_env) {
-	    $ENV{$_} = $saved_env{$_};
+	    if (defined $saved_env{$_}) {
+		$ENV{$_} = $saved_env{$_};
+	    } else {
+		delete $ENV{$_};
+	    }
 	}
     }
 }
