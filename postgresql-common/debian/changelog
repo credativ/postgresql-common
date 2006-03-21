@@ -8,8 +8,10 @@ postgresql-common (48) unstable; urgency=low
     does not stay around if no user_clusters file existed before.
   * testsuite: Set all variables that potentially cause Perl taint check
     errors (IFS, CDPATH, ENV, BASH_ENV) to catch taint check bugs.
+  * PgCommon.pm: Add two functions prepare_exec() and restore_exec() which set
+    up a save (untainted) environment for calling external programs.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Mar 2006 23:16:19 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Mar 2006 23:49:46 +0100
 
 postgresql-common (47) unstable; urgency=low
 

@@ -33,6 +33,38 @@ sub error {
     exit 1;
 }
 
+{
+    my %saved_env;
+
+    # untaint the environment for executing an external program
+    # Optional arguments: list of additional variables
+    sub prepare_exec {
+	my @cleanvars = qw/PATH IFS ENV BASH_ENV CDPATH/;
+	push @cleanvars, @_;
+	%saved_env = ();
+
+	print "prepare_exec: ";
+	foreach (@cleanvars) {
+	    print "$_ ";
+	    $saved_env{$_} = $ENV{$_};
+	    delete $ENV{$_};
+	}
+	print "\n";
+
+	$ENV{'PATH'} = '';
+    }
+
+    # restore the environment after prepare_exec()
+    sub restore_exec {
+	print "restore_exec: ";
+	foreach (keys %saved_env) {
+	    print $_, '-> "', $saved_env{$_}, '" ';
+	    $ENV{$_} = $saved_env{$_};
+	}
+	print "\n";
+    }
+}
+
 # Returns '1' if the argument is a configuration file value that stands for
 # true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
 # a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
@@ -639,9 +671,7 @@ sub get_db_encoding {
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner
-    my $orig_path = $ENV{'PATH'};
-    my $orig_lc_all = $ENV{'LC_ALL'};
-    $ENV{'PATH'} = ''; # untaint
+    prepare_exec 'LC_ALL';
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
@@ -651,12 +681,7 @@ sub get_db_encoding {
     my $out = <PSQL>;
     close PSQL;
     $> = $orig_euid;
-    $ENV{'PATH'} = $orig_path;
-    if (defined $orig_lc_all) {
-        $ENV{'LC_ALL'} = $orig_lc_all;
-    } else {
-        delete $ENV{'LC_ALL'};
-    }
+    restore_exec;
     chomp $out;
     ($out) = $out =~ /^([\w.-]+)$/; # untaint
     return $out unless $?;
@@ -672,10 +697,9 @@ sub get_cluster_locales {
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
     my $pg_controldata = get_program_path 'pg_controldata', $version;
-    my $orig_path = $ENV{'PATH'};
-    $ENV{'PATH'} = '';  # untaint
+    prepare_exec;
     my $result = open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster));
-    $ENV{'PATH'} = $orig_path;
+    restore_exec;
     return (undef, undef) unless defined $result;
     while (<CTRL>) {
 	if (/^LC_CTYPE.*:\s*(\S+)\s*$/) {
@@ -701,9 +725,7 @@ sub get_cluster_databases {
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner
-    my $orig_path = $ENV{'PATH'};
-    my $orig_lc_all = $ENV{'LC_ALL'};
-    $ENV{'PATH'} = ''; # untaint
+    prepare_exec 'LC_ALL';
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
@@ -718,12 +740,7 @@ sub get_cluster_databases {
     }
 
     $> = $orig_euid;
-    if (defined $orig_lc_all) {
-        $ENV{'LC_ALL'} = $orig_lc_all;
-    } else {
-        delete $ENV{'LC_ALL'};
-    }
-    $ENV{'PATH'} = $orig_path;
+    restore_exec;
 
     return $? ? undef : @dbs;
 }
@@ -733,8 +750,7 @@ sub get_cluster_databases {
 # Returns:  device name, or '' if it cannot be determined.
 sub get_file_device {
     my $dev = '';
-    my $orig_path = $ENV{'PATH'};
-    $ENV{'PATH'} = ''; # untaint
+    prepare_exec;
     if (open DF, '-|', '/bin/df', $_[0]) {
         while (<DF>) {
             if (/^\/dev/) {
@@ -742,7 +758,9 @@ sub get_file_device {
             }
         }
     }
-    $ENV{'PATH'} = $orig_path;
+    restore_exec;
     close DF;
     return $dev;
 }
+
+1;
