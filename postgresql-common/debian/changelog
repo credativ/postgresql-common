@@ -6,8 +6,10 @@ postgresql-common (48) unstable; urgency=low
     scripts, since current dpkg now gets it right.
   * t/090_multicluster.t: Remove test user_clusters so that the broken one
     does not stay around if no user_clusters file existed before.
+  * testsuite: Set all variables that potentially cause Perl taint check
+    errors (IFS, CDPATH, ENV, BASH_ENV) to catch taint check bugs.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 21 Mar 2006 23:09:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 21 Mar 2006 23:16:19 +0100
 
 postgresql-common (47) unstable; urgency=low
 
