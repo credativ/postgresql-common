@@ -43,25 +43,19 @@ sub error {
 	push @cleanvars, @_;
 	%saved_env = ();
 
-	print "prepare_exec: ";
 	foreach (@cleanvars) {
-	    print "$_ ";
 	    $saved_env{$_} = $ENV{$_};
 	    delete $ENV{$_};
 	}
-	print "\n";
 
 	$ENV{'PATH'} = '';
     }
 
     # restore the environment after prepare_exec()
     sub restore_exec {
-	print "restore_exec: ";
 	foreach (keys %saved_env) {
-	    print $_, '-> "', $saved_env{$_}, '" ';
 	    $ENV{$_} = $saved_env{$_};
 	}
-	print "\n";
     }
 }
 
