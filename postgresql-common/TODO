@@ -2,6 +2,9 @@ postgresql TODO
 ===============
 
 Bugs:
+- pg_createcluster with existing cluster: respect symlinks to shared
+  postgresql.conf files, never remove symlinks in already existing
+  cluster dirs
 
 Transition bugs:
 
