@@ -1,3 +1,9 @@
+postgresql-common (48ubuntu3) dapper; urgency=low
+
+  *
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 27 Mar 2006 18:18:11 +0200
+
 postgresql-common (48ubuntu2) dapper; urgency=low
 
   * debian/README.Debian, debian/postgresql-common.postinst,
