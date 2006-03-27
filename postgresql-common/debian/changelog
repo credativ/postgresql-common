@@ -1,3 +1,9 @@
+postgresql-common (48ubuntu2) dapper; urgency=low
+
+  *
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 27 Mar 2006 17:53:22 +0200
+
 postgresql-common (48ubuntu1) dapper; urgency=low
 
   * Synchronize to Debian to get bug fixes.
