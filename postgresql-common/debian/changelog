@@ -1,8 +1,62 @@
-postgresql-common (44ubuntu3) dapper; urgency=low
+postgresql-common (48ubuntu1) dapper; urgency=low
 
-  *
+  * Synchronize to Debian to get bug fixes.
+  * The split off postgresql-client-common fixes Malone #34167.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 15 Mar 2006 17:50:51 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 22 Mar 2006 22:44:56 +0100
+
+postgresql-common (48) unstable; urgency=low
+
+  * t/001_packages.t: Do not fail if postgresql-8.0 is not installed, so that
+    the complete test suite works with just 7.4 and 8.1.
+  * Remove manual conffile transition handling in p-client-common maintainer
+    scripts, since current dpkg now gets it right.
+  * t/090_multicluster.t: Remove test user_clusters so that the broken one
+    does not stay around if no user_clusters file existed before.
+  * testsuite: Set all variables that potentially cause Perl taint check
+    errors (IFS, CDPATH, ENV, BASH_ENV) to catch taint check bugs.
+  * PgCommon.pm: Add two functions prepare_exec() and restore_exec() which set
+    up a save (untainted) environment for calling external programs.
+  * pg_ctlcluster, pg_maintenance, pg_dropcluster, pg_upgradecluster: Clean
+    environment to not call external programs with potentially tainted
+    variables.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Mar 2006 00:03:46 +0100
+
+postgresql-common (47) unstable; urgency=low
+
+  * debian/control: Have p-client-common Replace: all versions of
+    postgresql-common; this is a quick workaround for a dpkg bug (orphaned
+    conffiles cause package conflicts). Closes: #357909, #357910
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 20 Mar 2006 19:12:29 +0100
+
+postgresql-common (46) unstable; urgency=low
+
+  * t/020_create_sql_remove.t: Make check of pg_maintenance output stricter to
+    catch things like taint errors.
+  * PgCommon.pm, get_versions() and get_version_clusters(): Check return
+    values to untaint them. Fixes taint error in pg_maintenance (and maybe
+    some more). (https://launchpad.net/bugs/34954)
+  * debian/control: Bump lsb-base dependency to >= 3.0-3 to ensure that
+    log_daemon_msg() and friends are available. Closes: #357108
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:59:03 +0100
+
+postgresql-common (45) experimental; urgency=low
+
+  * PgCommon.pm, read_conf_file(): Allow '.' characters in configuration keys.
+    Closes: #352524
+  * debian/rules: Move pg_ctlcluster, pg_createcluster, pg_dropcluster, and
+    pg_upgradecluster man pages from section 1 to 8, since they are only for
+    administrators.
+  * Split off a new package postgresql-client-common. This is to avoid having
+    cron jobs, logrotate scripts, etc. if only the client apps are installed
+    on a box. (https://launchpad.net/bugs/34167)
+  * debian/postgresql-client-common.{pre,post}inst: Migrate user_clusters
+    conffile from postgresql-common to avoid dpkg questions.
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Mar 2006 22:43:04 +0100
 
 postgresql-common (44ubuntu2) dapper; urgency=low
 

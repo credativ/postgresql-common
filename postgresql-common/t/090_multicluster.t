@@ -124,6 +124,10 @@ chmod 0644, '/etc/postgresql-common/user_clusters';
 like_program_out 'postgres', 'psql --version', 0, qr/ignoring invalid line 1/, 
     'pg_wrapper ignores invalid lines in user_clusters';
 
+# remove test user_clusters
+unlink '/etc/postgresql-common/user_clusters' or die
+    "unlink user_clusters: $!";
+
 # restore original user_clusters
 if (-f '/etc/postgresql-common/user_clusters.psqltestsuite') {
     ok ((rename '/etc/postgresql-common/user_clusters.psqltestsuite',

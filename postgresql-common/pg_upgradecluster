@@ -11,7 +11,9 @@ use PgCommon;
 use Getopt::Long;
 use POSIX;
 
-$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
+# untaint environment
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 my ($version, $newversion, $cluster);
 my (%info, %newinfo);

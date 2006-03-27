@@ -39,6 +39,12 @@ if [ -d /var/log/postgresql ]; then
     mv /var/log/postgresql /var/log/postgresql.testsuite;
 fi
 
+# set variables which cause taint check errors
+export IFS=' '
+export CDPATH=/usr
+export ENV=/nonexisting
+export BASH_ENV=/nonexisting
+
 echo "====== Running all tests with default umask 022 ======="
 umask 022
 for T in $TESTSDIR/*.t; do

@@ -353,7 +353,9 @@ if ($#ARGV != 2) {
 error 'specified cluster does not exist' unless $info{'pgdata'};
 error 'Cluster is disabled' if $info{'start'} eq 'disabled';
 
-$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
+# untaint environment
+$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 # check that owner uig/gid is valid
 unless (getpwuid $info{'owneruid'}) {
