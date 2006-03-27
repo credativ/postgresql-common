@@ -1,8 +1,11 @@
 postgresql-common (48ubuntu2) dapper; urgency=low
 
-  *
+  * debian/README.Debian, debian/postgresql-common.postinst,
+    debian/postgresql-common.postrm: Remove remaining traces of dedicated
+    PostgreSQL SSL key and update the documentation to point to the snakeoil
+    SSL certificate. Closes: LP#36613
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 27 Mar 2006 17:53:22 +0200
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 27 Mar 2006 18:13:47 +0200
 
 postgresql-common (48ubuntu1) dapper; urgency=low
 
