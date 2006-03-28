@@ -1,8 +1,10 @@
 postgresql-common (49) unstable; urgency=low
 
-  *
+  * debian/supported-versions: Do not fail the package installation if an
+    unknown LSB release is encountered; merely print a warning and assume just
+    the latest PostgreSQL version is supported.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Mar 2006 09:16:30 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 28 Mar 2006 09:09:51 +0200
 
 postgresql-common (48) unstable; urgency=low
 
