@@ -8,13 +8,13 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 49;
+use Test::More tests => 6 * 7 + 7;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it again (unless disabled)
-# Arguments: <version> <locale> [<delete>] [<encoding>] 
+# Arguments: <version> <locale> [<encoding>] 
 sub check_cluster {
-    my ($v, $locale, $del, $enc) = @_;
+    my ($v, $locale, $enc) = @_;
     my $cluster_name = $locale;
     if (defined $enc) {
 	$cluster_name .= "_$enc";
@@ -46,18 +46,16 @@ sub check_cluster {
     }
 
     # drop cluster again if requested
-    if (defined $del) {
-	is ((system "pg_dropcluster $v $cluster_name --stop-server"), 0, 'Dropping cluster');
-    }
+    is ((system "pg_dropcluster $v $cluster_name --stop-server"), 0, 'Dropping cluster');
 }
 
-check_cluster $MAJORS[0], 'en_US', 1;
-check_cluster $MAJORS[0], 'en_US', 1, 'UTF-8';
-check_cluster $MAJORS[0], 'en_US.UTF-8', 1;
+check_cluster $MAJORS[0], 'en_US';
+check_cluster $MAJORS[0], 'en_US', 'UTF-8';
+check_cluster $MAJORS[0], 'en_US.UTF-8';
 
-check_cluster $MAJORS[-1], 'en_US', 1;
-check_cluster $MAJORS[-1], 'en_US', 1, 'UTF-8';
-check_cluster $MAJORS[-1], 'en_US.UTF-8', 1;
+check_cluster $MAJORS[-1], 'en_US';
+check_cluster $MAJORS[-1], 'en_US', 'UTF-8';
+check_cluster $MAJORS[-1], 'en_US.UTF-8';
 
 check_clean;
 
