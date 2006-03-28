@@ -4,7 +4,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 44;
+use Test::More tests => 51;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -27,6 +27,21 @@ sub create_foo_pid {
 # create cluster
 ok ((system "pg_createcluster --socketdir '$socketdir' $version main >/dev/null") == 0,
     "pg_createcluster --socketdir");
+
+is ((get_cluster_port $version, 'main'), 5432, 'Port of created cluster is 5432');
+
+# attempt to create clusters with an invalid port
+like_program_out 0, "pg_createcluster $version test -p foo", 1,
+    qr/invalid.*number expected/,
+    'pg_createcluster -p checks that port option is numeric';
+like_program_out 0, "pg_createcluster $version test -p 42", 1,
+    qr/must be a positive integer between/,
+    'pg_createcluster -p checks valid port range';
+
+# attempt to create a cluster with an already used port
+like_program_out 0, "pg_createcluster $version test -p 5432", 1,
+    qr/port 5432 is already used/,
+    'pg_createcluster -p checks that port is already used';
 
 # chown cluster to an invalid user to test error
 (system "chown -R 99 /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";

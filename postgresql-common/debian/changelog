@@ -1,13 +1,18 @@
 postgresql-common (49) unstable; urgency=low
 
-  * debian/supported-versions: 
+  * debian/supported-versions:
     - Do not fail the package installation if an unknown LSB release is
       encountered; merely print a warning and assume just the latest
       PostgreSQL version is supported.
     - Fix Ubuntu Dapper release version (6.04 -> 6.06).
       (https://launchpad.net/bugs/36921)
+  * pg_createcluster: Add option -p/--port to set the cluster port.
+    Closes: #359249
+  * t/030_errors.t: Check that pg_createcluster's --port option validates the
+    port number (invalid number, already used port).
+  * t/090_multicluster.t: Check that pg_createcluster's --port option works.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 28 Mar 2006 09:11:20 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 28 Mar 2006 20:28:20 +0200
 
 postgresql-common (48) unstable; urgency=low
 
