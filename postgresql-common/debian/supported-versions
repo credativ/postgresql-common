@@ -8,14 +8,14 @@
 lsb_ubuntu() {
     case "$1" in
         5.10)
-            echo -e "7.4\n8.0\n8.1"
+            /bin/echo -e "7.4\n8.0\n8.1"
             ;;
-        6.04)
-            echo -e "8.1"
+        6.06)
+            /bin/echo -e "8.1"
             ;;
         *)
-            echo "Unknown Ubuntu release: $1"
-            exit 1
+            echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
+            /bin/echo -e "8.1"
             ;;
     esac
 } 
@@ -23,11 +23,11 @@ lsb_ubuntu() {
 lsb_debian() {
     case "$1" in
         testing/unstable | testing | unstable | 3.1)
-            echo -e "7.4\n8.1"
+            /bin/echo -e "7.4\n8.1"
             ;;
         *)
-            echo "Unknown Debian release: $1"
-            exit 1
+            echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
+            /bin/echo -e "8.1"
             ;;
     esac
 } 

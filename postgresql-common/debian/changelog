@@ -1,8 +1,12 @@
 postgresql-common (48ubuntu3) dapper; urgency=low
 
-  *
+  * debian/supported-versions:
+    - Do not fail the package installation if an unknown LSB release is
+      encountered; merely print a warning and assume just the latest
+      PostgreSQL version is supported.
+    - Fix Ubuntu Dapper release version (6.04 -> 6.06). Closes: LP#36921
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 27 Mar 2006 18:18:11 +0200
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 28 Mar 2006 09:14:03 +0200
 
 postgresql-common (48ubuntu2) dapper; urgency=low
 
