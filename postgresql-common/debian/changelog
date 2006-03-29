@@ -11,8 +11,10 @@ postgresql-common (49) unstable; urgency=low
   * t/030_errors.t: Check that pg_createcluster's --port option validates the
     port number (invalid number, already used port).
   * t/090_multicluster.t: Check that pg_createcluster's --port option works.
+  * t/050_encodings.t: Check correct input/output with Latin-1 and UTF-8
+    client encodings in all server locale/encoding combinations.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 28 Mar 2006 20:28:20 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 29 Mar 2006 19:22:10 +0200
 
 postgresql-common (48) unstable; urgency=low
 
