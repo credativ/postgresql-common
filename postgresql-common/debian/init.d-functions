@@ -9,9 +9,9 @@
 do_ctl_all() {
     [ "$1" ] || { echo "Error: invalid command '$1'" >&2; exit 1; }
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
-    [ -d "/etc/postgresql/$2" ] || return
-    [ "$(ls /etc/postgresql/$2)" ] || return
-    [ -x "/usr/lib/postgresql/$2/bin/postmaster" ] || return
+    [ -d "/etc/postgresql/$2" ] || return 0
+    [ "$(ls /etc/postgresql/$2)" ] || return 0
+    [ -x "/usr/lib/postgresql/$2/bin/postmaster" ] || return 0
 
     status=0
     log_daemon_msg "$3"
