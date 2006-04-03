@@ -17,8 +17,9 @@ postgresql-common (49) unstable; urgency=low
     postmaster; it handles locales by itself, and explicitly setting them
     breaks sometimes. Thanks to Olleg Samoylov for analyzing this.
     Closes: #343057
+  * t/TestLib.pm: Sort list of major versions, since we rely on a sorted list.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 29 Mar 2006 22:55:53 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon,  3 Apr 2006 08:46:11 +0200
 
 postgresql-common (48) unstable; urgency=low
 
