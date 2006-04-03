@@ -20,8 +20,9 @@ $fmtstring .= "\n";
 
 printf $fmtstring, @columns unless $no_header;
 
-foreach $v (get_versions) {
-    foreach $c (get_version_clusters $v) {
+foreach $v (sort (get_versions())) {
+    my @clusters = get_version_clusters $v;
+    foreach $c (sort @clusters) {
         %info = cluster_info $v, $c;
         printf $fmtstring, ($v, $c, $info{'port'}, 
             $info{'running'} ? "online" : "down", 
