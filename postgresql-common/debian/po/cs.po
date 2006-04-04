@@ -42,13 +42,13 @@ msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
 "upgrade the ${old}/main cluster, you need to remove the already existing "
-"${latest} cluster (pg_dropcluster --stop-server ${latest} main, see manpage "
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage "
 "for details)."
 msgstr ""
 "Vemte prosím na vědomí, že instalací postgresql-${latest} se automaticky "
 "vytvoří výchozí klastr ${latest}/main. Chcete-li aktualizovat klastr "
 "${old}/main, musíte odstranit nově vytvořený klastr ${latest} "
-"(pg_dropcluster --stop-server ${latest} main, viz manuálová stránka)."
+"(pg_dropcluster --stop ${latest} main, viz manuálová stránka)."
 
 #. Type: note
 #. Description

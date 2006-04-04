@@ -14,11 +14,11 @@ $ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 $stopserver = 0;
-exit 1 unless GetOptions ('stop-server' => \$stopserver);
+exit 1 unless GetOptions ('stop-server' => \$stopserver, 'stop' => \$stopserver);
 
 # command line options
 if ($#ARGV != 1) {
-    print "Usage: $0 [--stop-server] <version> <cluster>\n";
+    print "Usage: $0 [--stop] <version> <cluster>\n";
     exit 1;
 }
 
@@ -42,7 +42,7 @@ if ($info{'running'}) {
             print STDERR "warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postmaster process\n";
         }
     } else {
-	error 'This cluster is still running. Stop it or supply the --stop-server option';
+	error 'This cluster is still running. Stop it or supply the --stop option';
     }
 }
 
@@ -72,7 +72,7 @@ pg_dropcluster - completely delete a PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_dropcluster> [B<--stop-server>] I<cluster-version> I<cluster-name>
+B<pg_dropcluster> [B<--stop>] I<cluster-version> I<cluster-name>
 
 =head1 DESCRIPTION
 
@@ -83,7 +83,7 @@ were created by L<pg_createcluster(1)>. If the configuration directory
 removed as well.
 
 Usually a cluster which still has a running server attached will not be
-deleted. To override this, the B<--stop-server> option forces a server shutdown
+deleted. To override this, the B<--stop> option forces a server shutdown
 before the files are removed.
 
 =head1 SEE ALSO

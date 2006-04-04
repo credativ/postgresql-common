@@ -78,7 +78,7 @@ is ((get_cluster_start_conf $MAJORS[-1], 'main'), 'manual',
 # clean up
 is ((system "pg_dropcluster $v main"), 0, 
     'dropping old cluster');
-is ((system "pg_dropcluster $MAJORS[-1] main --stop-server"), 0, 
+is ((system "pg_dropcluster $MAJORS[-1] main --stop"), 0, 
     'dropping upgraded cluster');
 is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'no clusters any more';
 

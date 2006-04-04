@@ -334,7 +334,7 @@ enable_connections $newversion, $cluster;
 wait;
 if ($?) {
     print STDERR "Error during cluster dumping, removing new cluster\n";
-    system 'pg_dropcluster', '--stop-server', $newversion, $cluster;
+    system 'pg_dropcluster', '--stop', $newversion, $cluster;
 
     # Reload old cluster to allow connections again
     if (system 'pg_ctlcluster', $version, $cluster, 'reload') {

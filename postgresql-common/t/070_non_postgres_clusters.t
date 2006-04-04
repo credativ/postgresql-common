@@ -26,7 +26,7 @@ for my $v (@MAJORS[0, -1]) {
     ok_dir '/var/run/postgresql', [], '/var/run/postgresql is empty';
     
     # Check proper cleanup
-    is ((system "pg_dropcluster $v main --stop-server"), 0, 'pg_dropcluster');
+    is ((system "pg_dropcluster $v main --stop"), 0, 'pg_dropcluster');
     is_program_out $owner, 'pg_lsclusters -h', 0, '', 'No clusters left';
     is ((ps 'postmaster'), '', 'No postmaster processes left');
 }

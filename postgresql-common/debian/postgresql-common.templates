@@ -9,7 +9,7 @@ _Description: Obsolete major version ${old}
  Please be aware that the installation of postgresql-${latest} will
  automatically create a default cluster ${latest}/main. If you want to upgrade
  the ${old}/main cluster, you need to remove the already existing ${latest}
- cluster (pg_dropcluster --stop-server ${latest} main, see manpage for
+ cluster (pg_dropcluster --stop ${latest} main, see manpage for
  details).
  .
  The old server and client packages are not supported any more. After

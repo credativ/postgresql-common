@@ -5,8 +5,11 @@ postgresql-common (50) unstable; urgency=low
     nonexisting cluster.
   * pg_ctlcluster, pg_dropcluster: Print meaningful error message on
     nonexisting cluster. Closes: #360701
+  * pg_dropcluster: Rename --stop-server to --stop to be consistent with
+    pg_createcluster's --start, and update documentation. --stop-server still
+    works for backward compatibility, though. Closes: #360697
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  4 Apr 2006 22:38:09 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue,  4 Apr 2006 22:43:05 +0200
 
 postgresql-common (49) unstable; urgency=low
 

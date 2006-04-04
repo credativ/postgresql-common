@@ -65,7 +65,7 @@ sub check_cluster {
 	"\344\326\337\274\n", 'correct string in ISO-8859-1';
 
     # drop cluster
-    is ((system "pg_dropcluster $v $cluster_name --stop-server"), 0, 'Dropping cluster');
+    is ((system "pg_dropcluster $v $cluster_name --stop"), 0, 'Dropping cluster');
 }
 
 check_cluster $MAJORS[0], 'en_US';
