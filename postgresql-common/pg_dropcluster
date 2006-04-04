@@ -28,6 +28,7 @@ error 'This command needs to be executed as root' if $> != 0;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error 'invalid version' unless defined $version;
 error 'invalid cluster name' unless defined $cluster;
+error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 
 %info = cluster_info ($version, $cluster);
 

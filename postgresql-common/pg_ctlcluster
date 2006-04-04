@@ -347,9 +347,9 @@ if ($#ARGV != 2) {
 }
 
 ($version, $cluster, $action) = @ARGV;
+error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 
-error 'specified cluster does not exist' unless $info{'pgdata'};
 error 'Cluster is disabled' if $info{'start'} eq 'disabled';
 
 # untaint environment
