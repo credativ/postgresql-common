@@ -1,8 +1,10 @@
 postgresql-common (50) unstable; urgency=low
 
-  *
+  * t/030_errors.t: Check that pg_wrapper and administration programs give
+    sane error messages instead of 'Invalid symbolic link blabla' for a
+    nonexisting cluster.
 
- -- Martin Pitt <mpitt@debian.org>  Mon,  3 Apr 2006 09:34:31 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue,  4 Apr 2006 22:34:32 +0200
 
 postgresql-common (49) unstable; urgency=low
 

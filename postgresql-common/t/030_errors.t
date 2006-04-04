@@ -4,7 +4,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 51;
+use Test::More tests => 75;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -22,6 +22,14 @@ sub create_foo_pid {
     close F;
     chown $pg_uid, $pg_gid, "/var/lib/postgresql/$version/main/postmaster.pid" or die "chown: $!";
     chmod 0700, "/var/lib/postgresql/$version/main/postmaster.pid" or die "chmod: $!";
+}
+
+sub check_nonexisting_cluster_error {
+    my $outref;
+    my $result = exec_as 0, $_[0], $outref;
+    is $result, 1, "'$_[0]' fails";
+    like $$outref, qr/(invalid version|does not exist)/i, "$_[0] gives error message about nonexisting cluster";
+    unlike $$outref, qr/invalid symbolic link/i, "$_[0] does not print 'invalid symbolic link' gibberish";
 }
 
 # create cluster
@@ -135,6 +143,16 @@ ok ((system "pg_dropcluster $version main") == 0,
     'pg_dropcluster');
 ok_dir $socketdir, [], 'No sockets any more';
 rmdir $socketdir or die "rmdir: $!";
+
+# ensure sane error messages for nonexisting clusters
+check_nonexisting_cluster_error 'psql --cluster 4.5/foo';
+check_nonexisting_cluster_error "psql --cluster $MAJORS[0]/foo";
+check_nonexisting_cluster_error "pg_dropcluster 4.5 foo";
+check_nonexisting_cluster_error "pg_dropcluster $MAJORS[0] foo";
+check_nonexisting_cluster_error "pg_upgradecluster 4.5 foo";
+check_nonexisting_cluster_error "pg_upgradecluster $MAJORS[0] foo";
+check_nonexisting_cluster_error "pg_ctlcluster 4.5 foo stop";
+check_nonexisting_cluster_error "pg_ctlcluster $MAJORS[0] foo stop";
 
 check_clean;
 
