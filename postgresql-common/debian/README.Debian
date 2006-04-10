@@ -42,8 +42,12 @@ a database user and a database for the Unix user 'joe':
 3. In this postgres shell, create a database user with the same name as your
    Unix login:
 
-   $ createuser -A -D joe
+   $ createuser -DA joe   # for PostgreSQL 7.4 and 8.0
 
+   or
+
+   $ createuser -DRS joe   # for PostgreSQL 8.1 and above
+   
    For details about the options, see createuser(1).
 
 4. Create a database "joework" which is owned by "joe":
