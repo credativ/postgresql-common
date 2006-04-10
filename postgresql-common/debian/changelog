@@ -12,7 +12,7 @@ postgresql-common (50) unstable; urgency=low
     - Update createuser invocation description for 8.1+. Closes: #361731
     - Update autovacuum daemon description; explain integrated autovacuuming
       for 8.1+.
-  * pg_ctlcluster: Fail autovac-* commands for 8.1+ clusters.
+  * pg_ctlcluster: Fail autovac-* commands for 8.1+ clusters. Closes: #360888
   * debian/init.d-functions: Fix handling of failing pg_ctlcluster
     invocations.
 
