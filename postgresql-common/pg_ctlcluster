@@ -117,7 +117,11 @@ sub cluster_port_ready {
 }
 
 sub autovacuum_start {
-    return unless $info{'avac_enable'} and $version < 8.1;
+    if ($version ge '8.1') {
+	error 'PostgreSQL 8.1 and above has an integrated autovacuum daemon which cannot be controlled by this program.';
+    }
+
+    return unless $info{'avac_enable'};
 
     error "pg_autovacuum not found. Install postgresql-contrib-$version to get it" 
         unless $pg_autovacuum;
@@ -189,7 +193,11 @@ sub autovacuum_start {
 }
 
 sub autovacuum_stop {
-    return unless $info{'avac_enable'} and $version < 8.1;
+    if ($version ge '8.1') {
+	error 'PostgreSQL 8.1 and above has an integrated autovacuum daemon which cannot be controlled by this program.';
+    }
+
+    return unless $info{'avac_enable'};
 
     error "pg_autovacuum not found. Install postgresql-contrib-$version to get it" 
         unless $pg_autovacuum;
@@ -204,6 +212,10 @@ sub autovacuum_stop {
 }
 
 sub autovacuum_restart {
+    if ($version ge '8.1') {
+	error 'PostgreSQL 8.1 and above has an integrated autovacuum daemon which cannot be controlled by this program.';
+    }
+
     if (-f $info{'pgdata'}.'/autovacuum.pid') {
         autovacuum_stop;
         autovacuum_start;
@@ -453,19 +465,19 @@ server.
 =item B<autovac-start> 
 
 Starts a B<pg_autovacuum> process for an already running cluster. This normally
-happens automatically along with B<start>. This is ignored for PostgreSQL 8.1
+happens automatically along with B<start>. This command fails for PostgreSQL 8.1
 and above since they do autovacuuming internally.
 
 =item B<autovac-stop> 
 
 Stops the B<pg_autovacuum> process for a running cluster. This normally happens
-automatically along with B<stop>. This is ignored for PostgreSQL 8.1 and above
+automatically along with B<stop>. This command fails for PostgreSQL 8.1 and above
 since they do autovacuuming internally.
 
 =item B<autovac-restart> 
 
 Restarts a B<pg_autovacuum> process for an already running cluster. This
-normally happens automatically along with B<restart>. This is ignored for
+normally happens automatically along with B<restart>. This command fails for
 PostgreSQL 8.1 and above since they do autovacuuming internally.
 
 =back
