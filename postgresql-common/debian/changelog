@@ -13,8 +13,10 @@ postgresql-common (50) unstable; urgency=low
     - Update autovacuum daemon description; explain integrated autovacuuming
       for 8.1+.
   * pg_ctlcluster: Fail autovac-* commands for 8.1+ clusters.
+  * debian/init.d-functions: Fix handling of failing pg_ctlcluster
+    invocations.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 10 Apr 2006 23:55:56 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 11 Apr 2006 00:15:28 +0200
 
 postgresql-common (49) unstable; urgency=low
 
