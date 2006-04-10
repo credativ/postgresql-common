@@ -8,10 +8,12 @@ postgresql-common (50) unstable; urgency=low
   * pg_dropcluster: Rename --stop-server to --stop to be consistent with
     pg_createcluster's --start, and update documentation. --stop-server still
     works for backward compatibility, though. Closes: #360697
-  * debian/README.Debian: Update createuser invocation description for 8.1+.
-    Closes: #361731
+  * debian/README.Debian: 
+    - Update createuser invocation description for 8.1+. Closes: #361731
+    - Update autovacuum daemon description; explain integrated autovacuuming
+      for 8.1+.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 10 Apr 2006 22:49:10 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 10 Apr 2006 22:57:14 +0200
 
 postgresql-common (49) unstable; urgency=low
 
