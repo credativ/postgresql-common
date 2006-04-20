@@ -16,10 +16,12 @@ postgresql-common (50) unstable; urgency=low
   * debian/init.d-functions: Fix handling of failing pg_ctlcluster
     invocations. Closes: #362825
   * pg_createcluster: Explain syntax of the environment file in more detail.
+  * Add t/110_integrate_cluster.t: Test various scenarios of integrating 
+    already existing clusters.
   * pg_createcluster: Determine correct owner and group when integrating an
     already existing cluster.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 20 Apr 2006 23:04:16 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 20 Apr 2006 23:09:36 +0200
 
 postgresql-common (49) unstable; urgency=low
 
