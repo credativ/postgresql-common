@@ -13,6 +13,10 @@ use Test::More tests => 31;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
+delete $ENV{'LANG'};
+delete $ENV{'LANGUAGE'};
+$ENV{'LC_ALL'} = 'C';
+
 my $wdir = tempdir (CLEANUP => 1);
 chmod 0755, $wdir or die "Could not chmod $wdir: $!";
 
