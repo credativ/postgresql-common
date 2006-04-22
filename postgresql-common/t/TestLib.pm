@@ -13,7 +13,7 @@ our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
 
 use lib '/usr/share/postgresql-common';
 use PgCommon qw/get_versions change_ugid/;
-our @MAJORS = get_versions;
+our @MAJORS = sort (get_versions());
 
 # Return whether a given deb is installed.
 # Arguments: <deb name>

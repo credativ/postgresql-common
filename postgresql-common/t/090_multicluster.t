@@ -10,14 +10,14 @@ use Test::More tests => 59;
 
 # create fake socket at 5433 to verify that this port is skipped
 socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or die "socket: $!";
-bind (SOCK, sockaddr_in(5434, INADDR_ANY)) || die "bind: $! ";
+bind (SOCK, sockaddr_in(5433, INADDR_ANY)) || die "bind: $! ";
 
 # create clusters
 is ((system "pg_createcluster $MAJORS[0] old --start >/dev/null"), 0, "pg_createcluster $MAJORS[0] old");
 is ((system "pg_createcluster $MAJORS[-1] new1 --start >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new1");
-is ((system "pg_createcluster $MAJORS[-1] new2 --start >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
-like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5432.*5433.*5435.*/s,
-    'clusters have the correct ports, skipping used 5434';
+is ((system "pg_createcluster $MAJORS[-1] new2 --start -p 5440 >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5432.*5434.*5440.*/s,
+    'clusters have the correct ports, skipping used 5433';
 
 my $old = "$MAJORS[0]/old";
 my $new1 = "$MAJORS[-1]/new1";
@@ -69,8 +69,8 @@ like_program_out 'postgres', "psql -l", 1,
 delete $ENV{'PGCLUSTER'};
 
 # check that PGPORT works
-$ENV{'PGPORT'} = '5433';
-is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5433\n", 
+$ENV{'PGPORT'} = '5434';
+is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5434\n", 
     'PGPORT selection (1)';
 $ENV{'PGPORT'} = '5432';
 is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5432\n", 

@@ -182,7 +182,8 @@ my $startconf = 'auto';
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
-    'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf);
+    'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf,
+    'p|port=i' => \$port);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -202,6 +203,7 @@ Options:
   -l <dir>      path to desired log file (default:
                 /var/log/postgresql/postgresql-<version>-<cluster>.log)
   -e <encoding> Default encoding (default: derived from locale)
+  -p <port>     port number (default: next free port starting from 5432)
   --start       start the cluster after creating it
   --start-conf auto|manual|disabled
                 Set automatic startup behaviour in start.conf (default: 'auto')
@@ -245,12 +247,25 @@ error 'cluster configuration already exists'
     if -e "$confdir/postgresql.conf" || -e "$confdir/pg_hba.conf" || 
         -e "$confdir/pgdata";
 
+if (defined $port) {
+    error 'port must be a positive integer between 1024 and 65535' 
+	unless $port =~ /^\d+/ && $port >= 1024 && $port <= 65535;
+
+    foreach $v (get_versions) {
+	foreach $c (get_version_clusters $v) {
+	    error "port $port is already used by cluster $v/$c"
+		if (get_cluster_port $v, $c) == $port;
+	}
+    }
+} else {
+    $port = next_free_port;
+}
+
+
 # create configuration directory
 error 'could not create data directory' if system ('install', '-d', $confdir);
 symlink $datadir, $pgdata;
 chown $owneruid, $ownergid, $pgdata;
-
-$port = next_free_port;
 
 $newcluster = 0;
 
@@ -283,10 +298,6 @@ move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
 # add access for database superuser
 setup_pg_hba if $newcluster;
 
-# configure port
-print "Configuring postgresql.conf to use port $port...\n";
-set_cluster_port $version, $cluster, $port;
-
 # configure socket directory
 $orig_euid = $>;
 $> = $owneruid;
@@ -303,6 +314,9 @@ in postgresql.conf to a more secure directory.
 }
 set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
 $> = $orig_euid;
+
+print "Configuring postgresql.conf to use port $port...\n";
+set_cluster_port $version, $cluster, $port;
 
 # create log file
 system 'mkdir', '-m', '0755', '-p', '/var/log/postgresql' and 
@@ -476,6 +490,13 @@ encoding of any database you create later, unless you override it there. The
 default is derived from the locale, or SQL_ASCII if that does not work.  The
 character sets supported by the PostgreSQL server are described in the
 documentation.
+
+=item B<-p> I<port>, B<--port> I<port>
+
+Select the port the new cluster listens on (for the Unix socket and the TCP
+port); this must be a number between 1024 and 65535, since PostgreSQL does not
+run as root and thus needs an unprivileged port number. By default the next
+free port starting from 5432 is assigned.
 
 =item B<--start>
 

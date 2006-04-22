@@ -1,8 +1,34 @@
-postgresql-common (48ubuntu4) dapper; urgency=low
+postgresql-common (49ubuntu1) dapper; urgency=low
 
-  *
+  * Synchronize to Debian to get bug fixes.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Mon,  3 Apr 2006 09:35:27 +0200
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon,  3 Apr 2006 09:50:25 +0200
+
+postgresql-common (49) unstable; urgency=low
+
+  * debian/supported-versions:
+    - Do not fail the package installation if an unknown LSB release is
+      encountered; merely print a warning and assume just the latest
+      PostgreSQL version is supported.
+    - Fix Ubuntu Dapper release version (6.04 -> 6.06).
+      (https://launchpad.net/bugs/36921)
+  * pg_createcluster: Add option -p/--port to set the cluster port.
+    Closes: #359249
+  * t/030_errors.t: Check that pg_createcluster's --port option validates the
+    port number (invalid number, already used port).
+  * t/090_multicluster.t: Check that pg_createcluster's --port option works.
+  * t/050_encodings.t: Check correct input/output with Latin-1 and UTF-8
+    client encodings in all server locale/encoding combinations.
+  * pg_ctlcluster: Do not set LC_ALL and LANG environment variables for the
+    postmaster; it handles locales by itself, and explicitly setting them
+    breaks sometimes. Thanks to Olleg Samoylov for analyzing this.
+    Closes: #343057
+  * t/TestLib.pm: Sort list of major versions, since we rely on a sorted list.
+  * debian/init.d-functions, do_ctl_all(): Fix 'return' statements to
+    explicitlly return 0 to not break with dash.
+  * pg_lsclusters: Sort output by version, then by cluster name.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon,  3 Apr 2006 09:03:15 +0200
 
 postgresql-common (48ubuntu3) dapper; urgency=low
 
