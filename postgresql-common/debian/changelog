@@ -1,3 +1,9 @@
+postgresql-common (51) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 22 Apr 2006 21:39:41 +0200
+
 postgresql-common (50) unstable; urgency=low
 
   * t/030_errors.t: Check that pg_wrapper and administration programs give
