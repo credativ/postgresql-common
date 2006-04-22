@@ -138,9 +138,9 @@ if (-f '/etc/postgresql-common/user_clusters.psqltestsuite') {
 }
 
 # clean up
-is ((system "pg_dropcluster $MAJORS[-1] new1 --stop-server"), 0, "dropping $new1");
-is ((system "pg_dropcluster $MAJORS[-1] new2 --stop-server"), 0, "dropping $new2");
-is ((system "pg_dropcluster $MAJORS[0] old --stop-server"), 0, "dropping $old");
+is ((system "pg_dropcluster $MAJORS[-1] new1 --stop"), 0, "dropping $new1");
+is ((system "pg_dropcluster $MAJORS[-1] new2 --stop"), 0, "dropping $new2");
+is ((system "pg_dropcluster $MAJORS[0] old --stop"), 0, "dropping $old");
 
 check_clean;
 

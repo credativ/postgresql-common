@@ -28,16 +28,18 @@ do_ctl_all() {
 	[ "$start" = "auto" ] || continue
 
         log_progress_msg "$name"
+	set +e
         ERRMSG=$(pg_ctlcluster "$2" "$name" $1 2>&1)
 	res=$?
+	set -e
 	# Do not fail on success or if cluster is already/not running
 	[ $res -eq 0 ] || [ $res -eq 2 ] || status=$(($status || $res))
     done
-    log_end_msg $status
-    if [ $status -ne 0 ]; then
-	[ -z "$ERRMSG" ] || echo "$ERRMSG" >&2
-	exit 1
+    if [ $status -ne 0 -a -n "$ERRMSG" ]; then
+	log_failure_msg "$ERRMSG"
     fi
+    log_end_msg $status
+    return $status
 }
 
 # start all clusters of version $1

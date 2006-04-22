@@ -5,6 +5,7 @@ Bugs:
 - pg_createcluster with existing cluster: respect symlinks to shared
   postgresql.conf files, never remove symlinks in already existing
   cluster dirs
+- s/cluster/instance/
 
 Transition bugs:
 

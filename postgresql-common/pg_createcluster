@@ -261,12 +261,12 @@ if (defined $port) {
     $port = next_free_port;
 }
 
-
 # create configuration directory
 error 'could not create data directory' if system ('install', '-d', $confdir);
 symlink $datadir, $pgdata;
-chown $owneruid, $ownergid, $pgdata;
 
+# check whether we have an already existing cluster; check version and
+# determine owner in this case
 $newcluster = 0;
 
 if (-f "$pgdata/PG_VERSION") {
@@ -276,8 +276,9 @@ if (-f "$pgdata/PG_VERSION") {
     } else {
         error "could not open $pgdata/PG_VERSION";
     }
+    ($owneruid, $ownergid) = (stat "$pgdata/PG_VERSION")[4,5];
     if ($existingver = $version) {
-        print "Configuring already existing cluster (configuration: $confdir, data: $datadir)\n";
+        print "Configuring already existing cluster (configuration: $confdir, data: $datadir, owner: $owneruid:$ownergid)\n";
     } else {
         error "$datadir already contains a version $existingver cluster";
     }
@@ -286,6 +287,8 @@ if (-f "$pgdata/PG_VERSION") {
     init_db $version, $pgdata, $owneruid, $ownergid;
     $newcluster = 1;
 }
+
+chown $owneruid, $ownergid, $pgdata;
 
 # create default "start" file
 set_cluster_start_conf $version, $cluster, $startconf;
@@ -374,8 +377,12 @@ if ($newcluster && -e '/etc/postgresql-common/root.crt') {
 # create default (empty) environment file
 open ENV, ">$confdir/environment" or error "could not create environment file";
 print ENV "# environment variables for postmaster process
-# This file has the same syntax as postgresql.conf: 'VARIABLE=value',
-# shell commands are not evaluated.
+# This file has the same syntax as postgresql.conf: 
+#  VARIABLE = simple_value
+#  VARIABLE2 = 'any value!'
+# I. e. you need to enclose any value which does not only consist of letters,
+# numbers, and '-', '_', '.' in single quotes. Shell commands are not
+# evaluated.
 ";
 close ENV;
 chmod 0644, "$confdir/environment";

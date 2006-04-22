@@ -112,8 +112,8 @@ testnc|f
 ', 'dataallowconn values';
 
 # stop servers, clean up
-is ((system "pg_dropcluster $MAJORS[0] upgr --stop-server"), 0, 'Dropping original cluster');
-is ((system "pg_dropcluster $MAJORS[-1] upgr --stop-server"), 0, 'Dropping upgraded cluster');
+is ((system "pg_dropcluster $MAJORS[0] upgr --stop"), 0, 'Dropping original cluster');
+is ((system "pg_dropcluster $MAJORS[-1] upgr --stop"), 0, 'Dropping upgraded cluster');
 
 check_clean;
 

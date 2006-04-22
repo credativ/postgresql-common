@@ -22,7 +22,7 @@ foreach (@versions) {
 
 # clean up
 foreach (@versions) {
-    is ((system "pg_dropcluster $_ main --stop-server"), 0, "pg_dropcluster $_ main");
+    is ((system "pg_dropcluster $_ main --stop"), 0, "pg_dropcluster $_ main");
 }
 check_clean;
 

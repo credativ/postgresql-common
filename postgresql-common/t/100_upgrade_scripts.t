@@ -137,7 +137,7 @@ for my $n (keys %test_sql_scripts) {
 ok_dir $scriptdir, ['SPECIFICATION'], "$scriptdir has no test suite scripts any more";
 
 foreach (@versions) {
-    is ((system "pg_dropcluster $_ main --stop-server"), 0, "pg_dropcluster $_ main");
+    is ((system "pg_dropcluster $_ main --stop"), 0, "pg_dropcluster $_ main");
 }
 
 check_clean;

@@ -1,3 +1,34 @@
+postgresql-common (50ubuntu1) dapper; urgency=low
+
+  * Synchronize to Debian to get bug fixes.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Sat, 22 Apr 2006 21:43:27 +0200
+
+postgresql-common (50) unstable; urgency=low
+
+  * t/030_errors.t: Check that pg_wrapper and administration programs give
+    sane error messages instead of 'Invalid symbolic link blabla' for a
+    nonexisting cluster.
+  * pg_ctlcluster, pg_dropcluster: Print meaningful error message on
+    nonexisting cluster. Closes: #360701
+  * pg_dropcluster: Rename --stop-server to --stop to be consistent with
+    pg_createcluster's --start, and update documentation. --stop-server still
+    works for backward compatibility, though. Closes: #360697
+  * debian/README.Debian:
+    - Update createuser invocation description for 8.1+. Closes: #361731
+    - Update autovacuum daemon description; explain integrated autovacuuming
+      for 8.1+.
+  * pg_ctlcluster: Fail autovac-* commands for 8.1+ clusters. Closes: #360888
+  * debian/init.d-functions: Fix handling of failing pg_ctlcluster
+    invocations. Closes: #362825
+  * pg_createcluster: Explain syntax of the environment file in more detail.
+  * Add t/110_integrate_cluster.t: Test various scenarios of integrating 
+    already existing clusters.
+  * pg_createcluster: Determine correct owner and group when integrating an
+    already existing cluster.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 20 Apr 2006 23:09:36 +0200
+
 postgresql-common (49ubuntu1) dapper; urgency=low
 
   * Synchronize to Debian to get bug fixes.

@@ -42,8 +42,12 @@ a database user and a database for the Unix user 'joe':
 3. In this postgres shell, create a database user with the same name as your
    Unix login:
 
-   $ createuser -A -D joe
+   $ createuser -DA joe   # for PostgreSQL 7.4 and 8.0
 
+   or
+
+   $ createuser -DRS joe   # for PostgreSQL 8.1 and above
+   
    For details about the options, see createuser(1).
 
 4. Create a database "joework" which is owned by "joe":
@@ -103,12 +107,19 @@ for details (in package postgresql-doc-8.1).
 
 Autovacuum daemon
 -----------------
+Starting from version 8.1, PostgreSQL has an integrated autovacuum
+daemon which is automatically handled by the postmaster and configured
+in postgresql.conf.
 
-If you install the "postgresql-contrib-<version>" package, a "pg_autovacuum"
-daemon will be automatically started for every cluster. You can configure (or
-even disable) the autovacuum parameters globally in
-/etc/postgresql-common/autovacuum.conf. If you want to configure a cluster
-individually, copy this file into /etc/postgresql/<version>/<cluster>.
+In previous versions, the autovacuum daemon is shipped in the
+'contrib' package. Since this is a commonly used feature, the Debian
+packages provide a fully automatic integration: just by installing the
+"postgresql-contrib-<version>" package, a "pg_autovacuum" daemon will
+be automatically started for every cluster. You can configure (or even
+disable) the autovacuum parameters globally in
+/etc/postgresql-common/autovacuum.conf. If you want to configure a
+cluster individually, copy this file into
+/etc/postgresql/<version>/<cluster>.
 
 Please note that the cron job that vacuums databases every 5 hours (see
 /etc/cron.d/postgresql-common) does not do anything for clusters with a running

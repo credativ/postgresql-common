@@ -124,7 +124,7 @@ Bob|1
     is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
 
     # stop server, clean up, check for leftovers
-    ok ((system "pg_dropcluster $v main --stop-server") == 0, 
+    ok ((system "pg_dropcluster $v main --stop") == 0, 
 	'pg_dropcluster removes cluster');
 
     check_clean;
