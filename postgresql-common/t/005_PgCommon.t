@@ -4,8 +4,7 @@ use strict;
 
 use File::Temp qw/tempdir/;
 
-#use lib '/usr/share/postgresql-common';
-use lib '..';
+use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 use lib 't';
