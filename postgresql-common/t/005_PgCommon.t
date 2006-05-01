@@ -24,11 +24,11 @@ local all postgres ident sameuser
 # TYPE DATABASE USER CIDR-ADDRESS METHOD
 local foo nobody trust
 local foo nobody crypt
-local foo nobody krb5
-local foo nobody ident
-local all all	 password
-host      all all 127.0.0.1/32		  md5
-hostssl   all all 192.168.0.0 255.255.0.0 pam
+local foo nobody,joe krb5
+local foo,bar nobody ident
+local all +foogrp	 password
+host \@inc all 127.0.0.1/32	md5
+hostssl   all \@inc 192.168.0.0 255.255.0.0 pam
 hostnossl all all 192.168.0.0 255.255.0.0 reject
 EOF
 close P;
@@ -37,11 +37,11 @@ my @expected_records = (
   { 'type' => 'local', 'db' => 'all', 'user' => 'postgres', 'method' => 'ident sameuser' },
   { 'type' => 'local', 'db' => 'foo', 'user' => 'nobody', 'method' => 'trust' },
   { 'type' => 'local', 'db' => 'foo', 'user' => 'nobody', 'method' => 'crypt' },
-  { 'type' => 'local', 'db' => 'foo', 'user' => 'nobody', 'method' => 'krb5' },
-  { 'type' => 'local', 'db' => 'foo', 'user' => 'nobody', 'method' => 'ident' },
-  { 'type' => 'local', 'db' => 'all', 'user' => 'all', 'method' => 'password' },
-  { 'type' => 'host', 'db' => 'all', 'user' => 'all', 'method' => 'md5', 'ip' => '127.0.0.1', 'mask' => '32'},
-  { 'type' => 'hostssl', 'db' => 'all', 'user' => 'all', 'method' => 'pam', 'ip' => '192.168.0.0', 'mask' => '255.255.0.0'},
+  { 'type' => 'local', 'db' => 'foo', 'user' => 'nobody,joe', 'method' => 'krb5' },
+  { 'type' => 'local', 'db' => 'foo,bar', 'user' => 'nobody', 'method' => 'ident' },
+  { 'type' => 'local', 'db' => 'all', 'user' => '+foogrp', 'method' => 'password' },
+  { 'type' => 'host', 'db' => '@inc', 'user' => 'all', 'method' => 'md5', 'ip' => '127.0.0.1', 'mask' => '32'},
+  { 'type' => 'hostssl', 'db' => 'all', 'user' => '@inc', 'method' => 'pam', 'ip' => '192.168.0.0', 'mask' => '255.255.0.0'},
   { 'type' => 'hostnossl', 'db' => 'all', 'user' => 'all', 'method' => 'reject', 'ip' => '192.168.0.0', 'mask' => '255.255.0.0'},
 );
 

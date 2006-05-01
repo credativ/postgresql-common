@@ -780,9 +780,6 @@ sub parse_hba_line {
     # comment line?
     return { 'type' => 'comment', 'line' => $l } if ($l =~ /^\s*($|#)/);
 
-    # not yet supported features
-    return undef if $l =~ /("|\+|@)/;
-
     my $res = { 'line' => $l };
     my @tok = split /\s+/, $l;
     goto error if $#tok < 3;
