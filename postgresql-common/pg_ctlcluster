@@ -291,7 +291,30 @@ sub start {
 
     # OK, the server runs, now wait until it stabilized
     if ($success)  {
-        $success = cluster_port_ready $version, $cluster, $info{'port'}, $info{'socketdir'};
+	# check whether db superuser can connect without password
+	my @hba = read_pg_hba "$cdir/pg_hba.conf";
+	my %firsthba;
+	while ($#hba >= 0) {
+	    %firsthba = %{$hba[0]};
+	    if ($firsthba{'type'} && $firsthba{'type'} eq 'comment') {
+		shift @hba;
+		%firsthba = ();
+	    } else {
+		last;
+	    }
+	}
+	if (!$firsthba{'type'}) {
+	    print STDERR "WARNING: Invalid pg_hba.conf, client connections will fail\n";
+	    $success = cluster_port_running $version, $cluster, $info{'port'};
+	} elsif ($firsthba{'type'} ne 'local' || $firsthba{'db'} ne 'all' || 
+	         ($firsthba{'user'} ne 'all' &&
+	         $firsthba{'user'} ne (getpwuid $info{'owneruid'})) || 
+		 $firsthba{'method'} !~ /^(ident|trust)/) {
+	    print STDERR "WARNING: You removed the first pg_hba.conf entry that granted local passwordless access to the database superuser. Disabling startup checks.\n";
+	    $success = cluster_port_running $version, $cluster, $info{'port'};
+	} else {
+	    $success = cluster_port_ready $version, $cluster, $info{'port'}, $info{'socketdir'};
+	}
     }
 
     if ($success) {
