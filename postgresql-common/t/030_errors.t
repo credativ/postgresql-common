@@ -4,7 +4,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 75;
+use Test::More tests => 87;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -137,6 +137,44 @@ PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
 like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
     qr/Error: invalid postgresql.conf.*log_.*mutually exclusive/,
     'pg_ctlcluster start fails with invalid configuration';
+
+# repair configuration
+PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
+    'log_planner_stats', 'false';
+is_program_out 'postgres', "pg_ctlcluster $version main start", 0, '',
+    'pg_ctlcluster start succeeds again with valid configuration';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
+
+# backup pg_hba.conf
+rename "/etc/postgresql/$version/main/pg_hba.conf",
+    "/etc/postgresql/$version/main/pg_hba.conf.orig" or die "rename: $!";
+
+# test check for invalid pg_hba.conf
+open F, ">/etc/postgresql/$version/main/pg_hba.conf" or die "could not create pg_hba.conf: $!";
+print F "foo\n";
+close F;
+chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
+
+like_program_out 'postgres', "pg_ctlcluster $version main start", 0, 
+    qr/WARNING.*invalid pg_hba.conf/i,
+    'pg_ctlcluster start warns about invalid pg_hba.conf';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
+
+# test check for pg_hba.conf with removed passwordless local superuser access
+open F, ">/etc/postgresql/$version/main/pg_hba.conf" or die "could not create pg_hba.conf: $!";
+print F "local all all md5\n";
+close F;
+chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
+
+like_program_out 'postgres', "pg_ctlcluster $version main start", 0,
+    qr/WARNING.*pg_hba.conf.*passwordless/i,
+    'pg_ctlcluster start warns about invalid pg_hba.conf';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
+
+# restore pg_hba.conf
+unlink "/etc/postgresql/$version/main/pg_hba.conf";
+rename "/etc/postgresql/$version/main/pg_hba.conf.orig",
+    "/etc/postgresql/$version/main/pg_hba.conf" or die "rename: $!";
 
 # remove cluster and directory
 ok ((system "pg_dropcluster $version main") == 0, 

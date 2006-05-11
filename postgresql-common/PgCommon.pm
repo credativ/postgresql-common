@@ -15,7 +15,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_cluster_locales
-    get_cluster_databases read_cluster_conf_file/;
+    get_cluster_databases read_cluster_conf_file read_pg_hba/;
 our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
     disable_conf_value replace_conf_value cluster_data_directory
     get_file_device/;
@@ -759,6 +759,80 @@ sub get_file_device {
     restore_exec;
     close DF;
     return $dev;
+}
+
+
+# Parse a single pg_hba.conf line.
+# Arguments: <line>
+# Returns: Hash reference (only returns line and type==undef for invalid lines)
+# line -> the verbatim pg_hba line
+# type -> comment, local, host, hostssl, hostnossl, undef
+# db -> database name
+# user -> user name
+# method -> trust, reject, md5, crypt, password, krb5, ident, pam
+# ip -> ip address
+# mask -> network mask (either a single number as number of bits, or bit mask)
+my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
+sub parse_hba_line {
+    my $l = $_[0];
+    chomp $l;
+
+    # comment line?
+    return { 'type' => 'comment', 'line' => $l } if ($l =~ /^\s*($|#)/);
+
+    my $res = { 'line' => $l };
+    my @tok = split /\s+/, $l;
+    goto error if $#tok < 3;
+
+    $$res{'type'} = shift @tok;
+    $$res{'db'} = shift @tok;
+    $$res{'user'} = shift @tok;
+
+    # local connection?
+    if ($$res{'type'} eq 'local') {
+	goto error if $#tok > 1;
+	goto error unless $valid_methods{$tok[0]};
+	$$res{'method'} = join (' ', @tok);
+	return $res;
+    } 
+
+    # host connection?
+    if ($$res{'type'} =~ /^host((no)?ssl)?$/) {
+	my ($i, $c) = split '/', (shift @tok);
+	goto error unless $i;
+	$$res{'ip'} = $i;
+
+	# CIDR mask given?
+	if (defined $c) {
+	    goto error if $c !~ /^(\d+)$/;
+	    $$res{'mask'} = $c;
+	} else {
+	    $$res{'mask'} = shift @tok;
+	}
+
+	goto error if $#tok > 1;
+	goto error unless $valid_methods{$tok[0]};
+	$$res{'method'} = join (' ', @tok);
+	return $res;
+    }
+
+error:
+    $$res{'type'} = undef;
+    return $res;
+}
+
+# Parse given pg_hba.conf file.
+# Arguments: <pg_hba.conf path>
+# Returns: Array with hash refs; for hash contents, see parse_hba_line().
+sub read_pg_hba {
+    open HBA, $_[0] or return undef;
+    my @hba;
+    while (<HBA>) {
+	my $r = parse_hba_line $_;
+	push @hba, $r;
+    }
+    close HBA;
+    return @hba;
 }
 
 1;
