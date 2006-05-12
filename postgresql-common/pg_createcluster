@@ -353,17 +353,18 @@ $conf_fn =~tr/./_/;
 # Check whether we can access the SSL private key as the cluster owner
 my $ssl_key_access;
 change_ugid $owneruid, $ownergid;
-$ssl_key_access = -r '/etc/postgresql-common/postgresql.pem';
+$ssl_key_access = -r '/etc/ssl/private/ssl-cert-snakeoil.key';
 $< = $> = 0;
 $( = $) = 0;
 die "changing euid back to root: $!" if $> != 0;
 
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
-if ($newcluster && -e '/etc/postgresql-common/postgresql.crt' && 
+
+if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' && 
     $ssl_key_access && $version ge '8.0') {
-    symlink '/etc/postgresql-common/postgresql.crt', $datadir.'/server.crt';
-    symlink '/etc/postgresql-common/postgresql.pem', $datadir.'/server.key';
+    symlink '/etc/ssl/certs/ssl-cert-snakeoil.pem', $datadir.'/server.crt';
+    symlink '/etc/ssl/private/ssl-cert-snakeoil.key', $datadir.'/server.key';
 
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';
 }
@@ -446,12 +447,13 @@ C<postgresql.conf> can be customized to specify C<log_directory> and/or
 C<log_filename>; if at least one of these options is present, then the symbolic
 link C<log> in the cluster configuration directory is ignored.
 
-If an SSL certificate exists in C</etc/postgresql-common> (C<postgresql.crt>
-and C<postgresql.pem>), this program creates symlinks to these files in the
-data directory (C<server.crt> and C<server.key>) and enables SSL for that
-cluster (option B<ssl> in C<postgresql.conf>). Therefore all clusters will use
-the same SSL certificate by default. Of course you can replace these symlinks
-with a cluster specific certificate.
+If the default snakeoil SSL certificate exists
+(C</etc/ssl/certs/ssl-cert-snakeoil.pem> and
+C</etc/ssl/private/ssl-cert-snakeoil.key>), this program creates symlinks to
+these files in the data directory (C<server.crt> and C<server.key>) and enables
+SSL for that cluster (option B<ssl> in C<postgresql.conf>). Therefore all
+clusters will use the same SSL certificate by default. Of course you can
+replace these symlinks with a cluster specific certificate.
 
 =head1 OPTIONS
 

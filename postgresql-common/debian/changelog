@@ -1,8 +1,24 @@
 postgresql-common (52) unstable; urgency=low
 
   * Bump Standards-Version to 3.7.2.
+  * Merge support for system wide snakeoil SSL certificate from Ubuntu branch
+    and eliminate our custom SSL certificate juggling:
+    - debian/control:
+      + Depend on ssl-cert which provides snakeoil cert and the ssl-cert
+        group.
+      + Remove Recommends: openssl.
+    - debian/postgresql-common.postinst:
+      + Remove generation of PostgreSQL specific SSL certificate.
+      + Add postgres user to the ssl-cert group on upgrades to this version or
+        on fresh installs.
+    - pg_createcluster:
+      + Adapt cert/key paths to snakeoil.
+      + Update manpage documentation POD.
+      + Enable SSL only if SSL key can be accessed with the cluster owner's
+        privileges.
+    - debian/README.Debian: Update documentation of SSL certificate handling.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 12 May 2006 21:35:30 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 12 May 2006 22:25:49 +0200
 
 postgresql-common (51) unstable; urgency=low
 
