@@ -1,3 +1,9 @@
+postgresql-common (52) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 12 May 2006 21:35:09 +0200
+
 postgresql-common (51) unstable; urgency=low
 
   * PgCommon.pm: Add function read_pg_hba() to parse pg_hba.conf.
