@@ -1,8 +1,9 @@
 postgresql-common (53) unstable; urgency=low
 
-  *
+  * Add Russian debconf translation, thanks to Yuriy Talakan'
+    <yt@amur.elektra.ru>! Closes: #367152
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 12 May 2006 22:52:17 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 14 May 2006 13:24:34 +0200
 
 postgresql-common (52) unstable; urgency=low
 
