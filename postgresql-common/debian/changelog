@@ -1,5 +1,7 @@
-postgresql-common (53) unstable; urgency=low
+postgresql-common (53) unstable; urgency=medium
 
+  * Urgency medium since this fixes a quite serious bug; no intrusive changes
+    otherwise.
   * Add Russian debconf translation, thanks to Yuriy Talakan'
     <yt@amur.elektra.ru>! Closes: #367152
   * t/001_packages.t: Check that the locales used in the tests are installed
@@ -16,7 +18,7 @@ postgresql-common (53) unstable; urgency=low
     we also avoid reintroducing bug #343057. (Yay for postmaster being so anal
     about its environment)
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 19 May 2006 18:49:16 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 19 May 2006 18:50:08 +0200
 
 postgresql-common (52) unstable; urgency=low
 
