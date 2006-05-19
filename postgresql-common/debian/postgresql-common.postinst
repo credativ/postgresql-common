@@ -56,7 +56,7 @@ EOF
     fi
 
     # restart all servers
-    if dpkg --compare-versions "$2" lt-nl 40; then
+    if dpkg --compare-versions "$2" lt-nl 53; then
 	if [ -d /usr/lib/postgresql/ ]; then
 	    for v in $(ls /usr/lib/postgresql/); do
 		if [ -x "/etc/init.d/postgresql-$v" ]; then
