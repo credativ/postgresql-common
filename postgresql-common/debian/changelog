@@ -1,3 +1,9 @@
+postgresql-common (54) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 19 May 2006 19:12:37 +0200
+
 postgresql-common (53) unstable; urgency=medium
 
   * Urgency medium since this fixes a quite serious bug; no intrusive changes
