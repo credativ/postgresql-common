@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 6 * 20 + 7;
+use Test::More tests => 6 * 23 + 9;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it
@@ -45,36 +45,51 @@ sub check_cluster {
 	unlike $$outref, qr/template1.*(UNICODE|UTF8)/, 'template1 is not UTF-8 encoded';
     }
 
-    # create a table and stuff some ISO-8859-1 characters into it (äÖß¼)
+    # create a table and stuff some ISO-8859-5 characters into it (для)
     is ((exec_as 'postgres', "createdb test", $outref), 0, 'creating test database');
-    is_program_out 'postgres', "/bin/echo -e '\344\326\337\274' | psql -c \"set client_encoding='latin1'; 
+    is_program_out 'postgres', "printf '\324\333\357' | psql -c \"set client_encoding='iso-8859-5'; 
 	create table t (x varchar); copy t from stdin\" test", 0, '',
-	'creating table with ISO-8859-1 characters';
+	'creating table with ISO-8859-5 characters';
     is_program_out 'postgres', "echo \"set client_encoding='utf8'; select * from t\" | psql -Atq test", 0,
-	"\303\244\303\226\303\237\302\274\n", 'correct string in UTF-8';
-    is_program_out 'postgres', "echo \"set client_encoding='latin1'; select * from t\" | psql -Atq test", 0,
-	"\344\326\337\274\n", 'correct string in ISO-8859-1';
+	"\320\264\320\273\321\217\n", 'correct string in UTF-8';
+    is_program_out 'postgres', "echo \"set client_encoding='iso-8859-5'; select * from t\" | psql -Atq test", 0,
+	"\324\333\357\n", 'correct string in ISO-8859-5';
 
     # do the same test with using UTF-8 as input
-    is_program_out 'postgres', "echo 'äÖß¼' | psql -qc \"set client_encoding='utf8'; 
+    is_program_out 'postgres', "printf '\320\264\320\273\321\217' | psql -qc \"set client_encoding='utf8'; 
 	delete from t; copy t from stdin\" test", 0, '',
 	'creating table with UTF-8 characters';
     is_program_out 'postgres', "echo \"set client_encoding='utf8'; select * from t\" | psql -Atq test", 0,
-	"\303\244\303\226\303\237\302\274\n", 'correct string in UTF-8';
-    is_program_out 'postgres', "echo \"set client_encoding='latin1'; select * from t\" | psql -Atq test", 0,
-	"\344\326\337\274\n", 'correct string in ISO-8859-1';
+	"\320\264\320\273\321\217\n", 'correct string in UTF-8';
+    is_program_out 'postgres', "echo \"set client_encoding='iso-8859-5'; select * from t\" | psql -Atq test", 0,
+	"\324\333\357\n", 'correct string in ISO-8859-1';
+
+    # check encoding of server error messages (breaks in locale/encoding mismatches, so skip that)
+    if (!defined $enc) {
+	like_program_out 'postgres', 'psql test -c "set client_encoding = \'UTF-8\'; select sqrt(-1)"', 1,
+	    qr/^[^?]*брать[^?]*$/, 'Server error message has correct language and encoding';
+    }
+
+    # check that we do not run into 'ignoring unconvertible UTF-8 character'
+    # breakage on nonmatching lc_messages and client_encoding
+    PgCommon::set_conf_value $v, $cluster_name, 'postgresql.conf',
+	'client_encoding', 'UTF-8';
+    PgCommon::set_conf_value $v, $cluster_name, 'postgresql.conf',
+	'lc_messages', 'POSIX';
+    is_program_out 0, "pg_ctlcluster $v $cluster_name restart", 0, '', 
+	'cluster starts correctly with nonmatching lc_messages and client_encoding';
 
     # drop cluster
     is ((system "pg_dropcluster $v $cluster_name --stop"), 0, 'Dropping cluster');
 }
 
-check_cluster $MAJORS[0], 'en_US';
-check_cluster $MAJORS[0], 'en_US', 'UTF-8';
-check_cluster $MAJORS[0], 'en_US.UTF-8';
+check_cluster $MAJORS[0], 'ru_RU';
+check_cluster $MAJORS[0], 'ru_RU', 'UTF-8';
+check_cluster $MAJORS[0], 'ru_RU.UTF-8';
 
-check_cluster $MAJORS[-1], 'en_US';
-check_cluster $MAJORS[-1], 'en_US', 'UTF-8';
-check_cluster $MAJORS[-1], 'en_US.UTF-8';
+check_cluster $MAJORS[-1], 'ru_RU';
+check_cluster $MAJORS[-1], 'ru_RU', 'UTF-8';
+check_cluster $MAJORS[-1], 'ru_RU.UTF-8';
 
 check_clean;
 

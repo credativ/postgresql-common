@@ -5,8 +5,9 @@ use strict;
 
 use lib 't';
 use TestLib;
+use POSIX qw/setlocale LC_ALL/;
 
-use Test::More tests => 3 + ($#MAJORS+1);
+use Test::More tests => 5 + ($#MAJORS+1);
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
@@ -20,5 +21,9 @@ if (deb_installed 'postgresql-8.0') {
 }
 
 ok ((deb_installed 'procps'), 'procps installed');
+
+# check installed locales to fail tests early if they are missing
+ok (setlocale (LC_ALL, "ru_RU"), 'locale ru_RU exists');
+ok (setlocale (LC_ALL, "ru_RU.UTF-8"), 'locale ru_RU.UTF-8 exists');
 
 # vim: filetype=perl
