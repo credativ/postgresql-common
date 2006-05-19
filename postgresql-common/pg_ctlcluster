@@ -240,6 +240,7 @@ sub start {
 
     # prepare environment
     %ENV = read_cluster_conf_file $version, $cluster, 'environment';
+    $ENV{'LC_CTYPE'} = $lc_ctype;
 
     my $postmaster_opts = '-c unix_socket_directory="' . $info{'socketdir'} . '"';
 
