@@ -17,8 +17,9 @@ postgresql-common (53) unstable; urgency=medium
     messages. (Closes https://launchpad.net/bugs/39177). By only setting CTYPE
     we also avoid reintroducing bug #343057. (Yay for postmaster being so anal
     about its environment)
+  * t/020_create_sql_remove.t: Consider LC_CTYPE a safe environment variable.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 19 May 2006 18:50:08 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 19 May 2006 18:55:36 +0200
 
 postgresql-common (52) unstable; urgency=low
 
