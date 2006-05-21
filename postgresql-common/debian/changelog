@@ -1,8 +1,12 @@
 postgresql-common (54) unstable; urgency=low
 
-  *
+  * pg_wrapper: Support specifying remote clusters with $PGCLUSTER, --cluster,
+    user_clusters, and ~/.postgresqlrc with 'host:[port]' as cluster name.
+    Closes: #340162
+  * t/090_multicluster.t: Add tests for above feature.
+  * user_clusters.5, postgresqlrc.5: Document format for remote clusters.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 19 May 2006 19:12:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 May 2006 17:04:24 +0200
 
 postgresql-common (53) unstable; urgency=medium
 

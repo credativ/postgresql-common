@@ -6,22 +6,56 @@ use lib 't';
 use TestLib;
 use Socket;
 
-use Test::More tests => 59;
+use lib '/usr/share/postgresql-common';
+use PgCommon;
+
+use Test::More tests => 92;
+
+# Replace all md5 and password authentication methods with 'trust' in given
+# pg_hba.conf file.
+sub hba_password_to_ident {
+    open F, $_[0] or die "open $_[0]: $!";
+    my $hba;
+    read F, $hba, 10000;
+    $hba =~ s/md5/trust/g;
+    $hba =~ s/password/trust/g;
+    close F;
+    open F, ">$_[0]" or die "open $_[0]: $!";
+    print F $hba;
+    close F;
+    chmod 0644, $_[0] or die "chmod $_[0]: $!";
+}
 
 # create fake socket at 5433 to verify that this port is skipped
 socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or die "socket: $!";
 bind (SOCK, sockaddr_in(5433, INADDR_ANY)) || die "bind: $! ";
 
 # create clusters
-is ((system "pg_createcluster $MAJORS[0] old --start >/dev/null"), 0, "pg_createcluster $MAJORS[0] old");
-is ((system "pg_createcluster $MAJORS[-1] new1 --start >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new1");
-is ((system "pg_createcluster $MAJORS[-1] new2 --start -p 5440 >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
-like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5432.*5434.*5440.*/s,
-    'clusters have the correct ports, skipping used 5433';
+is ((system "pg_createcluster $MAJORS[0] old >/dev/null"), 0, "pg_createcluster $MAJORS[0] old");
+is ((system "pg_createcluster $MAJORS[-1] new1 >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new1");
+is ((system "pg_createcluster $MAJORS[-1] new2 -p 5440 >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
 
 my $old = "$MAJORS[0]/old";
 my $new1 = "$MAJORS[-1]/new1";
 my $new2 = "$MAJORS[-1]/new2";
+
+# enable network socket for pre-8.0 old clusters
+if ($old lt '8.0') {
+    PgCommon::set_conf_value $MAJORS[0], 'old', 'postgresql.conf',
+	'tcpip_socket', 'true';
+}
+
+# disable password auth for network cluster selection tests
+hba_password_to_ident "/etc/postgresql/$old/pg_hba.conf";
+hba_password_to_ident "/etc/postgresql/$new1/pg_hba.conf";
+hba_password_to_ident "/etc/postgresql/$new2/pg_hba.conf";
+
+is ((system "pg_ctlcluster $MAJORS[0] old start >/dev/null"), 0, "starting cluster $old");
+is ((system "pg_ctlcluster $MAJORS[-1] new1 start >/dev/null"), 0, "starting cluster $new1");
+is ((system "pg_ctlcluster $MAJORS[-1] new2 start >/dev/null"), 0, "starting cluster $new2");
+
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5432.*5434.*5440.*/s,
+    'clusters have the correct ports, skipping used 5433';
 
 # move user_clusters aside for the test; this will ensure that client programs
 # work correctly without any file at all
@@ -40,7 +74,7 @@ like_program_out 0, "psql --cluster $new1 --version", 0,
     qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
     'pg_wrapper --cluster works';
 like_program_out 0, "psql --cluster $MAJORS[-1]/foo --version", 1, 
-    qr/Cluster specified with --cluster does not exist/, 
+    qr/Specified cluster does not exist/,
     'pg_wrapper --cluster errors out for invalid cluster';
 
 # create a database in new1 and check that it doesn't appear in new2
@@ -55,6 +89,27 @@ unlike_program_out 'postgres', "psql -Atl --cluster $new2", 0,
 unlike_program_out 'postgres', "psql -Atl", 0, qr/test\|postgres\|/,
     'test db does not appear in default cluster';
 
+# check network cluster selection
+is_program_out 'postgres', "psql --cluster $MAJORS[0]/127.0.0.1: -Atc 'show port' template1", 0, "5432\n", 
+    "psql --cluster $MAJORS[0]/127.0.0.1: defaults to port 5432";
+like_program_out 'postgres', "psql --cluster $MAJORS[-1]/127.0.0.1:5432 --version", 0, 
+    qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
+    "psql --cluster $MAJORS[-1]/127.0.0.1:5432 uses latest client version";
+like_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5434", 0, 
+    qr/test\|postgres\|/, "test db appears in cluster $MAJORS[-1]/localhost:5434";
+unlike_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5440", 0, 
+    qr/test\|postgres\|/, "test db does not appear in cluster $MAJORS[-1]/localhost:5440";
+
+# check some erroneous cluster specifications
+like_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5435", 2, 
+    qr/could not connect/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
+like_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:a", 1, 
+    qr/Specified cluster does not exist/, "psql --cluster $MAJORS[-1]/localhost:a fails due to invalid syntax";
+like_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/doesnotexi.st", 1, 
+    qr/Specified cluster does not exist/, "psql --cluster $MAJORS[-1]/doesnotexi.st fails due to invalid syntax";
+like_program_out 'postgres', "psql -Atl --cluster 6.4/localhost:", 1, 
+    qr/Invalid version/, "psql --cluster 6.4/localhost: fails due to invalid version";
+
 # check that environment variables work
 $ENV{'PGCLUSTER'} = $new1;
 like_program_out 'postgres', "psql -Atl", 0, qr/test\|postgres\|/, 
@@ -66,6 +121,18 @@ $ENV{'PGCLUSTER'} = 'foo';
 like_program_out 'postgres', "psql -l", 1, 
     qr/Invalid version specified with \$PGCLUSTER/, 
     'invalid PGCLUSTER value';
+$ENV{'PGCLUSTER'} = "$MAJORS[-1]/127.0.0.1:";
+like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
+    'PGCLUSTER network cluster selection (1)';
+$ENV{'PGCLUSTER'} = "$MAJORS[-1]/localhost:5434";
+like_program_out 'postgres', 'psql -Atl', 0, 
+    qr/test\|postgres\|/, 'PGCLUSTER network cluster selection (2)';
+$ENV{'PGCLUSTER'} = "$MAJORS[-1]/localhost:5440";
+unlike_program_out 'postgres', 'psql -Atl', 0, 
+    qr/test\|postgres\|/, 'PGCLUSTER network cluster selection (3)';
+$ENV{'PGCLUSTER'} = "$MAJORS[-1]/localhost:5435";
+like_program_out 'postgres', 'psql -Atl', 2, 
+    qr/could not connect/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
 delete $ENV{'PGCLUSTER'};
 
 # check that PGPORT works
@@ -113,8 +180,21 @@ like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJOR
     'pg_wrapper selects correct cluster with per-user user_clusters';
 like_program_out 'nobody', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[0]\.\d+\b/, 
     'pg_wrapper selects correct cluster with per-user user_clusters';
+like_program_out 0, 'psql --version', 1, qr/user_clusters.*line 3.*version.*not exist/i, 
+    'pg_wrapper error for invalid per-user user_clusters line';
+
+# check by-user network cluster selection with user_clusters
+# (also check invalid cluster reporting)
+open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
+print F "postgres * $MAJORS[0] localhost: *\nnobody * $MAJORS[-1] new1 *\n* * $MAJORS[-1] localhost:a *";
+close F;
+chmod 0644, '/etc/postgresql-common/user_clusters';
+like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[0]\.\d+\b/, 
+    'pg_wrapper selects correct version with per-user user_clusters';
+like_program_out 'nobody', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
+    'pg_wrapper selects correct version with per-user user_clusters';
 like_program_out 0, 'psql --version', 1, qr/user_clusters.*line 3.*cluster.*not exist/i, 
-    'pg_wrapper selects correct cluster with per-user user_clusters';
+    'pg_wrapper error for invalid per-user user_clusters line';
 
 # check invalid user_clusters
 open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";

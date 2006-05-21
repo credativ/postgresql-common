@@ -26,7 +26,8 @@ Fields must be given in the following order, separated by white space:
 The major PostgreSQL version of the cluster to connect to.
 .TP
 .B CLUSTER
-The name of a cluster to connect to.
+The name of a cluster to connect to. A remote cluster is specified
+with \fIhost\fR:\fIport\fR. If port is empty, it defaults to 5432.
 .TP
 .B DATABASE
 Within the cluster, the database to which the user will connect by default

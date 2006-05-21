@@ -10,14 +10,13 @@ use strict;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-my ($version, $cluster, $db, $port);
+my ($version, $cluster, $db, $port, $host);
 
 # Check for PGCLUSTER in %ENV
 if (defined $ENV{PGCLUSTER}) {
     ($version, $cluster) = split ('/', $ENV{PGCLUSTER}, 2);
     error 'Invalid version specified with $PGCLUSTER' unless version_exists $version;
     error 'No cluster specified with $PGCLUSTER' unless $cluster;
-    error 'Cluster specified with $PGCLUSTER does not exist' unless cluster_exists $version, $cluster;
 }
 
 # Check for --cluster argument and filter it out
@@ -28,7 +27,6 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
         ($version, $cluster) = split ('/', $ARGV[$i+1], 2);
         error 'Invalid version specified with --cluster' unless version_exists $version;
         error 'No cluster specified with --cluster' unless $cluster;
-	error 'Cluster specified with --cluster does not exist' unless cluster_exists $version, $cluster;
 
         splice @ARGV, $i, 2;
         last;
@@ -37,7 +35,18 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
 
 # Determine $version, $cluster, $db, $port from map files
 ($version, $cluster, $db) = user_cluster_map() unless $cluster;
-if ($cluster) {
+
+# check if we have a network cluster
+if ($cluster && !cluster_exists $version, $cluster) {
+    if ($cluster =~ /^(\S+):(\d*)$/) {
+	$host = $1;
+	$port = $2 || 5432;
+    } else {
+	error 'Specified cluster does not exist locally and does not specify a remote cluster';
+    }
+}
+
+if (!$host && $cluster) {
     $port = get_cluster_port($version, $cluster);
 
     unless ($ENV{'PGHOST'}) {
@@ -47,8 +56,9 @@ if ($cluster) {
 }
 
 $ENV{'PGSYSCONFDIR'} = '/etc/postgresql-common' if !$ENV{'PGSYSCONFDIR'};
-$ENV{'PGPORT'} = "$port" if $port && !$ENV{'PGPORT'};
+$ENV{'PGPORT'} = $port if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db;
+$ENV{'PGHOST'} = $host if $host;
 
 error 'You must install at least one postgresql-client-<version> package.' unless $version; 
 
@@ -82,7 +92,9 @@ specifed options to that command.
 By default, the cluster is determined from the configuration files
 L<user_clusters(5)> and L<postgresqlrc(5)>. However, this can be overriden by
 specifying the C<$PGCLUSTER> environment variable or the B<--cluster>
-I<version>/I<cluster> option.
+I<version>/I<cluster> option.  I<cluster> is either the name of a local
+cluster, or takes the form I<host>:I<port> for a remote cluster. If I<port> is
+left empty (i. e. you just specify I<host:>), it defaults to 5432.
 
 =head1 ENVIRONMENT
 
