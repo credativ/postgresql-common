@@ -10,7 +10,7 @@ lsb_ubuntu() {
         5.10)
             /bin/echo -e "7.4\n8.0\n8.1"
             ;;
-        6.06)
+        6.06LTS)
             /bin/echo -e "8.1"
             ;;
         *)
@@ -33,7 +33,7 @@ lsb_debian() {
 } 
 
 # If we have lsb_release, use it
-if type -p lsb_release >/dev/null; then
+if type lsb_release >/dev/null 2>/dev/null; then
     DISTRO="`lsb_release -is`"
     RELEASE="`lsb_release -rs`"
     
