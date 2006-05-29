@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS+1) * 70 + 9;
+use Test::More tests => ($#MAJORS+1) * 82 + 9;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it
@@ -78,6 +78,21 @@ sub check_cluster {
 	'lc_messages', 'POSIX';
     is_program_out 0, "pg_ctlcluster $v $cluster_name restart", 0, '', 
 	'cluster starts correctly with nonmatching lc_messages and client_encoding';
+
+    # check interception of invalidly encoded/escaped strings
+    if ($is_unicode) {
+	like_program_out 'postgres', 
+	    'printf "set client_encoding=\'UTF-8\'; select \'\\310\\\\\'a\'" | psql -Atq template1',
+	    0, qr/(UNICODE|UTF8).*0xc85c/,
+	    'Server rejects incorrect encoding (CVE-2006-2313)';
+	like_program_out 'postgres', 
+	    'printf "set client_encoding=\'SJIS\'; select \'\\\\\\\'a\'" | psql -Atq template1',
+	    0, qr/\\' is insecure/,
+	    'Server rejects \\\' escaping in unsafe client encoding (CVE-2006-2314)';
+	is_program_out 'postgres', 
+	    'printf "set client_encoding=\'UTF-8\'; select \'\\\\\\\'a\'" | psql -Atq template1',
+	    0, "'a\n", 'Server accepts \\\' escaping in safe client encoding (CVE-2006-2314)';
+    }
 
     # drop cluster
     is ((system "pg_dropcluster $v $cluster_name --stop"), 0, 'Dropping cluster');

@@ -22,8 +22,10 @@ postgresql-common (54) unstable; urgency=low
     TIME_WAIT sockets on the server ports went away, so that the following
     tests will not stumble over them. This seems to be a 7.4 server bug which
     is fixed in 8.1 at least.
+  * t/050_encodings.t: Add tests for recent SQL injection vulnerabilities
+    through invalidly encoded strings and usage of \' escaping.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 29 May 2006 23:17:27 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 30 May 2006 00:59:57 +0200
 
 postgresql-common (53) unstable; urgency=medium
 
