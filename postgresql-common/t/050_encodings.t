@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 6 * 23 + 11;
+use Test::More tests => ($#MAJORS+1) * 70 + 9;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it
@@ -83,13 +83,11 @@ sub check_cluster {
     is ((system "pg_dropcluster $v $cluster_name --stop"), 0, 'Dropping cluster');
 }
 
-check_cluster $MAJORS[0], 'ru_RU';
-check_cluster $MAJORS[0], 'ru_RU', 'UTF-8';
-check_cluster $MAJORS[0], 'ru_RU.UTF-8';
-
-check_cluster $MAJORS[-1], 'ru_RU';
-check_cluster $MAJORS[-1], 'ru_RU', 'UTF-8';
-check_cluster $MAJORS[-1], 'ru_RU.UTF-8';
+foreach my $v (@MAJORS) {
+    check_cluster $v, 'ru_RU';
+    check_cluster $v, 'ru_RU', 'UTF-8';
+    check_cluster $v, 'ru_RU.UTF-8';
+}
 
 check_clean;
 
