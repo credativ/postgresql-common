@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 25;
+use Test::More tests => 27;
 
 my $owner = 'nobody';
 

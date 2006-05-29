@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 60;
+use Test::More tests => 62;
 
 # Do test with oldest version
 my $v = $MAJORS[0];

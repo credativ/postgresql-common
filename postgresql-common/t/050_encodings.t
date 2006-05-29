@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 6 * 23 + 9;
+use Test::More tests => 6 * 23 + 11;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it

@@ -7,7 +7,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 9 + $#MAJORS * 9;
+use Test::More tests => 11 + $#MAJORS * 9;
 
 # postgresql.conf configuration file with all available options turned on
 my %fullconf;

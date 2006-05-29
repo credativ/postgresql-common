@@ -150,7 +150,7 @@ sub unlike_program_out {
 
 # Check that all PostgreSQL related directories are empty and no
 # postmaster/pg_autovacuum processes are running. Should be called at the end
-# of all tests. Does 7 tests.
+# of all tests. Does 9 tests.
 sub check_clean {
     is (`pg_lsclusters -h`, '', 'No existing clusters');
     is ((ps 'postmaster'), '', 'No postmaster processes left behind');
@@ -165,4 +165,7 @@ sub check_clean {
             pass "Directory $_ does not exist";
         }
     }
+
+    is_program_out 0, 'netstat -avptn | grep ":543[2-9]"', 1, '',
+	'PostgreSQL TCP ports are closed';
 }

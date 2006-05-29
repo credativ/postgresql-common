@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 65;
+use Test::More tests => 67;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
