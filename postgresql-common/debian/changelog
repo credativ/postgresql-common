@@ -1,3 +1,9 @@
+postgresql-common (55) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 30 May 2006 01:23:34 +0200
+
 postgresql-common (54) unstable; urgency=low
 
   * pg_wrapper: Support specifying remote clusters with $PGCLUSTER, --cluster,
