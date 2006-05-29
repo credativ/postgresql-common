@@ -11,8 +11,10 @@ postgresql-common (54) unstable; urgency=low
   * debian/control: Have p-common always depend on the recent p-client-common,
     since the latter ships PgCommon.pm. If the library is out of date, this
     can break operations horribly. Closes: #369289
+  * Add Dutch debconf translation, thanks to Vincent Zweije
+    <zweije@xs4all.nl>! Closes: #369237
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 29 May 2006 08:53:06 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 29 May 2006 10:58:11 +0200
 
 postgresql-common (53) unstable; urgency=medium
 
