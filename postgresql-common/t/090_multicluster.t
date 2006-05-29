@@ -222,6 +222,10 @@ is ((system "pg_dropcluster $MAJORS[-1] new1 --stop"), 0, "dropping $new1");
 is ((system "pg_dropcluster $MAJORS[-1] new2 --stop"), 0, "dropping $new2");
 is ((system "pg_dropcluster $MAJORS[0] old --stop"), 0, "dropping $old");
 
+# 7.4 leaves TIME_WAIT sockets around after TCP connections; wait until they
+# have timed out to not disturb later tests
+sleep 1 while (`netstat -avptn|grep '543[2-9].*TIME_WAIT'`);
+
 check_clean;
 
 # vim: filetype=perl
