@@ -1,3 +1,9 @@
+postgresql-common (56) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Fri,  2 Jun 2006 00:53:01 +0200
+
 postgresql-common (55) unstable; urgency=low
 
   * Add missing procps dependency to p-common. Closes: #369768
