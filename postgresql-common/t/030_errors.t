@@ -2,9 +2,11 @@
 
 use strict; 
 
+require File::Temp;
+
 use lib 't';
 use TestLib;
-use Test::More tests => 111;
+use Test::More tests => 124;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -222,6 +224,27 @@ close F;
 
 unlike_program_out 0, "pg_dropcluster $MAJORS[-1] broken", 0, qr/error/i, 
     'pg_dropcluster cleans up broken cluster configuration (/etc with pgdata and postgresql.conf and partial /var)';
+
+check_clean;
+
+# check that a failed pg_createcluster leaves no cruft behind: create a 10 MB
+# loop partition, temporarily mount it to /var/lib/postgresql
+my $loop = new File::Temp (UNLINK => 1) or die "could not create temporary file: $!";
+truncate $loop, 10000000 or die "truncate: $!";
+close $loop;
+END { system "umount /var/lib/postgresql 2>/dev/null; losetup -d /dev/loop7 2>/dev/null"; }
+(system "losetup /dev/loop7 $loop && mkfs.ext2 /dev/loop7 >/dev/null 2>&1 && mount -t ext2 /dev/loop7 /var/lib/postgresql") == 0 or 
+    die 'Could not create and mount loop partition';
+
+like_program_out 0, "pg_createcluster $MAJORS[-1] test", 1, qr/No space left on device/i,
+    'pg_createcluster fails due to insufficient disk space';
+
+ok_dir '/var/lib/postgresql', ['lost+found'], 
+    'No files in /var/lib/postgresql /left behind after failed pg_createcluster';
+ok_dir '/etc/postgresql', [], 
+    'No files in /etc/postgresql /left behind after failed pg_createcluster';
+
+system "umount /var/lib/postgresql; losetup -d /dev/loop7";
 
 check_clean;
 

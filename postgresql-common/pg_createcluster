@@ -179,6 +179,8 @@ sub setup_pg_hba {
 
 my $startconf = 'auto';
 
+my $createsuccess = 0;
+
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
@@ -387,9 +389,19 @@ print ENV "# environment variables for postmaster process
 close ENV;
 chmod 0644, "$confdir/environment";
 
+$createsuccess = 1;
+
 # start it if requested
 if ($start) {
     system '/usr/bin/pg_ctlcluster', $version, $cluster, 'start';
+}
+
+END {
+    # clean up cruft if something went wrong
+    unless ($createsuccess) {
+	system "pg_dropcluster $version $cluster 2>/dev/null";
+	exit 1;
+    }
 }
 
 __END__

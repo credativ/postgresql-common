@@ -10,8 +10,14 @@ postgresql-common (55) unstable; urgency=low
     pg_createcluster fails (/var might be full and the admin might want to use
     a different directory). Merely print out an error message and point to
     pg_createcluster and its manpage. (part of bug #368335)
+  * t/030_errors.t: Create a temporary 10 MB loop mount on /var/lib/postgresql
+    and check that pg_createcluster fails with an appropriate error and leaves
+    no cruft behind.
+  * pg_createcluster: Call pg_dropcluster to clean up cruft if anything fails
+    in the cluster creation process. This avoids an inconsistent system if e.
+    g. running out of disk space during installation. Closes: #368335
 
- -- Martin Pitt <mpitt@debian.org>  Thu,  1 Jun 2006 23:02:20 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri,  2 Jun 2006 00:17:07 +0200
 
 postgresql-common (54) unstable; urgency=low
 
