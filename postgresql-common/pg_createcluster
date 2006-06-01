@@ -398,7 +398,7 @@ if ($start) {
 
 END {
     # clean up cruft if something went wrong
-    unless ($createsuccess) {
+    if (!$createsuccess && defined $version && defined $cluster) {
 	system "pg_dropcluster $version $cluster 2>/dev/null";
 	exit 1;
     }
