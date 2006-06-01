@@ -1,8 +1,13 @@
 postgresql-common (55) unstable; urgency=low
 
   * Add missing procps dependency to p-common. Closes: #369768
+  * pg_dropcluster: Clean up half-existing broken cluster configurations
+    (which happen when disk becomes full, etc) instead of failing. (part of
+    bug #368335).
+  * t/030_errors.t: Test that pg_dropcluster copes with broken cluster
+    configurations.
 
- -- Martin Pitt <mpitt@debian.org>  Thu,  1 Jun 2006 10:54:27 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu,  1 Jun 2006 22:29:43 +0200
 
 postgresql-common (54) unstable; urgency=low
 

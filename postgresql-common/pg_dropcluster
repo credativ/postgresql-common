@@ -28,25 +28,33 @@ error 'This command needs to be executed as root' if $> != 0;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error 'invalid version' unless defined $version;
 error 'invalid cluster name' unless defined $cluster;
-error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 
-%info = cluster_info ($version, $cluster);
+my %info;
+my $c; # configuration directory
 
-if ($info{'running'}) {
-    if ($stopserver) {
-        if ($info{'pgdata'} && -d $info{'pgdata'}) {
-            if (system ('pg_ctlcluster', $version, $cluster, 'stop')) {
-                error 'could not stop server, aborting';
-            }
-        } else {
-            print STDERR "warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postmaster process\n";
-        }
-    } else {
-	error 'This cluster is still running. Stop it or supply the --stop option';
+if (cluster_exists $version, $cluster) {
+    %info = cluster_info ($version, $cluster);
+    if ($info{'running'}) {
+	if ($stopserver) {
+	    if ($info{'pgdata'} && -d $info{'pgdata'}) {
+		if (system ('pg_ctlcluster', $version, $cluster, 'stop')) {
+		    error 'could not stop server, aborting';
+		}
+	    } else {
+		print STDERR "warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postmaster process\n";
+	    }
+	} else {
+	    error 'This cluster is still running. Stop it or supply the --stop option';
+	}
     }
+    $c = $info{'configdir'};
+} else {
+    $c = "/etc/postgresql/$version/$cluster";
+
+    # check if we have a broken cluster, clean up if necessary
+    -d $c or error 'specified cluster does not exist';
 }
 
-$c = $info{'configdir'};
 if ($info{'pgdata'} && -d $info{'pgdata'}) {
     $result = system '/bin/rm', '-r', $info{'pgdata'}; 
     exit $result if $result;
