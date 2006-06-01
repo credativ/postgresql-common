@@ -23,7 +23,13 @@ configure_version() {
     [ "$VERSION" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
     if [ ! -d "/etc/postgresql/$VERSION" ] || [ -z "$(ls /etc/postgresql/$VERSION)" ] || \
        [ -z "$(ls /etc/postgresql/$VERSION/*/postgresql.conf 2>/dev/null)" ]; then
-        [ "$2" ] || /usr/bin/pg_createcluster -u postgres $VERSION main
+        [ "$2" ] || /usr/bin/pg_createcluster -u postgres $VERSION main || {
+	echo "Error: could not create default cluster. Please create it manually with
+
+  pg_createcluster $VERSION main --start
+
+or a similar command (see 'man pg_createcluster')." >&2
+	}
     fi
 
     _link_manpages "$VERSION" "postgresql-$VERSION" postmaster.1.gz

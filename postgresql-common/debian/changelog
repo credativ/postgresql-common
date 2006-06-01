@@ -6,8 +6,12 @@ postgresql-common (55) unstable; urgency=low
     bug #368335).
   * t/030_errors.t: Test that pg_dropcluster copes with broken cluster
     configurations.
+  * debian/maintscripts-functions: Do not fail package installation if
+    pg_createcluster fails (/var might be full and the admin might want to use
+    a different directory). Merely print out an error message and point to
+    pg_createcluster and its manpage. (part of bug #368335)
 
- -- Martin Pitt <mpitt@debian.org>  Thu,  1 Jun 2006 22:29:43 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu,  1 Jun 2006 23:02:20 +0200
 
 postgresql-common (54) unstable; urgency=low
 
