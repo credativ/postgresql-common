@@ -67,7 +67,7 @@ is ((system "pg_ctlcluster $version main start"), 0,
     'pg_ctlcluster succeeds on valid cluster owner uid/gid');
 
 # check socket
-ok_dir '/var/run/postgresql', [], 'No sockets in /var/run/postgresql';
+ok_dir '/var/run/postgresql', ["$version-main.pid"], 'No sockets in /var/run/postgresql';
 ok_dir $socketdir, ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], "Socket is in $socketdir";
 
 # stop cluster, check sockets
@@ -88,7 +88,7 @@ close F;
 
 ok ((system "pg_ctlcluster $version main start") == 0,
     'cluster starts after removing unix_socket_dir');
-ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
+ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid"], 
     'Socket is in default dir /var/run/postgresql';
 ok_dir $socketdir, [], "No sockets in $socketdir";
 

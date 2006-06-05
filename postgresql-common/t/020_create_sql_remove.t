@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 42 * ($#MAJORS+1);
+use Test::More tests => 43 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -17,6 +17,15 @@ sub check_major {
     # create cluster
     ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
 	"pg_createcluster $v main");
+
+    # check that a /var/run/postgresql/ pid file is created for 8.0+
+    if ($v ge '8.0') {
+	ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid"], 
+	    'Socket and pid file are in /var/run/postgresql/';
+    } else {
+	ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
+	    'Socket is in /var/run/postgresql/';
+    }
 
     # verify that pg_autovacuum is running if it is available
     my $pg_autovacuum = get_program_path 'pg_autovacuum', $v;
@@ -38,6 +47,11 @@ sub check_major {
         fail "postmaster has unsafe environment variable $_" unless exists $safe_env{$_};
     }
 
+    # activate external_pid_file for 8.0+
+    if ($v ge '8.0') {
+	PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'external_pid_file', '';
+    }
+
     # add variable to environment file, restart, check if it's there
     open E, ">>/etc/postgresql/$v/main/environment" or 
         die 'could not open environment file for appending';
@@ -52,6 +66,11 @@ sub check_major {
     is $env{'PGEXTRAVAR1'}, '1', 'correct value of PGEXTRAVAR1 in environment';
     is $env{'PGEXTRAVAR2'}, 'foo bar ', 'correct value of PGEXTRAVAR2 in environment';
 
+    # Now there should not be an external PID file any more, since we set it
+    # explicitly
+    ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
+	'Socket, but not PID file in /var/run/postgresql/';
+
     # verify that the correct client version is selected
     like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $v\.\d/,
         'pg_wrapper selects version number of cluster';
@@ -61,8 +80,6 @@ sub check_major {
     $ls =~ s/\s*$//;
     is $ls, "$v     main      5432 online postgres /var/lib/postgresql/$v/main       /var/log/postgresql/postgresql-$v-main.log",
 	'pg_lscluster reports online cluster on port 5432';
-
-    ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 'Socket is in /var/run/postgresql';
 
     # verify that the postmaster does not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,

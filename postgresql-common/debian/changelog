@@ -5,8 +5,19 @@ postgresql-common (56) unstable; urgency=low
     sufficiently specify the case of controlling multiple processes in one
     init script). Thanks to Ross Boylan <RossBoylan@stanfordalumni.org>!
     Closes: #358152
+  * pg_ctlcluster:
+    - start: Create an external PID file /var/run/postgresql/
+      <version>-<cluster>.pid for 8.0+ versions (7.4 doesn't support this yet)
+      unless 'external_pid_file' is already set in postgresql.conf.
+      Closes: #180849, #184782
+    - stop: Remove this external pid file (this should be done by the
+      postmaster itself, but 8.1.4 does not).
+  * t/020_create_sql_remove.t: Check that starting a cluster creates a PID
+    file in /var/run/postgresql/, but doesn't if external_pid_file was set
+    explicitly.
+  * t/030_errors.t: Adapt to new PID file creation behaviour.
 
- -- Martin Pitt <mpitt@debian.org>  Mon,  5 Jun 2006 18:41:54 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon,  5 Jun 2006 20:44:35 +0200
 
 postgresql-common (55) unstable; urgency=low
 

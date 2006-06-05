@@ -244,9 +244,25 @@ sub start {
 
     my $postmaster_opts = '-c unix_socket_directory="' . $info{'socketdir'} . '"';
 
-    # versions 8.0+ support configurable conffile locations
+    # versions 8.0+ support configurable conffile locations and external PID files
     if ($version ge '8.0') {
         $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
+
+	if ((-d '/var/run/postgresql') && !defined (PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file')) {
+	    # check whether /var/run/postgresql/ is writeable as the cluster owner
+	    my $vrp_writable;
+	    if ($> == 0) {
+		change_ugid $info{'owneruid'}, $info{'ownergid'};
+		$vrp_writable = -w '/var/run/postgresql';
+		$< = $> = 0;
+		$( = $) = 0;
+	    } else {
+		$vrp_writable = -w '/var/run/postgresql';
+	    }
+	    if ($vrp_writable) {
+		$postmaster_opts .= " -c external_pid_file=\"/var/run/postgresql/$version-$cluster.pid\"";
+	    }
+	}
     }
 
     $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
@@ -360,6 +376,9 @@ sub stop {
         kill (9, $pid) if $pid;
         unlink $info{'pgdata'}.'/postmaster.pid';
     }
+
+    # external_pid_file files are currently not removed by postmaster itself
+    unlink "/var/run/postgresql/$version-$cluster.pid";
 }
 
 sub restart {
@@ -383,6 +402,8 @@ if ($#ARGV != 2) {
 }
 
 ($version, $cluster, $action) = @ARGV;
+($version) = $version =~ /^(\d+\.\d+)$/; # untaint
+($cluster) = $cluster =~ /^([^'"\s]+)$/; # untaint
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 
