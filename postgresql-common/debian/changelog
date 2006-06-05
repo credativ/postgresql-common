@@ -1,8 +1,12 @@
 postgresql-common (56) unstable; urgency=low
 
-  *
+  * debian/init.d-functions, status(): Exit with code 3 if any cluster is
+    down, to get a bit closer to LSB specification (which does not
+    sufficiently specify the case of controlling multiple processes in one
+    init script). Thanks to Ross Boylan <RossBoylan@stanfordalumni.org>!
+    Closes: #358152
 
- -- Martin Pitt <mpitt@debian.org>  Fri,  2 Jun 2006 00:53:01 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon,  5 Jun 2006 18:41:54 +0200
 
 postgresql-common (55) unstable; urgency=low
 
