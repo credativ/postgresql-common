@@ -16,8 +16,9 @@ postgresql-common (56) unstable; urgency=low
     file in /var/run/postgresql/, but doesn't if external_pid_file was set
     explicitly.
   * t/030_errors.t: Adapt to new PID file creation behaviour.
+  * t/030_errors.t: modprobe loop before setting up the test loopback device.
 
- -- Martin Pitt <mpitt@debian.org>  Mon,  5 Jun 2006 20:44:35 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon,  5 Jun 2006 20:57:03 +0200
 
 postgresql-common (55) unstable; urgency=low
 

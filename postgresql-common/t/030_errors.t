@@ -233,7 +233,7 @@ my $loop = new File::Temp (UNLINK => 1) or die "could not create temporary file:
 truncate $loop, 10000000 or die "truncate: $!";
 close $loop;
 END { system "umount /var/lib/postgresql 2>/dev/null; losetup -d /dev/loop7 2>/dev/null"; }
-(system "losetup /dev/loop7 $loop && mkfs.ext2 /dev/loop7 >/dev/null 2>&1 && mount -t ext2 /dev/loop7 /var/lib/postgresql") == 0 or 
+(system "modprobe loop; losetup /dev/loop7 $loop && mkfs.ext2 /dev/loop7 >/dev/null 2>&1 && mount -t ext2 /dev/loop7 /var/lib/postgresql") == 0 or 
     die 'Could not create and mount loop partition';
 
 like_program_out 0, "pg_createcluster $MAJORS[-1] test", 1, qr/No space left on device/i,
