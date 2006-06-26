@@ -17,8 +17,9 @@ postgresql-common (56) unstable; urgency=low
     explicitly.
   * t/030_errors.t: Adapt to new PID file creation behaviour.
   * t/030_errors.t: modprobe loop before setting up the test loopback device.
+  * debian/supported-versions: Add Ubuntu 6.10.
 
- -- Martin Pitt <mpitt@debian.org>  Mon,  5 Jun 2006 20:57:03 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 26 Jun 2006 19:02:41 +0200
 
 postgresql-common (55) unstable; urgency=low
 
