@@ -1,8 +1,12 @@
 postgresql-common (57) unstable; urgency=low
 
-  *
+  * debian/postgresql-common.{preinst,config}: Check if there is a removed,
+    but not purged pre-transition postgresql-client or postgresql package.
+    Packages in this state subtly break operation, but are not caught by the
+    Conflicts: statements. Display a critical note in that case and abort
+    installation. Closes: #368827
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 27 Jun 2006 15:54:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Thu, 29 Jun 2006 23:07:30 +0200
 
 postgresql-common (56) unstable; urgency=low
 

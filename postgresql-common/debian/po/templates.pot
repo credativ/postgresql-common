@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2005-11-16 19:09+0100\n"
+"POT-Creation-Date: 2006-06-29 23:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,8 +39,8 @@ msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
 "upgrade the ${old}/main cluster, you need to remove the already existing "
-"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage "
-"for details)."
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
 msgstr ""
 
 #. Type: note
@@ -50,4 +50,48 @@ msgid ""
 "The old server and client packages are not supported any more. After having "
 "upgraded the existing clusters, you should remove the postgresql-${old} and "
 "postgresql-client-${old} packages."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "Untransitioned postgresql package"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"The current postgresql package is in state 'removed', but its data and "
+"configuration files are still present in the system. This is  incompatible "
+"with the new multiversion/multicluster structure."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "You need to do one of the following:"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(1) If you do not need the databases and configuration files any more, purge "
+"the old packages (dpkg -P postgresql postgresql-client)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(2) If you want to retain the current databases and configuration files, "
+"upgrade to the transitional packages by installing the latest version of "
+"'postgresql' (apt-get install postgresql)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "After that you can reattempt this installation."
 msgstr ""

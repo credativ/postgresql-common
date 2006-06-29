@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2005-11-16 19:09+0100\n"
+"POT-Creation-Date: 2006-06-29 23:20+0200\n"
 "PO-Revision-Date: 2005-12-04 13:14+0100\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -42,13 +42,13 @@ msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
 "upgrade the ${old}/main cluster, you need to remove the already existing "
-"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage "
-"for details)."
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
 msgstr ""
 "Vemte prosím na vědomí, že instalací postgresql-${latest} se automaticky "
-"vytvoří výchozí klastr ${latest}/main. Chcete-li aktualizovat klastr "
-"${old}/main, musíte odstranit nově vytvořený klastr ${latest} "
-"(pg_dropcluster --stop ${latest} main, viz manuálová stránka)."
+"vytvoří výchozí klastr ${latest}/main. Chcete-li aktualizovat klastr ${old}/"
+"main, musíte odstranit nově vytvořený klastr ${latest} (pg_dropcluster --"
+"stop ${latest} main, viz manuálová stránka)."
 
 #. Type: note
 #. Description
@@ -59,5 +59,49 @@ msgid ""
 "postgresql-client-${old} packages."
 msgstr ""
 "Staré balíčky serveru a klienta již nejsou podporovány, Po převodu "
-"stávajících klastrů byste měli balíčky postgresql-${old} a "
-"postgresql-client-${old} odstranit."
+"stávajících klastrů byste měli balíčky postgresql-${old} a postgresql-client-"
+"${old} odstranit."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "Untransitioned postgresql package"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"The current postgresql package is in state 'removed', but its data and "
+"configuration files are still present in the system. This is  incompatible "
+"with the new multiversion/multicluster structure."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "You need to do one of the following:"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(1) If you do not need the databases and configuration files any more, purge "
+"the old packages (dpkg -P postgresql postgresql-client)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(2) If you want to retain the current databases and configuration files, "
+"upgrade to the transitional packages by installing the latest version of "
+"'postgresql' (apt-get install postgresql)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "After that you can reattempt this installation."
+msgstr ""

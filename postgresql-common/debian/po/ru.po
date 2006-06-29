@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common_51_ru\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-12 05:03-0600\n"
+"Report-Msgid-Bugs-To: mpitt@debian.org\n"
+"POT-Creation-Date: 2006-06-29 23:20+0200\n"
 "PO-Revision-Date: 2006-05-14 15:44+1000\n"
 "Last-Translator: Yuriy Talakan' <yt@amur.elektra.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -31,9 +31,9 @@ msgid ""
 "${latest} and postgresql-client-${latest}) and upgrade your existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"PostgreSQL версии ${old} устарел, но у вас все еще установлен пакет сервера и/"
-"или клиента. Пожалуйста, установите последние пакеты (postgresql-"
-"${latest} и postgresql-client-${latest}), и обновите ваши существующие кластеры "
+"PostgreSQL версии ${old} устарел, но у вас все еще установлен пакет сервера "
+"и/или клиента. Пожалуйста, установите последние пакеты (postgresql-${latest} "
+"и postgresql-client-${latest}), и обновите ваши существующие кластеры "
 "${oldversion} с помощью pg_upgradecluster (смотрите man-страницу)."
 
 #. Type: note
@@ -45,7 +45,11 @@ msgid ""
 "upgrade the ${old}/main cluster, you need to remove the already existing "
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
-msgstr "Предупреждаю вас, что установка postgresql-${latest} автоматически создаст кластер по умолчанию ${latest}/main. Если вы желаете обновить  кластер ${old}/main, вы должны удалить существующий кластер ${latest} (pg_dropcluster --stop ${latest} main, для деталей смотрите man-страницу)."
+msgstr ""
+"Предупреждаю вас, что установка postgresql-${latest} автоматически создаст "
+"кластер по умолчанию ${latest}/main. Если вы желаете обновить  кластер "
+"${old}/main, вы должны удалить существующий кластер ${latest} "
+"(pg_dropcluster --stop ${latest} main, для деталей смотрите man-страницу)."
 
 #. Type: note
 #. Description
@@ -54,5 +58,51 @@ msgid ""
 "The old server and client packages are not supported any more. After having "
 "upgraded the existing clusters, you should remove the postgresql-${old} and "
 "postgresql-client-${old} packages."
-msgstr "Старые пакеты сервера и клиента более не поддерживаются.После обновления существующих кластеров, вы должны удалить пакеты postgresql-${old} и postgresql-client-${old}."
+msgstr ""
+"Старые пакеты сервера и клиента более не поддерживаются.После обновления "
+"существующих кластеров, вы должны удалить пакеты postgresql-${old} и "
+"postgresql-client-${old}."
 
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "Untransitioned postgresql package"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"The current postgresql package is in state 'removed', but its data and "
+"configuration files are still present in the system. This is  incompatible "
+"with the new multiversion/multicluster structure."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "You need to do one of the following:"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(1) If you do not need the databases and configuration files any more, purge "
+"the old packages (dpkg -P postgresql postgresql-client)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(2) If you want to retain the current databases and configuration files, "
+"upgrade to the transitional packages by installing the latest version of "
+"'postgresql' (apt-get install postgresql)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "After that you can reattempt this installation."
+msgstr ""

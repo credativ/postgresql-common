@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 50\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-24 05:03-0600\n"
+"Report-Msgid-Bugs-To: mpitt@debian.org\n"
+"POT-Creation-Date: 2006-06-29 23:20+0200\n"
 "PO-Revision-Date: 2006-04-29 16:34+0100\n"
 "Last-Translator: Vincent Zweije <zweije@xs4all.nl>\n"
 "Language-Team: Debian-Dutch <debian-l10n-dutch@lists.debian.org>\n"
@@ -31,10 +31,10 @@ msgid ""
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
 "De PostgreSQL versie ${old} is verouderd, maar u hebt het server- en/of "
-"clientpakket nog geïnstalleerd. U dient de laatste pakketten "
-"(postgresql-${latest} en postgresql-client-${latest}) te installeren en uw "
-"bestaande ${oldversion} groepen (clusters) op te waarderen met "
-"pg_upgradecluster (zie de handleiding)."
+"clientpakket nog geïnstalleerd. U dient de laatste pakketten (postgresql-"
+"${latest} en postgresql-client-${latest}) te installeren en uw bestaande "
+"${oldversion} groepen (clusters) op te waarderen met pg_upgradecluster (zie "
+"de handleiding)."
 
 #. Type: note
 #. Description
@@ -47,10 +47,9 @@ msgid ""
 "details)."
 msgstr ""
 "Let op: de installatie van postgresql-${latest} zal automatisch een "
-"standaard groep ${latest}/main aanmaken. Indien u de ${old}/main "
-"groep wilt opwaarderen dient u de reeds bestaande ${latest} groep te "
-"verwijderen met \"pg_dropcluster --stop ${latest} main\". Zie de "
-"handleiding voor details."
+"standaard groep ${latest}/main aanmaken. Indien u de ${old}/main groep wilt "
+"opwaarderen dient u de reeds bestaande ${latest} groep te verwijderen met "
+"\"pg_dropcluster --stop ${latest} main\". Zie de handleiding voor details."
 
 #. Type: note
 #. Description
@@ -60,6 +59,50 @@ msgid ""
 "upgraded the existing clusters, you should remove the postgresql-${old} and "
 "postgresql-client-${old} packages."
 msgstr ""
-"De oude server- en clientpakketten worden niet langer ondersteund. Nadat "
-"u de bestaande groepen hebt opgewaardeerd, kunt u het beste de "
-"postgresql-${old} en postgresql-client-${old} pakketten verwijderen."
+"De oude server- en clientpakketten worden niet langer ondersteund. Nadat u "
+"de bestaande groepen hebt opgewaardeerd, kunt u het beste de postgresql-"
+"${old} en postgresql-client-${old} pakketten verwijderen."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "Untransitioned postgresql package"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"The current postgresql package is in state 'removed', but its data and "
+"configuration files are still present in the system. This is  incompatible "
+"with the new multiversion/multicluster structure."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "You need to do one of the following:"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(1) If you do not need the databases and configuration files any more, purge "
+"the old packages (dpkg -P postgresql postgresql-client)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid ""
+"(2) If you want to retain the current databases and configuration files, "
+"upgrade to the transitional packages by installing the latest version of "
+"'postgresql' (apt-get install postgresql)."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:21
+msgid "After that you can reattempt this installation."
+msgstr ""
