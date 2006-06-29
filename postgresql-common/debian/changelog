@@ -1,3 +1,9 @@
+postgresql-common (58) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 30 Jun 2006 00:22:34 +0200
+
 postgresql-common (57) unstable; urgency=low
 
   * debian/postgresql-common.{preinst,config}: Check if there is a removed,
