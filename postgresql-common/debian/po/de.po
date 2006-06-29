@@ -67,7 +67,7 @@ msgstr ""
 #. Description
 #: ../postgresql-common.templates:21
 msgid "Untransitioned postgresql package"
-msgstr ""
+msgstr "Veraltetes postgresql-Paket"
 
 #. Type: note
 #. Description
@@ -77,12 +77,16 @@ msgid ""
 "configuration files are still present in the system. This is  incompatible "
 "with the new multiversion/multicluster structure."
 msgstr ""
+"Das aktuell installierte postgresql-Paket ist im Zustand 'entfernt',"
+" aber dessen Daten- und Konfigurationsdateien sind noch im System "
+"vorhanden. Dies ist inkompatibel mit der neuen "
+"Multiversion/Multicluster-Struktur."
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:21
 msgid "You need to do one of the following:"
-msgstr ""
+msgstr "Sie müssen eine der folgenden Aktionen durchführen:"
 
 #. Type: note
 #. Description
@@ -91,6 +95,9 @@ msgid ""
 "(1) If you do not need the databases and configuration files any more, purge "
 "the old packages (dpkg -P postgresql postgresql-client)."
 msgstr ""
+"(1) Wenn Sie die aktuellen Datenbanken und Konfigurationsdateien "
+"nicht mehr benötigen, entfernen ('purge') sie alle restlichen Dateien"
+" (dpkg -P postgresql postgresql-client)."
 
 #. Type: note
 #. Description
@@ -100,9 +107,13 @@ msgid ""
 "upgrade to the transitional packages by installing the latest version of "
 "'postgresql' (apt-get install postgresql)."
 msgstr ""
+"(2) Wenn Sie die aktuellen Datenbanken und Konfigurationsdateien "
+"erhalten möchten, aktualisieren sie zu den Transitions-Paketen, in "
+"dem Sie die neuste Version von 'postgresql' installieren (apt-get "
+"install postgresql)."
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:21
 msgid "After that you can reattempt this installation."
-msgstr ""
+msgstr "Danach kann die Installation erneut durchgeführt werden."
