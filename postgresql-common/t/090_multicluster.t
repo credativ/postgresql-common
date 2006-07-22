@@ -9,7 +9,7 @@ use Socket;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 94;
+use Test::More tests => 99;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.
@@ -207,6 +207,17 @@ like_program_out 'postgres', 'psql --version', 0, qr/ignoring invalid line 1/,
 # remove test user_clusters
 unlink '/etc/postgresql-common/user_clusters' or die
     "unlink user_clusters: $!";
+
+# check proper error message if no cluster could be determined as default for
+# pg_wrapper
+PgCommon::set_conf_value $MAJORS[0], 'old', 'postgresql.conf',
+    'port', '5440';
+is ((system "pg_ctlcluster $MAJORS[0] old restart >/dev/null"), 0, "restarting cluster $old");
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5440.*5434.*5440.*/s,
+    'port of first cluster was successfully changed';
+like_program_out 'postgres', "psql -l", 1, 
+    qr/no.*default.*man pg_wrapper/,
+    'proper pg_wrapper error message if no cluster is suitable as target';
 
 # restore original user_clusters
 if (-f '/etc/postgresql-common/user_clusters.psqltestsuite') {
