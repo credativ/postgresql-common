@@ -216,7 +216,7 @@ is ((system "pg_ctlcluster $MAJORS[0] old restart >/dev/null"), 0, "restarting c
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5440.*5434.*5440.*/s,
     'port of first cluster was successfully changed';
 like_program_out 'postgres', "psql -l", 1, 
-    qr/no.*default.*man pg_wrapper/,
+    qr/no.*default.*man pg_wrapper/i,
     'proper pg_wrapper error message if no cluster is suitable as target';
 
 # restore original user_clusters

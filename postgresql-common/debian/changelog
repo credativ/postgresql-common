@@ -5,8 +5,10 @@ postgresql-common (58) unstable; urgency=low
   * t/090_multicluster.t: Check for proper error message of pg_wrapper (no
     suitable default cluster) if several local clusters exist and none are on
     the default port.
+  * pg_wrapper: Print proper error message if no cluster is suitable as
+    default target and point to man pg_wrapper.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 22 Jul 2006 17:56:31 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 22 Jul 2006 18:03:32 +0200
 
 postgresql-common (57) unstable; urgency=low
 

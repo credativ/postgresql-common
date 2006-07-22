@@ -60,7 +60,13 @@ $ENV{'PGPORT'} = $port if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db;
 $ENV{'PGHOST'} = $host if $host;
 
-error 'You must install at least one postgresql-client-<version> package.' unless $version; 
+unless ($version) {
+    if (get_versions) {
+	error 'No existing local cluster is suitable as a default target. Please see man pg_wrapper(1) how to specify one.';
+    } else {
+	error 'You must install at least one postgresql-client-<version> package.';
+    }
+}
 
 error 'Invalid PostgreSQL cluster version' unless -d "/usr/lib/postgresql/$version";
 my $cmd = get_program_path (((split '/', $0)[-1]), $version);
