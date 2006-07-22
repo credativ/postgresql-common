@@ -89,12 +89,53 @@ configured cluster and database for the user and calls the appropriate version
 of the desired program to connect to that cluster and database, supplying any
 specifed options to that command.
 
-By default, the cluster is determined from the configuration files
-L<user_clusters(5)> and L<postgresqlrc(5)>. However, this can be overriden by
-specifying the C<$PGCLUSTER> environment variable or the B<--cluster>
-I<version>/I<cluster> option.  I<cluster> is either the name of a local
-cluster, or takes the form I<host>:I<port> for a remote cluster. If I<port> is
-left empty (i. e. you just specify I<host:>), it defaults to 5432.
+The target cluster is selected by the following means, in descending order of
+precedence:
+
+=over
+
+=item 1.
+
+explicit specification with the B<--cluster> option
+
+=item 2.
+
+explicit specification with the B<PGCLUSTER> environment variable
+
+=item 3.
+
+matching entry in C<~/.postgresqlrc> (see L<postgresqlrc(5)>), if that
+file exists
+
+=item 4.
+
+matching entry in C</etc/postgresql-common/user_clusters> (see
+L<user_clusters(5)>), if that file exists
+
+=item 5.
+
+If only one local cluster exists, that one will be selected.
+
+=item 6.
+
+If several local clusters exist, the one listening on the default port 5432
+will be selected.
+
+=back
+
+If none of these rules match, B<pg_wrapper> aborts with an error.
+
+=head1 OPTIONS
+
+=over
+
+=item B<--cluster> I<version>B</>I<cluster>
+
+I<cluster> is either the name of a local cluster, or takes the form
+I<host>:I<port> for a remote cluster. If I<port> is left empty (i. e. you just
+specify I<host:>), it defaults to 5432.
+
+=back
 
 =head1 ENVIRONMENT
 
