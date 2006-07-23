@@ -37,6 +37,7 @@ if (-d '/etc/postgresql-common/pg_upgradecluster.d') {
 
 # create test script
 mkdir '/etc/postgresql-common/pg_upgradecluster.d' or die "mkdir: $!";
+chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d' or die "chmod: $!";
 open F, '>/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "open: $!";
 print F <<EOS;
 #!/bin/sh -e
