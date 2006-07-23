@@ -224,6 +224,32 @@ error "Could not start target cluster" if system @argv;
 sleep(4);
 
 %newinfo = cluster_info($newversion, $cluster);
+my $pg_restore = get_program_path 'pg_restore', $newversion;
+
+# check whether upgrade scripts exist; if so, verify that pg_restore supports
+# -X no-data-for-failed-tables.
+my $upgrade_scripts = (-d '/etc/postgresql-common/pg_upgradecluster.d' &&
+     `run-parts --test /etc/postgresql-common/pg_upgradecluster.d`);
+
+if ($upgrade_scripts) {
+    if (`$pg_restore --help` !~ qr/no-data-for-failed-tables/) {
+	error '/etc/postgresql-common/pg_upgradecluster.d has upgrade scripts, but $pg_restore does not support the "-X no-data-for-failed-tables" option.'
+    }
+}
+
+# Run upgrade scripts in init phase
+if ($upgrade_scripts) {
+    if (!fork) {
+	change_ugid $info{'owneruid'}, $info{'ownergid'};
+
+	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
+	    '-a', $newversion, '-a', 'init',
+	    '/etc/postgresql-common/pg_upgradecluster.d');
+	error '/etc/postgresql-common/pg_upgradecluster.d script failed' if system @argv;
+	exit 0;
+    }
+    wait;
+}
 
 # Disable access to clusters during upgrade
 my $owner = getpwuid $info{'owneruid'};
@@ -239,7 +265,6 @@ if (!fork) {
     change_ugid $info{'owneruid'}, $info{'ownergid'};
     my $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     my $pg_dump = get_program_path 'pg_dump', $newversion;
-    my $pg_restore = get_program_path 'pg_restore', $newversion;
     my $psql = get_program_path 'psql', $newversion;
     my $newsocket = get_cluster_socketdir $newversion, $cluster;
     my $buffer;
@@ -289,9 +314,15 @@ if (!fork) {
         open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
              '-Fc', $db or 
             error 'Could not execute pg_dump for old cluster';
-        open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-            '-d', 'template1', '-C' or 
-            error 'Could not execute pg_restore for new cluster';
+	if ($upgrade_scripts) {
+	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
+		'-X', 'no-data-for-failed-tables', '-d', 'template1', '-C' or 
+		error 'Could not execute pg_restore for new cluster';
+	} else {
+	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
+		'-d', 'template1', '-C' or 
+		error 'Could not execute pg_restore for new cluster';
+	}
         while (read SOURCE, $buffer, 1048576) {
             print SINK $buffer;
         }
@@ -388,6 +419,20 @@ print "Starting target cluster on the original port...\n";
 @argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
 error "Could not start target cluster; please check configuration and log files" if system @argv;
 
+# Run upgrade scripts in finish phase
+if ($upgrade_scripts) {
+    if (!fork) {
+	change_ugid $info{'owneruid'}, $info{'ownergid'};
+
+	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
+	    '-a', $newversion, '-a', 'finish',
+	    '/etc/postgresql-common/pg_upgradecluster.d');
+	error '/etc/postgresql-common/pg_upgradecluster.d script failed' if system @argv;
+	exit 0;
+    }
+    wait;
+}
+
 print "Success. Please check that the upgraded cluster works. If it does,
 you can remove the old cluster with
 
@@ -416,6 +461,35 @@ port since the upgraded one will use the original port. The old cluster is not
 automatically be removed. After upgrade, please verify that the new cluster
 indeed works as expected; if so, you should remove the old cluster with
 L<pg_dropcluster(8)>.
+
+=head1 HOOK SCRIPTS
+
+Some PostgreSQL extensions like PostGIS need metadata in auxiliary tables which
+must not be upgraded from the old version, but rather initialized for the new
+version before copying the table data. For this purpose, extensions (as well as
+administrators, of course) can drop upgrade hook scripts into 
+C</etc/postgresql-common/pg_upgradecluster.d/>. Scripts in that
+directory will be called with the following arguments:
+
+<old version> <cluster name> <new version> <phase> 
+
+Phases:
+
+=over
+
+=item B<init>
+
+A virgin cluster of version I<new version> has been created, i. e.  this new
+cluster will already have B<template1>, but no user databases.
+
+=item B<finish>
+
+All data from the old version cluster has been dumped/reloaded into the new
+one. The old cluster still exists.
+
+=back
+
+The scripts are called as the user who owns the database.
 
 =head1 SEE ALSO
 

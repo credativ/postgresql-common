@@ -7,8 +7,22 @@ postgresql-common (58) unstable; urgency=low
     the default port.
   * pg_wrapper: Print proper error message if no cluster is suitable as
     default target and point to man pg_wrapper.
+  * pg_upgradecluster:
+    - Support /etc/postgresql-common/pg_upgradecluster.d/ hook scripts. These
+      are called after creating the virgin new version cluster (phase 'init')
+      and a second time after the upgrade is complete (phase 'finish').
+      PostgreSQL extensions like PostGIS can use these hooks to initialize
+      metadata which must not be upgraded from the old cluster, but
+      initialized from scratch. Closes: #351571
+    - Document this feature in the manpage POD.
+    - If upgrade scripts are present, call pg_restore with the new -X
+      no-data-for-failed-tables option to not clutter already existing tables
+      in the new cluster with data from the old cluster. Abort with an error
+      if the installed pg_restore does not support this option.
+    - debian/postgresql-common.dirs: Ship
+      /etc/postgresql-common/pg_upgradecluster.d/.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 22 Jul 2006 18:03:32 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 23 Jul 2006 17:33:50 +0200
 
 postgresql-common (57) unstable; urgency=low
 
