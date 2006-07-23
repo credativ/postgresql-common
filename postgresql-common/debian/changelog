@@ -21,8 +21,10 @@ postgresql-common (58) unstable; urgency=low
       if the installed pg_restore does not support this option.
     - debian/postgresql-common.dirs: Ship
       /etc/postgresql-common/pg_upgradecluster.d/.
+  * Add t/120_pg_upgradecluster_scripts.t: Selftest for pg_upgradecluster.d
+    hooks and proper pg_restore -X no-data-for-failed-tables behaviour.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 23 Jul 2006 17:33:50 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 23 Jul 2006 17:46:18 +0200
 
 postgresql-common (57) unstable; urgency=low
 
