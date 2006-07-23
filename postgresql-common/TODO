@@ -5,9 +5,6 @@ Bugs:
 - pg_createcluster with existing cluster: respect symlinks to shared
   postgresql.conf files, never remove symlinks in already existing
   cluster dirs
-- s/cluster/instance/
-- pg_wrapper: Handle undef version (which can happen if there are > 1
-  local clusters and none of them are on the default port).
 
 Transition bugs:
 
