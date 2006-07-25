@@ -701,14 +701,15 @@ sub get_cluster_locales {
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
     my $pg_controldata = get_program_path 'pg_controldata', $version;
-    prepare_exec;
+    prepare_exec ('LC_ALL', 'LANG', 'LANGUAGE');
+    $ENV{'LC_ALL'} = 'C';
     my $result = open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster));
     restore_exec;
     return (undef, undef) unless defined $result;
     while (<CTRL>) {
-	if (/^LC_CTYPE.*:\s*(\S+)\s*$/) {
+	if (/^LC_CTYPE\W*(\S+)\s*$/) {
 	    $lc_ctype = $1;
-	} elsif (/^LC_COLLATE.*:\s*(\S+)\s*$/) {
+	} elsif (/^LC_COLLATE\W*(\S+)\s*$/) {
 	    $lc_collate = $1;
 	}
     }
