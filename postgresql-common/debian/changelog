@@ -1,3 +1,9 @@
+postgresql-common (59) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 25 Jul 2006 23:04:08 +0200
+
 postgresql-common (58) unstable; urgency=low
 
   * pg_wrapper: Improve manpage POD, describe the precise rules for cluster
