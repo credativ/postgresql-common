@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 43 * ($#MAJORS+1);
+use Test::More tests => 49 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -125,6 +125,13 @@ template1|postgres|UNICODE
         'Alice|2
 Bob|1
 ', 'SQL command output: select';
+
+    # Check PL/Python
+    is_program_out 'postgres', 'createlang plpythonu nobodydb', 0, '', 'createlang plpythonu succeeds for user postgres';
+    is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize(text) RETURNS text AS \'return args[0].capitalize()\' LANGUAGE plpythonu;"',
+	0, '', 'creating PL/Python function as user postgres succeeds';
+    is_program_out 'nobody', 'psql nobodydb -Atc "select capitalize(\'foo\')"',
+	0, "Foo\n", 'calling PL/Python function';
 
     # Check pg_maintenance
     if ($pg_autovacuum || $v ge '8.1') {
