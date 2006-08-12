@@ -6,8 +6,15 @@ postgresql-common (59) unstable; urgency=low
     <guilhelm.panaget@free.fr>. Closes: #382447
   * Add Portugese debconf translations, thanks to Rui Branco
     <ruipb@debianpt.org>. Closes: #381946
+  * postgresql-common/debian/postgresql-common.config:
+    - Ensure that the 'untransitioned' critical debconf note is always shown,
+      not just once. Otherwise the preinst just fails without giving any hint
+      about the reason after the first failure.
+    - Additionally print a small hint to stderr, for the case that people do
+      not use the interactive frontend.
+    - Closes: #382134
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 12 Aug 2006 18:33:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 12 Aug 2006 18:40:21 +0200
 
 postgresql-common (58) unstable; urgency=low
 
