@@ -6,24 +6,24 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2006-06-29 23:20+0200\n"
-"PO-Revision-Date: 2005-11-21 20:37+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-01 05:04-0600\n"
+"PO-Revision-Date: 2006-08-11 05:58+0100\n"
 "Last-Translator: Guilhelm Panaget <guilhelm.panaget@free.fr>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1001
 msgid "Obsolete major version ${old}"
-msgstr "Version majeure ${old} obsolète."
+msgstr "Version majeure ${old} obsolète"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1002
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but you still have the server and/"
 "or client package installed. Please install the latest packages (postgresql-"
@@ -31,15 +31,15 @@ msgid ""
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
 "La version ${old} de PostgreSQL est obsolète, mais le paquet du client ou "
-"du serveur est toujours installé. Veuillez installer la version la plus "
-"récente des paquets postgresql-${latest} et postgresql-client-${latest} et "
-"mettre à niveau vos clusters en version ${oldversion} avec "
-"pg_upgradecluster (pour plus de précisions, veuillez consulter la page de "
-"manuel)."
+"du serveur est toujours installé. "
+"Veuillez installer la version la plus récente des paquets postgresql-${latest} "
+"et postgresql-client-${latest} et mettre à niveau vos grappes (« clusters ») "
+"en version ${oldversion} avec « pg_upgradecluster ». Veuillez consulter la "
+"page de manuel pour plus de précisions."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1003
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -48,63 +48,75 @@ msgid ""
 "details)."
 msgstr ""
 "Veuillez noter que l'installation de postgresql-${latest} créera par "
-"défaut un cluster ${latest}/main. Si vous souhaitez mettre à niveau le "
-"cluster ${old}/main, il faudra supprimer le cluster ${latest} en exécutant "
-"la commande « pg_dropcluster --stop ${latest} main » (pour plus de "
-"précisions, veuillez consulter la page de manuel)."
+"défaut une grappe (« cluster ») ${latest}/main. "
+"Si vous souhaitez mettre à niveau la grappe ${old}/main, il faudra supprimer "
+"la grappe ${latest} en exécutant la commande « pg_dropcluster--stop "
+"${latest} main ». Veuillez consulter la page de manuel pour plus de précisions."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1004
 msgid ""
 "The old server and client packages are not supported any more. After having "
 "upgraded the existing clusters, you should remove the postgresql-${old} and "
 "postgresql-client-${old} packages."
 msgstr ""
 "Les anciennes versions des paquets client et serveur ne sont plus "
-"maintenues. Après la mise à niveau des clusters, vous devriez supprimer "
+"maintenues. "
+"Après la mise à niveau des grappes (« clusters »), vous devriez supprimer "
 "les paquets postgresql-${old} et postgresql-client-${old}."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid "Untransitioned postgresql package"
-msgstr ""
+msgstr "Pas de gestion de la transition avec le paquet postgresql"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2002
 msgid ""
 "The current postgresql package is in state 'removed', but its data and "
 "configuration files are still present in the system. This is  incompatible "
 "with the new multiversion/multicluster structure."
 msgstr ""
+"L'actuel paquet postgresql est en état « supprimé » (« removed ») mais ses "
+"données et fichiers de configuration sont toujours présents dans le système, "
+"ce qui est incompatible avec la nouvelle structure multiversion/multicluster."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2003
 msgid "You need to do one of the following:"
-msgstr ""
+msgstr "Veuillez réaliser une des actions suivantes :"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2004
 msgid ""
 "(1) If you do not need the databases and configuration files any more, purge "
 "the old packages (dpkg -P postgresql postgresql-client)."
 msgstr ""
+" - Si vous n'avez plus besoin des bases de données et des fichiers de "
+"configuration, purgez les anciens paquets via la commande "
+"« dpkg-P postgresql postgresql-client » ;"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2005
 msgid ""
 "(2) If you want to retain the current databases and configuration files, "
 "upgrade to the transitional packages by installing the latest version of "
 "'postgresql' (apt-get install postgresql)."
 msgstr ""
+" - Si vous souhaitez conserver les bases de données et les fichiers de "
+"configuration actuels, effectuez la mise à niveau vers les paquets de "
+"transition en installant la dernière version de postgresql via la commande "
+"« apt-get install postgresql »."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2006
 msgid "After that you can reattempt this installation."
-msgstr ""
+msgstr "Vous pourrez ensuite tenter cette installation à nouveau."
+

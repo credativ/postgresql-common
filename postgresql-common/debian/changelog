@@ -2,8 +2,10 @@ postgresql-common (59) unstable; urgency=low
 
   * t/001_packages.t: Check that p-plpython-X.Y is installed.
   * t/020_create_sql_remove.t: Check that PL/Python works properly.
+  * Update French debconf translations, thanks to Guilhelm Panaget
+    <guilhelm.panaget@free.fr>. Closes: #382447
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  5 Aug 2006 23:52:16 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 12 Aug 2006 18:32:58 +0200
 
 postgresql-common (58) unstable; urgency=low
 
