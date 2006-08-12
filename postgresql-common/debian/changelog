@@ -1,3 +1,9 @@
+postgresql-common (60) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 12 Aug 2006 19:23:49 +0200
+
 postgresql-common (59) unstable; urgency=low
 
   * t/001_packages.t: Check that p-plpython-X.Y is installed.
