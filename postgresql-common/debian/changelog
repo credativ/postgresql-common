@@ -1,6 +1,6 @@
 postgresql-common (60) unstable; urgency=low
 
-  * Update Czech debconf translations, thanks to Miroslav Kure. 
+  * Update Czech debconf translations, thanks to Miroslav Kure.
     Closes: #384757
   * t/090_multicluster.t: Check that $PGHOST and $PGDATABASE environment
     variables are respected and have the correct precedence. (This reproduces
