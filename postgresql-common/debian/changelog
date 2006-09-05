@@ -2,8 +2,12 @@ postgresql-common (60) unstable; urgency=low
 
   * Update Czech debconf translations, thanks to Miroslav Kure. 
     Closes: #384757
+  * t/090_multicluster.t: Check that $PGHOST and $PGDATABASE environment
+    variables are respected and have the correct precedence. (This reproduces
+    #385971). Now this test has full coverage of all libpq environment
+    variables but $PGUSER (which is not used at all anywhere).
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  5 Sep 2006 11:57:29 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue,  5 Sep 2006 13:15:15 +0200
 
 postgresql-common (59) unstable; urgency=low
 

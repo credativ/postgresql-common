@@ -9,7 +9,7 @@ use Socket;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 99;
+use Test::More tests => 109;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.
@@ -152,6 +152,12 @@ is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5432\n",
 delete $ENV{'PGPORT'};
 delete $ENV{'PGCLUSTER'};
 
+# check that PGDATABASE works
+$ENV{'PGDATABASE'} = 'test';
+is_program_out 'postgres', "psql --cluster $new1 -Atc 'select current_database()'", 0, "test\n", 
+    'PGDATABASE environment variable works';
+delete $ENV{'PGDATABASE'};
+
 # check cluster selection with an empty user_clusters
 open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
 close F;
@@ -169,6 +175,18 @@ close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
 like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
     "pg_wrapper selects correct cluster with user_clusters '* * $MAJORS[-1] new1 *'";
+
+# check default database selection with user_clusters
+open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
+print F "* * 8.1 new1 test\n";
+close F;
+chmod 0644, '/etc/postgresql-common/user_clusters';
+is_program_out 'postgres', 'psql -Atc "select current_database()"', 0, "test\n",
+    "pg_wrapper selects correct database with user_clusters '* * $MAJORS[-1] new1 test'";
+$ENV{'PGDATABASE'} = 'template1';
+is_program_out 'postgres', "psql -Atc 'select current_database()'", 0, "template1\n", 
+    'PGDATABASE environment variable is not overridden by user_clusters';
+delete $ENV{'PGDATABASE'};
 
 # check by-user cluster selection with user_clusters
 # (also check invalid cluster reporting)
@@ -195,6 +213,12 @@ like_program_out 'nobody', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[
     'pg_wrapper selects correct version with per-user user_clusters';
 like_program_out 0, 'psql --version', 1, qr/user_clusters.*line 3.*cluster.*not exist/i, 
     'pg_wrapper error for invalid per-user user_clusters line';
+# check PGHOST environment variable precedence
+$ENV{'PGHOST'} = '127.0.0.2';
+like_program_out 'postgres', 'psql -Atl', 2, qr/127.0.0.2/, '$PGHOST overrides user_clusters';
+is_program_out 'postgres', "psql --cluster $MAJORS[-1]/localhost:5434 -Atc 'select current_database()' test", 
+    0, "test\n", '--cluster overrides $PGHOST';
+delete $ENV{'PGHOST'};
 
 # check invalid user_clusters
 open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
