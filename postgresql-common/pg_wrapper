@@ -12,9 +12,11 @@ use PgCommon;
 
 my ($version, $cluster, $db, $port, $host);
 
+$host = $ENV{'PGHOST'};
+
 # Check for PGCLUSTER in %ENV
-if (defined $ENV{PGCLUSTER}) {
-    ($version, $cluster) = split ('/', $ENV{PGCLUSTER}, 2);
+if (defined $ENV{'PGCLUSTER'}) {
+    ($version, $cluster) = split ('/', $ENV{'PGCLUSTER'}, 2);
     error 'Invalid version specified with $PGCLUSTER' unless version_exists $version;
     error 'No cluster specified with $PGCLUSTER' unless $cluster;
 }
@@ -25,6 +27,7 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
         error '--cluster option needs an argument (<version>/<cluster>)' if ($i >= $#ARGV);
 
         ($version, $cluster) = split ('/', $ARGV[$i+1], 2);
+	$host = undef; # --cluster overrides $PGHOST env var
         error 'Invalid version specified with --cluster' unless version_exists $version;
         error 'No cluster specified with --cluster' unless $cluster;
 
@@ -37,7 +40,7 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
 ($version, $cluster, $db) = user_cluster_map() unless $cluster;
 
 # check if we have a network cluster
-if ($cluster && !cluster_exists $version, $cluster) {
+if (!$host && $cluster && !cluster_exists $version, $cluster) {
     if ($cluster =~ /^(\S+):(\d*)$/) {
 	$host = $1;
 	$port = $2 || 5432;
@@ -57,7 +60,7 @@ if (!$host && $cluster) {
 
 $ENV{'PGSYSCONFDIR'} = '/etc/postgresql-common' if !$ENV{'PGSYSCONFDIR'};
 $ENV{'PGPORT'} = $port if $port && !$ENV{'PGPORT'};
-$ENV{'PGDATABASE'} = $db if $db;
+$ENV{'PGDATABASE'} = $db if $db && !$ENV{'PGDATABASE'};
 $ENV{'PGHOST'} = $host if $host;
 
 unless ($version) {

@@ -6,8 +6,10 @@ postgresql-common (60) unstable; urgency=low
     variables are respected and have the correct precedence. (This reproduces
     #385971). Now this test has full coverage of all libpq environment
     variables but $PGUSER (which is not used at all anywhere).
+  * pg_wrapper: Do not override $PGDATABASE and $PGHOST with user_clusters
+    map. Closes: #385971
 
- -- Martin Pitt <mpitt@debian.org>  Tue,  5 Sep 2006 13:15:15 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue,  5 Sep 2006 13:18:27 +0200
 
 postgresql-common (59) unstable; urgency=low
 
