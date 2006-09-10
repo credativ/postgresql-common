@@ -66,6 +66,9 @@ unlink $c.'/pg_hba.conf', $c.'/pg_ident.conf', $c.'/postgresql.conf',
     $c.'/environment';
 unlink $info{'logfile'} if defined ($info{'logfile'});
 unlink $info{'avac_logfile'} if defined ($info{'avac_logfile'});
+if ($info{'socketdir'} !~ /^(\/tmp|\/var\/run\/postgresql)\/?$/) {
+    rmdir $info{'socketdir'};
+}
 rmdir $c;
 rmdir "/etc/postgresql/$version";
 rmdir "/var/lib/postgresql/$version/$cluster";
@@ -90,6 +93,8 @@ includes the data directory, the log file, and all configuration files that
 were created by L<pg_createcluster(1)>. If the configuration directory
 (C</etc/postgresql/>I<version>C</>I<cluster>) is empty after this, it is
 removed as well.
+An empty socket directory other than B</var/run/postgresql> or B</tmp> is
+also removed.
 
 Usually a cluster which still has a running server attached will not be
 deleted. To override this, the B<--stop> option forces a server shutdown

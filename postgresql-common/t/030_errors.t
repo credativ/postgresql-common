@@ -15,8 +15,6 @@ my $version = $MAJORS[-1];
 
 my $socketdir = '/tmp/postgresql-testsuite/';
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
-mkdir $socketdir or die "mkdir: $!";
-chown $pg_uid, 0, $socketdir or die "chown: $!";
 
 sub create_foo_pid {
     open F, ">/var/lib/postgresql/$version/main/postmaster.pid" or die "open: $!";

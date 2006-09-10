@@ -12,8 +12,17 @@ postgresql-common (60) unstable; urgency=low
     Closes: #386704
   * pg_createcluster: Fix POD to have consistent long-option syntax. Thanks to
     Bastian Kleineidam! (Part of bug #386148)
+  * Improve handling of custom socket directories:
+    - pg_createcluster: Create a nonexisting directory.
+    - pg_dropcluster: Remove empty socket directory unless it's /tmp or
+      /var/run/postgresql.
+    - Thanks to Bastian Kleineidam for the suggestions.
+    - t/030_errors.t: Do not create our custom socket dir ourselves any more,
+      since pg_createcluster is now supposed to handle that (thus providing a
+      test case).
+    - Closes:  #386148
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 10 Sep 2006 12:50:24 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 10 Sep 2006 13:31:11 +0200
 
 postgresql-common (59) unstable; urgency=low
 

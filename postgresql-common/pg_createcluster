@@ -304,6 +304,11 @@ move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, "644";
 setup_pg_hba if $newcluster;
 
 # configure socket directory
+if ($socketdir && ! -e $socketdir) {
+    if (system 'install', '-d', '-m', '0755', '-o', $owneruid, '-g', $ownergid, $socketdir) {
+        error 'could not create socket directory';
+    }
+}
 $orig_euid = $>;
 $> = $owneruid;
 unless ($socketdir) {
@@ -453,6 +458,8 @@ used to generate a new cluster structure. If the data directory already exists,
 it is integrated into the B<postgresql-common> structure by moving the
 configuration file and creating the C<pgdata> link.
 
+If a custom socket directory is given and it does not exist, it is created.
+
 If the log file does not exist, it is created. In any case the permissions are
 adjusted to allow write access to the cluster owner. Please note that
 C<postgresql.conf> can be customized to specify C<log_directory> and/or
@@ -495,7 +502,8 @@ Explicitly set the directory where the L<postmaster(1)> server stores the Unix
 socket for local connections. Defaults to C</var/run/postgresql/> for clusters
 owned by the user B<postgres>, and C</tmp> for clusters owned by other users.
 Please be aware that C</tmp> is an unsafe directory since everybody can create
-a socket there and impersonate the database server.
+a socket there and impersonate the database server. If the given directory does
+not exist, it is created with appropriate permissions.
 
 =item B<-l> I<path>, B<--logfile=>I<path>
 
