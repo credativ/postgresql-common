@@ -1,3 +1,9 @@
+postgresql-common (61) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 10 Sep 2006 13:48:48 +0200
+
 postgresql-common (60) unstable; urgency=low
 
   * Update Czech debconf translations, thanks to Miroslav Kure.
