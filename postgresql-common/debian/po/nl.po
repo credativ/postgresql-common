@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 50\n"
+"Project-Id-Version: postgresql-common 59\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
 "POT-Creation-Date: 2006-06-29 23:20+0200\n"
-"PO-Revision-Date: 2006-04-29 16:34+0100\n"
+"PO-Revision-Date: 2006-09-09 14:55+0000\n"
 "Last-Translator: Vincent Zweije <zweije@xs4all.nl>\n"
 "Language-Team: Debian-Dutch <debian-l10n-dutch@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgstr ""
 #. Description
 #: ../postgresql-common.templates:21
 msgid "Untransitioned postgresql package"
-msgstr ""
+msgstr "Niet-overgegaan postgresql pakket"
 
 #. Type: note
 #. Description
@@ -77,12 +77,15 @@ msgid ""
 "configuration files are still present in the system. This is  incompatible "
 "with the new multiversion/multicluster structure."
 msgstr ""
+"Het huidige postgresql pakket is in toestand 'verwijderd' ('removed'), "
+"maar de data en instellingsbestanden zijn nog op het systeem aanwezig. "
+"Dit gaat niet samen met de nieuwe multiversie/multicluster structuur."
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:21
 msgid "You need to do one of the following:"
-msgstr ""
+msgstr "U dient een van de volgende acties te ondernemen:"
 
 #. Type: note
 #. Description
@@ -91,6 +94,8 @@ msgid ""
 "(1) If you do not need the databases and configuration files any more, purge "
 "the old packages (dpkg -P postgresql postgresql-client)."
 msgstr ""
+"(1) Indien u de databases en instellingsbestanden niet meer nodig hebt, "
+"wis (purge) de oude pakketten (dpkg -P postgresql postgresql-client)."
 
 #. Type: note
 #. Description
@@ -100,9 +105,12 @@ msgid ""
 "upgrade to the transitional packages by installing the latest version of "
 "'postgresql' (apt-get install postgresql)."
 msgstr ""
+"(2) Indien u de huidige databases en instellingsbestanden wilt behouden, "
+"waardeer dan op naar de overgangspakketten door de laatste versie van "
+"'postgresql' te installeren (apt-get install postgresql)."
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:21
 msgid "After that you can reattempt this installation."
-msgstr ""
+msgstr "Daarna kunt u deze installatie opnieuw proberen."
