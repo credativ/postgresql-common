@@ -502,7 +502,7 @@ a socket there and impersonate the database server.
 Explicitly set the path for the L<postmaster(1)> server log file. Defaults to
 C</var/log/postgresql/postgresql->I<version>C<->I<cluster>C<.log>.
 
-=item B<-e> I<encoding>, B<--encoding> I<encoding>
+=item B<-e> I<encoding>, B<--encoding=>I<encoding>
 
 Select the encoding of the template database. This will also be the default
 encoding of any database you create later, unless you override it there. The
@@ -510,7 +510,7 @@ default is derived from the locale, or SQL_ASCII if that does not work.  The
 character sets supported by the PostgreSQL server are described in the
 documentation.
 
-=item B<-p> I<port>, B<--port> I<port>
+=item B<-p> I<port>, B<--port=>I<port>
 
 Select the port the new cluster listens on (for the Unix socket and the TCP
 port); this must be a number between 1024 and 65535, since PostgreSQL does not
@@ -523,7 +523,7 @@ Immediately start a server for the cluster after creating it (i. e. call
 C<pg_ctlcluster> I<version cluster> C<start> on it). By default, the cluster is
 not started.
 
-=item B<--start-conf>  B<auto>|B<manual>|B<disabled>
+=item B<--start-conf=>B<auto>|B<manual>|B<disabled>
 
 Set the initial value in the C<start.conf> configuration file. See B<STARTUP
 CONTROL> below. By default, B<auto> is used, which means that the cluster is
