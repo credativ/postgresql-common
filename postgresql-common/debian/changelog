@@ -8,7 +8,7 @@ postgresql-common (60) unstable; urgency=low
     variables but $PGUSER (which is not used at all anywhere).
   * pg_wrapper: Do not override $PGDATABASE and $PGHOST with user_clusters
     map. Closes: #385971
-  * Update Dutch debconf translations, thanks to Vincent Zweije. 
+  * Update Dutch debconf translations, thanks to Vincent Zweije.
     Closes: #386704
   * pg_createcluster: Fix POD to have consistent long-option syntax. Thanks to
     Bastian Kleineidam! (Part of bug #386148)
