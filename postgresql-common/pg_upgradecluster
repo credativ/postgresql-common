@@ -211,7 +211,7 @@ exit 1 if $?;
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
     '--socketdir', $info{'socketdir'}, '--encoding', $encoding, $newversion,
     $cluster);
-push @argv, $datadir if $datadir;
+push @argv, '--datadir', $datadir if $datadir;
 
 delete $ENV{'LC_ALL'};
 $ENV{'LC_CTYPE'} = $lc_ctype;
