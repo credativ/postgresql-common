@@ -11,10 +11,11 @@ exit 1 unless GetOptions ('h|no-header' => \$no_header);
 
 @columns = ('Version', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory',
             'Log file');
-@colwidths = qw/7 9 4 6 8 34 30/;
+@colwidths = qw/7 9 4 6 8 34 1/;
 
 foreach $cw (@colwidths) {
-    $fmtstring .= '%-'.$cw.'s ';
+    $fmtstring .= ' ' if $fmtstring;
+    $fmtstring .= '%-'.$cw.'s';
 }
 $fmtstring .= "\n";
 

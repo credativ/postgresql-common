@@ -1,9 +1,11 @@
 postgresql-common (61) unstable; urgency=low
 
+  * pg_lsclusters: Remove trailing spaces from output, adapt test suite
+    accordingly.
   * pg_upgradecluster: Correctly pass custom datadir to pg_createcluster.
     Closes: #385034
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 11 Sep 2006 11:49:13 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 11 Sep 2006 13:04:44 +0200
 
 postgresql-common (60) unstable; urgency=low
 
