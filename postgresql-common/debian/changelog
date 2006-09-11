@@ -4,8 +4,10 @@ postgresql-common (61) unstable; urgency=low
     accordingly.
   * pg_upgradecluster: Correctly pass custom datadir to pg_createcluster.
     Closes: #385034
+  * Add t/041_upgrade_custompaths.t: Test upgrading with a custom data
+    directory and log file path (this also covers bug #385034).
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 11 Sep 2006 13:04:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 11 Sep 2006 13:08:58 +0200
 
 postgresql-common (60) unstable; urgency=low
 
