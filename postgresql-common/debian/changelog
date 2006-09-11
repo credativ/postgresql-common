@@ -1,3 +1,9 @@
+postgresql-common (62) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 11 Sep 2006 13:36:37 +0200
+
 postgresql-common (61) unstable; urgency=low
 
   * pg_lsclusters: Remove trailing spaces from output, adapt test suite
