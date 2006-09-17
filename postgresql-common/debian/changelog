@@ -1,8 +1,11 @@
 postgresql-common (62) unstable; urgency=low
 
-  *
+  * t/080_start.conf.t: Check that stop'ing a cluster works even if the
+    cluster is disabled (test for bug #386996).
+  * pg_ctlcluster: Allow 'stop' and 'autovac-stop' for disabled clustes.
+    Closes: #386996
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 11 Sep 2006 13:36:37 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 17 Sep 2006 10:37:22 +0200
 
 postgresql-common (61) unstable; urgency=low
 

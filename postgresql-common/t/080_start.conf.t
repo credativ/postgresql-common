@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 62;
+use Test::More tests => 70;
 
 # Do test with oldest version
 my $v = $MAJORS[0];
@@ -56,12 +56,22 @@ is ((get_cluster_start_conf $v, 'main'), 'disabled',
 like_program_out 0, "/etc/init.d/postgresql-$v start", 0, qr/Start.*$v/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
-# pg_ctlcluster should not handle disabled cluster
+# pg_ctlcluster should not start disabled cluster
 is_program_out 'postgres', "pg_ctlcluster $v main start", 1, 
     "Error: Cluster is disabled\n";
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # change back to manual, start cluster
+set_cluster_start_conf $v, 'main', 'manual';
+is_program_out 'postgres', "pg_ctlcluster $v main start", 0, '';
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
+
+# however, we want to stop disabled clusters
+set_cluster_start_conf $v, 'main', 'disabled';
+is_program_out 'postgres', "pg_ctlcluster $v main stop", 0, '';
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
+
+# set back to manual
 set_cluster_start_conf $v, 'main', 'manual';
 is_program_out 'postgres', "pg_ctlcluster $v main start", 0, '';
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';

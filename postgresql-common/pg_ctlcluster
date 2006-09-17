@@ -407,7 +407,9 @@ if ($#ARGV != 2) {
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 
-error 'Cluster is disabled' if $info{'start'} eq 'disabled';
+unless ($action eq 'stop' || $action eq 'autovac-stop') {
+    error 'Cluster is disabled' if $info{'start'} eq 'disabled';
+}
 
 # untaint environment
 $ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
