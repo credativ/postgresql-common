@@ -1,3 +1,9 @@
+postgresql-common (63) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 18 Sep 2006 09:32:32 +0200
+
 postgresql-common (62) unstable; urgency=low
 
   * t/080_start.conf.t: Check that stop'ing a cluster works even if the
