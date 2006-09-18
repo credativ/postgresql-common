@@ -242,11 +242,20 @@ sub start {
     %ENV = read_cluster_conf_file $version, $cluster, 'environment';
     $ENV{'LC_CTYPE'} = $lc_ctype;
 
-    my $postmaster_opts = '-c unix_socket_directory="' . $info{'socketdir'} . '"';
+    my $postmaster_opts = '';
+    if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'unix_socket_directory')) {
+	$postmaster_opts .= '-c unix_socket_directory="' . $info{'socketdir'} . '"';
+    }
 
     # versions 8.0+ support configurable conffile locations and external PID files
     if ($version ge '8.0') {
-        $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\" -c hba_file=\"$cdir/pg_hba.conf\" -c ident_file=\"$cdir/pg_ident.conf\""; 
+        $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\""; 
+	if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'hba_file')) {
+	    $postmaster_opts .= " -c hba_file=\"$cdir/pg_hba.conf\"";
+	}
+	if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'ident_file')) {
+	    $postmaster_opts .= " -c ident_file=\"$cdir/pg_ident.conf\""; 
+	}
 
 	if ((-d '/var/run/postgresql') && !defined (PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file')) {
 	    # check whether /var/run/postgresql/ is writeable as the cluster owner

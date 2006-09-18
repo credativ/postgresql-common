@@ -4,8 +4,17 @@ postgresql-common (62) unstable; urgency=low
     cluster is disabled (test for bug #386996).
   * pg_ctlcluster: Allow 'stop' and 'autovac-stop' for disabled clustes.
     Closes: #386996
+  * Reduce options passed to postmaster at runtime to shorten command line and
+    make the configuration more obvious and explicit:
+    - pg_ctlcluster: Do not pass unix_socket_dir/hba_file/ident_file if it is
+      already defined in postgresql.conf.
+    - pg_createcluster: If we create a cluster >= 8.0, set hba_file,
+      ident_file, and external_pid_file in postgresql.conf.
+    - 070_non_postgres_clusters.t: Fix expected output accordingly and
+      use 'ls' for socket check instead of looking at the command line.
+    - Closes: #384999
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 17 Sep 2006 10:37:22 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 18 Sep 2006 09:12:20 +0200
 
 postgresql-common (61) unstable; urgency=low
 
