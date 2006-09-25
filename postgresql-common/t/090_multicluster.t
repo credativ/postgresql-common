@@ -170,7 +170,7 @@ like_program_out 0, "psql --cluster $new1 --version", 0,
 
 # check default cluster selection with user_clusters
 open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
-print F "* * 8.1 new1 *\n";
+print F "* * $MAJORS[-1] new1 *\n";
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
 like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d+\b/, 
@@ -178,7 +178,7 @@ like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJOR
 
 # check default database selection with user_clusters
 open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
-print F "* * 8.1 new1 test\n";
+print F "* * $MAJORS[-1] new1 test\n";
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
 is_program_out 'postgres', 'psql -Atc "select current_database()"', 0, "test\n",

@@ -74,31 +74,31 @@ my $outref;
 is ((exec_as 0, '/usr/share/postgresql-common/run-upgrade-scripts 2 2>&1', $outref),
     0, 'run-upgrade-scripts succeeds');
 
-is $$outref, 'Executing upgrade script 2-sh-db...
-  cluster 8.1/main: db1 db2
+is $$outref, "Executing upgrade script 2-sh-db...
+  cluster $versions[0]/main: db1 db2
 Executing upgrade script 2-sql-db...
-  cluster 8.1/main: db1 db2
+  cluster $versions[0]/main: db1 db2
 Executing upgrade script all-sh-cluster...
-  cluster 8.1/main: template1
+  cluster $versions[0]/main: template1
 Executing upgrade script all-sh-db...
-  cluster 8.1/main: db1 db2
+  cluster $versions[0]/main: db1 db2
 Executing upgrade script all-sh-t0...
-  cluster 8.1/main: db1 db2 template0 template1
+  cluster $versions[0]/main: db1 db2 template0 template1
 Executing upgrade script all-sh-t1...
-  cluster 8.1/main: db1 db2 template1
+  cluster $versions[0]/main: db1 db2 template1
 Executing upgrade script all-shfail-cluster...
-  cluster 8.1/main: template1[FAIL]
+  cluster $versions[0]/main: template1[FAIL]
 all-shfail-cluster:fail
 
 Executing upgrade script all-sql-cluster...
-  cluster 8.1/main: template1
+  cluster $versions[0]/main: template1
 Executing upgrade script all-sql-db...
-  cluster 8.1/main: db1 db2
+  cluster $versions[0]/main: db1 db2
 Executing upgrade script all-sql-t0...
-  cluster 8.1/main: db1 db2 template0 template1
+  cluster $versions[0]/main: db1 db2 template0 template1
 Executing upgrade script all-sql-t1...
-  cluster 8.1/main: db1 db2 template1
-', 'correct run-upgrade-script output';
+  cluster $versions[0]/main: db1 db2 template1
+", 'correct run-upgrade-script output';
 
 # check tables created by SQL scripts
 foreach my $v (@versions) {
