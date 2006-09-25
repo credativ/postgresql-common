@@ -9,7 +9,7 @@ use Socket;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 109;
+use Test::More tests => 110;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.

@@ -7,7 +7,7 @@ use TestLib;
 
 my @versions = ($MAJORS[-1]);
 
-use Test::More tests => 28;
+use Test::More tests => 29;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;

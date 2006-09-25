@@ -5,8 +5,11 @@ postgresql-common (63) unstable; urgency=low
   * pg_createcluster: Add configure_8_2().
   * t/010_defaultport_cluster.t: Make output test less strict to also catch
     beta PostgreSQL versions.
+  * t/TestLib.pm, check_clean(): Also check for running 'postgres' processes
+    (since that's how the server is called in 8.2+). Update number of tests
+    everywhere.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 26 Sep 2006 00:55:51 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 26 Sep 2006 01:00:59 +0200
 
 postgresql-common (62) unstable; urgency=low
 

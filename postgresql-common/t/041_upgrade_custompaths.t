@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;

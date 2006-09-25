@@ -8,7 +8,7 @@ use File::Temp qw/tempdir/;
 
 my $version = $MAJORS[-1];
 
-use Test::More tests => 33;
+use Test::More tests => 34;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;

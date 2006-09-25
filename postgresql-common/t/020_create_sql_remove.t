@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 49 * ($#MAJORS+1);
+use Test::More tests => 50 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];

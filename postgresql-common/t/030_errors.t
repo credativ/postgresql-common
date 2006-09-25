@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 124;
+use Test::More tests => 125;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
