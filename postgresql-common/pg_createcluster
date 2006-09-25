@@ -120,6 +120,11 @@ sub configure_8_1 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
 }
 
+sub configure_8_2 {
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
+}
+
 # Set up the default pg_hba.conf file:
 # - Add a "local all" entry to pg_hba.conf for the db superuser before all
 # other entries. 
