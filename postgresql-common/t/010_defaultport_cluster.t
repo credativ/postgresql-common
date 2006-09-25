@@ -9,7 +9,7 @@ use Test::More tests => 4;
 use lib 't';
 use TestLib;
 
-like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]\.\d\b/, 
+like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper selects highest available version number';
 
 like_program_out 0, 'psql -h 127.0.0.1 -l', 2, qr/could not connect/, 
