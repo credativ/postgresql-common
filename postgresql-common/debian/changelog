@@ -8,8 +8,10 @@ postgresql-common (63) unstable; urgency=low
   * t/TestLib.pm, check_clean(): Also check for running 'postgres' processes
     (since that's how the server is called in 8.2+). Update number of tests
     everywhere.
+  * t/TestLib.pm, check_clean(): Fix regexp for netstat port grepping so that
+    ports like '54321' do not match.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 26 Sep 2006 01:00:59 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 26 Sep 2006 09:27:20 +0200
 
 postgresql-common (62) unstable; urgency=low
 

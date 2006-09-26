@@ -167,6 +167,6 @@ sub check_clean {
         }
     }
 
-    is_program_out 0, 'netstat -avptn | grep ":543[2-9]"', 1, '',
+    is_program_out 0, 'netstat -avptn | grep ":543[2-9]\\b"', 1, '',
 	'PostgreSQL TCP ports are closed';
 }
