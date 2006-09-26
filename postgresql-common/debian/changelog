@@ -5,8 +5,6 @@ postgresql-common (63) unstable; urgency=low
   * pg_createcluster: Add configure_8_2().
   * pg_ctlcluster, check_running_postmaster(): Check for both 'postmaster' and
     'postgres' processes to also work for 8.2.
-  * t/010_defaultport_cluster.t: Make output test less strict to also catch
-    beta PostgreSQL versions.
   * t/TestLib.pm, check_clean(): Also check for running 'postgres' processes
     (since that's how the server is called in 8.2+). Update number of tests
     everywhere.
@@ -14,6 +12,7 @@ postgresql-common (63) unstable; urgency=low
     ports like '54321' do not match.
   * t/TestLib.pm, pidof(): Make pidof() strict enough to not catch the stats
     collector and writer subprocesses.
+  * t/*.t: Various small adaptions to work with 8.2, too.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 26 Sep 2006 11:04:25 +0200
 

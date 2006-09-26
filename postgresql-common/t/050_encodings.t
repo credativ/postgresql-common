@@ -89,9 +89,10 @@ sub check_cluster {
 	    'printf "set client_encoding=\'SJIS\'; select \'\\\\\\\'a\'" | psql -Atq template1',
 	    0, qr/\\' is insecure/,
 	    'Server rejects \\\' escaping in unsafe client encoding (CVE-2006-2314)';
+	my $esc_warning = ($v ge '8.1') ? "set escape_string_warning='off';" : '';
 	is_program_out 'postgres', 
-	    'printf "set client_encoding=\'UTF-8\'; select \'\\\\\\\'a\'" | psql -Atq template1',
-	    0, "'a\n", 'Server accepts \\\' escaping in safe client encoding (CVE-2006-2314)';
+	    "printf \"set client_encoding='UTF-8'; $esc_warning select '\\\\\\'a'\" | psql -Atq template1",
+		0, "'a\n", 'Server accepts \\\' escaping in safe client encoding (CVE-2006-2314)';
     }
 
     # drop cluster

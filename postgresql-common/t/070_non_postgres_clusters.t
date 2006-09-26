@@ -20,8 +20,9 @@ for my $v (@MAJORS[0, -1]) {
         qr/^$v\s+main\s+5432\s+online\s+$owner/, 
         'pg_lsclusters shows running cluster';
 
-    like ((ps 'postmaster'), qr/^$owner.*bin\/postmaster .*\/var\/lib\/postgresql\/$v\/main/,
-        "postmaster is running as user $owner");
+    my $master_process = ($v ge '8.2') ? 'postgres' : 'postmaster';
+    like ((ps $master_process), qr/^$owner.*bin\/$master_process .*\/var\/lib\/postgresql\/$v\/main/m,
+        "$master_process is running as user $owner");
 
     is_program_out $owner, 'ls /tmp/.s.PGSQL.*', 0, "/tmp/.s.PGSQL.5432\n/tmp/.s.PGSQL.5432.lock\n", 'socket is in /tmp';
 

@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 125;
+use Test::More tests => 131;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -117,6 +117,8 @@ is_program_out 'postgres', "pg_ctlcluster $version main start", 0,
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
 is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 
     'pg_ctlcluster stop succeeds');
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
+ok (! -e "/var/lib/postgresql/$version/main/postmaster.pid", 'no pid file left');
 
 # corrupt PID file while server is down
 create_foo_pid;

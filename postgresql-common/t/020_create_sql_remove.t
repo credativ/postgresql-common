@@ -37,7 +37,7 @@ sub check_major {
     }
 
     # verify that exactly one postmaster is running
-    my @pm_pids = pidof 'postmaster';
+    my @pm_pids = pidof (($v ge '8.2') ? 'postgres' : 'postmaster');
     is $#pm_pids, 0, 'Exactly one postmaster process running';
 
     # check environment
@@ -60,7 +60,7 @@ sub check_major {
     is_program_out 'postgres', "pg_ctlcluster $v main restart", 0, '',
         'cluster restarts with new environment file';
 
-    @pm_pids = pidof 'postmaster';
+    @pm_pids = pidof (($v ge '8.2') ? 'postgres' : 'postmaster');
     is $#pm_pids, 0, 'Exactly one postmaster process running';
     %env = pid_env $pm_pids[0];
     is $env{'PGEXTRAVAR1'}, '1', 'correct value of PGEXTRAVAR1 in environment';
@@ -72,7 +72,7 @@ sub check_major {
 	'Socket, but not PID file in /var/run/postgresql/';
 
     # verify that the correct client version is selected
-    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $v\.\d/,
+    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $v/,
         'pg_wrapper selects version number of cluster';
 
     # verify that the cluster is displayed
