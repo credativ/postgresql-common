@@ -53,7 +53,7 @@ sub check_running_postmaster {
 	    my $process = <PS>;
 	    chomp $process if defined $process;
 	    close PS;
-	    if (defined $process and $process eq 'postmaster') {
+	    if (defined $process and ($process eq 'postmaster' or $process eq 'postgres')) {
                 return 1;
             }
         } else {
