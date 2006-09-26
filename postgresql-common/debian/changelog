@@ -10,8 +10,10 @@ postgresql-common (63) unstable; urgency=low
     everywhere.
   * t/TestLib.pm, check_clean(): Fix regexp for netstat port grepping so that
     ports like '54321' do not match.
+  * t/TestLib.pm, pidof(): Make pidof() strict enough to not catch the stats
+    collector and writer subprocesses.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 26 Sep 2006 09:27:20 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 26 Sep 2006 09:39:11 +0200
 
 postgresql-common (62) unstable; urgency=low
 

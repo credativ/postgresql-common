@@ -45,7 +45,7 @@ sub pidof {
     open F, '-|', 'ps', 'h', '-C', $_[0], '-o', 'pid,cmd' or die "open: $!";
     my @pids;
     while (<F>) {
-        if ((index $_, $_[0]) >= 0) {
+        if ((index $_, $_[0]) >= 0 && (index $_, '/') >= 0) {
             push @pids, (split)[0];
         }
     }
