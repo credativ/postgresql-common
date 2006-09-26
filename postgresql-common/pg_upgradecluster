@@ -94,9 +94,22 @@ sub adapt_conffiles {
             'autovacuum', $info{'avac_enable'} ? 'yes' : 'no';
 
         # bgwriter_percent -> bgwriter_{lru,all}_percent transition
-        rename_ \%c, 'bgwriter_percent', 'bgwriter_all_percent' if $newversion ge '8.1';
+        rename_ \%c, 'bgwriter_percent', 'bgwriter_all_percent';
         # bgwriter_maxpages -> bgwriter_{lru,all}_maxpages transition
         rename_ \%c, 'bgwriter_maxpages', 'bgwriter_all_maxpages';
+    }
+
+    if ($newversion ge '8.2') {
+        # preload_libraries -> shared_preload_libraries transition
+        rename_ \%c, 'preload_libraries', 'shared_preload_libraries';
+
+	# australian_timezones -> timezone_abbreviations transition
+	my $australian_timezones = config_bool $c{'australian_timezones'};
+	if (defined $australian_timezones) {
+	    PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
+		    'australian_timezones', 'deprecated in favor of timezone_abbreviations', 
+		    'timezone_abbreviations', ($australian_timezones ?  'Australia' : 'Default');
+	}
     }
 }
 
