@@ -1,3 +1,9 @@
+postgresql-common (64) unstable; urgency=low
+
+  *
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 30 Sep 2006 13:58:05 +0200
+
 postgresql-common (63) unstable; urgency=low
 
   * t/090_multicluster.t, t/100_upgrade_scripts.t: Replace hardcoded '8.1'
