@@ -112,7 +112,12 @@ sub cluster_port_ready {
 	# retry.
 
 	if ($out =~ 'FATAL:') {
-	    print STDERR "WARNING: You probably removed the first pg_hba.conf entry that granted local passwordless access to the database superuser. Disabling startup checks.\n";
+	    print STDERR "Connection to the database failed:\n$out\n";
+	    if ($out =~ 'pg_hba.conf') {
+		print STDERR "WARNING: Invalid pg_hba.conf, client connections will fail\n";
+	    } else {
+		print STDERR "WARNING: You probably removed the first pg_hba.conf entry that granted local passwordless access to the database superuser. Disabling startup checks.\n";
+	    }
 	    return cluster_port_running $v, $c, $p;
 	}
         if ($? == $result) {    
