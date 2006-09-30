@@ -101,10 +101,20 @@ sub cluster_port_ready {
     my $n = 0;
     my $result = 0;
 
+
     # probe until we get three successful or failed connections in a row
+    $ENV{'PGPASSWORD'} = 'foo'; # prevent hangs if superuser cannot connect withouth password
     while ($n < ($result ? 10 : 3)) {
         select undef, undef, undef, 0.5;
-        system "$psql -h '$sd' --port $p -l >/dev/null 2>&1";
+        my $out = `$psql -h '$sd' --port $p -l 2>&1 >/dev/null`;
+	# if connection failed because of a FATAL error, then we assume that
+	# the db superuser cannot connect without a password; otherwise we
+	# retry.
+
+	if ($out =~ 'FATAL:') {
+	    print STDERR "WARNING: You probably removed the first pg_hba.conf entry that granted local passwordless access to the database superuser. Disabling startup checks.\n";
+	    return cluster_port_running $v, $c, $p;
+	}
         if ($? == $result) {    
             $n++;
         } else {
@@ -316,31 +326,8 @@ sub start {
     }
 
     # OK, the server runs, now wait until it stabilized
-    if ($success)  {
-	# check whether db superuser can connect without password
-	my @hba = read_pg_hba "$cdir/pg_hba.conf";
-	my %firsthba;
-	while ($#hba >= 0) {
-	    %firsthba = %{$hba[0]};
-	    if ($firsthba{'type'} && $firsthba{'type'} eq 'comment') {
-		shift @hba;
-		%firsthba = ();
-	    } else {
-		last;
-	    }
-	}
-	if (!$firsthba{'type'}) {
-	    print STDERR "WARNING: Invalid pg_hba.conf, client connections will fail\n";
-	    $success = cluster_port_running $version, $cluster, $info{'port'};
-	} elsif ($firsthba{'type'} ne 'local' || $firsthba{'db'} ne 'all' || 
-	         ($firsthba{'user'} ne 'all' &&
-	         $firsthba{'user'} ne (getpwuid $info{'owneruid'})) || 
-		 $firsthba{'method'} !~ /^(ident|trust)/) {
-	    print STDERR "WARNING: You removed the first pg_hba.conf entry that granted local passwordless access to the database superuser. Disabling startup checks.\n";
-	    $success = cluster_port_running $version, $cluster, $info{'port'};
-	} else {
-	    $success = cluster_port_ready $version, $cluster, $info{'port'}, $info{'socketdir'};
-	}
+    if ($success) {
+	$success = cluster_port_ready $version, $cluster, $info{'port'}, $info{'socketdir'};
     }
 
     if ($success) {
