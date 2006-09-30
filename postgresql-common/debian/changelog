@@ -16,7 +16,7 @@ postgresql-common (63) unstable; urgency=low
   * t/060_obsolete_confparams.t: Add full configuration for 8.1, to test
     8.1->8.2 upgrade.
   * pg_upgradecluster: When upgrading to 8.2, transition changed configuration
-    options: 
+    options:
     - preload_libraries -> shared_preload_libraries
     - australian_timezones -> timezone_abbreviations
   * pg_ctlcluster: Instead of parsing pg_hba.conf, just try to connect with
