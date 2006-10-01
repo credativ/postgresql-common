@@ -158,7 +158,7 @@ close F;
 chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
 
 like_program_out 'postgres', "pg_ctlcluster $version main start", 0, 
-    qr/WARNING.*invalid pg_hba.conf/i,
+    qr/WARNING.*connection to the database failed.*pg_hba.conf/is,
     'pg_ctlcluster start warns about invalid pg_hba.conf';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
 
@@ -169,8 +169,8 @@ close F;
 chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
 
 like_program_out 'postgres', "pg_ctlcluster $version main start", 0,
-    qr/WARNING.*pg_hba.conf.*passwordless/i,
-    'pg_ctlcluster start warns about invalid pg_hba.conf';
+    qr/WARNING.*connection to the database failed.*postgres/is,
+    'pg_ctlcluster start warns about absence of passwordless superuser connection';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
 
 # restore pg_hba.conf

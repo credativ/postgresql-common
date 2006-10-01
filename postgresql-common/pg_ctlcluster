@@ -104,22 +104,11 @@ sub cluster_port_ready {
 
     # probe until we get three successful or failed connections in a row
     $ENV{'PGPASSWORD'} = 'foo'; # prevent hangs if superuser cannot connect withouth password
+    my $out;
     while ($n < ($result ? 10 : 3)) {
         select undef, undef, undef, 0.5;
-        my $out = `$psql -h '$sd' --port $p -l 2>&1 >/dev/null`;
-	# if connection failed because of a FATAL error, then we assume that
-	# the db superuser cannot connect without a password; otherwise we
-	# retry.
+        $out = `$psql -h '$sd' --port $p -l 2>&1 >/dev/null`;
 
-	if ($out =~ 'FATAL:') {
-	    print STDERR "Connection to the database failed:\n$out\n";
-	    if ($out =~ 'pg_hba.conf') {
-		print STDERR "WARNING: Invalid pg_hba.conf, client connections will fail\n";
-	    } else {
-		print STDERR "WARNING: You probably removed the first pg_hba.conf entry that granted local passwordless access to the database superuser. Disabling startup checks.\n";
-	    }
-	    return cluster_port_running $v, $c, $p;
-	}
         if ($? == $result) {    
             $n++;
         } else {
@@ -128,6 +117,10 @@ sub cluster_port_ready {
         $result = $?;
     }
 
+    if ($out =~ 'FATAL:') {
+	print STDERR "WARNING: connection to the database failed, disabling startup checks:\n$out\n";
+	return cluster_port_running $v, $c, $p;
+    }
     return !$result;
 }
 

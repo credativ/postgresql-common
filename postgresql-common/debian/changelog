@@ -1,8 +1,10 @@
 postgresql-common (64) unstable; urgency=low
 
-  *
+  * Fix pg_ctlcluster regression from 63: 'database system is starting up'
+    fatal error message caused immediate abortion of startup checks. Make the
+    check easier and more robust, adapt test cases accordingly.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 30 Sep 2006 13:58:05 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun,  1 Oct 2006 18:04:50 +0200
 
 postgresql-common (63) unstable; urgency=low
 
