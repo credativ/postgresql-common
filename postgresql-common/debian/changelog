@@ -3,8 +3,10 @@ postgresql-common (64) unstable; urgency=low
   * Fix pg_ctlcluster regression from 63: 'database system is starting up'
     fatal error message caused immediate abortion of startup checks. Make the
     check easier and more robust, adapt test cases accordingly.
+  * t/020_create_sql_remove.t: Add check that PL/Perl works. Check that
+    -plperl-X.Y. is installed in t/001_packages.t.
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  1 Oct 2006 18:04:50 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun,  1 Oct 2006 19:08:44 +0200
 
 postgresql-common (63) unstable; urgency=low
 
