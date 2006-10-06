@@ -12,8 +12,10 @@ postgresql-common (64) unstable; urgency=low
     - Drop 'postgres' db in 8.1+ target cluster if the source cluster already
       has it.
     - Do not use pg_restore's --create for template1.
+    - Fix hardcoded library paths before dumping/restoring the cluster, not
+      after, to avoid error messages about failed library loads.
 
- -- Martin Pitt <mpitt@debian.org>  Fri,  6 Oct 2006 18:24:07 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri,  6 Oct 2006 18:35:46 +0200
 
 postgresql-common (63) unstable; urgency=low
 

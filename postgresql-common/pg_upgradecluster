@@ -328,6 +328,13 @@ if (!fork) {
                 error 'Could not enable access to database';
         }
 
+	print "Fixing hardcoded library paths for stored procedures...\n";
+	(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
+	    $db, '-c', "update pg_proc set probin = decode(replace(\
+		replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
+		'/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape')") == 0 or
+	    error 'Could not fix library paths';
+
         print 'Upgrading database ', $db, "...\n";
         open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
              '-Fc', $db or 
@@ -348,12 +355,6 @@ if (!fork) {
         close SOURCE;
         ($? == 0) or exit 1;
         close SINK;
-        print "Fixing hardcoded library paths for stored procedures...\n";
-        (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', '-d',
-            $db, '-c', "update pg_proc set probin = decode(replace(\
-                replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
-                '/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape')") == 0 or
-            error 'Could not fix library paths';
         # FIXME: we will get an error on template1 since it already exists
         exit 1 if $db ne 'template1' && $? != 0;
         print 'Analyzing database ', $db, "...\n";
