@@ -5,8 +5,15 @@ postgresql-common (64) unstable; urgency=low
     check easier and more robust, adapt test cases accordingly.
   * t/020_create_sql_remove.t: Add check that PL/Perl works. Check that
     -plperl-X.Y. is installed in t/001_packages.t.
+  * t/{040_upgrade.t,041_upgrade_custompaths.t}: Check for pg_restore error
+    messages during upgrade.
+  * pg_upgradecluster: Avoid pg_restore errors during upgrade (they were
+    nonfatal, but look ugly:)
+    - Drop 'postgres' db in 8.1+ target cluster if the source cluster already
+      has it.
+    - Do not use pg_restore's --create for template1.
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  1 Oct 2006 19:08:44 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri,  6 Oct 2006 18:24:07 +0200
 
 postgresql-common (63) unstable; urgency=low
 

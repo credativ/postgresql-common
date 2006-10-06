@@ -315,6 +315,11 @@ if (!fork) {
     # Upgrade databases
     for my $db (keys %databases) {
         next if $db eq 'template0';
+
+	if ($db eq 'postgres' && $newversion ge '8.1') {
+	    (system 'dropdb', '--cluster', "$newversion/$cluster", 'postgres');
+	}
+
         unless ($databases{$db}) {
             print "Temporary enabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
@@ -329,11 +334,12 @@ if (!fork) {
             error 'Could not execute pg_dump for old cluster';
 	if ($upgrade_scripts) {
 	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-		'-X', 'no-data-for-failed-tables', '-d', 'template1', '-C' or 
+		'-X', 'no-data-for-failed-tables', '-d', 'template1', 
+		($db eq 'template1' ? '-O' : '-C') or 
 		error 'Could not execute pg_restore for new cluster';
 	} else {
 	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-		'-d', 'template1', '-C' or 
+		'-d', 'template1', ($db eq 'template1' ? '-O' : '-C') or 
 		error 'Could not execute pg_restore for new cluster';
 	}
         while (read SOURCE, $buffer, 1048576) {

@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 68;
+use Test::More tests => 69;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
@@ -73,6 +73,7 @@ is_program_out 'postgres', "psql -qc 'alter group foo rename to gfoo' template1"
 # Upgrade to latest version
 my $outref;
 is ((exec_as 0, "pg_upgradecluster $MAJORS[0] upgr", $outref, 0), 0, 'pg_upgradecluster succeeds');
+unlike $$outref, qr/^pg_restore: /m, 'no pg_restore error messages during upgrade';
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
