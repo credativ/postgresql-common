@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 29;
+use Test::More tests => 30;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -36,6 +36,7 @@ is_program_out 'nobody', 'pg_lsclusters -h', 0,
 my $outref;
 is ((exec_as 0, "pg_upgradecluster $MAJORS[0] upgr /tmp/psql-common-testsuite", $outref, 0), 0, 'pg_upgradecluster succeeds');
 unlike $$outref, qr/^pg_restore: /m, 'no pg_restore error messages during upgrade';
+unlike $$outref, qr/^[A-Z]+:  /m, 'no server error messages during upgrade';
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 

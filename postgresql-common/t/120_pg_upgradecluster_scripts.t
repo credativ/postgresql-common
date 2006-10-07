@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 32;
+use Test::More tests => 33;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -66,6 +66,7 @@ close F;
 # upgrade cluster
 my $outref;
 is ((exec_as 0, "pg_upgradecluster $MAJORS[0] main", $outref, 0), 0, 'pg_upgradecluster succeeds');
+unlike $$outref, qr/^[A-Z]+:  /m, 'no server error messages during upgrade';
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 

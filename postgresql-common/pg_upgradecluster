@@ -296,19 +296,25 @@ if (!fork) {
     close F;
     error 'could not get list of databases' if $?;
 
-    # Upgrade roles (global objects)
+    # real global objects data (roles)
     print "Creating globals...\n";
     open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'},
-         '-g', '-c' or 
-        error 'Could not execute pg_dumpall for old cluster';
-    open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
-        '-q', '-d', 'template1' or 
-        error 'Could not execute psql for new cluster';
+         '-g' or error 'Could not execute pg_dumpall for old cluster';
+    my $data = '';
     while (read SOURCE, $buffer, 1048576) {
-        print SINK $buffer;
+	$data .= $buffer;
     }
     close SOURCE;
     ($? == 0) or exit 1;
+
+    # remove creation of db superuser role to avoid error message
+    $data =~ s/^CREATE (ROLE|USER) $owner;\s*$//m;
+
+    # create global objects int target cluster
+    open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
+        '-q', '-d', 'template1' or 
+        error 'Could not execute psql for new cluster';
+    print SINK $data;
     close SINK;
     ($? == 0) or exit 1;
     
