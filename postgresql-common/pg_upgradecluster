@@ -361,8 +361,6 @@ if (!fork) {
         close SOURCE;
         ($? == 0) or exit 1;
         close SINK;
-        # FIXME: we will get an error on template1 since it already exists
-        exit 1 if $db ne 'template1' && $? != 0;
         print 'Analyzing database ', $db, "...\n";
         (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
             '-d', $db, '-c', 'ANALYZE') == 0 or
