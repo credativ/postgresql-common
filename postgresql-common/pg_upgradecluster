@@ -317,7 +317,7 @@ if (!fork) {
         next if $db eq 'template0';
 
 	if ($db eq 'postgres' && $newversion ge '8.1') {
-	    (system 'dropdb', '--cluster', "$newversion/$cluster", 'postgres');
+	    (system 'dropdb', '--cluster', "$newversion/$cluster", '-q', 'postgres');
 	}
 
         unless ($databases{$db}) {
