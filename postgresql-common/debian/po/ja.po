@@ -1,0 +1,115 @@
+# Copyright (C) 2006 Martin Pitt <mpitt@debian.org>
+# This file is distributed under the same license as the postgresql-common package.
+# Hideki Yamane <henrich@debian.or.jp>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 65\n"
+"Report-Msgid-Bugs-To: mpitt@debian.org\n"
+"POT-Creation-Date: 2006-10-10 00:06+0900\n"
+"PO-Revision-Date: 2006-10-10 00:00+0900\n"
+"Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
+"Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid "Obsolete major version ${old}"
+msgstr "利用できなくなったメジャーバージョン ${old}"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid ""
+"The PostgreSQL version ${old} is obsolete, but you still have the server and/"
+"or client package installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade your existing "
+"${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr ""
+"PostgreSQL バージョン ${old} は既に利用できなくなっていますが、サーバおよびク"
+"ライアント用パッケージがインストールされています。最新のパッケージ "
+"(postgresql-${latest} と postgresql-client-${latest}) をインストールして、現"
+"在の ${oldversion} クラスタを pg_upgradecluster コマンドを使ってアップグレー"
+"ドしてください (詳細は man ページを参照)。"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid ""
+"Please be aware that the installation of postgresql-${latest} will "
+"automatically create a default cluster ${latest}/main. If you want to "
+"upgrade the ${old}/main cluster, you need to remove the already existing "
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
+msgstr ""
+"postgresql-${latest} のインストールでは自動的にデフォルトのクラスタ "
+"${latest}/main が作成されることに注意してください。${old}/main クラスタをアッ"
+"プグレードしたい場合は、既にある ${latest} クラスタを削除する必要があります "
+"(pg_dropcluster --stop ${latest} main 、詳細は manpage を参照してください)。"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid ""
+"The old server and client packages are not supported any more. After having "
+"upgraded the existing clusters, you should remove the postgresql-${old} and "
+"postgresql-client-${old} packages."
+msgstr ""
+"以前のサーバ・クライアントパッケージはもはやサポートされていません。現在のク"
+"ラスタをアップグレード後、postgresql-${old} パッケージと postgresql-client-"
+"${old} パッケージを削除する必要があります。"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "Untransitioned postgresql package"
+msgstr "postgresql パッケージが移行できません"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"The current postgresql package is in state 'removed', but its data and "
+"configuration files are still present in the system. This is  incompatible "
+"with the new multiversion/multicluster structure."
+msgstr ""
+"現在の postgresql パッケージは「削除」状態にありますが、システム上にまだデー"
+"タと設定ファイルがあります。これは新しいマルチバージョン/マルチクラスタ構造と"
+"互換性がありません。"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "You need to do one of the following:"
+msgstr "以下のどれかを選ぶ必要があります:"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"(1) If you do not need the databases and configuration files any more, purge "
+"the old packages (dpkg -P postgresql postgresql-client)."
+msgstr ""
+"(1) もはやデータベースや設定ファイルを必要としていない場合は、以前のパッケー"
+"ジを完全に削除してください (dpkg -P postgresql postgresql-client)。"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"(2) If you want to retain the current databases and configuration files, "
+"upgrade to the transitional packages by installing the latest version of "
+"'postgresql' (apt-get install postgresql)."
+msgstr ""
+"(2) 現在のデータベースや設定ファイルを残したい場合は、最新バージョンの "
+"'postgresql' をインストールして移行用パッケージへのアップグレードをしてくださ"
+"い (apt-get install postgresql)。"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "After that you can reattempt this installation."
+msgstr "その後、インストールを再試行してください。"
