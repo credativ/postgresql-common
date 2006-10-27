@@ -1,6 +1,6 @@
 postgresql-common (66) unstable; urgency=low
 
-  * Add Japanese debconf translations. Thanks to Hideki Yamane! 
+  * Add Japanese debconf translations. Thanks to Hideki Yamane!
     Closes: #393055
   * pg_upgradecluster: Use -X no-data-for-failed-tables only for 8.1. In
     8.2beta2 this got renamed to --no-data-for-failed-tables.
