@@ -346,10 +346,17 @@ if (!fork) {
              '-Fc', $db or 
             error 'Could not execute pg_dump for old cluster';
 	if ($upgrade_scripts) {
-	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-		'-X', 'no-data-for-failed-tables', '-d', 'template1', 
-		($db eq 'template1' ? '-O' : '-C') or 
-		error 'Could not execute pg_restore for new cluster';
+	    if ($newversion eq '8.1') {
+		open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
+		    '-X', 'no-data-for-failed-tables', '-d', 'template1', 
+		    ($db eq 'template1' ? '-O' : '-C') or 
+		    error 'Could not execute pg_restore for new cluster';
+	    } else {
+		open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
+		    '--no-data-for-failed-tables', '-d', 'template1', 
+		    ($db eq 'template1' ? '-O' : '-C') or 
+		    error 'Could not execute pg_restore for new cluster';
+	    }
 	} else {
 	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
 		'-d', 'template1', ($db eq 'template1' ? '-O' : '-C') or 
