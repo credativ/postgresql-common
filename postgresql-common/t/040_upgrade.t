@@ -50,8 +50,13 @@ is_program_out 'nobody', 'psql -Atc "select inc3(3)" test', 0, "6\n",
 # create user and group with same name to check clashing role name on >= 8.1
 is_program_out 'postgres', "psql -qc 'create user foo' template1", 0, '',
     'create user foo';
-is_program_out 'postgres', "psql -qc 'create group foo' template1", 0, '', 
-    'create group foo';
+if ($MAJORS[0] lt '8.1') {
+    is_program_out 'postgres', "psql -qc 'create group foo' template1", 0, '', 
+	'create group foo';
+} else {
+    is_program_out 'postgres', "psql -qc 'create group gfoo' template1", 0, '', 
+	'create group gfoo';
+}
 
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -65,10 +70,16 @@ Bob|1
 ', 'check SELECT output');
 
 # Attempt upgrade, should fail due to clashing user and group
-like_program_out 0, "pg_upgradecluster $MAJORS[0] upgr", 1, qr/uniquely renamed/,
-    'pg_upgradecluster fails due to clashing user and group name';
+if ($MAJORS[0] lt '8.1') {
+    like_program_out 0, "pg_upgradecluster $MAJORS[0] upgr", 1, qr/uniquely renamed/,
+	'pg_upgradecluster fails due to clashing user and group name';
 # Rename group to fix it
-is_program_out 'postgres', "psql -qc 'alter group foo rename to gfoo' template1", 0, '', 'rename group foo';
+    is_program_out 'postgres', "psql -qc 'alter group foo rename to gfoo' template1", 0, '', 'rename group foo';
+} else {
+    pass 'Skipping user/group clash tests, not applicable for >= 8.1';
+    pass '...';
+    pass '...';
+}
 
 # Upgrade to latest version
 my $outref;
