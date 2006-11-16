@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 70;
+use Test::More tests => 73;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
@@ -126,6 +126,9 @@ testnc|f
 
 # stop servers, clean up
 is ((system "pg_dropcluster $MAJORS[0] upgr --stop"), 0, 'Dropping original cluster');
+is ((system "pg_ctlcluster $MAJORS[-1] upgr restart"), 0, 'Restarting upgraded cluster');
+is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "3\n",
+    'upgraded cluster still works after removing old one';
 is ((system "pg_dropcluster $MAJORS[-1] upgr --stop"), 0, 'Dropping upgraded cluster');
 
 check_clean;

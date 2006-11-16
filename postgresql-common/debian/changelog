@@ -3,8 +3,10 @@ postgresql-common (67) UNRELEASED; urgency=low
   *t/040_upgrade.t: Skip the user/group name clash test when there are only
    servers >= 8.1 installed, since it does not apply to them and breaks the
    test suite.
+  * t/040_upgrade.t: Check that the upgraded cluster still works after
+    removing the old one, to check for stale paths of configuration files.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 11 Nov 2006 22:45:29 -0800
+ -- Martin Pitt <mpitt@debian.org>  Wed, 15 Nov 2006 23:11:15 -0800
 
 postgresql-common (66) unstable; urgency=low
 
