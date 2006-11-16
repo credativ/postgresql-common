@@ -1,4 +1,4 @@
-postgresql-common (67) UNRELEASED; urgency=low
+postgresql-common (67) unstable; urgency=low
 
   *t/040_upgrade.t: Skip the user/group name clash test when there are only
    servers >= 8.1 installed, since it does not apply to them and breaks the
