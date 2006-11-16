@@ -39,6 +39,25 @@ sub adapt_conffiles {
         }
     }
 
+    # Arguments: <string>, <from>, <to>
+    sub strrepl {
+        my ($s, $f, $t) = @_;
+        for(;;) {
+            my $i = index $s, $f;
+            last if $i < 0;
+            substr($s, $i, (length $f)) = $t;
+        }
+        return $s;
+    }
+
+    # adapt paths to configuration files
+    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+	'hba_file', strrepl($c{'hba_file'}, $version, $newversion);
+    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+	'ident_file', strrepl($c{'ident_file'}, $version, $newversion);
+    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+	'external_pid_file', strrepl($c{'external_pid_file'}, $version, $newversion);
+
     # tcpip_socket transition
     my $tcpip_socket = config_bool $c{'tcpip_socket'};
     deprecate \%c, 'virtual_host', 'deprecated in favor of listen_addresses';
