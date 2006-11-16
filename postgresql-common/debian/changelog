@@ -9,8 +9,10 @@ postgresql-common (67) UNRELEASED; urgency=low
     cluster, so that they do not refer to the files of the old cluster. (This
     fixes an upgrade regression introduced in version 62).
   * debian/supported-versions: Add Ubuntu 7.04.
+  * Add Italian debconf translations. Thanks to Luca Monducci
+    <luca.mo@tiscali.it>! Closes: #396947
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 16 Nov 2006 00:06:03 -0800
+ -- Martin Pitt <mpitt@debian.org>  Thu, 16 Nov 2006 00:11:58 -0800
 
 postgresql-common (66) unstable; urgency=low
 
