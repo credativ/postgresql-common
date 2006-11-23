@@ -109,20 +109,24 @@ sub move_conffile {
 
 sub configure_7_4 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_timestamp', 'true';
 }
 
 sub configure_8_0 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
 }
 
 sub configure_8_1 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
 }
 
 sub configure_8_2 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
 }
 
 # Set up the default pg_hba.conf file:
