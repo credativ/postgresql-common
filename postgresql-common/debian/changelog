@@ -1,3 +1,9 @@
+postgresql-common (68) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Add Debian 4.0. Closes: #399978
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 24 Nov 2006 00:40:50 +0100
+
 postgresql-common (67) unstable; urgency=low
 
   *t/040_upgrade.t: Skip the user/group name clash test when there are only
