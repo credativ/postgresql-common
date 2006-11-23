@@ -1,8 +1,10 @@
 postgresql-common (68) UNRELEASED; urgency=low
 
   * debian/supported-versions: Add Debian 4.0. Closes: #399978
+  * debian/postgresql-common.postinst: Use adduser option --quiet for adding
+    postgres to ssl-cert. Closes: #399979
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 24 Nov 2006 00:40:50 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 24 Nov 2006 00:42:16 +0100
 
 postgresql-common (67) unstable; urgency=low
 
