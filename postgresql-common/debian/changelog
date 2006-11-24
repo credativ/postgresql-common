@@ -5,8 +5,10 @@ postgresql-common (68) UNRELEASED; urgency=low
     postgres to ssl-cert. Closes: #399979
   * pg_createcluster: Enable timestamps in log files by default. Other system
     log files have timestamps, too, and they are useful. Closes: #395554
+  * t/040_upgrade.t: Fix number of tests if oldest installed PostgreSQL
+    version is < 8.0.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 24 Nov 2006 00:56:08 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 24 Nov 2006 21:01:30 +0100
 
 postgresql-common (67) unstable; urgency=low
 

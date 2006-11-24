@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 72;
+use Test::More tests => 73;
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
@@ -77,6 +77,7 @@ if ($MAJORS[0] lt '8.1') {
     is_program_out 'postgres', "psql -qc 'alter group foo rename to gfoo' template1", 0, '', 'rename group foo';
 } else {
     pass 'Skipping user/group clash tests, not applicable for >= 8.1';
+    pass '...';
     pass '...';
     pass '...';
 }
