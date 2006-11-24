@@ -1,4 +1,4 @@
-postgresql-common (68) UNRELEASED; urgency=low
+postgresql-common (68) unstable; urgency=low
 
   * debian/supported-versions: Add Debian 4.0. Closes: #399978
   * debian/postgresql-common.postinst: Use adduser option --quiet for adding
