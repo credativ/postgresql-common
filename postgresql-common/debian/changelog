@@ -2,6 +2,7 @@ postgresql-common (69) UNRELEASED; urgency=low
 
   * debian/supported_versions: Gracefully fall back on an unknown
     distribution, instead of failing package installation completely.
+    Closes: #400628
   * debian/supported_versions: Some minor factorization.
 
  -- Martin Pitt <mpitt@debian.org>  Mon, 27 Nov 2006 19:32:24 +0100
