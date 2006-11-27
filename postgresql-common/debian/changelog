@@ -1,3 +1,10 @@
+postgresql-common (69) UNRELEASED; urgency=low
+
+  * debian/supported_versions: Gracefully fall back on an unknown
+    distribution, instead of failing package installation completely.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 27 Nov 2006 19:04:09 +0100
+
 postgresql-common (68) unstable; urgency=low
 
   * debian/supported-versions: Add Debian 4.0. Closes: #399978

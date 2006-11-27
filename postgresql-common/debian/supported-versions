@@ -48,8 +48,9 @@ if type lsb_release >/dev/null 2>/dev/null; then
             ;;
 
         *)
-            echo "Unknown distribution: $DISTRO"
-            exit 1
+            echo "supported_versions: WARNING! Unknown distribution: $DISTRO" >&2
+            echo "Please submit this as a bug report to your distribution." >&2
+            /bin/echo -e "8.1\n8.2"
             ;;
     esac
 else
