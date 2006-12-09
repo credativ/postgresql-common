@@ -1,0 +1,123 @@
+# postgresql-common po-debconf translation to spanish
+# Copyright (C) 2006 Software in the Public Interest, SPI Inc.
+# This file is distributed under the same license as the postgresql-common
+# package.
+#
+# Changes:
+# - Initial translation
+#       Javier Fernández-Sanguino , 2006
+#
+#
+#  Traductores, si no conoce el formato PO, merece la pena leer la 
+#  documentación de gettext, especialmente las secciones dedicadas a este
+#  formato, por ejemplo ejecutando:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+# Equipo de traducción al español, por favor lean antes de traducir
+# los siguientes documentos:
+#
+# - El proyecto de traducción de Debian al español
+#   http://www.debian.org/intl/spanish/
+#   especialmente las notas y normas de traducción en
+#   http://www.debian.org/intl/spanish/notas
+#
+# - La guía de traducción de po's de debconf:
+#   /usr/share/doc/po-debconf/README-trans
+#   o http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+# Si tiene dudas o consultas sobre esta traducción consulte con el último
+# traductor (campo Last-Translator) y ponga en copia a la lista de
+# traducción de Debian al español (<debian-l10n-spanish@lists.debian.org>)
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: postgresql-common 68\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-11-26 05:48+0100\n"
+"PO-Revision-Date: 2006-12-08 21:29+0100\n"
+"Last-Translator: Javier Fernández-Sanguino <jfs@debian.org>\n"
+"Language-Team: Debian Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid "Obsolete major version ${old}"
+msgstr "Versión principal ${old} obsoleta"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid ""
+"The PostgreSQL version ${old} is obsolete, but you still have the server and/"
+"or client package installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade your existing "
+"${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr "La versión de PostgreSQL ${old} está obsoleta, pero aún tiene instalado el paquete del servidor y/o del cliente. Debe instalar las últimas versiones de los paquetes (postgresql-${latest} y postgresql-client-${latest}) y actualizar sus clústers ${oldversion} con la orden «pg_upgradecluster» (consulte la página del manual)."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid ""
+"Please be aware that the installation of postgresql-${latest} will "
+"automatically create a default cluster ${latest}/main. If you want to "
+"upgrade the ${old}/main cluster, you need to remove the already existing "
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
+msgstr "Tenga en cuenta que la instalación de postgresql-${latest} creará automáticamente un clúster por omisión ${latest}/main. Tiene que borrar el clúster ${latest} existente («pg_dropcluster --stop ${latest}) si desea actualizar el clúster ${old}/main, consulte la página de manual para conocer los detalles."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid ""
+"The old server and client packages are not supported any more. After having "
+"upgraded the existing clusters, you should remove the postgresql-${old} and "
+"postgresql-client-${old} packages."
+msgstr "Ya no se da soporte a los paquetes antiguos de cliente y servidor. Debería eliminar los paquetes postgresql-${old} y postgresql-client-${old} después de actualizar los clústers que tenga."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "Untransitioned postgresql package"
+msgstr "Paquete postgresql que no ha hecho la transición"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"The current postgresql package is in state 'removed', but its data and "
+"configuration files are still present in the system. This is  incompatible "
+"with the new multiversion/multicluster structure."
+msgstr "El paquete postgresql actual está en estado «removed» (eliminado), pero aún tiene los ficheros de configuración y los datos en su sistema. Esto no es compatible con la nueva estructura multiversión/multiclúster."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "You need to do one of the following:"
+msgstr "Debe hacer una de las siguientes tareas:"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"(1) If you do not need the databases and configuration files any more, purge "
+"the old packages (dpkg -P postgresql postgresql-client)."
+msgstr "(1) Si no necesita las bases de datos ni los ficheros de configuración purgue los paquetes antiguos («dpkg -P postgresql postgresql-client»)."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"(2) If you want to retain the current databases and configuration files, "
+"upgrade to the transitional packages by installing the latest version of "
+"'postgresql' (apt-get install postgresql)."
+msgstr "(2) Debe actualizarse a los paquetes de transición instalando la última versión de «postgresql» («apt-get install postgresql») si desea mantener las bases de datos y ficheros de configuración actuales."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "After that you can reattempt this installation."
+msgstr "Una vez haya hecho esto puede reintentar esta instalación."
