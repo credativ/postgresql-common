@@ -1,5 +1,7 @@
-postgresql-common (69) UNRELEASED; urgency=low
+postgresql-common (69) unstable; urgency=medium
 
+  * Urgency medium, only safe fixes and this needs to go into Etch due to
+    first bug fix.
   * debian/supported_versions: Gracefully fall back on an unknown
     distribution, instead of failing package installation completely.
     Closes: #400628
