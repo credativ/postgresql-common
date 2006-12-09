@@ -6,8 +6,13 @@ postgresql-common (69) UNRELEASED; urgency=low
   * debian/supported_versions: Some minor factorization.
   * Add Spanish debconf translations, thanks to Javier Fernández-Sanguino
     Peña! Closes: #402198
+  * pg_createcluster: Add --locale and the various --lc_* options that initdb
+    supports, and mention in POD that directly setting --encoding is not
+    recommended. Closes: #395083
+  * t/050_encodings.t: Use pg_createcluster's new --locale option in some test
+    cases.
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  9 Dec 2006 12:53:54 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat,  9 Dec 2006 14:01:08 +0100
 
 postgresql-common (68) unstable; urgency=low
 

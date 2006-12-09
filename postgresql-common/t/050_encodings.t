@@ -21,7 +21,7 @@ sub check_cluster {
 	is ((system "LC_ALL='$locale' pg_createcluster --encoding $enc --start $v $cluster_name >/dev/null 2>&1"), 0,
 		"pg_createcluster version $v for $locale with --encoding succeeded");
     } else {
-	is ((system "LC_ALL='$locale' pg_createcluster --start $v $cluster_name >/dev/null 2>&1"), 0,
+	is ((system "pg_createcluster --start --locale=$locale $v $cluster_name >/dev/null 2>&1"), 0,
 		"pg_createcluster version $v for $locale without --encoding succeeded");
     }
 

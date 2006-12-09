@@ -34,7 +34,13 @@ sub get_encoding_from_locale {
     iso88598 ISO_8859_8 CP1251 WIN CP1256 WIN1256 CP1258 TCVN KOI8-R KOI8 
     CP866 ALT/;
 
-    $locale_charset = `locale charmap`;
+    if ($lc_ctype) {
+        $locale_charset = `LC_ALL="$lc_ctype" locale charmap`;
+    } elsif ($locale) {
+        $locale_charset = `LC_ALL="$locale" locale charmap`;
+    } else {
+        $locale_charset = `locale charmap`;
+    }
     chomp $locale_charset;
     return $localeenc_pgenc{$locale_charset} || 'SQL_ASCII'; 
 }
@@ -57,6 +63,13 @@ sub init_db {
         $encoding = get_encoding_from_locale();
     }
     push @initdb, ('--encoding', $encoding) if $encoding;
+    push @initdb, ('--locale', $locale) if $locale;
+    push @initdb, ('--lc-collate', $lc_collate) if $lc_collate;
+    push @initdb, ('--lc-ctype', $lc_ctype) if $lc_ctype;
+    push @initdb, ('--lc-messages', $lc_messages) if $lc_messages;
+    push @initdb, ('--lc-monetary', $lc_monetary) if $lc_monetary;
+    push @initdb, ('--lc-numeric', $lc_numeric) if $lc_numeric;
+    push @initdb, ('--lc-time', $lc_time) if $lc_time;
 
     if (fork) {
         wait;
@@ -197,7 +210,10 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
     'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf,
-    'p|port=i' => \$port);
+    'p|port=i' => \$port, 'locale=s' => \$locale,
+    'lc-collate=s' => \$lc_collate, 'lc-ctype=s' => \$lc_ctype,
+    'lc-messages=s' => \$lc_messages, 'lc-monetary=s' => \$lc_monetary,
+    'lc-numeric=s' => \$lc_numeric, 'lc-time=s' => \$lc_time);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -216,6 +232,10 @@ Options:
                 owned by 'postgres', /tmp for other clusters)
   -l <dir>      path to desired log file (default:
                 /var/log/postgresql/postgresql-<version>-<cluster>.log)
+  --locale <encoding>
+                set cluster locale (default: inherit from environment)
+  --lc-collate/ctype/messages/monetary/numeric/time <locale>
+                like --locale, but only set for a particular category
   -e <encoding> Default encoding (default: derived from locale)
   -p <port>     port number (default: next free port starting from 5432)
   --start       start the cluster after creating it
@@ -527,13 +547,36 @@ not exist, it is created with appropriate permissions.
 Explicitly set the path for the L<postmaster(1)> server log file. Defaults to
 C</var/log/postgresql/postgresql->I<version>C<->I<cluster>C<.log>.
 
+=item B<--locale=>I<locale>
+
+Set the default locale for the database cluster. If this option is not
+specified, the locale is inherited from the environment that
+B<pg_createcluster> runs in.
+
+=item B<--lc-collate=>I<locale>
+
+=item B<--lc-ctype=>I<locale>
+
+=item B<--lc-messages=>I<locale>
+
+=item B<--lc-monetary=>I<locale>
+
+=item B<--lc-numeric=>I<locale>
+
+=item B<--lc-time=>I<locale>
+
+Like B<--locale>, but only sets the locale in the specified category.
+
 =item B<-e> I<encoding>, B<--encoding=>I<encoding>
 
 Select the encoding of the template database. This will also be the default
 encoding of any database you create later, unless you override it there. The
 default is derived from the locale, or SQL_ASCII if that does not work.  The
 character sets supported by the PostgreSQL server are described in the
-documentation.
+documentation. 
+
+B<Note>: It is not recommended to set this option directly! Set the locale
+instead.
 
 =item B<-p> I<port>, B<--port=>I<port>
 
