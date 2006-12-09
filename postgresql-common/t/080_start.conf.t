@@ -77,7 +77,12 @@ is_program_out 'postgres', "pg_ctlcluster $v main start", 0, '';
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
 
 # upgrade cluster
-like_program_out 0, "pg_upgradecluster $v main", 0, qr/Success/;
+if ($#MAJORS == 0) {
+    pass 'only one major version installed, skipping upgrade test';
+    pass '...';
+} else {
+    like_program_out 0, "pg_upgradecluster $v main", 0, qr/Success/;
+}
 
 # check start.conf of old and upgraded cluster
 is ((get_cluster_start_conf $v, 'main'), 'manual', 
@@ -86,10 +91,16 @@ is ((get_cluster_start_conf $MAJORS[-1], 'main'), 'manual',
     'get_cluster_start_conf for new cluster returns manual');
 
 # clean up
-is ((system "pg_dropcluster $v main"), 0, 
-    'dropping old cluster');
+if ($#MAJORS == 0) {
+    pass '...';
+} else {
+    is ((system "pg_dropcluster $v main"), 0, 
+        'dropping old cluster');
+}
+
 is ((system "pg_dropcluster $MAJORS[-1] main --stop"), 0, 
     'dropping upgraded cluster');
+
 is_program_out 'postgres', 'pg_lsclusters -h', 0, '', 'no clusters any more';
 
 # create cluster with --start-conf option

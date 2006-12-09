@@ -54,7 +54,7 @@ is ((system "pg_ctlcluster $MAJORS[0] old start >/dev/null"), 0, "starting clust
 is ((system "pg_ctlcluster $MAJORS[-1] new1 start >/dev/null"), 0, "starting cluster $new1");
 is ((system "pg_ctlcluster $MAJORS[-1] new2 start >/dev/null"), 0, "starting cluster $new2");
 
-like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5432.*5434.*5440.*/s,
+like_program_out 'postgres', 'pg_lsclusters -h | sort -k3', 0, qr/.*5432.*5434.*5440.*/s,
     'clusters have the correct ports, skipping used 5433';
 
 # move user_clusters aside for the test; this will ensure that client programs
@@ -237,7 +237,7 @@ unlink '/etc/postgresql-common/user_clusters' or die
 PgCommon::set_conf_value $MAJORS[0], 'old', 'postgresql.conf',
     'port', '5440';
 is ((system "pg_ctlcluster $MAJORS[0] old restart >/dev/null"), 0, "restarting cluster $old");
-like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/.*5440.*5434.*5440.*/s,
+like_program_out 'postgres', 'pg_lsclusters -h | sort -k3', 0, qr/.*5434.*5440.*5440.*/s,
     'port of first cluster was successfully changed';
 like_program_out 'postgres', "psql -l", 1, 
     qr/no.*default.*man pg_wrapper/i,

@@ -11,8 +11,10 @@ postgresql-common (69) UNRELEASED; urgency=low
     recommended. Closes: #395083
   * t/050_encodings.t: Use pg_createcluster's new --locale option in some test
     cases.
+  * Make testsuite work with just one installed major version (mainly boils
+    down to disabling upgrade tests).
 
- -- Martin Pitt <mpitt@debian.org>  Sat,  9 Dec 2006 14:01:08 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat,  9 Dec 2006 14:37:42 +0100
 
 postgresql-common (68) unstable; urgency=low
 

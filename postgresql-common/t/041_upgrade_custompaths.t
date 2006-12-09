@@ -5,7 +5,12 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 30;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 30;
+
+if ($#MAJORS == 0) {
+    pass 'only one major version installed, skipping upgrade tests';
+    exit 0;
+}
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;

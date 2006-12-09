@@ -9,7 +9,12 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 73;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 73;
+
+if ($#MAJORS == 0) {
+    pass 'only one major version installed, skipping upgrade tests';
+    exit 0;
+}
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
