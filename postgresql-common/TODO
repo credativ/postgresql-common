@@ -5,6 +5,7 @@ Bugs:
 - pg_createcluster with existing cluster: respect symlinks to shared
   postgresql.conf files, never remove symlinks in already existing
   cluster dirs
+- Clean up at purging if /etc/ is there without /var, or vice versa
 
 Transition bugs:
 
