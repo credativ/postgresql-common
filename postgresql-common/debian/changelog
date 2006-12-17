@@ -1,3 +1,13 @@
+postgresql-common (70) UNRELEASED; urgency=low
+
+  * t/050_encodings: Check that $LC_ALL dominates $LANG on pg_createcluster.
+    This reproduces bug #403239.
+  * pg_createcluster: If $LC_ALL is defined, fix $LANG to $LC_ALL. Servers
+    prior to 8.2 get this wrong and fail over an invalid $LANG even if that is
+    dominated by a valid $LC_ALL. Closes: #403239
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 17 Dec 2006 13:24:52 +0100
+
 postgresql-common (69) unstable; urgency=medium
 
   * Urgency medium, only safe fixes and this needs to go into Etch due to

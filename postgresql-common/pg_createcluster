@@ -71,6 +71,12 @@ sub init_db {
     push @initdb, ('--lc-numeric', $lc_numeric) if $lc_numeric;
     push @initdb, ('--lc-time', $lc_time) if $lc_time;
 
+    # pre-8.2 servers do not ignore LANG when LC_ALL is set; work around this
+    # bug
+    if ($_[0] le '8.2' && $ENV{'LC_ALL'}) {
+        $ENV{'LANG'} = $ENV{'LC_ALL'};
+    }
+
     if (fork) {
         wait;
         error 'initdb failed' if $?;

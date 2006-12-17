@@ -8,7 +8,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS+1) * 82 + 10;
+use Test::More tests => ($#MAJORS+1) * 87 + 10;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it
@@ -103,6 +103,16 @@ foreach my $v (@MAJORS) {
     check_cluster $v, 'ru_RU';
     check_cluster $v, 'ru_RU', 'UTF-8';
     check_cluster $v, 'ru_RU.UTF-8';
+
+    # check LC_* over LANG domination
+    is ((system "LANGUAGE= LC_ALL=C LANG=bo_GUS.UTF-8 pg_createcluster --start $v main >/dev/null 2>&1"), 0,
+            "pg_createcluster: LC_ALL dominates LANG");
+    my $outref;
+    is ((exec_as 'postgres', "/usr/lib/postgresql/$v/bin/pg_controldata /var/lib/postgresql/$v/main",
+	    $outref), 0, 'pg_controldata succeeded on cluster');
+    like $$outref, qr/LC_COLLATE:\s*C\s/, 'LC_COLLATE is correct';
+    like $$outref, qr/LC_CTYPE:\s*C\s/, 'LC_CTYPE is correct';
+    is ((system "pg_dropcluster $v main --stop"), 0, 'Dropping cluster');
 }
 
 check_clean;
