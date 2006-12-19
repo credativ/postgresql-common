@@ -52,11 +52,11 @@ sub adapt_conffiles {
 
     # adapt paths to configuration files
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-	'hba_file', strrepl($c{'hba_file'}, $version, $newversion);
+	'hba_file', strrepl($c{'hba_file'}, $version, $newversion) if $c{'hba_file'};
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-	'ident_file', strrepl($c{'ident_file'}, $version, $newversion);
+	'ident_file', strrepl($c{'ident_file'}, $version, $newversion) if $c{'ident_file'};
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-	'external_pid_file', strrepl($c{'external_pid_file'}, $version, $newversion);
+	'external_pid_file', strrepl($c{'external_pid_file'}, $version, $newversion) if $c{'external_pid_file'};
 
     # tcpip_socket transition
     my $tcpip_socket = config_bool $c{'tcpip_socket'};

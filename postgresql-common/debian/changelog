@@ -10,8 +10,11 @@ postgresql-common (70) UNRELEASED; urgency=low
   * t/040_upgrade.t: Check that pg_upgradecluster does not have any stderr
     output (such as error messages from pg_restore, the server, or Perl
     warnings). This uncovers #403529.
+  * pg_upgradecluster: Do not mangle {hba,ident,external_pid}_file values from
+    old postgresql.conf if they do not exist at all. This removes the Perl
+    warnings during upgrades from 7.4. Closes: #403529
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 19 Dec 2006 15:10:57 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 19 Dec 2006 15:16:59 +0100
 
 postgresql-common (69) unstable; urgency=medium
 
