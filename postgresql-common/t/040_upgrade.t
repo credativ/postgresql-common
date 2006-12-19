@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 73;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 72;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -89,11 +89,16 @@ if ($MAJORS[0] lt '8.1') {
 
 # Upgrade to latest version
 my $outref;
-is ((exec_as 0, "pg_upgradecluster $MAJORS[0] upgr", $outref, 0), 0, 'pg_upgradecluster succeeds');
-unlike $$outref, qr/^pg_restore: /m, 'no pg_restore error messages during upgrade';
-unlike $$outref, qr/^[A-Z]+:  /m, 'no server error messages during upgrade';
+is ((exec_as 0, "(pg_upgradecluster $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
+my @err = grep (!/^STDOUT: /, split (/\n/, $$outref));
+if (@err) {
+    fail 'no error messages during upgrade';
+    print (join ("\n", @err));
+} else {
+    pass "no error messages during upgrade";
+}
 
 # Check clusters
 is_program_out 'nobody', 'pg_lsclusters -h', 0, 

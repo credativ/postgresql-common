@@ -7,8 +7,11 @@ postgresql-common (70) UNRELEASED; urgency=low
     dominated by a valid $LC_ALL. Closes: #403239
   * Add Brazilian Portugese debconf translations. Thanks to André Luís Lopes!
     Closes: #403563
+  * t/040_upgrade.t: Check that pg_upgradecluster does not have any stderr
+    output (such as error messages from pg_restore, the server, or Perl
+    warnings). This uncovers #403529.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 19 Dec 2006 12:39:46 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 19 Dec 2006 15:10:57 +0100
 
 postgresql-common (69) unstable; urgency=medium
 
