@@ -5,8 +5,10 @@ postgresql-common (70) UNRELEASED; urgency=low
   * pg_createcluster: If $LC_ALL is defined, fix $LANG to $LC_ALL. Servers
     prior to 8.2 get this wrong and fail over an invalid $LANG even if that is
     dominated by a valid $LC_ALL. Closes: #403239
+  * Add Brazilian Portugese debconf translations. Thanks to André Luís Lopes!
+    Closes: #403563
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 17 Dec 2006 13:24:52 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 19 Dec 2006 12:39:46 +0100
 
 postgresql-common (69) unstable; urgency=medium
 
