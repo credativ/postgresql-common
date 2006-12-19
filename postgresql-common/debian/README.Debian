@@ -76,6 +76,28 @@ manual page):
    pg_lsclusters     - Show a list of all existing clusters and their status.
    pg_upgradecluster - Migrate a cluster from one major version to another one.
 
+Default clusters and upgrading
+------------------------------
+When installing a postgresql-X.Y package from scratch, a default
+cluster 'main' will automatically be created. This operation is
+equivalent to doing 'pg_createcluster X.Y main --start'.
+
+Due to this default cluster, an immediate attempt to upgrade an
+earlier 'main' cluster to a new version will fail and you need to
+remove the newer default cluster first. E. g., if you have
+postgresql-7.4 installed and want to upgrade to 8.1, you first install
+postgresql-8.1:
+
+  apt-get install postgresql-8.1
+
+Then drop the default 8.1 cluster:
+
+  pg_dropcluster 8.1 main --stop
+
+And then upgrade the 7.4 cluster to 8.1:
+
+  pg_upgradecluster 7.4 main
+
 SSL
 ---
 The PostgreSQL server packages support SSL, which provides encrypted and
