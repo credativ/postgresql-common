@@ -1,4 +1,4 @@
-postgresql-common (70) UNRELEASED; urgency=low
+postgresql-common (70) unstable; urgency=low
 
   * t/050_encodings: Check that $LC_ALL dominates $LANG on pg_createcluster.
     This reproduces bug #403239.
