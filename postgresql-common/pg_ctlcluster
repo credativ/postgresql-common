@@ -398,7 +398,7 @@ if ($#ARGV != 2) {
 ($version, $cluster, $action) = @ARGV;
 ($version) = $version =~ /^(\d+\.\d+)$/; # untaint
 ($cluster) = $cluster =~ /^([^'"\s]+)$/; # untaint
-error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
+error 'specified cluster does not exist' unless $version && $cluster && cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 
 unless ($action eq 'stop' || $action eq 'autovac-stop') {
