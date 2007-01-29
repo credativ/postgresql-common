@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: postgresql-common \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-01-13 20:07+0100\n"
+"PO-Revision-Date: 2007-01-21 23:57+0100\n"
+"Last-Translator: Andreas Henriksson <andreas@fatal.se>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid "Obsolete major version ${old}"
+msgstr "Obsolet betydande version ${old}"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid "The PostgreSQL version ${old} is obsolete, but you still have the server and/or client package installed. Please install the latest packages (postgresql-${latest} and postgresql-client-${latest}) and upgrade your existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr "PostgreSQL-versionen ${old} är obsolet, men du har fortfarande server- och/eller klient-paketen installerade. Vänligen installera de senaste paketen (postgresql-${latest} och postgresql-client-${latest}) och uppgradera ditt existerande ${oldversion} kluster med pg_updatecluster (se manualsidan)."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid "Please be aware that the installation of postgresql-${latest} will automatically create a default cluster ${latest}/main. If you want to upgrade the ${old}/main cluster, you need to remove the already existing ${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for details)."
+msgstr "Vänligen var vaken över att installationen av postgresql-${latest} kommer automatiskt skapa ett standard-kluster ${latest}/main. Om du vill uppgradera ${old}/main klustret, kommer du behöva ta bort det redan existerande ${latest} klustret (pg_dropcluster --stop ${latest} main, se manualsida för detaljer)."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:1001
+msgid "The old server and client packages are not supported any more. After having upgraded the existing clusters, you should remove the postgresql-${old} and postgresql-client-${old} packages."
+msgstr "De gamla server- och klient-paketen stöds inte längre. Efter uppgradering av det existreande klustren, bör du ta bort postgresql-${old} och postgresql-client-${old} paketen."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "Untransitioned postgresql package"
+msgstr "Ej omvandlat postgresql paket"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "The current postgresql package is in state 'removed', but its data and configuration files are still present in the system. This is  incompatible with the new multiversion/multicluster structure."
+msgstr "Det nuvarande postgresql-paketet är i läge 'borttagen', men dess data och konfigurationsfiler finns fortfarande kvar på systemet. Detta är inkompatibelt med den nya multiversion/multikluster-strukturen."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "You need to do one of the following:"
+msgstr "Du kommer behöva göra en av följande:"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "(1) If you do not need the databases and configuration files any more, purge the old packages (dpkg -P postgresql postgresql-client)."
+msgstr "(1) Om du inte behöver databasen och konfigurationsflerna mer, rensa (purge) de gamla paketen (dpkg -P postgresql postgresql-client)."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "(2) If you want to retain the current databases and configuration files, upgrade to the transitional packages by installing the latest version of 'postgresql' (apt-get install postgresql)."
+msgstr "(2) Om du vill behålla de nuvarande databaserna och konfigurationsfilerna, uppgradera till omvandlingspaketen genom att installera den senaste versionen av 'postgresql' (apt-get install postgresql)."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "After that you can reattempt this installation."
+msgstr "Efter detta kan du på nytt försöka denna installation."
+

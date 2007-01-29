@@ -1,3 +1,10 @@
+postgresql-common (71) UNRELEASED; urgency=low
+
+  * Add Swedish debconf translations. Thanks to Andreas Henriksson! 
+    Closes: #407865
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 29 Jan 2007 16:10:27 +0100
+
 postgresql-common (70) unstable; urgency=low
 
   * t/050_encodings: Check that $LC_ALL dominates $LANG on pg_createcluster.
