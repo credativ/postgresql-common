@@ -1,6 +1,6 @@
 postgresql-common (71) UNRELEASED; urgency=low
 
-  * Add Swedish debconf translations. Thanks to Andreas Henriksson! 
+  * Add Swedish debconf translations. Thanks to Andreas Henriksson!
     Closes: #407865
   * Add Galician debconf translations. Thanks to Jacobo Tarrio!
     Closes: #408121
