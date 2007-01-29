@@ -12,8 +12,11 @@ lsb_ubuntu() {
         5.10)
             /bin/echo -e "7.4\n8.0\n8.1"
             ;;
-        6.06 | 6.06LTS | 6.10 | 7.04)
+        6.06 | 6.06LTS | 6.10)
             /bin/echo -e "$DEFAULT"
+            ;;
+        7.04)
+            /bin/echo -e "8.2"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2

@@ -4,8 +4,9 @@ postgresql-common (71) UNRELEASED; urgency=low
     Closes: #407865
   * Add Galician debconf translations. Thanks to Jacobo Tarrio!
     Closes: #408121
+  * debian/supported-versions: Only 8.2 is supported in Ubuntu 7.04.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 29 Jan 2007 16:12:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 29 Jan 2007 16:14:49 +0100
 
 postgresql-common (70) unstable; urgency=low
 
