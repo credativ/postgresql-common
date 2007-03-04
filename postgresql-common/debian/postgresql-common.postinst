@@ -26,6 +26,10 @@ Please fix this and reinstall this package." >&2
     # ensure home directory ownership
     chown postgres:postgres /var/lib/postgresql
 
+    # nicer log directory permissions
+    chmod 1775 /var/log/postgresql
+    chown root:postgres /var/log/postgresql
+
     # create socket directory
     [ -d /var/run/postgresql ] || \
        install -d -m 2775 -o postgres -g postgres /var/run/postgresql
