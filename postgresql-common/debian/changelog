@@ -4,8 +4,12 @@ postgresql-common (72) UNRELEASED; urgency=low
     permissions to root:postgres 1775. Closes: #410852
   * Update Russian debconf translations. Thanks to Yuriy Talakan'!
     Closes: #414067
+  * postgresql-common/debian/postgresql-common.dirs: Remove
+    /var/lib/postgresql, so that adduser does not complain about a preexisting
+    directory with the wrong owner any more. This also avoids removing the
+    home directory of postgres when removing the package. Closes: #415444
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 24 Mar 2007 15:56:13 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 24 Mar 2007 16:06:47 +0100
 
 postgresql-common (71) unstable; urgency=low
 
