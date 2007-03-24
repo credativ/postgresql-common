@@ -2,8 +2,10 @@ postgresql-common (72) UNRELEASED; urgency=low
 
   * debian/postgresql-common.postinst: Set default /var/log/postgresql
     permissions to root:postgres 1775. Closes: #410852
+  * Update Russian debconf translations. Thanks to Yuriy Talakan'!
+    Closes: #414067
 
- -- Martin Pitt <mpitt@debian.org>  Sun,  4 Mar 2007 12:20:01 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 24 Mar 2007 15:56:13 +0100
 
 postgresql-common (71) unstable; urgency=low
 

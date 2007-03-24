@@ -1,30 +1,33 @@
+# translation of postgresql-common_71_ru.po to Russian
 # translation of postgresql-common_51_ru.po to Russian
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # Yuriy Talakan' <yt@amur.elektra.ru>, 2006.
+# Yuriy Talakan' <yt@drsk.ru>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common_51_ru\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2006-06-29 23:20+0200\n"
-"PO-Revision-Date: 2006-05-14 15:44+1000\n"
-"Last-Translator: Yuriy Talakan' <yt@amur.elektra.ru>\n"
+"Project-Id-Version: postgresql-common_71_ru\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-01-30 04:34+0100\n"
+"PO-Revision-Date: 2007-03-09 09:36+0900\n"
+"Last-Translator: Yuriy Talakan' <yt@drsk.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1001
 msgid "Obsolete major version ${old}"
-msgstr ""
+msgstr "Устаревшая версия ${old}"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1001
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but you still have the server and/"
 "or client package installed. Please install the latest packages (postgresql-"
@@ -38,7 +41,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -53,7 +56,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:3
+#: ../postgresql-common.templates:1001
 msgid ""
 "The old server and client packages are not supported any more. After having "
 "upgraded the existing clusters, you should remove the postgresql-${old} and "
@@ -65,44 +68,53 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid "Untransitioned postgresql package"
-msgstr ""
+msgstr "Непереходный пакет postgresql"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid ""
 "The current postgresql package is in state 'removed', but its data and "
 "configuration files are still present in the system. This is  incompatible "
 "with the new multiversion/multicluster structure."
 msgstr ""
+"Текущий пакет postgresql в состоянии 'удален', но его данные "
+"и файлы настройки все еще присутствуют в системе. Это несовместимо "
+"с новой многоверсионной/многокластерной структурой."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid "You need to do one of the following:"
-msgstr ""
+msgstr "Вам надо сделать что-то одно из следующего:"
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid ""
 "(1) If you do not need the databases and configuration files any more, purge "
 "the old packages (dpkg -P postgresql postgresql-client)."
 msgstr ""
+"(1) Если Вам более не нужны базы данных и файлы настройки , удалите "
+"старые пакеты (dpkg -P postgresql postgresql-client)."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid ""
 "(2) If you want to retain the current databases and configuration files, "
 "upgrade to the transitional packages by installing the latest version of "
 "'postgresql' (apt-get install postgresql)."
 msgstr ""
+"(2) Если вы хотите оставить текущую базу и файлы настройки, "
+"обновите до переходного пакета путем установки последней версии "
+"'postgresql' (apt-get install postgresql)."
 
 #. Type: note
 #. Description
-#: ../postgresql-common.templates:21
+#: ../postgresql-common.templates:2001
 msgid "After that you can reattempt this installation."
-msgstr ""
+msgstr "После чего можете повторить заново эту установку."
+
