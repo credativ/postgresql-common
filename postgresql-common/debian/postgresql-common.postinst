@@ -7,7 +7,7 @@ SSL_ROOT=/etc/postgresql-common/root.crt
 if [ "$1" = configure ]; then
     # Make sure the administrative user exists
     if ! getent passwd postgres > /dev/null; then
-        adduser --system --quiet --home /var/lib/postgresql \
+        adduser --system --quiet --home /var/lib/postgresql --no-create-home \
             --shell /bin/bash --group --gecos "PostgreSQL administrator" postgres
     fi
 
