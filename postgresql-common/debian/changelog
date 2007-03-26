@@ -1,3 +1,10 @@
+postgresql-common (73) UNRELEASED; urgency=low
+
+  * debian/postgresql-common.dirs: Ship /var/lib/postgresql again, creating it
+    dynamically causes various upgrade failures. Closes: #416146, #416228
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 26 Mar 2007 18:49:24 +0200
+
 postgresql-common (72) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Set default /var/log/postgresql

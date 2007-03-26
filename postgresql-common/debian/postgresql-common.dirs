@@ -1,2 +1,3 @@
 /var/log/postgresql
+/var/lib/postgresql
 /etc/postgresql-common/pg_upgradecluster.d
