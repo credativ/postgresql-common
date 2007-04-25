@@ -13,9 +13,9 @@ lsb_ubuntu() {
             /bin/echo -e "7.4\n8.0\n8.1"
             ;;
         6.06 | 6.06LTS | 6.10)
-            /bin/echo -e "$DEFAULT"
+            /bin/echo -e "$8.1\n8.2"
             ;;
-        7.04)
+        7.04 | 7.10)
             /bin/echo -e "8.2"
             ;;
         *)
@@ -27,8 +27,13 @@ lsb_ubuntu() {
 
 lsb_debian() {
     case "$1" in
-        testing/unstable | testing | unstable | 3.1 | 4.0)
+        # Sarge (backports) and Etch
+        3.1 | 4.0*)
             /bin/echo -e "7.4\n8.1\n8.2"
+            ;;
+        # Lenny and unstable
+        testing/unstable | testing | unstable)
+            /bin/echo -e "8.2"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -55,7 +60,7 @@ if type lsb_release >/dev/null 2>/dev/null; then
         *)
             echo "supported_versions: WARNING! Unknown distribution: $DISTRO" >&2
             echo "Please submit this as a bug report to your distribution." >&2
-            /bin/echo -e "8.1\n8.2"
+            /bin/echo -e "$DEFAULT"
             ;;
     esac
 else
@@ -63,7 +68,8 @@ else
     if [ -e /etc/debian_version ]; then
         echo -e "7.4\n8.1\n8.2";
     else
-        exit 1
+        echo "supported_versions: WARNING: Unknown distribution" >&2
+        /bin/echo -e "$DEFAULT"
     fi
 fi
 

@@ -1,3 +1,15 @@
+postgresql-common (74) UNRELEASED; urgency=low
+
+  * debian/supported_versions: 
+    - Match any 4.0* as Debian Etch to get the correct set of supported
+      versions. Closes: #420915
+    - Add Lenny/unstable: only support 8.2.
+    - Add Ubuntu 7.10.
+    - Don't fail if the distribution cannot be determined at all, only print
+      out a warning.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 25 Apr 2007 19:27:47 +0200
+
 postgresql-common (73) unstable; urgency=low
 
   * debian/postgresql-common.dirs: Ship /var/lib/postgresql again, creating it
