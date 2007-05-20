@@ -22,8 +22,10 @@ postgresql-common (74) UNRELEASED; urgency=low
     necessary for the Sarge->Etch upgrade. Update debian/po/*.po.
   * Remove debian/postgresql-common.preinst, we only needed it for the
     "untransitioned" test.
+  * debian/control: Move cdbs and debhelper from B-D-I to B-D, since we need
+    them for 'clean'.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 15:24:27 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 15:26:23 +0200
 
 postgresql-common (73) unstable; urgency=low
 
