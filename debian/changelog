@@ -15,6 +15,8 @@ postgresql-common (74) UNRELEASED; urgency=low
     in a pretty blunt way, since it does not actually make sense to enforce
     environment variables, etc. It should just not fail when being called from
     a -T perl script. Closes: #422129
+  * debian/postgresql-common.postinst: Do not hide failures of the init
+    script on restart.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 14:23:01 +0200
 
