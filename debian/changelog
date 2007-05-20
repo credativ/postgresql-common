@@ -1,4 +1,4 @@
-postgresql-common (74) UNRELEASED; urgency=low
+postgresql-common (74) unstable; urgency=low
 
   * debian/supported_versions:
     - Match any 4.0* as Debian Etch to get the correct set of supported
