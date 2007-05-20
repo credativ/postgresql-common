@@ -17,8 +17,13 @@ postgresql-common (74) UNRELEASED; urgency=low
     a -T perl script. Closes: #422129
   * debian/postgresql-common.postinst: Do not hide failures of the init
     script on restart.
+  * debian/postgresql-common.config, debian/postgresql-common.templates:
+    Remove the check for an untransitioned postgresql, since it was only
+    necessary for the Sarge->Etch upgrade. Update debian/po/*.po.
+  * Remove debian/postgresql-common.preinst, we only needed it for the
+    "untransitioned" test.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 14:23:01 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 15:24:27 +0200
 
 postgresql-common (73) unstable; urgency=low
 

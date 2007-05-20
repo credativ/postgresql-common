@@ -1,5 +1,0 @@
-#!/bin/sh -e
-# already execute debconf stuff for the untransitioned postgresql package check
-. /usr/share/debconf/confmodule
-db_stop
-exit 0

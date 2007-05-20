@@ -15,21 +15,3 @@ _Description: Obsolete major version ${old}
  The old server and client packages are not supported any more. After
  having upgraded the existing clusters, you should remove the
  postgresql-${old} and postgresql-client-${old} packages.
-
-Template: postgresql-common/untransitioned
-Type: note
-_Description: Untransitioned postgresql package
- The current postgresql package is in state 'removed', but its data
- and configuration files are still present in the system. This is 
- incompatible with the new multiversion/multicluster structure.
- .
- You need to do one of the following:
- .
- (1) If you do not need the databases and configuration files any
- more, purge the old packages (dpkg -P postgresql postgresql-client).
- .
- (2) If you want to retain the current databases and configuration
- files, upgrade to the transitional packages by installing the latest
- version of 'postgresql' (apt-get install postgresql).
- .
- After that you can reattempt this installation.

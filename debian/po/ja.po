@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 65\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2006-10-10 00:06+0900\n"
+"POT-Creation-Date: 2007-05-20 15:20+0200\n"
 "PO-Revision-Date: 2006-10-10 00:00+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -61,55 +61,3 @@ msgstr ""
 "以前のサーバ・クライアントパッケージはもはやサポートされていません。現在のク"
 "ラスタをアップグレード後、postgresql-${old} パッケージと postgresql-client-"
 "${old} パッケージを削除する必要があります。"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "Untransitioned postgresql package"
-msgstr "postgresql パッケージが移行できません"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"The current postgresql package is in state 'removed', but its data and "
-"configuration files are still present in the system. This is  incompatible "
-"with the new multiversion/multicluster structure."
-msgstr ""
-"現在の postgresql パッケージは「削除」状態にありますが、システム上にまだデー"
-"タと設定ファイルがあります。これは新しいマルチバージョン/マルチクラスタ構造と"
-"互換性がありません。"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "You need to do one of the following:"
-msgstr "以下のどれかを選ぶ必要があります:"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"(1) If you do not need the databases and configuration files any more, purge "
-"the old packages (dpkg -P postgresql postgresql-client)."
-msgstr ""
-"(1) もはやデータベースや設定ファイルを必要としていない場合は、以前のパッケー"
-"ジを完全に削除してください (dpkg -P postgresql postgresql-client)。"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"(2) If you want to retain the current databases and configuration files, "
-"upgrade to the transitional packages by installing the latest version of "
-"'postgresql' (apt-get install postgresql)."
-msgstr ""
-"(2) 現在のデータベースや設定ファイルを残したい場合は、最新バージョンの "
-"'postgresql' をインストールして移行用パッケージへのアップグレードをしてくださ"
-"い (apt-get install postgresql)。"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "After that you can reattempt this installation."
-msgstr "その後、インストールを再試行してください。"

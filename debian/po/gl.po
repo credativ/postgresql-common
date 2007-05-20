@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-13 20:07+0100\n"
+"Report-Msgid-Bugs-To: mpitt@debian.org\n"
+"POT-Creation-Date: 2007-05-20 15:20+0200\n"
 "PO-Revision-Date: 2007-01-23 17:33+0100\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
@@ -61,55 +61,3 @@ msgstr ""
 "Xa non hai soporte dos paquetes de servidor e cliente vellos. Despois de "
 "actualizar os clusters existentes debería eliminar os paquetes postgresql-"
 "${old} e postgresql-client-${old}."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "Untransitioned postgresql package"
-msgstr "Paquete de postgresql que non pasou a transición"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"The current postgresql package is in state 'removed', but its data and "
-"configuration files are still present in the system. This is  incompatible "
-"with the new multiversion/multicluster structure."
-msgstr ""
-"O paquete actual de postgresql está no estado \"eliminado\", pero os seus "
-"datos e ficheiros de configuración aínda residen no sistema. Isto é "
-"incompatible coa nova estructura multiversión/multicluster."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "You need to do one of the following:"
-msgstr "Ten que facer unha destas dúas cousas:"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"(1) If you do not need the databases and configuration files any more, purge "
-"the old packages (dpkg -P postgresql postgresql-client)."
-msgstr ""
-"(1) Se non precisa máis das bases de datos e ficheiros de configuración, "
-"purgue os paquetes antigos (dpkg -P postgresql postgresql-client)."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"(2) If you want to retain the current databases and configuration files, "
-"upgrade to the transitional packages by installing the latest version of "
-"'postgresql' (apt-get install postgresql)."
-msgstr ""
-"(2) Se quere conservar as bases de datos e ficheiros de configuración "
-"actuais, actualícese aos paquetes de transición instalando a última versión "
-"de \"postgresql\" (apt-get install postgresql)."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "After that you can reattempt this installation."
-msgstr "Despois de facelo pode volver tentar a instalación."

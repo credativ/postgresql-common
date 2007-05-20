@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-13 05:02-0600\n"
+"Report-Msgid-Bugs-To: mpitt@debian.org\n"
+"POT-Creation-Date: 2007-05-20 15:20+0200\n"
 "PO-Revision-Date: 2006-08-26 14:58+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -61,55 +61,3 @@ msgstr ""
 "Staré balíčky serveru a klienta již nejsou podporovány, Po převodu "
 "stávajících klastrů byste měli balíčky postgresql-${old} a postgresql-client-"
 "${old} odstranit."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "Untransitioned postgresql package"
-msgstr "Nedokončený přechod balíku postgresql"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"The current postgresql package is in state 'removed', but its data and "
-"configuration files are still present in the system. This is  incompatible "
-"with the new multiversion/multicluster structure."
-msgstr ""
-"Současný balík postgresql je ve stavu \"odstraněný\", ale jeho data a "
-"konfigurační soubory se stále nachází v systému. To není slučitelné s novou "
-"strukturou podporující více verzí a více klastrů."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "You need to do one of the following:"
-msgstr "Musíte provést jedno z následujícího:"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"(1) If you do not need the databases and configuration files any more, purge "
-"the old packages (dpkg -P postgresql postgresql-client)."
-msgstr ""
-"(1) Pokud již původní databáze a konfigurační soubory nepotřebujete, "
-"vyčistěte staré balíky (dpkg -P postgresql postgresql-client)."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid ""
-"(2) If you want to retain the current databases and configuration files, "
-"upgrade to the transitional packages by installing the latest version of "
-"'postgresql' (apt-get install postgresql)."
-msgstr ""
-"(2) Chcete-li zachovat stávající databáze a konfigurační soubory, "
-"aktualizujte na nejnovější verzi přechodných balíků postgresql "
-"(apt-get install postgresql)."
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:2001
-msgid "After that you can reattempt this installation."
-msgstr "Poté se můžete pokusit v instalaci pokračovat."
