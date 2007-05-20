@@ -406,7 +406,7 @@ unless ($action eq 'stop' || $action eq 'autovac-stop') {
 }
 
 # untaint environment
-$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
+$ENV{'PATH'} = '';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 # check that owner uig/gid is valid

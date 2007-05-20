@@ -10,7 +10,7 @@ use PgCommon;
 use Getopt::Long;
 use POSIX qw/setlocale LC_ALL/;
 
-$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin'; # untaint
+$ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
 # Determine the encoding from the current locale and translate it into a valid
 # PostgreSQL locale. Return SQL_ASCII as a default fallback. This copies the

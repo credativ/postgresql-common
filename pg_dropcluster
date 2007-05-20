@@ -10,7 +10,7 @@ use Getopt::Long;
 use PgCommon;
 
 # untaint environment
-$ENV{'PATH'} = '/bin:/usr/local/bin:/usr/bin';
+$ENV{'PATH'} = '/bin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 $stopserver = 0;
