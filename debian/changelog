@@ -11,8 +11,12 @@ postgresql-common (74) UNRELEASED; urgency=low
     pg_upgradecluster: Strip down PATH untainting to the absolute minimum, to
     not fall over if e. g. /usr/local/bin is misconfigured to be world
     writable. Closes: #420565
+  * pg_wrapper: Make this script work with taint checks enabled. This happens
+    in a pretty blunt way, since it does not actually make sense to enforce
+    environment variables, etc. It should just not fail when being called from
+    a -T perl script. Closes: #422129
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 13:33:33 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 20 May 2007 14:23:01 +0200
 
 postgresql-common (73) unstable; urgency=low
 
