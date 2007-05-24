@@ -1,4 +1,7 @@
-postgresql-common (75) UNRELEASED; urgency=low
+postgresql-common (75) unstable; urgency=low
+
+  The "Never run the test suite without 7.4 just because it is deprecated and
+  about to be removed" release. Sorry for the trouble.
 
   * pg_ctlcluster: Partially revert PATH cleansing to make pg_ctl work on 7.4
     again. This can be dropped again once 7.4 is actually removed from the
