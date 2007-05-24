@@ -1,3 +1,11 @@
+postgresql-common (75) UNRELEASED; urgency=low
+
+  * pg_ctlcluster: Partially revert PATH cleansing to make pg_ctl work on 7.4
+    again. This can be dropped again once 7.4 is actually removed from the
+    archive. Closes: #425594
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 24 May 2007 09:26:45 +0200
+
 postgresql-common (74) unstable; urgency=low
 
   * debian/supported_versions:
