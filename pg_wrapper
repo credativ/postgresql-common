@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 # Call a PostgreSQL client program with the version, cluster and default
 # database specified in ~/.postgresqlrc or
 # /etc/postgresql-common/user_clusters.
@@ -9,16 +9,6 @@ use strict;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
-
-# untaint PATH, we don't need it
-$ENV{'PATH'} = '';
-
-# bluntly untaint the rest of the environment; we don't actually want taint
-# checking here, but this script should not fail when being called from a -T
-# script
-foreach my $i ('IFS', 'CDPATH', 'ENV', 'BASH_ENV') {
-    ($ENV{$i}) = $ENV{$i} =~ /^(.*)$/s if $ENV{$i};
-}
 
 my ($version, $cluster, $db, $port, $host);
 
@@ -73,8 +63,6 @@ $ENV{'PGPORT'} = $port if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db && !$ENV{'PGDATABASE'};
 $ENV{'PGHOST'} = $host if $host;
 
-($version) = $version =~ /^(\d+\.\d+)$/; # untaint
-
 unless ($version) {
     if (get_versions) {
 	error 'No existing local cluster is suitable as a default target. Please see man pg_wrapper(1) how to specify one.';
@@ -87,11 +75,6 @@ error 'Invalid PostgreSQL cluster version' unless -d "/usr/lib/postgresql/$versi
 my $cmd = get_program_path (((split '/', $0)[-1]), $version);
 error 'pg_wrapper: invalid command name' unless $cmd;
 unshift @ARGV, $cmd;
-
-# untaint @ARGV; this is awfully blunt, but we want this script to work with -T
-for (my $i = 1; $i <= $#ARGV; ++$i) {
-    ($ARGV[$i]) = $ARGV[$i] =~ /^(.*)$/s;
-}
 exec @ARGV;
 
 __END__

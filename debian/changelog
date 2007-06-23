@@ -1,3 +1,12 @@
+postgresql-common (76) UNRELEASED; urgency=low
+
+  * pg_wrapper: Revert changes of version 74 to make this work with taint
+    mode. It breaks too many custom setups, and Perl just doesn't allow to
+    untaint $PATH bluntly. If you run pg_wrapper from a perl script with taint
+    checks enabled, you have to clean $PATH yourself. Closes: #427894
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 23 Jun 2007 19:43:55 +0200
+
 postgresql-common (75) unstable; urgency=low
 
   The "Never run the test suite without 7.4 just because it is deprecated and
