@@ -4,8 +4,12 @@ postgresql-common (76) UNRELEASED; urgency=low
     mode. It breaks too many custom setups, and Perl just doesn't allow to
     untaint $PATH bluntly. If you run pg_wrapper from a perl script with taint
     checks enabled, you have to clean $PATH yourself. Closes: #427894
+  * t/020_create_sql_remove.t: Check that PL/TCL and PL/TCLu work, so that we
+    now have complete test coverage of all four PLs that are shipped with the
+    core package.
+  * t/001_packages.t: Check that postgresql-pltcl-<version> is installed.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 23 Jun 2007 19:43:55 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 23 Jun 2007 21:30:37 +0200
 
 postgresql-common (75) unstable; urgency=low
 

@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 58 * ($#MAJORS+1);
+use Test::More tests => 70 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -126,7 +126,7 @@ template1|postgres|UNICODE
 Bob|1
 ', 'SQL command output: select';
 
-    # Check PL/Perl (trusted)
+    # Check PL/Perl (trusted/untrusted)
     is_program_out 'postgres', 'createlang plperl nobodydb', 0, '', 'createlang plperl succeeds for user postgres';
     is_program_out 'postgres', 'createlang plperlu nobodydb', 0, '', 'createlang plperlu succeeds for user postgres';
     is_program_out 'nobody', 'psql nobodydb -qc "CREATE FUNCTION remove_vowels(text) RETURNS text AS \'\\$_[0] =~ s/[aeiou]/_/ig; return \\$_[0];\' LANGUAGE plperl;"',
@@ -140,6 +140,18 @@ Bob|1
 	0, '', 'creating PL/Python function as user postgres succeeds';
     is_program_out 'nobody', 'psql nobodydb -Atc "select capitalize(\'foo\')"',
 	0, "Foo\n", 'calling PL/Python function';
+
+    # Check PL/Tcl (trusted/untrusted)
+    is_program_out 'postgres', 'createlang pltcl nobodydb', 0, '', 'createlang pltcl succeeds for user postgres';
+    is_program_out 'postgres', 'createlang pltclu nobodydb', 0, '', 'createlang pltclu succeeds for user postgres';
+    is_program_out 'nobody', 'psql nobodydb -qc "CREATE FUNCTION tcl_max(integer, integer) RETURNS integer AS \'if {\\$1 > \\$2} {return \\$1}; return \\$2\' LANGUAGE pltcl STRICT;"',
+	0, '', 'creating PL/Tcl function as user nobody succeeds';
+    is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION tcl_max_u(integer, integer) RETURNS integer AS \'if {\\$1 > \\$2} {return \\$1}; return \\$2\' LANGUAGE pltclu STRICT;"',
+	0, '', 'creating PL/TclU function as user postgres succeeds';
+    is_program_out 'nobody', 'psql nobodydb -Atc "select tcl_max(3,4)"', 0,
+        "4\n", 'calling PL/Tcl function';
+    is_program_out 'nobody', 'psql nobodydb -Atc "select tcl_max_u(5,4)"', 0,
+        "5\n", 'calling PL/TclU function';
 
     # Check pg_maintenance
     if ($pg_autovacuum || $v ge '8.1') {

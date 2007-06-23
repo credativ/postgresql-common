@@ -7,12 +7,13 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL/;
 
-use Test::More tests => 5 + ($#MAJORS+1)*3;
+use Test::More tests => 5 + ($#MAJORS+1)*4;
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
     ok ((deb_installed "postgresql-plpython-$v"), "postgresql-plpython-$v installed");
     ok ((deb_installed "postgresql-plperl-$v"), "postgresql-plperl-$v installed");
+    ok ((deb_installed "postgresql-pltcl-$v"), "postgresql-pltcl-$v installed");
 }
 
 ok ((!deb_installed 'postgresql-contrib-7.4'), 'postgresql-contrib-7.4 not installed');
