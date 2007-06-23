@@ -281,7 +281,11 @@ sub get_cluster_socketdir {
         my $datadir = cluster_data_directory $_[0], $_[1];
         error "Invalid symbolic link $confroot/$_[0]/$_[1]/pgdata" unless $datadir;
         my @datadirstat = stat $datadir;
-        error "Cannot stat $datadir" unless @datadirstat;
+        unless (@datadirstat) {
+            my @p = split '/', $datadir;
+            my $parent = join '/', @p[0..($#p-1)];
+            error "$datadir is not accessible; please fix the directory permissions ($parent/ should be world readable)" unless @datadirstat;
+        }
 
         $socketdir = '/tmp' if $socketdirstat[4] != $datadirstat[4];
     }
