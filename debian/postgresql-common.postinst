@@ -59,6 +59,12 @@ EOF
 	fi
     fi
 
+    # Clean up junk from the Sarge->Etch postgresql transition; needs to be
+    # kept until Lenny's release
+    if dpkg --compare-versions "$2" lt "77"; then
+        rm -rf /usr/lib/postgresql/dumpall/
+    fi
+
     # restart all servers
     if dpkg --compare-versions "$2" lt-nl 53; then
 	if [ -d /usr/lib/postgresql/ ]; then
