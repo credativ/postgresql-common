@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+if [ "$1" = purge ]; then
+    # remove psql history file
+    rm -f /var/lib/postgresql/.psql_history
+    rmdir /var/lib/postgresql/ 2>/dev/null || true
+fi
+
+#DEBHELPER#
+
