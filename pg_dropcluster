@@ -74,6 +74,10 @@ rmdir "/etc/postgresql/$version";
 rmdir "/var/lib/postgresql/$version/$cluster";
 rmdir "/var/lib/postgresql/$version";
 unlink "/var/log/postgresql/postgresql-$version-$cluster.log";
+# remove logrotated files
+foreach my $f (</var/log/postgresql/postgresql-$version-$cluster.log.[1-9]*>) {
+    unlink ($f =~ /(.*)/); # untaint
+}
 exit 0;
 
 __END__

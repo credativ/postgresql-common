@@ -162,6 +162,19 @@ Bob|1
     like_program_out 0, 'pg_maintenance --force', 0, qr/^Doing.*\n$/, 
         'pg_maintenance --force always handles cluster';
 
+    # fake rotated logs to check that they are cleaned up properly
+    open L, ">/var/log/postgresql/postgresql-$v-main.log.1" or
+        die "could not open fake rotated log file";
+    print L "old log .1\n";
+    close L;
+    open L, ">/var/log/postgresql/postgresql-$v-main.log.2" or
+        die "could not open fake rotated log file";
+    print L "old log .2\n";
+    close L;
+    if (system "gzip -9 /var/log/postgresql/postgresql-$v-main.log.2") {
+        die "could not gzip fake rotated log";
+    }
+
     # Drop database and user again.
     sleep 1;
     is ((exec_as 'nobody', 'dropdb nobodydb', $outref, 0), 0, 'dropdb nobodydb', );
