@@ -10,7 +10,7 @@ Package: postgresql-common
 Architecture: all
 Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-7.4 (<< 1:7.4.8-10), postgresql-8.0 (<< 8.0.3-7)
 Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5)
-Depends: postgresql-client-common (>= ${Source-Version}), procps, adduser, debconf (>= 0.5.00) | debconf-2.0, lsb-base (>= 3.0-3), ssl-cert (>= 1.0.11)
+Depends: postgresql-client-common (>= ${source:Version}), procps, adduser, debconf (>= 0.5.00) | debconf-2.0, lsb-base (>= 3.0-3), ssl-cert (>= 1.0.11)
 Description: manager for PostgreSQL database clusters
  postgresql-common provides a structure under which multiple versions of
  PostgreSQL may be installed and/or multiple clusters maintained at one

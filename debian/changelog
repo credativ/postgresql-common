@@ -1,3 +1,9 @@
+postgresql-common (77) UNRELEASED; urgency=low
+
+  * debian/control: Fix obsolete ${Source-Version}.
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 04 Aug 2007 11:31:04 +0200
+
 postgresql-common (76) unstable; urgency=medium
 
   * Priority medium since this unbreaks client programs like psql in testing.
