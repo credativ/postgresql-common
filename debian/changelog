@@ -1,4 +1,4 @@
-postgresql-common (77) UNRELEASED; urgency=low
+postgresql-common (77) unstable; urgency=low
 
   * debian/control: Fix obsolete ${Source-Version}.
   * t/020_create_sql_remove.t: Create fake rotated log files to check that
