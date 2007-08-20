@@ -24,6 +24,7 @@ Please fix this and reinstall this package." >&2
     fi
 
     # ensure home directory ownership
+    mkdir -p /var/lib/postgresql
     chown postgres:postgres /var/lib/postgresql
 
     # nicer log directory permissions

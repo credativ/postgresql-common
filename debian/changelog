@@ -9,8 +9,11 @@ postgresql-common (77) UNRELEASED; urgency=low
     until after Lenny's release. (part of #431643)
   * Add debian/postgresql-client-common.postrm: Clean up
     /var/lib/postgresql/.psql_history on purge. Closes: #431643
+  * debian/postgresql-common.postinst: Create /var/lib/postgresql/ if it does
+    not exist. This should not usually happen, but apparently did anyway.
+    (Closes: #438698)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 04 Aug 2007 12:07:17 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 20 Aug 2007 15:45:28 +0200
 
 postgresql-common (76) unstable; urgency=medium
 
