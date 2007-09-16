@@ -1,4 +1,4 @@
-postgresql-common (78) UNRELEASED; urgency=low
+postgresql-common (78) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Only clean up
     /usr/lib/postgresql/dumpall/ on upgrades if it is actually a directory.
