@@ -1,4 +1,4 @@
-postgresql-common (79) UNRELEASED; urgency=low
+postgresql-common (79) unstable; urgency=low
 
   * debian/supported-versions: Welcome, version 8.3!
   * pg_createcluster: Add configure_8_3().
