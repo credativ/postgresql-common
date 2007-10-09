@@ -101,7 +101,13 @@ sub check_cluster {
 
 foreach my $v (@MAJORS) {
     check_cluster $v, 'ru_RU';
-    check_cluster $v, 'ru_RU', 'UTF-8';
+    if ($v ge '8.3') {
+        # 8.3+ checks locale/encoding consistency, so use a matching one here
+        check_cluster $v, 'ru_RU.UTF-8', 'UTF-8';
+    } else {
+        # up to 8.2, locale and encoding can mismatch
+        check_cluster $v, 'ru_RU', 'UTF-8';
+    }
     check_cluster $v, 'ru_RU.UTF-8';
 
     # check LC_* over LANG domination

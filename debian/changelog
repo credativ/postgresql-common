@@ -5,8 +5,11 @@ postgresql-common (79) UNRELEASED; urgency=low
     for 8.2 for now.
   * PgCommon.pm, cluster_info(): 8.3 defaults to 'autovacuum = On' when not
     given, reflect that in the avac_enable return value.
+  * t/050_encodings.t: 8.3 onwards refuses to create a cluster with an
+    inconsistent locale/encoding combination. Use a consistent one for those
+    versions.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 09 Oct 2007 13:26:46 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 09 Oct 2007 16:08:08 +0200
 
 postgresql-common (78) unstable; urgency=low
 
