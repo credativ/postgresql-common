@@ -455,7 +455,8 @@ sub cluster_info {
             $result{'avac_enable'} = 0;
         }
     } else {
-        $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'};
+        # autovacuum defaults to on since 8.3
+        $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($_[0] ge '8.3');
     }
     
     return %result;
