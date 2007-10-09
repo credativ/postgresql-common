@@ -12,8 +12,16 @@ postgresql-common (79) UNRELEASED; urgency=low
     8.3 behaves differently here.
   * t/060_obsolete_confparams.t: Add full set of 8.2 postgresql.conf options
     for testing upgrades to 8.3.
+  * pg_upgradecluster: When upgrading to 8.3, transition changed configuration
+    options:
+    - bgwriter_lru_percent, bgwriter_all_percent, bgwriter_all_maxpages,
+      stats_start_collector, and stats_reset_on_server_start: deprecated.
+    - redirect_stderr -> logging_collector
+    - stats_command_string -> track_activities
+    - stats_block_level || stats_row_level -> track_counts
+    - Explicitly enable archive_mode when archive_command is set.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 09 Oct 2007 18:58:40 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 09 Oct 2007 19:56:20 +0200
 
 postgresql-common (78) unstable; urgency=low
 
