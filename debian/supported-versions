@@ -5,7 +5,7 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-DEFAULT="8.1\n8.2"
+DEFAULT="8.1\n8.2\n8.3"
 
 lsb_ubuntu() {
     case "$1" in
@@ -13,10 +13,10 @@ lsb_ubuntu() {
             /bin/echo -e "7.4\n8.0\n8.1"
             ;;
         6.06 | 6.06LTS | 6.10)
-            /bin/echo -e "$8.1\n8.2"
+            /bin/echo -e "$8.1\n8.2\n8.3"
             ;;
         7.04 | 7.10)
-            /bin/echo -e "8.2"
+            /bin/echo -e "8.2\n8.3"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
@@ -29,11 +29,11 @@ lsb_debian() {
     case "$1" in
         # Sarge (backports) and Etch
         3.1 | 4.0*)
-            /bin/echo -e "7.4\n8.1\n8.2"
+            /bin/echo -e "7.4\n8.1\n8.2\n8.3"
             ;;
         # Lenny and unstable
         testing/unstable | testing | unstable)
-            /bin/echo -e "8.2"
+            /bin/echo -e "8.2\n8.3"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -66,7 +66,7 @@ if type lsb_release >/dev/null 2>/dev/null; then
 else
     # Debian?
     if [ -e /etc/debian_version ]; then
-        echo -e "7.4\n8.1\n8.2";
+        echo -e "7.4\n8.1\n8.2\n8.3";
     else
         echo "supported_versions: WARNING: Unknown distribution" >&2
         /bin/echo -e "$DEFAULT"

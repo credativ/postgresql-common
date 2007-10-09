@@ -1,3 +1,9 @@
+postgresql-common (79) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Welcome, version 8.3!
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 09 Oct 2007 02:12:26 +0200
+
 postgresql-common (78) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Only clean up
