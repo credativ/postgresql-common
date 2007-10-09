@@ -1,8 +1,7 @@
 postgresql-common (79) UNRELEASED; urgency=low
 
   * debian/supported-versions: Welcome, version 8.3!
-  * pg_createcluster: Add configure_8.3(), with the same default options as
-    for 8.2 for now.
+  * pg_createcluster: Add configure_8_3().
   * PgCommon.pm, cluster_info(): 8.3 defaults to 'autovacuum = On' when not
     given, reflect that in the avac_enable return value.
   * t/050_encodings.t: 8.3 onwards refuses to create a cluster with an
