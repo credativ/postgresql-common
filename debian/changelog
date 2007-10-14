@@ -3,8 +3,10 @@ postgresql-common (80) UNRELEASED; urgency=low
   * pg_upgradecluster: Fix locale error checking.
   * pg_upgradecluster: Use cluster_exists() instead of
     cluster_data_directory().
+  * PgCommon.pm: Fix cluster_data_directory() to consider the data_directory
+    setting in postgresql.conf, which should trump the /pgdata symbolic link.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 14 Oct 2007 14:38:05 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 14 Oct 2007 17:27:03 +0200
 
 postgresql-common (79) unstable; urgency=low
 

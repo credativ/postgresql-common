@@ -254,9 +254,18 @@ sub set_cluster_port {
 }
 
 # Return cluster data directory.
-# Arguments: <version> <cluster name>
+# Arguments: <version> <cluster name> [<config_hash>]
 sub cluster_data_directory {
-    my $d = readlink "$confroot/$_[0]/$_[1]/pgdata";
+    my $d;
+    if ($_[2]) {
+        $d = ${$_[2]}{'data_directory'};
+    } else {
+        $d = get_conf_value($_[0], $_[1], 'postgresql.conf', 'data_directory');
+    }
+    if (!$d) {
+        # fall back to /pgdata symlink (supported by earlier p-common releases)
+        $d = readlink "$confroot/$_[0]/$_[1]/pgdata";
+    }
     ($d) = $d =~ /(.*)/ if defined $d; #untaint
     return $d;
 }
@@ -279,7 +288,7 @@ sub get_cluster_socketdir {
 
     if ($_[0] && $_[1]) {
         my $datadir = cluster_data_directory $_[0], $_[1];
-        error "Invalid symbolic link $confroot/$_[0]/$_[1]/pgdata" unless $datadir;
+        error "Invalid data directory" unless $datadir;
         my @datadirstat = stat $datadir;
         unless (@datadirstat) {
             my @p = split '/', $datadir;
@@ -405,8 +414,8 @@ sub cluster_info {
 
     my %result;
     $result{'configdir'} = "$confroot/$_[0]/$_[1]";
-    $result{'pgdata'} = cluster_data_directory $_[0], $_[1];
     my %postgresql_conf = read_cluster_conf_file $_[0], $_[1], 'postgresql.conf';
+    $result{'pgdata'} = cluster_data_directory $_[0], $_[1], \%postgresql_conf;
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
     $result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
@@ -497,7 +506,7 @@ sub get_version_clusters {
 	my $entry;
         while (defined ($entry = readdir D)) {
 	    ($entry) = $entry =~ /^(.*)$/; # untaint
-            if (-l $vdir.$entry.'/pgdata' && -r $vdir.$entry.'/postgresql.conf') {
+            if (-r $vdir.$entry.'/postgresql.conf') {
                 push @clusters, $entry;
             }
         }
