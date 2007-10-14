@@ -16,7 +16,7 @@ do_ctl_all() {
     status=0
     log_daemon_msg "$3"
     for c in /etc/postgresql/"$2"/*; do
-	[ -e "$c/pgdata" ] || continue
+	[ -e "$c/postgresql.conf" ] || continue
 	name=$(basename "$c")
 
 	# evaluate start.conf

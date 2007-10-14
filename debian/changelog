@@ -5,8 +5,11 @@ postgresql-common (80) UNRELEASED; urgency=low
     cluster_data_directory().
   * PgCommon.pm: Fix cluster_data_directory() to consider the data_directory
     setting in postgresql.conf, which should trump the /pgdata symbolic link.
+  * debian/init.d-functions: Check for 'postgresql.conf' instead of 'pgdata'
+    in the test for a valid cluster configuration directory, since 'pgdata' is
+    optional now.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 14 Oct 2007 17:27:03 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 14 Oct 2007 22:50:40 +0200
 
 postgresql-common (79) unstable; urgency=low
 
