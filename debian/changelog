@@ -1,8 +1,10 @@
 postgresql-common (80) UNRELEASED; urgency=low
 
   * pg_upgradecluster: Fix locale error checking.
+  * pg_upgradecluster: Use cluster_exists() instead of
+    cluster_data_directory().
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 12 Oct 2007 15:55:41 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 14 Oct 2007 14:38:05 +0200
 
 postgresql-common (79) unstable; urgency=low
 

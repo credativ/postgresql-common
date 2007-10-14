@@ -220,7 +220,7 @@ my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
 error 'could not get cluster locale' unless $lc_ctype;
 error 'could not get cluster collating locale' unless $lc_collate;
 
-if (PgCommon::cluster_data_directory $newversion, $cluster) {
+if (cluster_exists $newversion, $cluster) {
     error "target cluster $newversion/$cluster already exists";
 }
 
