@@ -9,7 +9,8 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 70 * ($#MAJORS+1);
+use Test::More tests => 75 * ($#MAJORS+1);
+
 
 sub check_major {
     my $v = $_[0];
@@ -173,6 +174,32 @@ Bob|1
     close L;
     if (system "gzip -9 /var/log/postgresql/postgresql-$v-main.log.2") {
         die "could not gzip fake rotated log";
+    }
+
+    # Check that old-style pgdata symbolic link still works (p-common 0.90+
+    # does not create them any more for >= 8.0 clusters, but they still need to
+    # work for existing installations)
+    if ($v ge '8.0') {
+        is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+        my $datadir = PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'data_directory';
+        symlink $datadir, "/etc/postgresql/$v/main/pgdata";
+
+        # data_directory should trump the pgdata symlink
+        PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'data_directory', '/nonexisting';
+        like_program_out 0, "pg_ctlcluster $v main start", 1, 
+            qr/could not open file.*\/nonexisting/,
+            'cluster fails to start with invalid data_directory and valid pgdata symlink';
+
+        # if only pgdata symlink is present, it is authoritative
+        PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'data_directory', 'disabled for test';
+        is_program_out 0, "pg_ctlcluster $v main start", 0, '',
+            'cluster restarts with pgdata symlink';
+    } else {
+        pass 'Skipping pgdata symlink compatibility test for versions before 8.0';
+        pass '...';
+        pass '...';
+        pass '...';
+        pass '...';
     }
 
     # Drop database and user again.

@@ -282,15 +282,13 @@ error 'invalid cluster name' unless defined $cluster;
 
 $datadir ||= "/var/lib/postgresql/$version/$cluster";
 $confdir = "$PgCommon::confroot/$version/$cluster";
-$pgdata = "$confdir/pgdata";
 $logfile = "$confdir/log";
 $avac_log = "$confdir/autovacuum_log";
 
 # some sanity checks
 error "invalid version: $version" unless get_program_path 'initdb', $version;
 error 'cluster configuration already exists' 
-    if -e "$confdir/postgresql.conf" || -e "$confdir/pg_hba.conf" || 
-        -e "$confdir/pgdata";
+    if -e "$confdir/postgresql.conf" || -e "$confdir/pg_hba.conf";
 
 if (defined $port) {
     error 'port must be a positive integer between 1024 and 65535' 
@@ -308,20 +306,19 @@ if (defined $port) {
 
 # create configuration directory
 error 'could not create data directory' if system ('install', '-d', $confdir);
-symlink $datadir, $pgdata;
 
 # check whether we have an already existing cluster; check version and
 # determine owner in this case
 $newcluster = 0;
 
-if (-f "$pgdata/PG_VERSION") {
-    if (open F, "$pgdata/PG_VERSION") {
+if (-f "$datadir/PG_VERSION") {
+    if (open F, "$datadir/PG_VERSION") {
         $existingver = <F>;
         close F;
     } else {
-        error "could not open $pgdata/PG_VERSION";
+        error "could not open $datadir/PG_VERSION";
     }
-    ($owneruid, $ownergid) = (stat "$pgdata/PG_VERSION")[4,5];
+    ($owneruid, $ownergid) = (stat "$datadir/PG_VERSION")[4,5];
     if ($existingver = $version) {
         print "Configuring already existing cluster (configuration: $confdir, data: $datadir, owner: $owneruid:$ownergid)\n";
     } else {
@@ -329,11 +326,11 @@ if (-f "$pgdata/PG_VERSION") {
     }
 } else {
     print "Creating new cluster (configuration: $confdir, data: $datadir)...\n";
-    init_db $version, $pgdata, $owneruid, $ownergid;
+    init_db $version, $datadir, $owneruid, $ownergid;
     $newcluster = 1;
 }
 
-chown $owneruid, $ownergid, $pgdata;
+chown $owneruid, $ownergid, $datadir;
 
 # create default "start" file
 set_cluster_start_conf $version, $cluster, $startconf;
@@ -342,6 +339,13 @@ set_cluster_start_conf $version, $cluster, $startconf;
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, '644';
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, '640', 'hba_file';
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, '640', 'ident_file';
+
+if ($version ge '8.0') {
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
+} else {
+    # pre-8.0 clusters did not have data_directory and thus need a pgdata symlink
+    symlink $datadir, "$confdir/pgdata";
+}
 
 # add access for database superuser
 setup_pg_hba if $newcluster;
@@ -485,9 +489,7 @@ Given a major PostgreSQL I<version> (like "7.4" or "8.0") and a cluster
 I<name>, it creates the necessary configuration files in
 C</etc/postgresql/>I<version>C</>I<name>C</>; in particular these are
 C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a postgresql-common
-specific configuration file C<start.conf> (see B<STARTUP CONTROL> below), a
-symbolic link C<pgdata> which points to the actual data directory I<data dir>
-(which defaults to C</var/lib/postgresql/>I<version>C</>I<name>C</>), and a
+specific configuration file C<start.conf> (see B<STARTUP CONTROL> below), and a
 symbolic link C<log> which points to the log file (by default,
 C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
 
@@ -504,7 +506,7 @@ existing cluster.
 If the data directory does not yet exist, PostgreSQL's L<initdb(1)> command is
 used to generate a new cluster structure. If the data directory already exists,
 it is integrated into the B<postgresql-common> structure by moving the
-configuration file and creating the C<pgdata> link.
+configuration file and setting the data_directory option.
 
 If a custom socket directory is given and it does not exist, it is created.
 
