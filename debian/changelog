@@ -16,8 +16,10 @@ postgresql-common (80) UNRELEASED; urgency=low
     the data_directory setting trumps the symlink.
   * pg_upgradecluster: Set correct data_directory config option after copying
     over the old configuration files.
+  * t/060_obsolete_confparams.t: Restore data_directory setting after
+    scribbling over the configuration file with our template.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 16 Oct 2007 18:37:23 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 16 Oct 2007 23:13:53 +0200
 
 postgresql-common (79) unstable; urgency=low
 

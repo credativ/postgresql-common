@@ -536,10 +536,17 @@ while ($#testversions) {
     my $new = $testversions[0];
 
     # Write configuration file and start
+    my $datadir = PgCommon::cluster_data_directory $cur, 'main';
     open F, ">/etc/postgresql/$cur/main/postgresql.conf" or 
         die "could not open /etc/postgresql/$cur/main/postgresql.conf";
     die "\$fullconf{$cur} is not defined" unless exists $fullconf{$cur};
     print F $fullconf{$cur};
+    close F;
+    # restore data directory, we just scribbled over it
+    if ($cur ge '8.0') {
+        PgCommon::set_conf_value $cur, 'main', 'postgresql.conf', 'data_directory', $datadir;
+    }
+
     is ((exec_as 'postgres', "pg_ctlcluster $cur main start 2>/dev/null"), 0,
         'pg_ctlcluster start');
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$cur.*online/, 
