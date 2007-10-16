@@ -14,8 +14,10 @@ postgresql-common (80) UNRELEASED; urgency=low
   * t/020_create_sql_remove.t: Check that clusters still work when replacing
     the data_directory setting with a pgdata symbolic link, and that
     the data_directory setting trumps the symlink.
+  * pg_upgradecluster: Set correct data_directory config option after copying
+    over the old configuration files.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 15 Oct 2007 14:52:42 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 16 Oct 2007 18:37:23 +0200
 
 postgresql-common (79) unstable; urgency=low
 

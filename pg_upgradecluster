@@ -57,6 +57,10 @@ sub adapt_conffiles {
 	'ident_file', strrepl($c{'ident_file'}, $version, $newversion) if $c{'ident_file'};
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
 	'external_pid_file', strrepl($c{'external_pid_file'}, $version, $newversion) if $c{'external_pid_file'};
+    if ($newversion ge '8.0') {
+        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+            'data_directory', $newinfo{'pgdata'};
+    }
 
     # tcpip_socket transition
     my $tcpip_socket = config_bool $c{'tcpip_socket'};
