@@ -77,6 +77,9 @@ sub adapt_conffiles {
         PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
             'syslog', 'deprecated in favor of log_destination',
             'log_destination', $syslog_values{$c{'syslog'}};
+        # make sure log file output actually gets enabled
+        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+            'redirect_stderr', 'true';
     }
 
     # sort_mem -> work_mem transition

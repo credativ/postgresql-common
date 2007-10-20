@@ -18,8 +18,27 @@ postgresql-common (80) UNRELEASED; urgency=low
     over the old configuration files.
   * t/060_obsolete_confparams.t: Restore data_directory setting after
     scribbling over the configuration file with our template.
+  * PgCommon.pm, cluster_info(): Only return a value for 'logfile' when it is
+    not explicitly configured with log_directory and/or log_filename. The
+    previous guessing was wrong anyway, since PostgreSQL always appends a
+    pretty unpredictable timestamp.
+  * pg_ctlcluster: Only do log file checks and pass pg_ctl -l option when the
+    log file default is used. Otherwise let PostgreSQL do its logfile handling
+    and waive log file checks, since we don't know which file is used.
+  * pg_ctlcluster: Redirect pg_ctl's stdout and stderr to /dev/null, otherwise
+    it will hang forever when using a custom log file (and thus not passing
+    -l).
+  * pg_lsclusters: Print "custom" as log file location if a custom one was set
+    in postgresql.conf.
+  * pg_upgradecluster: Enable 'redirect_stderr' in the 7.4 -> 8.x migration of
+    'syslog' -> 'log_destination', so that the log output is actually
+    complete.
+  * t/060_obsolete_confparams.t: Enable 'redirect_stderr' in the template
+    postgresql.conf's, so that we actually capture log output.
+  * t/020_create_sql_remove.t: Verify that the default log file is actually
+    used.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 16 Oct 2007 23:13:53 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 20 Oct 2007 17:45:38 +0200
 
 postgresql-common (79) unstable; urgency=low
 

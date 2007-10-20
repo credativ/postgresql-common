@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 75 * ($#MAJORS+1);
+use Test::More tests => 76 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -81,6 +81,9 @@ sub check_major {
     $ls =~ s/\s*$//;
     is $ls, "$v     main      5432 online postgres /var/lib/postgresql/$v/main       /var/log/postgresql/postgresql-$v-main.log",
 	'pg_lscluster reports online cluster on port 5432';
+
+    # verify that the log file is actually used
+    ok !-z "/var/log/postgresql/postgresql-$v-main.log", 'log file is actually used';
 
     # verify that the postmaster does not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,

@@ -28,7 +28,7 @@ foreach $v (sort (get_versions())) {
         printf $fmtstring, ($v, $c, $info{'port'}, 
             $info{'running'} ? "online" : "down", 
             (getpwuid $info{'owneruid'})[0], $info{'pgdata'},
-            $info{'logfile'});
+            $info{'logfile'} || 'custom');
     }
 }
 

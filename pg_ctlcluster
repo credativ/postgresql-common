@@ -8,7 +8,7 @@
 
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
-use POSIX qw/setsid setlocale LC_ALL :sys_wait_h/;
+use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
@@ -285,24 +285,30 @@ sub start {
     $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
     ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
 
-    @options = ($pg_ctl, 'start', '-D', $info{'pgdata'},'-l', $info{'logfile'},
-	'-s', '-o', $postmaster_opts);
-
-    # remember current size of the log
+    # only supply or default logfile path when none is given explicitly in
+    # postgresql.conf
+    @options = ($pg_ctl, 'start', '-D', $info{'pgdata'});
     $logsize = 0;
-    unless (-e $info{'logfile'}) {
-	open L, '>', $info{'logfile'} or 
-	    error 'Could not create log file ' . $info{'logfile'};
-	chmod 0640, $info{'logfile'};
-	close L;
+    if ($info{'logfile'}) {
+        push @options, ('-l', $info{'logfile'});
+        # remember current size of the log
+        unless (-e $info{'logfile'}) {
+            open L, '>', $info{'logfile'} or 
+                error 'Could not create log file ' . $info{'logfile'};
+            chmod 0640, $info{'logfile'};
+            close L;
+        }
+        $logsize = (stat $info{'logfile'})[7];
     }
-    $logsize = (stat $info{'logfile'})[7];
+    push @options, ('-s', '-o', $postmaster_opts);
 
     if (fork) {
         wait;
         error "could not exec $pgctl @options: $!" if $?;
     } else {
         setsid or error "could not start session: $!";
+        dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
+        dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
         exec $pg_ctl @options or error "could not exec $pgctl @options: $!";
     }
 
@@ -312,7 +318,7 @@ sub start {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     for (my $attempt = 0; $attempt < 60; $attempt++) {
         select (undef, undef, undef, 0.5);
-        $currlogsize = (stat $info{'logfile'})[7] if -r $info{'logfile'};
+        $currlogsize = (stat $info{'logfile'})[7] if $info{'logfile'} && -r $info{'logfile'};
         if (cluster_port_running $version, $cluster, $info{'port'}) {
             $success = 1;
             last;
@@ -333,11 +339,15 @@ sub start {
             autovacuum_start;
         }
     } else {
-        print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
-        open LOG, $info{'logfile'} or 
-            error "Could not open log file " . $info{'logfile'};
-        seek LOG, $logsize, SEEK_SET;
-        print STDERR $_ while <LOG>;
+        if ($logsize) {
+            print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
+            open LOG, $info{'logfile'} or 
+                error "Could not open log file " . $info{'logfile'};
+            seek LOG, $logsize, SEEK_SET;
+            print STDERR $_ while <LOG>;
+        } else {
+            print STDERR "The PostgreSQL server failed to start. Please check the log output.\n";
+        }
         exit 1;
     }
 }

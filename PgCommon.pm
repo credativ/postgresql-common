@@ -407,8 +407,8 @@ $val
 
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
-# Returns: information hash (keys: pgdata, port, running, logfile, configdir,
-# owneruid, ownergid, socketdir)
+# Returns: information hash (keys: pgdata, port, running, logfile [unless it
+#          has a custom one], configdir, owneruid, ownergid, socketdir)
 sub cluster_info {
     error 'cluster_info must be called with <version> <cluster> arguments' unless $_[0] && $_[1];
 
@@ -425,25 +425,12 @@ sub cluster_info {
     }
     $result{'start'} = get_cluster_start_conf $_[0], $_[1];
 
-    # log file
-    if (exists $postgresql_conf{'log_filename'} || 
+    # default log file (only if not expliticly configured in postgresql.conf)
+    unless (exists $postgresql_conf{'log_filename'} || 
 	exists $postgresql_conf{'log_directory'}) {
-	my $dir;
-	if ( exists $postgresql_conf{'log_directory'} && (substr $postgresql_conf{'log_directory'}, 0, 1) eq '/') {
-	    $dir = $postgresql_conf{'log_directory'} || $result{'pgdata'};
-	} else {
-	    $dir = $result{'pgdata'} . '/' . ($postgresql_conf{'log_directory'} || '');
-	}
-
-	my $fname = $postgresql_conf{'log_filename'} || 'postgresql-%Y-%m-%d_%H%M%S.log';
-	$fname .= '.%s' if (index $fname, '%') < 0;
-	$fname = strftime $fname, localtime;
-
-	$result{'logfile'} = "$dir/$fname";
-    } else {
 	$result{'logfile'} = readlink ($result{'configdir'} . "/log");
+        ($result{'logfile'}) = $result{'logfile'} =~ /(.*)/; # untaint
     }
-    ($result{'logfile'}) = $result{'logfile'} =~ /(.*)/; # untaint
 
     # autovacuum settings
 

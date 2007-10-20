@@ -171,7 +171,7 @@ geqo_selection_bias = 2.0
 from_collapse_limit = 8
 join_collapse_limit = 8	
 log_destination = 'stderr'	
-redirect_stderr = false    
+redirect_stderr = true    
 log_directory = '.'   
 log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log' 
 log_truncate_on_rotation = false  
@@ -303,7 +303,7 @@ constraint_exclusion = off
 from_collapse_limit = 8
 join_collapse_limit = 8
 log_destination = 'stderr'
-redirect_stderr = off
+redirect_stderr = on
 log_directory = '.'
 log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
 log_truncate_on_rotation = off
@@ -450,7 +450,7 @@ constraint_exclusion = off
 from_collapse_limit = 8
 join_collapse_limit = 8
 log_destination = 'stderr'
-redirect_stderr = off
+redirect_stderr = on
 log_directory = '.'
 log_filename = 'postgresql-%Y-%m-%d_%H%M'
 log_truncate_on_rotation = off
@@ -547,7 +547,7 @@ while ($#testversions) {
         PgCommon::set_conf_value $cur, 'main', 'postgresql.conf', 'data_directory', $datadir;
     }
 
-    is ((exec_as 'postgres', "pg_ctlcluster $cur main start 2>/dev/null"), 0,
+    is ((exec_as 'postgres', "pg_ctlcluster $cur main start"), 0,
         'pg_ctlcluster start');
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$cur.*online/, 
         "Old $cur cluster is online";
