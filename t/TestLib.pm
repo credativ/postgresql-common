@@ -100,7 +100,8 @@ sub exec_as {
     if ($_[0] =~ /\d+/) {
 	$uid = int($_[0]);
     } else {
-	$uid = getpwnam $_[0] or die "TestLib::exec_as: target user '$_[0]' does not exist";
+	$uid = getpwnam $_[0];
+        defined($uid) or die "TestLib::exec_as: target user '$_[0]' does not exist";
     }
     change_ugid ($uid, (getpwuid $uid)[3]);
     die "changing euid: $!" if $> != $uid;

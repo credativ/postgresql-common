@@ -94,16 +94,16 @@ sub check_major {
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$default_log\n$/;
  
     # verify that log symlink works
-    is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+    is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
     open L, ">$default_log"; close L; # empty default log file
     my $p = (PgCommon::cluster_data_directory $v, 'main') . '/mylog';
     symlink $p, "/etc/postgresql/$v/main/log";
-    is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 
+    is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 
         'restarting cluster with nondefault log symlink');
     ok !-z $p, "log target is used as log file";
     ok -z $default_log, "default log is not used";
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$p\n$/;
-    is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+    is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
     open L, ">$p"; close L; # empty log file
 
     # verify that explicitly configured log file trumps log symlink
@@ -111,7 +111,7 @@ sub check_major {
         PgCommon::set_conf_value ($v, 'main', 'postgresql.conf', 
             ($v ge '8.3' ? 'logging_collector' : 'redirect_stderr'), 'on');
         PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'log_filename', "$v#main.log";
-        is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 
+        is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 
             'restarting cluster with explicitly configured log file');
         ok -z $default_log, "default log is not used";
         ok -z $p, "log symlink target is not used";
@@ -120,7 +120,7 @@ sub check_major {
         ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
         like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*custom\n$/;
     } else {
-        is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 'restarting < 8.0 cluster');
+        is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 'restarting < 8.0 cluster');
         like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$p\n$/;
         pass 'Skipping postgresql.conf configured log file tests for versions before 8.0';
         pass '...';
@@ -224,7 +224,7 @@ Bob|1
     # does not create them any more for >= 8.0 clusters, but they still need to
     # work for existing installations)
     if ($v ge '8.0') {
-        is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+        is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
         my $datadir = PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'data_directory';
         symlink $datadir, "/etc/postgresql/$v/main/pgdata";
 
