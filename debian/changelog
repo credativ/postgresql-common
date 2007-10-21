@@ -35,10 +35,12 @@ postgresql-common (80) UNRELEASED; urgency=low
     complete.
   * t/060_obsolete_confparams.t: Enable 'redirect_stderr' in the template
     postgresql.conf's, so that we actually capture log output.
-  * t/020_create_sql_remove.t: Verify that the default log file is actually
-    used.
+  * t/020_create_sql_remove.t: Check proper handling of logs when configuring
+    log file in postgresql.conf, using the log symlink, or having neither.
+  * PgCommon.pm, cluster_info(): Return default log file in 'logfile' if
+    neither postgresql.conf nor a 'log' symlink explicitly specify a log file.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 20 Oct 2007 17:45:38 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 09:58:24 +0200
 
 postgresql-common (79) unstable; urgency=low
 

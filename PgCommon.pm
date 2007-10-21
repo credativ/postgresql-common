@@ -428,8 +428,12 @@ sub cluster_info {
     # default log file (only if not expliticly configured in postgresql.conf)
     unless (exists $postgresql_conf{'log_filename'} || 
 	exists $postgresql_conf{'log_directory'}) {
-	$result{'logfile'} = readlink ($result{'configdir'} . "/log");
-        ($result{'logfile'}) = $result{'logfile'} =~ /(.*)/; # untaint
+        my $log_symlink = $result{'configdir'} . "/log";
+        if (-l $log_symlink) {
+            ($result{'logfile'}) = readlink ($log_symlink) =~ /(.*)/; # untaint
+        } else {
+            $result{'logfile'} = "/var/log/postgresql/postgresql-$_[0]-$_[1].log";
+        }
     }
 
     # autovacuum settings
