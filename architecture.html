@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="author" content="Oliver Elphick, Martin Pitt" />
@@ -75,7 +75,7 @@ upgrade.</p>
 
 <h3>Configuration hierarchy</h3>
 
-<table cellpadding="6" cellspacing="0" border="0">
+<table cellpadding="6" cellspacing="0" border="1">
 <tr><td><code>/etc/postgresql-common/user_clusters</code></td> <td>maps users
 against clusters and default databases</td></tr>
 
@@ -92,34 +92,49 @@ default version/cluster and database; overrides
 
 <tr>
   <td><code>/etc/postgresql/<i>version</i>/<i>clustername</i></code></td>
-  <td>Cluster-specific configuration files: <code>postgresql.conf</code>,
-  <code>pg_hba.conf</code>, <code>pg_ident.conf</code>, a symbolic link
-  <code>pgdata</code> which points to the actual data directory, a symbolic
-  link <code>log</code> which points to the postmaster log file, and a symbolic link
-  <code>autovacuum_log</code> which points to the log file of the autovacuum
-  daemon (started if <code>postgresql-contrib-</code><i>version</i> is
-  installed). If this directory contains <code>autovacuum.conf</code>, this is
-  used as the cluster specific autovacuum daemon configuration; if it does not
-  exist, <code>/etc/postgresql-common/autovacuum.conf</code> is used as a
-  fallback. If this directory contains <code>start.conf</code>, that file
-  configures the startup mode of the cluster: <i>auto</i> (start/stop in init
-  script), <i>manual</i> (do not start/stop in init script, but manual control
-  with <code>pg_ctlcluster</code> is possible), <i>disabled</i>
-  (<code>pg_ctlcluster</code> is not allowed).</td>
+  <td>Cluster-specific configuration files: 
+    <ul>
+      <li><code>postgresql.conf</code>, <code>pg_hba.conf</code>, <code>pg_ident.conf</code></li>
+      <li>optionally <code>start.conf</code>: startup mode of the
+        cluster: <code>auto</code> (start/stop in init script),
+        <code>manual</code> (do not start/stop in init script, but manual
+        control with <code>pg_ctlcluster</code> is possible), <i>disabled</i>
+        (<code>pg_ctlcluster</code> is not allowed).</li>
+      <li>optionally a symbolic link <code>log</code> which points to
+      the postmaster log file. Defaults to
+      <code>/var/log/postgresql/postgresql-</code><i>version</i><code>-</code><i>cluster</i><code>.conf</code>.  
+      Explicitly setting <code>log_directory</code> and/or
+      <code>log_filename</code> in <code>postgresql.conf</code>
+      overrides this.</li>
+    </ul>
+
+    For PostgreSQL versions earlier than 8.1:
+
+    <ul>
+      <li>a symbolic link <code>autovacuum_log</code> which points to
+      the log file of the autovacuum daemon (started if
+      <code>postgresql-contrib-</code><i>version</i> is installed). If
+      this directory contains <code>autovacuum.conf</code>, this is used
+      as the cluster specific autovacuum daemon configuration; if it
+      does not exist,
+      <code>/etc/postgresql-common/autovacuum.conf</code> is used as a
+      fallback.</li>
+    </ul>
+  </td>
 </tr>
 
 </table>
 
 <h3>Per-version files and programs</h3>
 
-<table cellpadding="6" cellspacing="0" border="0">
-<tr><td><code>/usr/lib/postgresql/<i>version</i></code></td> <td colspan="0" rowspan="3" valign="middle">files for a specific version</td></tr>
+<table cellpadding="6" cellspacing="0" border="1">
+<tr><td><code>/usr/lib/postgresql/<i>version</i></code></td> <td colspan="0" rowspan="3" valign="middle">version specific program and data files</td></tr>
 <tr><td><code>/usr/share/postgresql/<i>version</i></code></td></tr>
 <tr><td><code>/usr/share/doc/postgresql/postgresql-doc-<i>version</i></code></td></tr>
 </table>
 
 <h3>Common programs</h3>
-<table cellpadding="6" cellspacing="0" border="0">
+<table cellpadding="6" cellspacing="0" border="1">
 <tr><td><code>/usr/share/postgresql-common/pg_wrapper</code></td> <td>environment chooser and program selector</td></tr>
 <tr><td><code>/usr/bin/<i>program</i></code></td>  <td>symbolic links to pg_wrapper, for all client programs</td></tr>
 <tr><td><code>/usr/bin/pg_lsclusters</code></td> <td>list all available clusters with their status and configuration</td></tr>
@@ -137,24 +152,6 @@ connection parameters should be provided by pg_wrapper as specified above. In
 addition, if no explicit default database is specified in
 <code>user_clusters</code>, the default database will correspond to the user
 name, thus reintroducing the default upstream behaviour.</p>
-
-<!--
-<h3>pg_wrapper</h3>
-
-<p>pg_wrapper has been completely rewritten.  When called a pg_default, it 
-allows a user to display his own connection choices, or to change them for
-the current session, or for all sessions (by writing <code>~/.postgresqlrc</code>).
-When called by root, it  allows user_clusters to be changed.
-</p>
-<p>When called as pg_exec, pg_wrapper can execute code from an
-arbitrary version in order to connect to a remote machine.</p>
-
-<p>When called as a link to any other name, that name is treated as a
-client program and a path to the appropriate version of that program is
-constructed and executed.</p>
-
-<p>See the man pages for full details of the program's operation.</p>
--->
 
 <h3>/etc/init.d/postgresql-<i>version</i></h3>
 
@@ -175,7 +172,7 @@ cluster. However, most of the actual work is done by the new
 to the newest available version.</p>
 
 <p><i><a href="mailto:pkg-postgresql-public@lists.alioth.debian.org">The Debian
-PostgreSQL developers</a> (Oliver Elphick, Martin Pitt)</i></p>
+PostgreSQL developers</a></i></p>
 
 </body>
 </html>

@@ -43,8 +43,9 @@ postgresql-common (80) UNRELEASED; urgency=low
     (i. e. when not using -l). (Closes: #444689)
   * t/020_create_sql_remove.t: Verify that log symlink is not created by
     default.
+  * architecture.html: Update to current reality.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 10:21:42 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 10:45:54 +0200
 
 postgresql-common (79) unstable; urgency=low
 
