@@ -1,4 +1,4 @@
-postgresql-common (80) UNRELEASED; urgency=low
+postgresql-common (80) unstable; urgency=low
 
   * pg_upgradecluster: Fix locale error checking.
   * pg_upgradecluster: Use cluster_exists() instead of
