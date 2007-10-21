@@ -49,8 +49,15 @@ postgresql-common (80) UNRELEASED; urgency=low
     confusion when testing new betas in experimental or using backports.
     (Closes: #446635)
   * t/TestLib.pm: Make exec_as() work with user name 'root' (not just uid 0).
+  * Add t/130_nonroot_admin.t: Check that administrative pg_ tools work as
+    non-root, too, if the invoker has sufficient permissions on the
+    directories (test case for LP #90036).
+  * pg_{create,drop,upgrade}cluster: Small tweaks to make the scripts work for
+    non-root users with sufficient write permissions to
+    /etc/postgresql/<version>, /var/lib/postgresql/<version>, and
+    /var/log/postgresql. (LP: #90036)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 14:01:52 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 16:01:08 +0200
 
 postgresql-common (79) unstable; urgency=low
 

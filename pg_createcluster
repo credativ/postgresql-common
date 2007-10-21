@@ -259,8 +259,6 @@ Options:
 error 'Invalid --start-conf value' if $startconf ne 'auto' &&
     $startconf ne 'manual' && $startconf ne 'disabled';
 
-error 'This command needs to be executed as root' if $> != 0;
-
 if ($owneruid) {
     $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
 } else {
@@ -409,11 +407,14 @@ $conf_fn =~tr/./_/;
 
 # Check whether we can access the SSL private key as the cluster owner
 my $ssl_key_access;
+my ($uid, $euid, $gid, $egid) = ($<, $>, $(, $));
 change_ugid $owneruid, $ownergid;
 $ssl_key_access = -r '/etc/ssl/private/ssl-cert-snakeoil.key';
-$< = $> = 0;
-$( = $) = 0;
-die "changing euid back to root: $!" if $> != 0;
+$> = $euid;
+$< = $uid; 
+$( = $gid;
+$) = $egid;
+die "changing euid back: $!" if $> != $euid;
 
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
