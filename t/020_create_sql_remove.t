@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 95 * ($#MAJORS+1);
+use Test::More tests => 94 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -87,20 +87,14 @@ sub check_major {
     # verify that the log file is actually used
     ok !-z $default_log, 'log file is actually used';
 
-    # verify default log file fallback without log symlink and no explicit
-    # configuration
-    is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
-    unlink "/etc/postgresql/$v/main/log";
-    # empty log file
-    open L, ">$default_log"; close L;
-    die 'log file was not truncated' unless -z $default_log;
-    is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 'restarting cluster without log symlink');
+    # check default log file configuration; when not specifying -l with
+    # pg_createcluster, we should not have a 'log' symlink
+    ok !-e "/etc/postgresql/$v/main/log", 'no log symlink by default';
     ok !-z $default_log, "$default_log is the default log if log symlink is missing";
-
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$default_log\n$/;
-    is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
  
-    # verify that log symlink actually works
+    # verify that log symlink works
+    is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
     open L, ">$default_log"; close L; # empty default log file
     my $p = (PgCommon::cluster_data_directory $v, 'main') . '/mylog';
     symlink $p, "/etc/postgresql/$v/main/log";

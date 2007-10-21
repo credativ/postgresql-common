@@ -39,8 +39,12 @@ postgresql-common (80) UNRELEASED; urgency=low
     log file in postgresql.conf, using the log symlink, or having neither.
   * PgCommon.pm, cluster_info(): Return default log file in 'logfile' if
     neither postgresql.conf nor a 'log' symlink explicitly specify a log file.
+  * pg_createcluster: Do not create log symlink if using the default log file
+    (i. e. when not using -l). (Closes: #444689)
+  * t/020_create_sql_remove.t: Verify that log symlink is not created by
+    default.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 09:58:24 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 10:21:42 +0200
 
 postgresql-common (79) unstable; urgency=low
 

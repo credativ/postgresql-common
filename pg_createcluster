@@ -282,7 +282,6 @@ error 'invalid cluster name' unless defined $cluster;
 
 $datadir ||= "/var/lib/postgresql/$version/$cluster";
 $confdir = "$PgCommon::confroot/$version/$cluster";
-$logfile = "$confdir/log";
 $avac_log = "$confdir/autovacuum_log";
 
 # some sanity checks
@@ -384,8 +383,12 @@ if (! -e $real_logfile) {
     close L;
 }
 chmod 0660, $real_logfile;
-symlink $real_logfile, $logfile;
-chown $owneruid, $ownergid, $real_logfile, $logfile;
+chown $owneruid, $ownergid, $real_logfile;
+# if we are using a non-default log file, create a log symlink
+if ($custom_logfile) {
+    symlink $real_logfile, "$confdir/log";
+    chown $owneruid, $ownergid, "$confdir/log";
+}
 
 # create autovacuum log file for servers < 8.1
 if ($version < 8.1) {
