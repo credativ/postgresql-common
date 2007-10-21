@@ -44,8 +44,12 @@ postgresql-common (80) UNRELEASED; urgency=low
   * t/020_create_sql_remove.t: Verify that log symlink is not created by
     default.
   * architecture.html: Update to current reality.
+  * debian/postgresql-common.config: Do not consider versions as obsolete if
+    they are newer than the latest officially supported version. This avoids
+    confusion when testing new betas in experimental or using backports.
+    (Closes: #446635)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 10:45:54 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Oct 2007 11:32:32 +0200
 
 postgresql-common (79) unstable; urgency=low
 
