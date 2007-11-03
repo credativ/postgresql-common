@@ -1,4 +1,4 @@
-postgresql-common (81) UNRELEASED; urgency=low
+postgresql-common (81) unstable; urgency=low
 
   * debian/supported_versions: Welcome, Ubuntu Hardy (8.04)!
   * debian/postgresql-common.templates, debian/control: Language and grammar
