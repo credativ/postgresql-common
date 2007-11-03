@@ -1,9 +1,18 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
 Template: postgresql-common/obsolete-major
-Type: note
+Type: error
 _Description: Obsolete major version ${old}
- The PostgreSQL version ${old} is obsolete, but you still have the server
- and/or client package installed. Please install the latest packages
- (postgresql-${latest} and postgresql-client-${latest}) and upgrade your
+ The PostgreSQL version ${old} is obsolete, but the server
+ or client packages are still installed. Please install the latest packages
+ (postgresql-${latest} and postgresql-client-${latest}) and upgrade the
  existing ${oldversion} clusters with pg_upgradecluster (see manpage).
  .
  Please be aware that the installation of postgresql-${latest} will
@@ -12,6 +21,6 @@ _Description: Obsolete major version ${old}
  cluster (pg_dropcluster --stop ${latest} main, see manpage for
  details).
  .
- The old server and client packages are not supported any more. After
- having upgraded the existing clusters, you should remove the
- postgresql-${old} and postgresql-client-${old} packages.
+ The old server and client packages are no longer supported. After the
+ existing clusters are upgraded, the postgresql-${old} and
+ postgresql-client-${old} packages should be removed.

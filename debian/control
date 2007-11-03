@@ -11,21 +11,21 @@ Architecture: all
 Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-7.4 (<< 1:7.4.8-10), postgresql-8.0 (<< 8.0.3-7)
 Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5)
 Depends: postgresql-client-common (>= ${source:Version}), procps, adduser, debconf (>= 0.5.00) | debconf-2.0, lsb-base (>= 3.0-3), ssl-cert (>= 1.0.11)
-Description: manager for PostgreSQL database clusters
- postgresql-common provides a structure under which multiple versions of
- PostgreSQL may be installed and/or multiple clusters maintained at one
- time.
+Description: PostgreSQL database-cluster manager
+ The postgresql-common package provides a structure under which
+ multiple versions of PostgreSQL may be installed and/or multiple
+ clusters maintained at one time.
  .
- If you have openssl installed, this package will automatically create a (self
- signed) SSL certificate so that SSL works out of the box.
+ If the openssl package is installed, this package will automatically
+ create a (self-signed) certificate so that SSL connections are
+ supported.
  .
  PostgreSQL is a fully featured object-relational database management
- system.  It supports a large part of the SQL standard and is designed
- to be extensible by users in many aspects.  Some of the features are:
- ACID transactions, foreign keys, views, sequences, subqueries,
- triggers, user-defined types and functions, outer joins, multiversion
- concurrency control.  Graphical user interfaces and bindings for many
- programming languages are available as well.
+ system. It supports a large part of the SQL standard and is designed
+ to be extensible by users in many aspects. Its features include ACID
+ transactions, foreign keys, views, sequences, subqueries, triggers,
+ outer joins, multiversion concurrency control, and user-defined types
+ and functions.
 
 Package: postgresql-client-common
 Architecture: all
@@ -33,18 +33,17 @@ Conflicts: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-common (<
 Replaces: postgresql (<< 7.5), postgresql-client (<< 7.5), postgresql-common (<< 45)
 Depends: debconf (>= 0.5.00) | debconf-2.0
 Description: manager for multiple PostgreSQL client versions
- postgresql-client-common provides a structure under which multiple
- versions of PostgreSQL client programs may be installed at the same
- time. It provides a wrapper which selects the right version for the
- particular cluster you want to access (with a command line option, an
- environment variable, /etc/postgresql-commmon/user_clusters, or
- ~/.postgresqlrc).
+
+ The postgresql-client-common package provides a structure under which
+ multiple versions of PostgreSQL client programs may be installed at
+ the same time. It provides a wrapper which selects the right version
+ for the particular cluster you want to access (with a command line
+ option, an environment variable, /etc/postgresql-commmon/user_clusters,
+ or ~/.postgresqlrc).
  .
  PostgreSQL is a fully featured object-relational database management
- system.  It supports a large part of the SQL standard and is designed
- to be extensible by users in many aspects.  Some of the features are:
- ACID transactions, foreign keys, views, sequences, subqueries,
- triggers, user-defined types and functions, outer joins, multiversion
- concurrency control.  Graphical user interfaces and bindings for many
- programming languages are available as well.
-
+ system. It supports a large part of the SQL standard and is designed
+ to be extensible by users in many aspects. Its features include ACID
+ transactions, foreign keys, views, sequences, subqueries, triggers,
+ outer joins, multiversion concurrency control, and user-defined types
+ and functions.

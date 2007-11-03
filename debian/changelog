@@ -1,8 +1,11 @@
 postgresql-common (81) UNRELEASED; urgency=low
 
   * debian/supported_versions: Welcome, Ubuntu Hardy (8.04)!
+  * debian/postgresql-common.templates, debian/control: Language and grammar
+    improvements, thanks a lot to Christian Perrier and the l10n teams!
+    (Closes: #446457)
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 22 Oct 2007 08:33:50 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 03 Nov 2007 09:46:20 -0400
 
 postgresql-common (80) unstable; urgency=low
 
