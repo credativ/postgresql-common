@@ -1,25 +1,26 @@
-# Portuguese translation of postgresql-common debconf messages.
-# This file is distributed under the same license as the postgresql-common package.
-# Ricardo Silva <ardoric@gmail.com>, 2006.
-#
+# postgresql-common Debconf tempaltes basque translation
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Piarres Beobide <pi@beobide.net>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 79\n"
+"Project-Id-Version: postgresql-common Debconf\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-11-03 10:07-0400\n"
-"PO-Revision-Date: 2007-10-22 19:43+0100\n"
-"Last-Translator: Ricardo Silva <ardoric@gmail.com>\n"
-"Language-Team: Native Portuguese <traduz@debianpt.org>\n"
+"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"PO-Revision-Date:  2007-10-18 10:11+0200\n"
+"Last-Translator: Piarres Beobide <pi@beobide.net>\n"
+"Language-Team: Euskara <librezale@librezale.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
-msgstr "Versão maior ${old} obsoleta"
+msgstr "Zaharkituriko ${old} bertsio nagusia"
 
 #. Type: error
 #. Description
@@ -30,11 +31,11 @@ msgid ""
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"A versão ${old} do PostgreSQL está obsoleta, mas ainda tem os pacotes de "
-"cliente e/ou do servidor instalados. Por favor instale os últimos pacotes "
-"(postgresql-${latest} e postgresql-client-${latest}) e actualize os seus "
-"'clusters' ${oldversion} existentes com o pg_upgradecluster (ver página do "
-"manual)."
+"PostgreSQL ${old} bertsioa zaharkiturik dago, baina bezero edo zerbitzari "
+"paketea oraindik instalaturik dago. Mesedez instalatu azken paketeak (postgresql-"
+"${latest} eta postgresql-client-${latest}) eta dauden ${oldversion} taldeak "
+"pg_upgradecluster (manual orria ikusi) erabiliaz eguneratu."
+
 
 #. Type: error
 #. Description
@@ -46,11 +47,10 @@ msgid ""
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
 msgstr ""
-"Por favor tenha consciência que a instalação de postgresql-${latest} irá "
-"criar automaticamente o 'cluster' por omissão ${latest}/main. Se deseja "
-"actualizar o cluster ${old}/main, precisa de remover o 'cluster' ${latest} "
-"existente (pg_dropcluster --stop ${latest} main, ver página do manual para "
-"detalhes)."
+"Kontu izan postgresql-${latest} instalatzean automatikoki ${latest}/main "
+"taldea sortuko duela. ${old}/main taldea eguneratu nahi baduzu dagoeneko "
+"dagoen ${latest} taldea ezabatu behar duzu (pg_dropcluster --stop ${latest} "
+"main, begiatu manual orrialdea xehetasunentzat)."
 
 #. Type: error
 #. Description
@@ -60,6 +60,6 @@ msgid ""
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
 "${old} packages should be removed."
 msgstr ""
-"Os pacotes de cliente e servidor antigos já não são suportados. Após "
-"actualizar os 'clusters' existentes, deve remover os pacotes postgresql-"
-"${old} e postgresql-client-${old}."
+"Zerbitzari eta bezero zahar paketeak ez dira luzaroago onartuko. Dauden "
+"taldeak eguneratu ondoren, postgresql-${old} eta postgresql-client-${old} "
+"paketeak ezabatu beharko lireateke."

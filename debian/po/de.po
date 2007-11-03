@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-05-20 15:20+0200\n"
+"POT-Creation-Date: 2007-10-17 07:25+0200\n"
 "PO-Revision-Date: 2005-11-06 23:21:34-0500\n"
 "Last-Translator: Martin Pitt <mpitt@debian.org>\n"
 "Language-Team: German <de@li.org>\n"
@@ -15,29 +15,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
 msgstr "Veraltete Version ${old}"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
-"The PostgreSQL version ${old} is obsolete, but you still have the server and/"
-"or client package installed. Please install the latest packages (postgresql-"
-"${latest} and postgresql-client-${latest}) and upgrade your existing "
+"The PostgreSQL version ${old} is obsolete, but the server or client packages "
+"are still installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"Die PostgreSQL-Version ${old} ist veraltet, aber Sie haben noch die Server-"
-"und Client-Pakete installiert. Bitte installieren Sie die aktuellen Pakete "
+"Die PostgreSQL-Version ${old} ist veraltet, aber die Server-"
+"oder Client-Pakete sind noch installiert. Bitte installieren Sie die aktuellen Pakete "
 "(postgresql-${latest} und postgresql-client-${latest}) und aktualisieren Sie "
-"Ihre existierenden Cluster mit pg_upgradecluster (siehe man-Seite)."
+"die existierenden Cluster mit pg_upgradecluster (siehe man-Seite)."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -51,14 +51,14 @@ msgstr ""
 "${latest} Cluster entfernen (pg_dropcluster --stop ${latest} main, siehe man-"
 "Seite für Details)."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
-"The old server and client packages are not supported any more. After having "
-"upgraded the existing clusters, you should remove the postgresql-${old} and "
-"postgresql-client-${old} packages."
+"The old server and client packages are no longer supported. After the "
+"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
+"${old} packages should be removed."
 msgstr ""
 "Die alten Server- und Client-Pakete werden nicht mehr unterstützt. Nachdem "
-"Sie die existierenden Cluster aktualisiert haben, sollten Sie die Pakete "
-"postgresql-${old} und postgresql-client-${old} deinstallieren."
+"die existierenden Cluster aktualisiert werden, sollten die Pakete "
+"postgresql-${old} und postgresql-client-${old} entfernt werden."

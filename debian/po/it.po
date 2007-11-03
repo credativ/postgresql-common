@@ -1,43 +1,43 @@
 # Italian (it) translation of debconf templates for postgresql-common
 # Copyright (C) 2006 Software in the Public Interest
 # This file is distributed under the same license as the postgresql-common package.
-# Luca Monducci <luca.mo@tiscali.it>, 2006.
+# Luca Monducci <luca.mo@tiscali.it>, 2006, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 66 italian debconf templates\n"
+"Project-Id-Version: postgresql-common 79 italian debconf templates\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-05-20 15:20+0200\n"
-"PO-Revision-Date: 2006-11-01 20:50+0100\n"
+"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"PO-Revision-Date: 2007-10-17 20:23+0200\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
-msgstr "La versione ${old} è obsoleta"
+msgstr "La versione ${old} Ã¨ obsoleta"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
-"The PostgreSQL version ${old} is obsolete, but you still have the server and/"
-"or client package installed. Please install the latest packages (postgresql-"
-"${latest} and postgresql-client-${latest}) and upgrade your existing "
+"The PostgreSQL version ${old} is obsolete, but the server or client packages "
+"are still installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"La versione ${old} di PostgreSQL è obsoleta, ma alcuni dei pacchetti server "
-"e/o client sono ancora installati. Installare i pacchetti più recenti "
+"La versione ${old} di PostgreSQL Ã¨ obsoleta, ma alcuni dei pacchetti server "
+"o client sono ancora installati. Installare i pacchetti piÃ¹ recenti "
 "(postgresql-${latest} e postgresql-client-${latest}) e aggiornare i cluster "
 "${oldversion} esistenti con pg_upgradecluster (si veda la pagina man)."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -47,17 +47,17 @@ msgid ""
 msgstr ""
 "Attenzione: l'installazione di postgresql-${latest} crea automaticamente il "
 "cluster predefinito ${latest}/main. Se si vuole aggiornare il cluster ${old}/"
-"main è necessario rimuovere cluster ${latest} dopo la sua creazione "
+"main Ã¨ necessario rimuovere cluster ${latest} dopo la sua creazione "
 "(pg_dropcluster --stop ${latest} main, si veda la pagina man per i dettagli)."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
-"The old server and client packages are not supported any more. After having "
-"upgraded the existing clusters, you should remove the postgresql-${old} and "
-"postgresql-client-${old} packages."
+"The old server and client packages are no longer supported. After the "
+"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
+"${old} packages should be removed."
 msgstr ""
-"I vecchi pacchetti di server e client non sono più supportati. Dopo aver "
-"aggiornato il cluster esistente è consigliabile rimuovere i pacchetti "
+"I vecchi pacchetti di server e client non sono piÃ¹ supportati. Dopo aver "
+"aggiornato i cluster esistenti Ã¨ consigliabile rimuovere i pacchetti "
 "postgresql-${old} e postgresql-client-${old}."

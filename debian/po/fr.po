@@ -1,45 +1,45 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Translation of postgresql-common debconf templates to French
+# Copyright (C) 2006-2007 Guilhelm Panaget <guilhelm.panaget@free.fr>
+# This file is distributed under the same license as the postgresql-common package.
 #
+# Guilhelm Panaget <guilhelm.panaget@free.fr>
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-05-20 15:20+0200\n"
+"POT-Creation-Date: 2007-10-17 07:25+0200\n"
 "PO-Revision-Date: 2006-08-11 05:58+0100\n"
 "Last-Translator: Guilhelm Panaget <guilhelm.panaget@free.fr>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
 msgstr "Version majeure ${old} obsolète"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
-"The PostgreSQL version ${old} is obsolete, but you still have the server and/"
-"or client package installed. Please install the latest packages (postgresql-"
-"${latest} and postgresql-client-${latest}) and upgrade your existing "
+"The PostgreSQL version ${old} is obsolete, but the server or client packages "
+"are still installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
 "La version ${old} de PostgreSQL est obsolète, mais le paquet du client ou du "
 "serveur est toujours installé. Veuillez installer la version la plus récente "
 "des paquets postgresql-${latest} et postgresql-client-${latest} et mettre à "
-"niveau vos grappes (« clusters ») en version ${oldversion} avec "
+"niveau les grappes (« clusters ») en version ${oldversion} avec "
 "« pg_upgradecluster ». Veuillez consulter la page de manuel pour plus de "
 "précisions."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -53,14 +53,14 @@ msgstr ""
 "la commande « pg_dropcluster--stop ${latest} main ». Veuillez consulter la "
 "page de manuel pour plus de précisions."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../postgresql-common.templates:1001
+#: ../postgresql-common.templates:2001
 msgid ""
-"The old server and client packages are not supported any more. After having "
-"upgraded the existing clusters, you should remove the postgresql-${old} and "
-"postgresql-client-${old} packages."
+"The old server and client packages are no longer supported. After the "
+"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
+"${old} packages should be removed."
 msgstr ""
 "Les anciennes versions des paquets client et serveur ne sont plus "
-"maintenues. Après la mise à niveau des grappes (« clusters »), vous devriez "
-"supprimer les paquets postgresql-${old} et postgresql-client-${old}."
+"maintenues. Après la mise à niveau des grappes (« clusters »), les paquets "
+"postgresql-${old} et postgresql-client-${old} devraient être supprimés."

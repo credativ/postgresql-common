@@ -4,8 +4,21 @@ postgresql-common (81) UNRELEASED; urgency=low
   * debian/postgresql-common.templates, debian/control: Language and grammar
     improvements, thanks a lot to Christian Perrier and the l10n teams!
     (Closes: #446457)
+  * Update debconf translations, thanks to all translators!
+    - French (Christian Perrier) (Closes: #446978)
+    - Vietnamese (Clytie Siddall) (Closes: #447009)
+    - Finnish (Esko Arajärvi) (Closes: #447045)
+    - Italian (Luca Monducci) (Closes: #447052)
+    - Galician (Jacobo Tarrio) (Closes: #447054)
+    - Basque (Piarres Beobide) (Closes: #447131)
+    - Spanish (Javier Fernández-Sanguino Peña) (Closes: #447417)
+    - Czech (Miroslav Kure) (Closes: 447436)
+    - Portugese (Miguel Figueiredo) (Closes: #447642)
+    - Brazilian Portugese (Eder L. Marques) (Closes: #447881)
+    - Russian (Sergey Alyoshin) (Closes: #448768)
+    - German (Martin Pitt)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 03 Nov 2007 09:46:20 -0400
+ -- Martin Pitt <mpitt@debian.org>  Sat, 03 Nov 2007 10:13:46 -0400
 
 postgresql-common (80) unstable; urgency=low
 
