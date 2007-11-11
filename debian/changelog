@@ -1,3 +1,9 @@
+postgresql-common (82) UNRELEASED; urgency=low
+
+  * debian/control: Fix 'commmon' typo. (Closes: #449532)
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 10 Nov 2007 19:08:01 -0500
+
 postgresql-common (81) unstable; urgency=low
 
   * debian/supported_versions: Welcome, Ubuntu Hardy (8.04)!
