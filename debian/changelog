@@ -5,8 +5,13 @@ postgresql-common (82) UNRELEASED; urgency=low
     not regarded as a cluster directory. This reproduces #450565.
   * PgCommon.pm, get_versions()/get_version_clusters(): Filter out '.' and
     '..' from readdir() output. (Closes: #450565)
+  * pg_ctlcluster: Use "smart" mode shutdown by default, and add option
+    -f/--force to use "fast" -> "immediate" -> kill -9 approach. (LP: #154012)
+  * debian/init.d-functions: Use --force when stopping all clusters, since
+    default smart mode can potentially block forever and thus fail to shut
+    down a machine.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 11 Nov 2007 01:35:46 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 11 Nov 2007 01:57:41 +0100
 
 postgresql-common (81) unstable; urgency=low
 

@@ -10,6 +10,7 @@ Bugs:
 Transition bugs:
 
 Missing selftest:
+- --force option for pg_ctlcluster
 
 Important features:
 

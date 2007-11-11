@@ -357,28 +357,37 @@ sub stop {
 
     stop_check_pid_file;
 
-    if (!fork()) {
-        close STDOUT;
-        exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'fast', 'stop';
-    } else {
-        wait;
-    }
-
-    # try harder if "fast" mode does not work
-    if (-f $info{'pgdata'}.'/postmaster.pid') {
-        print "(does not shutdown gracefully, now stopping immediately)";
-        system $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', 'stop';
-    }
-
-    # if that still not helps, use the big hammer
-    if (-f $info{'pgdata'}.'/postmaster.pid') {
-        print "(does not shutdown, killing the process)";
-        if (open FPID, $info{'pgdata'}.'/postmaster.pid') {
-            $pid = <FPID>;
-            close FPID;
+    if ($force) {
+        if (!fork()) {
+            close STDOUT;
+            exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'fast', 'stop';
+        } else {
+            wait;
         }
-        kill (9, $pid) if $pid;
-        unlink $info{'pgdata'}.'/postmaster.pid';
+
+        # try harder if "fast" mode does not work
+        if (-f $info{'pgdata'}.'/postmaster.pid') {
+            print "(does not shutdown gracefully, now stopping immediately)";
+            system $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', 'stop';
+        }
+
+        # if that still not helps, use the big hammer
+        if (-f $info{'pgdata'}.'/postmaster.pid') {
+            print "(does not shutdown, killing the process)";
+            if (open FPID, $info{'pgdata'}.'/postmaster.pid') {
+                $pid = <FPID>;
+                close FPID;
+            }
+            kill (9, $pid) if $pid;
+            unlink $info{'pgdata'}.'/postmaster.pid';
+        }
+    } else {
+        if (!fork()) {
+            close STDOUT;
+            exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', 'stop';
+        } else {
+            wait;
+        }
     }
 
     # external_pid_file files are currently not removed by postmaster itself
@@ -398,7 +407,8 @@ sub reload {
 # main
 #
 
-exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions);
+exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
+    'f|force' => \$force);
 
 if ($#ARGV != 2) {
     print "Usage: $0 <version> <cluster> <action>\n";
@@ -495,13 +505,17 @@ already running, and with 1 on other failure conditions.
 =item B<stop>
 
 Stops the L<postmaster(1)> server (and B<pg_autovacuum>, if running) of the
-given cluster with increasing force. Initially, the B<fast> mode is used which
-rolls back all active transactions and thus shuts down cleanly. If that does
-not work, shutdown is attempted again in B<immediate> mode, which can leave the
-cluster in an inconsistent state and thus will lead to a recovery run at the
-next start. If this still does not help, the B<postmaster> process is killed.
-Exits with 0 on success, with 2 if the server is not running, and with 1 on
-other failure conditions.
+given cluster. By default, "smart" mode is used, which waits until all clients
+disconnected.
+
+With the B<--force> option the "fast" mode is used which rolls back all active
+transactions, disconnects clients immediately and thus shuts down cleanly. If
+that does not work, shutdown is attempted again in "immediate" mode, which can
+leave the cluster in an inconsistent state and thus will lead to a recovery run
+at the next start. If this still does not help, the B<postmaster> process is
+killed.  Exits with 0 on success, with 2 if the server is not running, and with
+1 on other failure conditions. This mode should only be used when the machine
+is about to be shut down.
 
 =item B<restart>
 
