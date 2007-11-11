@@ -1,8 +1,10 @@
 postgresql-common (82) UNRELEASED; urgency=low
 
   * debian/control: Fix 'commmon' typo. (Closes: #449532)
+  * t/030_errors.t: Check that an /etc/postgresql/postgresql.conf leftover is
+    not regarded as a cluster directory. This reproduces #450565.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 10 Nov 2007 19:08:01 -0500
+ -- Martin Pitt <mpitt@debian.org>  Sun, 11 Nov 2007 01:22:24 +0100
 
 postgresql-common (81) unstable; urgency=low
 

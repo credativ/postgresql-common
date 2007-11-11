@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 131;
+use Test::More tests => 132;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -177,6 +177,15 @@ is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping 
 unlink "/etc/postgresql/$version/main/pg_hba.conf";
 rename "/etc/postgresql/$version/main/pg_hba.conf.orig",
     "/etc/postgresql/$version/main/pg_hba.conf" or die "rename: $!";
+
+# leftover files must not create confusion
+open F, '>/etc/postgresql/postgresql.conf';
+print F "data_directory = '/nonexisting'\n";
+close F;
+my @c = get_version_clusters $version;
+is_deeply (\@c, ['main'], 
+   'leftover /etc/postgresql/postgresql.conf is not regarded as a cluster');
+unlink '/etc/postgresql/postgresql.conf';
 
 # remove cluster and directory
 ok ((system "pg_dropcluster $version main") == 0, 
