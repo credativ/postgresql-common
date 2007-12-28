@@ -10,8 +10,10 @@ postgresql-common (82) UNRELEASED; urgency=low
   * debian/init.d-functions: Use --force when stopping all clusters, since
     default smart mode can potentially block forever and thus fail to shut
     down a machine.
+  * debian/README.Devel: Update for current bzr versions and hosting on
+    code.launchpad.net.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 11 Nov 2007 01:57:41 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 28 Dec 2007 12:54:18 +0100
 
 postgresql-common (81) unstable; urgency=low
 
