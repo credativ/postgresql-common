@@ -12,8 +12,9 @@ postgresql-common (82) UNRELEASED; urgency=low
     down a machine.
   * debian/README.Devel: Update for current bzr versions and hosting on
     code.launchpad.net.
+  * Update Japanese debconf translations (Closes: #450902)
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 28 Dec 2007 12:54:18 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 30 Dec 2007 22:27:08 +0100
 
 postgresql-common (81) unstable; urgency=low
 

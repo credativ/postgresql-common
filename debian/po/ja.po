@@ -1,13 +1,13 @@
 # Copyright (C) 2006 Martin Pitt <mpitt@debian.org>
 # This file is distributed under the same license as the postgresql-common package.
-# Hideki Yamane <henrich@debian.or.jp>, 2006.
+# Hideki Yamane <henrich@debian.or.jp>, 2006-2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 65\n"
+"Project-Id-Version: postgresql-common 81\n"
 "Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-11-03 10:07-0400\n"
-"PO-Revision-Date: 2006-10-10 00:00+0900\n"
+"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"PO-Revision-Date: 2007-11-12 10:37+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,12 +23,6 @@ msgstr "利用できなくなったメジャーバージョン ${old}"
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-#, fuzzy
-#| msgid ""
-#| "The PostgreSQL version ${old} is obsolete, but you still have the server "
-#| "and/or client package installed. Please install the latest packages "
-#| "(postgresql-${latest} and postgresql-client-${latest}) and upgrade your "
-#| "existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but the server or client packages "
 "are still installed. Please install the latest packages (postgresql-"
@@ -36,7 +30,7 @@ msgid ""
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
 "PostgreSQL バージョン ${old} は既に利用できなくなっていますが、サーバおよびク"
-"ライアント用パッケージがインストールされています。最新のパッケージ "
+"ライアント用パッケージがインストールされたままになっています。最新のパッケージ "
 "(postgresql-${latest} と postgresql-client-${latest}) をインストールして、現"
 "在の ${oldversion} クラスタを pg_upgradecluster コマンドを使ってアップグレー"
 "ドしてください (詳細は man ページを参照)。"
@@ -59,11 +53,6 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-#, fuzzy
-#| msgid ""
-#| "The old server and client packages are not supported any more. After "
-#| "having upgraded the existing clusters, you should remove the postgresql-"
-#| "${old} and postgresql-client-${old} packages."
 msgid ""
 "The old server and client packages are no longer supported. After the "
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
@@ -72,3 +61,4 @@ msgstr ""
 "以前のサーバ・クライアントパッケージはもはやサポートされていません。現在のク"
 "ラスタをアップグレード後、postgresql-${old} パッケージと postgresql-client-"
 "${old} パッケージを削除する必要があります。"
+
