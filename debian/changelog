@@ -1,4 +1,4 @@
-postgresql-common (82) UNRELEASED; urgency=low
+postgresql-common (82) unstable; urgency=low
 
   * debian/control: Fix 'commmon' typo. (Closes: #449532)
   * t/030_errors.t: Check that an /etc/postgresql/postgresql.conf leftover is
