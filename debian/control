@@ -16,9 +16,8 @@ Description: PostgreSQL database-cluster manager
  multiple versions of PostgreSQL may be installed and/or multiple
  clusters maintained at one time.
  .
- If the openssl package is installed, this package will automatically
- create a (self-signed) certificate so that SSL connections are
- supported.
+ This package will automatically create a (self-signed) certificate so
+ that SSL connections are supported.
  .
  PostgreSQL is a fully featured object-relational database management
  system. It supports a large part of the SQL standard and is designed
