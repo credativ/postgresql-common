@@ -83,7 +83,7 @@ sub check_cluster {
     if ($is_unicode) {
 	like_program_out 'postgres', 
 	    'printf "set client_encoding=\'UTF-8\'; select \'\\310\\\\\'a\'" | psql -Atq template1',
-	    0, qr/(UNICODE|UTF8).*0xc85c/,
+	    0, qr/(UNICODE|UTF8).*0x(c85c|c827)/,
 	    'Server rejects incorrect encoding (CVE-2006-2313)';
 	like_program_out 'postgres', 
 	    'printf "set client_encoding=\'SJIS\'; select \'\\\\\\\'a\'" | psql -Atq template1',
