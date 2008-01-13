@@ -5,7 +5,7 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-DEFAULT="8.1\n8.2\n8.3"
+DEFAULT="8.2\n8.3"
 
 lsb_ubuntu() {
     case "$1" in
