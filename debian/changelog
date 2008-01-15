@@ -10,8 +10,10 @@ postgresql-common (83) UNRELEASED; urgency=low
     notifications when upgrading over a particular version. This provides the
     notification when upgrading from Etch to Lenny, and when obsoleting a
     major version within unstable.
+  * debian/supported-versions: Drop support for 8.2 in unstable, 8.3 is the
+    version du jour.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 13 Jan 2008 16:35:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 16 Jan 2008 00:47:35 +0100
 
 postgresql-common (82) unstable; urgency=low
 

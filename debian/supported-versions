@@ -5,7 +5,7 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-DEFAULT="8.2\n8.3"
+DEFAULT="8.3"
 
 lsb_ubuntu() {
     case "$1" in
@@ -33,7 +33,7 @@ lsb_debian() {
             ;;
         # Lenny and unstable
         testing/unstable | testing | unstable)
-            /bin/echo -e "8.2\n8.3"
+            /bin/echo -e "8.3"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -66,7 +66,7 @@ if type lsb_release >/dev/null 2>/dev/null; then
 else
     # Debian?
     if [ -e /etc/debian_version ]; then
-        echo -e "7.4\n8.1\n8.2\n8.3";
+        /bin/echo -e "8.3";
     else
         echo "supported_versions: WARNING: Unknown distribution" >&2
         /bin/echo -e "$DEFAULT"
