@@ -9,7 +9,7 @@ use Socket;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 110;
+use Test::More tests => 118;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.
@@ -230,6 +230,42 @@ like_program_out 'postgres', 'psql --version', 0, qr/ignoring invalid line 1/,
 # remove test user_clusters
 unlink '/etc/postgresql-common/user_clusters' or die
     "unlink user_clusters: $!";
+
+# check that pg_service.conf works
+open F, '>/etc/postgresql-common/pg_service.conf' or die "Could not create pg_service.conf: $!";
+print F "[old_t1]
+user=postgres
+dbname=template1
+port=5432
+
+[new1_test]
+user=postgres
+dbname=test
+port=5434
+
+# these do not exist
+[new2_test]
+user=postgres
+dbname=test
+port=5440
+";
+close F;
+chmod 0644, '/etc/postgresql-common/pg_service.conf';
+$ENV{'PGSERVICE'} = 'old_t1';
+# TODO: sysconfdir is only fixed in 8.3 for now
+is_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 0,
+    "template1\n", 'pg_service conf selection 1';
+$ENV{'PGSERVICE'} = 'new1_test';
+is_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 0,
+    "test\n", 'pg_service conf selection 2';
+$ENV{'PGSERVICE'} = 'new2_test';
+like_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 2,
+    qr/FATAL.*test/, 'pg_service conf selection 3';
+$ENV{'PGSERVICE'} = 'nonexisting';
+like_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 2,
+    qr/FATAL.*postgres/, 'pg_service conf selection 4';
+delete $ENV{'PGSERVICE'};
+unlink '/etc/postgresql-common/pg_service.conf';
 
 # check proper error message if no cluster could be determined as default for
 # pg_wrapper
