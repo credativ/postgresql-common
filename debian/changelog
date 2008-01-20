@@ -1,4 +1,4 @@
-postgresql-common (83) UNRELEASED; urgency=low
+postgresql-common (83) unstable; urgency=low
 
   * Drop the "If you have openssl installed..." from the package description,
     since ssl-cert depends on it.
