@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2007-10-17 19:01+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -16,39 +16,57 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: LocFactoryEditor 1.7b1\n"
 
-#: ../postgresql-common.templates:2001
 #. Type: error
 #. Description
+#: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
 msgstr "Phiên bản chính cũ ${old}"
 
-#: ../postgresql-common.templates:2001
 #. Type: error
 #. Description
+#: ../postgresql-common.templates:2001
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but the server or client packages "
 "are still installed. Please install the latest packages (postgresql-"
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr "Phiên bản PostgreSQL ${old} quá cũ, các gói trình phục vụ hay gói trình khách vẫn còn được cài đặt. Hãy cài đặt các gói mới nhất (postgresql-${latest} và postgresql-client-${latest}) rồi nâng cấp các tập hợp ${oldversion} tồn tại bằng chức năng pg_upgradecluster (xem trang hướng dẫn [man])."
+msgstr ""
+"Phiên bản PostgreSQL ${old} quá cũ, các gói trình phục vụ hay gói trình "
+"khách vẫn còn được cài đặt. Hãy cài đặt các gói mới nhất (postgresql-"
+"${latest} và postgresql-client-${latest}) rồi nâng cấp các tập hợp "
+"${oldversion} tồn tại bằng chức năng pg_upgradecluster (xem trang hướng dẫn "
+"[man])."
 
-#: ../postgresql-common.templates:2001
 #. Type: error
 #. Description
+#: ../postgresql-common.templates:2001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
 "upgrade the ${old}/main cluster, you need to remove the already existing "
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
-msgstr "Ghi chú rằng tiến trình cài đặt postgresql-${latest} sẽ tự động tạo một tập hợp mặc định ${latest}/main. Muốn nâng cấp tập hợp ${old}/main thì bạn cần phải gỡ bỏ tập hợp "
-"${latest} cluster đã tồn tại (pg_dropcluster --stop ${latest} main, xem trang hướng dẫn để tìm chi tiết)."
+msgstr ""
+"Ghi chú rằng tiến trình cài đặt postgresql-${latest} sẽ tự động tạo một tập "
+"hợp mặc định ${latest}/main. Muốn nâng cấp tập hợp ${old}/main thì bạn cần "
+"phải gỡ bỏ tập hợp ${latest} cluster đã tồn tại (pg_dropcluster --stop "
+"${latest} main, xem trang hướng dẫn để tìm chi tiết)."
 
-#: ../postgresql-common.templates:2001
 #. Type: error
 #. Description
+#: ../postgresql-common.templates:2001
 msgid ""
 "The old server and client packages are no longer supported. After the "
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
 "${old} packages should be removed."
-msgstr "Không còn hỗ trợ lại các gói trình phục vụ và gói trình khách. Sau khi nâng cấp các tập hợp đã tồn tại, khuyên bạn gỡ bỏ các gói postgresql-${old} và postgresql-client-${old}."
+msgstr ""
+"Không còn hỗ trợ lại các gói trình phục vụ và gói trình khách. Sau khi nâng "
+"cấp các tập hợp đã tồn tại, khuyên bạn gỡ bỏ các gói postgresql-${old} và "
+"postgresql-client-${old}."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""

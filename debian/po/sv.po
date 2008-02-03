@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common \n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-11-03 10:07-0400\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2007-01-21 23:57+0100\n"
 "Last-Translator: Andreas Henriksson <andreas@fatal.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -75,3 +75,10 @@ msgstr ""
 "De gamla server- och klient-paketen stöds inte längre. Efter uppgradering av "
 "det existreande klustren, bör du ta bort postgresql-${old} och postgresql-"
 "client-${old} paketen."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""

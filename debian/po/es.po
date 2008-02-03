@@ -35,8 +35,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 68\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2007-10-21 02:55+0200\n"
 "Last-Translator: Javier Fernández-Sanguino <jfs@debian.org>\n"
 "Language-Team: Debian Spanish <debian-l10n-spanish@lists.debian.org>\n"
@@ -61,7 +61,12 @@ msgid ""
 "are still installed. Please install the latest packages (postgresql-"
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr "La versión de PostgreSQL ${old} está obsoleta, pero el paquete del cliente o del servidor aún están instalados. Debe instalar las últimas versiones de los paquetes (postgresql-${latest} y postgresql-client-${latest}) y actualizar sus clústers ${oldversion} con la orden «pg_upgradecluster» (consulte la página del manual)."
+msgstr ""
+"La versión de PostgreSQL ${old} está obsoleta, pero el paquete del cliente o "
+"del servidor aún están instalados. Debe instalar las últimas versiones de "
+"los paquetes (postgresql-${latest} y postgresql-client-${latest}) y "
+"actualizar sus clústers ${oldversion} con la orden "
+"«pg_upgradecluster» (consulte la página del manual)."
 
 #. Type: error
 #. Description
@@ -90,3 +95,10 @@ msgstr ""
 "Ya no se da soporte a los paquetes antiguos de cliente y servidor. Debería "
 "eliminar los paquetes postgresql-${old} y postgresql-client-${old} después "
 "de actualizar los clústers que tenga."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""

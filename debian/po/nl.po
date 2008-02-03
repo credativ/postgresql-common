@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 59\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-11-03 10:07-0400\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2006-09-09 14:55+0000\n"
 "Last-Translator: Vincent Zweije <zweije@xs4all.nl>\n"
 "Language-Team: Debian-Dutch <debian-l10n-dutch@lists.debian.org>\n"
@@ -73,3 +73,10 @@ msgstr ""
 "De oude server- en clientpakketten worden niet langer ondersteund. Nadat u "
 "de bestaande groepen hebt opgewaardeerd, kunt u het beste de postgresql-"
 "${old} en postgresql-client-${old} pakketten verwijderen."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""

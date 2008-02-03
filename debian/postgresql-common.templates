@@ -24,3 +24,5 @@ _Description: Obsolete major version ${old}
  The old server and client packages are no longer supported. After the
  existing clusters are upgraded, the postgresql-${old} and
  postgresql-client-${old} packages should be removed.
+ .
+ Please see /usr/share/doc/postgresql-common/README.Debian.gz for details.

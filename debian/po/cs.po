@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-11-03 10:07-0400\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2007-10-20 15:10+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -61,3 +61,10 @@ msgstr ""
 "Staré balíky serveru a klienta již nejsou podporovány. Po aktualizaci "
 "stávajících klastrů byste měli balíky postgresql-${old} a postgresql-client-"
 "${old} odstranit."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""

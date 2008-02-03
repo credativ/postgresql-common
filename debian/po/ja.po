@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 81\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2007-11-12 10:37+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -30,10 +30,10 @@ msgid ""
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
 "PostgreSQL バージョン ${old} は既に利用できなくなっていますが、サーバおよびク"
-"ライアント用パッケージがインストールされたままになっています。最新のパッケージ "
-"(postgresql-${latest} と postgresql-client-${latest}) をインストールして、現"
-"在の ${oldversion} クラスタを pg_upgradecluster コマンドを使ってアップグレー"
-"ドしてください (詳細は man ページを参照)。"
+"ライアント用パッケージがインストールされたままになっています。最新のパッケー"
+"ジ (postgresql-${latest} と postgresql-client-${latest}) をインストールして、"
+"現在の ${oldversion} クラスタを pg_upgradecluster コマンドを使ってアップグ"
+"レードしてください (詳細は man ページを参照)。"
 
 #. Type: error
 #. Description
@@ -62,3 +62,9 @@ msgstr ""
 "ラスタをアップグレード後、postgresql-${old} パッケージと postgresql-client-"
 "${old} パッケージを削除する必要があります。"
 
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""

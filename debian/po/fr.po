@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: mpitt@debian.org\n"
-"POT-Creation-Date: 2007-10-17 07:25+0200\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
 "PO-Revision-Date: 2006-08-11 05:58+0100\n"
 "Last-Translator: Guilhelm Panaget <guilhelm.panaget@free.fr>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -48,10 +48,10 @@ msgid ""
 "details)."
 msgstr ""
 "Veuillez noter que l'installation de postgresql-${latest} créera par défaut "
-"une grappe (« cluster ») ${latest}/main. Si vous souhaitez mettre à niveau "
-"la grappe ${old}/main, il faudra supprimer la grappe ${latest} en exécutant "
-"la commande « pg_dropcluster--stop ${latest} main ». Veuillez consulter la "
-"page de manuel pour plus de précisions."
+"une grappe (« cluster ») ${latest}/main. Si vous souhaitez mettre à niveau la "
+"grappe ${old}/main, il faudra supprimer la grappe ${latest} en exécutant la "
+"commande « pg_dropcluster--stop ${latest} main ». Veuillez consulter la page "
+"de manuel pour plus de précisions."
 
 #. Type: error
 #. Description
@@ -64,3 +64,10 @@ msgstr ""
 "Les anciennes versions des paquets client et serveur ne sont plus "
 "maintenues. Après la mise à niveau des grappes (« clusters »), les paquets "
 "postgresql-${old} et postgresql-client-${old} devraient être supprimés."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""
