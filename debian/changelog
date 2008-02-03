@@ -5,8 +5,10 @@ postgresql-common (84) UNRELEASED; urgency=low
   * t/040_upgrade.t: Create and cd into an inaccessible test directory.
   * pg_upgradecluster: Chdir to / before the upgrade to avoid confusing error
     messages about inaccessible cwd.
+  * debian/README.Debian: Update for 8.3 being the default version. Drop
+    description of 7.4 autovacuum daemon magic, since it is obsolete now.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 12:51:34 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 12:58:52 +0100
 
 postgresql-common (83) unstable; urgency=low
 

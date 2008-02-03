@@ -25,13 +25,14 @@ Eventually you will not get around reading at least some parts of the manual,
 but if you want to get straight into playing SQL, here are the steps to create
 a database user and a database for the Unix user 'joe':
 
-1. Install a database server with the major version of your choice,
-   preferrably the latest version (e. g. 'postgresql-8.1'). This will
-   automatically create a default cluster 'main' with the database
-   superuser 'postgres'.
+1. Install a database server with the major version of your choice
+   ('postgresql-X.Y', e. g. 'postgresql-8.3').  Preferrably the latest
+   version, which you can get by installing the metapackage
+   'postgresql'. This will automatically create a default cluster
+   'main' with the database superuser 'postgres'.
 
-2. Get a shell for the database superuser 'postgres'. If your system has an
-   active root user, use su:
+2. Get a shell for the database superuser 'postgres'. If your system
+   has an active root user, use su:
 
    $ su -c "su -s /bin/sh postgres"
 
@@ -42,11 +43,7 @@ a database user and a database for the Unix user 'joe':
 3. In this postgres shell, create a database user with the same name as your
    Unix login:
 
-   $ createuser -DA joe   # for PostgreSQL 7.4 and 8.0
-
-   or
-
-   $ createuser -DRS joe   # for PostgreSQL 8.1 and above
+   $ createuser -DRS joe
    
    For details about the options, see createuser(1).
 
@@ -85,18 +82,18 @@ equivalent to doing 'pg_createcluster X.Y main --start'.
 Due to this default cluster, an immediate attempt to upgrade an
 earlier 'main' cluster to a new version will fail and you need to
 remove the newer default cluster first. E. g., if you have
-postgresql-7.4 installed and want to upgrade to 8.1, you first install
-postgresql-8.1:
+postgresql-8.2 installed and want to upgrade to 8.3, you first install
+postgresql-8.3:
 
-  apt-get install postgresql-8.1
+  apt-get install postgresql-8.3
 
-Then drop the default 8.1 cluster:
+Then drop the default 8.2 cluster:
 
-  pg_dropcluster 8.1 main --stop
+  pg_dropcluster 8.2 main --stop
 
-And then upgrade the 7.4 cluster to 8.1:
+And then upgrade the 8.2 cluster to 8.3:
 
-  pg_upgradecluster 7.4 main
+  pg_upgradecluster 8.2 main
 
 SSL
 ---
@@ -123,29 +120,9 @@ symlink the file to /etc/ssl/certs/ssl-cert-snakeoil.pem; in this
 case, client certificates need to be signed by the snakeoil
 certificate, which might be desirable in many cases. See
 
-  /usr/share/doc/postgresql-doc-8.1/html/ssl-tcp.html
+  /usr/share/doc/postgresql-doc-8.3/html/ssl-tcp.html
 
-for details (in package postgresql-doc-8.1).
-
-Autovacuum daemon
------------------
-Starting from version 8.1, PostgreSQL has an integrated autovacuum
-daemon which is automatically handled by the postmaster and configured
-in postgresql.conf.
-
-In previous versions, the autovacuum daemon is shipped in the
-'contrib' package. Since this is a commonly used feature, the Debian
-packages provide a fully automatic integration: just by installing the
-"postgresql-contrib-<version>" package, a "pg_autovacuum" daemon will
-be automatically started for every cluster. You can configure (or even
-disable) the autovacuum parameters globally in
-/etc/postgresql-common/autovacuum.conf. If you want to configure a
-cluster individually, copy this file into
-/etc/postgresql/<version>/<cluster>.
-
-Please note that the cron job that vacuums databases every 5 hours (see
-/etc/cron.d/postgresql-common) does not do anything for clusters with a running
-autovacuum daemon.
+for details (in package postgresql-doc-8.3).
 
 Further documentation
 ---------------------
