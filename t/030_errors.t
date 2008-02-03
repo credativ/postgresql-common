@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 132;
+use Test::More tests => 134;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -186,6 +186,10 @@ my @c = get_version_clusters $version;
 is_deeply (\@c, ['main'], 
    'leftover /etc/postgresql/postgresql.conf is not regarded as a cluster');
 unlink '/etc/postgresql/postgresql.conf';
+
+# fails by default due to access restrictions
+like_program_out 'postgres', "pg_dropcluster $version main", 1,
+    qr/root privileges/, "pg_dropcluster fails as user postgres by default";
 
 # remove cluster and directory
 ok ((system "pg_dropcluster $version main") == 0, 

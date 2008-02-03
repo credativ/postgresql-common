@@ -13,8 +13,14 @@ postgresql-common (84) UNRELEASED; urgency=low
   * PgCommon.pm, get_cluster_locales(): Print proper error message when server
     package is removed, but not purged, and a cluster still exists.
     (Closes: #463070)
+  * t/030_errors.t, t/130_nonroot_admin.t: Check pg_dropcluster/
+    pg_createcluster error message when being called with insufficient
+    privileges.
+  * pg_createcluster, pg_dropcluster: Point out that program needs to be run
+    as root when creating/removing config or data directory fails.
+    (Closes: #460576)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 13:34:47 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 18:01:48 +0100
 
 postgresql-common (83) unstable; urgency=low
 

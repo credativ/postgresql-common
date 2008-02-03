@@ -51,7 +51,7 @@ sub init_db {
     $datadir = (-l $_[1]) ? readlink $_[1] : $_[1];
 
     if (system 'install', '-d', '-o', $_[2], '-g', $_[3], $datadir) {
-        error 'could not create data directory';
+        error 'could not create data directory; you might need to run this program with root privileges';
     }
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
@@ -302,7 +302,8 @@ if (defined $port) {
 }
 
 # create configuration directory
-error 'could not create data directory' if system ('install', '-d', $confdir);
+error 'could not create configuration directory; you might ' .
+    'need to run this program with root privileges' if system ('install', '-d', $confdir);
 
 # check whether we have an already existing cluster; check version and
 # determine owner in this case
@@ -374,7 +375,7 @@ set_cluster_port $version, $cluster, $port;
 
 # create log file
 system 'mkdir', '-m', '0755', '-p', '/var/log/postgresql' and 
-    error "could not create log directory";
+    error "could not create log directory; you might need to run this program with root privileges";
 $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 if (! -e $real_logfile) {
     open L, ">>$real_logfile" or error "could not create log file $real_logfile";

@@ -9,7 +9,7 @@ use TestLib;
 my $ownver = $MAJORS[-1];
 my $grpver = $MAJORS[0];
 
-use Test::More tests => 37;
+use Test::More tests => 38;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -18,8 +18,8 @@ my $testuser = 'postgres';
 my ($uid, $gid) = (getpwnam $testuser)[2,3];
 
 # fails by default due to access restrictions
-is ((exec_as 'postgres', "pg_createcluster $ownver fail --start"), 1,
-    "pg_createcluster fails as user $testuser by default");
+like_program_out $testuser, "pg_createcluster $ownver fail --start", 1,
+    qr/root privileges/, "pg_createcluster fails as user $testuser by default";
 # and does not leave any garbage behind
 check_clean;
 
