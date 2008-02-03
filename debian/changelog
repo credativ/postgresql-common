@@ -19,8 +19,10 @@ postgresql-common (84) UNRELEASED; urgency=low
   * pg_createcluster, pg_dropcluster: Point out that program needs to be run
     as root when creating/removing config or data directory fails.
     (Closes: #460576)
+  * t/090_multicluster.t: Remove test case for nonexisting PGSERVICE value,
+    since this is not reliably reported in psql.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 18:01:48 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 18:13:10 +0100
 
 postgresql-common (83) unstable; urgency=low
 

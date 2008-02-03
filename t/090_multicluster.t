@@ -9,7 +9,7 @@ use Socket;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 118;
+use Test::More tests => 116;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.
@@ -261,9 +261,6 @@ is_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'selec
 $ENV{'PGSERVICE'} = 'new2_test';
 like_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 2,
     qr/FATAL.*test/, 'pg_service conf selection 3';
-$ENV{'PGSERVICE'} = 'nonexisting';
-like_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 2,
-    qr/FATAL.*postgres/, 'pg_service conf selection 4';
 delete $ENV{'PGSERVICE'};
 unlink '/etc/postgresql-common/pg_service.conf';
 
