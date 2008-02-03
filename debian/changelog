@@ -10,8 +10,11 @@ postgresql-common (84) UNRELEASED; urgency=low
   * debian/postgresql-common.templates: Point to README.Debian.
   * debian/postgresql-common.cron.d: Update for 8.3, and add warnings and doc
     pointer about enabling regular VACUUM FULL. (LP: #186831)
+  * PgCommon.pm, get_cluster_locales(): Print proper error message when server
+    package is removed, but not purged, and a cluster still exists.
+    (Closes: #463070)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 13:15:39 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 13:34:47 +0100
 
 postgresql-common (83) unstable; urgency=low
 

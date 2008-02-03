@@ -708,6 +708,10 @@ sub get_cluster_locales {
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
     my $pg_controldata = get_program_path 'pg_controldata', $version;
+    if (! -e $pg_controldata) {
+        print STDERR "Error: pg_controldata not found, please install postgresql-$version\n";
+        exit 1;
+    }
     prepare_exec ('LC_ALL', 'LANG', 'LANGUAGE');
     $ENV{'LC_ALL'} = 'C';
     my $result = open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster));
