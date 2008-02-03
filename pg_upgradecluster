@@ -18,6 +18,9 @@ delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 my ($version, $newversion, $cluster);
 my (%info, %newinfo);
 
+# do not trip over cwd not being accessible to postgres superuser
+chdir '/';
+
 sub adapt_conffiles {
     my %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
 

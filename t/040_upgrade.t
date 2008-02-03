@@ -87,6 +87,11 @@ if ($MAJORS[0] lt '8.1') {
     pass '...';
 }
 
+# create inaccessible cwd, to check for confusing error messages
+mkdir '/tmp/pgtest/' or die "Could not create temporary test directory /tmp/pgtest: $!";
+chmod 0100, '/tmp/pgtest/';
+chdir '/tmp/pgtest';
+
 # Upgrade to latest version
 my $outref;
 is ((exec_as 0, "(pg_upgradecluster $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
@@ -99,6 +104,10 @@ if (@err) {
 } else {
     pass "no error messages during upgrade";
 }
+
+# remove inaccessible test cwd
+chdir '/';
+rmdir '/tmp/pgtest/';
 
 # Check clusters
 is_program_out 'nobody', 'pg_lsclusters -h', 0, 
