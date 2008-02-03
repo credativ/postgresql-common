@@ -21,8 +21,10 @@ postgresql-common (84) UNRELEASED; urgency=low
     (Closes: #460576)
   * t/090_multicluster.t: Remove test case for nonexisting PGSERVICE value,
     since this is not reliably reported in psql.
+  * t/140_pg_config.t: Skip pg_config test for 8.1. It's known broken in Etch
+    (pg_config was only shipped in libpq-def) and irrelevant in Lenny.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 18:13:10 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 03 Feb 2008 17:50:29 +0100
 
 postgresql-common (83) unstable; urgency=low
 
