@@ -1,4 +1,4 @@
-postgresql-common (84) UNRELEASED; urgency=low
+postgresql-common (84) unstable; urgency=low
 
   * Add t/140_pg_config.t: Check correct output of pg_config, to avoid bugs
     like #455509 and #462037 in the future.
