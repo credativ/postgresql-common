@@ -87,9 +87,9 @@ postgresql-8.3:
 
   apt-get install postgresql-8.3
 
-Then drop the default 8.2 cluster:
+Then drop the default 8.3 cluster:
 
-  pg_dropcluster 8.2 main --stop
+  pg_dropcluster 8.3 main --stop
 
 And then upgrade the 8.2 cluster to 8.3:
 

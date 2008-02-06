@@ -1,3 +1,10 @@
+postgresql-common (85) UNRELEASED; urgency=low
+
+  * debian/README.Debian: Fix fatal typo that suggested dropping the wrong
+    cluster on upgrade. (Closes: #464064)
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 06 Feb 2008 15:18:44 +0100
+
 postgresql-common (84) unstable; urgency=low
 
   * Add t/140_pg_config.t: Check correct output of pg_config, to avoid bugs
