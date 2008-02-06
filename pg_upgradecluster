@@ -525,11 +525,11 @@ __END__
 
 =head1 NAME
 
-pg_upgradecluster - upgrade a new PostgreSQL cluster to a new major version.
+pg_upgradecluster - upgrade an existing PostgreSQL cluster to a new major version.
 
 =head1 SYNOPSIS
 
-B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<data dir>]
+B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<datadir>]
 
 =head1 DESCRIPTION
 
@@ -540,7 +540,7 @@ configuration files of the old version are copied to the new cluster.
 
 The cluster of the old version will be configured to use a previously unused
 port since the upgraded one will use the original port. The old cluster is not
-automatically be removed. After upgrade, please verify that the new cluster
+automatically removed. After upgrading, please verify that the new cluster
 indeed works as expected; if so, you should remove the old cluster with
 L<pg_dropcluster(8)>.
 

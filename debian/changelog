@@ -2,8 +2,9 @@ postgresql-common (85) UNRELEASED; urgency=low
 
   * debian/README.Debian: Fix fatal typo that suggested dropping the wrong
     cluster on upgrade. (Closes: #464064)
+  * pg_upgradecluster: Fix some typos in the POD, thanks to Brendan Jurd!
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 06 Feb 2008 15:18:44 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 06 Feb 2008 15:22:03 +0100
 
 postgresql-common (84) unstable; urgency=low
 
