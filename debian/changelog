@@ -1,3 +1,10 @@
+postgresql-common (86) UNRELEASED; urgency=low
+
+  * Update Japanese debconf translations, thanks Hideki Yamane!
+    (Closes: #464769)
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 16 Feb 2008 21:06:54 +0100
+
 postgresql-common (85) unstable; urgency=low
 
   * debian/README.Debian: Fix fatal typo that suggested dropping the wrong

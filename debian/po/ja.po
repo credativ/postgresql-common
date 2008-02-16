@@ -1,13 +1,13 @@
 # Copyright (C) 2006 Martin Pitt <mpitt@debian.org>
 # This file is distributed under the same license as the postgresql-common package.
-# Hideki Yamane <henrich@debian.or.jp>, 2006-2007.
+# Hideki Yamane <henrich@debian.or.jp>, 2006-2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 81\n"
+"Project-Id-Version: postgresql-common 85\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2007-11-12 10:37+0900\n"
+"PO-Revision-Date: 2008-02-09 06:07+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
-msgstr "利用できなくなったメジャーバージョン ${old}"
+msgstr "メジャーバージョン ${old} はもはや使われません"
 
 #. Type: error
 #. Description
@@ -29,7 +29,7 @@ msgid ""
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"PostgreSQL バージョン ${old} は既に利用できなくなっていますが、サーバおよびク"
+"PostgreSQL バージョン ${old} は既に使われなくなっていますが、サーバおよびク"
 "ライアント用パッケージがインストールされたままになっています。最新のパッケー"
 "ジ (postgresql-${latest} と postgresql-client-${latest}) をインストールして、"
 "現在の ${oldversion} クラスタを pg_upgradecluster コマンドを使ってアップグ"
@@ -68,3 +68,4 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
+"詳細は /usr/share/doc/postgresql-common/README.Debian.gz を参照してください。"
