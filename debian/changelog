@@ -4,8 +4,10 @@ postgresql-common (86) UNRELEASED; urgency=low
     (Closes: #464769)
   * Update French debconf translations, thanks Guilhelm Panaget!
     (Closes: #467660)
+  * Update Finish debconf translations, thanks Esko Arajärvi!
+    (Closes: #468548)
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 29 Feb 2008 15:05:21 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 29 Feb 2008 15:07:07 +0100
 
 postgresql-common (85) unstable; urgency=low
 
