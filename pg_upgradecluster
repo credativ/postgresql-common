@@ -208,7 +208,7 @@ exit 1 unless GetOptions ('v|version=s' => \$newversion);
 ($newversion) = $newversion =~ /^(\d+\.\d+)$/; # untaint
 
 if ($#ARGV < 1) {
-    print "Usage: $0 [-v <newversion>] <version> <cluster name> [<data directory>]\n";
+    print "Usage: $0 [-v <newversion>] <version> <cluster name> [<new data directory>]\n";
     exit 1;
 }
 
@@ -529,7 +529,7 @@ pg_upgradecluster - upgrade an existing PostgreSQL cluster to a new major versio
 
 =head1 SYNOPSIS
 
-B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<datadir>]
+B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<newdatadir>]
 
 =head1 DESCRIPTION
 
@@ -543,6 +543,10 @@ port since the upgraded one will use the original port. The old cluster is not
 automatically removed. After upgrading, please verify that the new cluster
 indeed works as expected; if so, you should remove the old cluster with
 L<pg_dropcluster(8)>.
+
+The I<newdatadir> argument can be used to specify a non-default data directory
+of the upgraded cluster. It is passed to B<pg_createcluster>. If not specified,
+this defaults to /var/lib/postgresql/I<version>/I<name>.
 
 =head1 HOOK SCRIPTS
 

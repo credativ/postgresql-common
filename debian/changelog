@@ -6,8 +6,9 @@ postgresql-common (86) UNRELEASED; urgency=low
     (Closes: #467660)
   * Update Finish debconf translations, thanks Esko Arajärvi!
     (Closes: #468548)
+  * pg_upgradecluster: Document 'datadir' argument. (Closes: #466258)
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 29 Feb 2008 15:07:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 01 Mar 2008 16:47:05 +0100
 
 postgresql-common (85) unstable; urgency=low
 
