@@ -1,4 +1,4 @@
-postgresql-common (86) UNRELEASED; urgency=low
+postgresql-common (86) unstable; urgency=low
 
   * Update Japanese debconf translations, thanks Hideki Yamane!
     (Closes: #464769)
