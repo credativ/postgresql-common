@@ -1,3 +1,12 @@
+postgresql-common (87) UNRELEASED; urgency=low
+
+  * debian/init.d-functions: If there are no clusters, exit with 4 (LSB-code
+    for "unknown status") instead of 0 (which means "service is running", but
+    it is debatable and confusing whether all clusters are running if there
+    are none at all). (LP: #203966)
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 30 Mar 2008 17:50:16 +0200
+
 postgresql-common (86) unstable; urgency=low
 
   * Update Japanese debconf translations, thanks Hideki Yamane!

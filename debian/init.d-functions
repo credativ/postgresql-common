@@ -78,7 +78,10 @@ reload() {
 }
 
 status() {
-    pg_lsclusters | awk 'BEGIN {rc=0} {print; if ($4 == "down") rc=3} END { exit rc }'
+    CLUSTERS=`pg_lsclusters -h`
+    # no clusters -> unknown status
+    [ -n "$CLUSTERS" ] || exit 4
+    echo "$CLUSTERS" | awk 'BEGIN {rc=0} {print; if ($4 == "down") rc=3} END { exit rc }'
 }
 
 # start pg_autovacuum for all clusters of version $1
