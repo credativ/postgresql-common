@@ -381,15 +381,16 @@ if (!fork) {
             print "Temporary enabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "update pg_database set datallowconn = 't' where datname = '$db'") == 0 or
+                "BEGIN READ WRITE; update pg_database set datallowconn = 't' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not enable access to database';
         }
 
 	print "Fixing hardcoded library paths for stored procedures...\n";
 	(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
-	    $db, '-c', "update pg_proc set probin = decode(replace(\
+	    $db, '-c', "BEGIN READ WRITE; \
+                update pg_proc set probin = decode(replace(\
 		replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
-		'/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape')") == 0 or
+		'/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape'); COMMIT") == 0 or
 	    error 'Could not fix library paths';
 
         print 'Upgrading database ', $db, "...\n";
@@ -428,11 +429,11 @@ if (!fork) {
             print "Disabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "update pg_database set datallowconn = 'f' where datname = '$db'") == 0 or
+                "BEGIN READ WRITE; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not disable access to database in old cluster';
             (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "update pg_database set datallowconn = 'f' where datname = '$db'") == 0 or
+                "BEGIN READ WRITE; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not disable access to database in new cluster';
         }
     }

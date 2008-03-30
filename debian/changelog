@@ -7,11 +7,12 @@ postgresql-common (87) UNRELEASED; urgency=low
   * Update Spanish debconf translations, thanks Javier Fernández-Sanguino
     Peña. (Closes: #473405)
   * t/060_obsolete_confparams.t: Run upgrades under
-    default_transaction_read_only. t/040_upgrade.t still uses the default
-    "false", so both cases get tested. This replicates the problem report from
+    default_transaction_read_only=on. t/040_upgrade.t still uses the default
+    "off", so both cases get tested. This replicates the problem report from
     Karsten Hilbert.
+  * pg_upgradecluster: Work with default_transaction_read_only=on.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 30 Mar 2008 18:26:57 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 30 Mar 2008 18:50:30 +0200
 
 postgresql-common (86) unstable; urgency=low
 
