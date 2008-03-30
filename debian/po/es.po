@@ -7,7 +7,7 @@
 # - Initial translation
 #       Javier Fernández-Sanguino , 2006
 # - Updated
-#       Javier Fernández-Sanguino , 2007
+#       Javier Fernández-Sanguino , 2007-2008
 #
 #
 #  Traductores, si no conoce el formato PO, merece la pena leer la 
@@ -37,7 +37,7 @@ msgstr ""
 "Project-Id-Version: postgresql-common 68\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2007-10-21 02:55+0200\n"
+"PO-Revision-Date: 2008-03-30 15:44+0200\n"
 "Last-Translator: Javier Fernández-Sanguino <jfs@debian.org>\n"
 "Language-Team: Debian Spanish <debian-l10n-spanish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -101,4 +101,4 @@ msgstr ""
 #: ../postgresql-common.templates:2001
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr ""
+msgstr "Para más información consulte «/usr/share/doc/postgresql-common/README.Debian.gz»."
