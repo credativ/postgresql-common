@@ -11,8 +11,11 @@ postgresql-common (87) UNRELEASED; urgency=low
     "off", so both cases get tested. This replicates the problem report from
     Karsten Hilbert.
   * pg_upgradecluster: Work with default_transaction_read_only=on.
+  * debian/autovacuum.conf: Point out that this file is only relevant for
+    PostgreSQL versions earlier than 8.1. Thanks to Ross Boylan for pointing
+    this out.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 30 Mar 2008 18:50:30 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 30 Mar 2008 20:50:01 +0200
 
 postgresql-common (86) unstable; urgency=low
 
