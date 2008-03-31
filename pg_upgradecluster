@@ -381,13 +381,13 @@ if (!fork) {
             print "Temporary enabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "BEGIN READ WRITE; update pg_database set datallowconn = 't' where datname = '$db'; COMMIT") == 0 or
+                "BEGIN; set transaction read write; update pg_database set datallowconn = 't' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not enable access to database';
         }
 
 	print "Fixing hardcoded library paths for stored procedures...\n";
 	(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
-	    $db, '-c', "BEGIN READ WRITE; \
+	    $db, '-c', "BEGIN; set transaction read write; \
                 update pg_proc set probin = decode(replace(\
 		replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
 		'/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape'); COMMIT") == 0 or
@@ -429,11 +429,11 @@ if (!fork) {
             print "Disabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "BEGIN READ WRITE; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
+                "BEGIN; set transaction read write; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not disable access to database in old cluster';
             (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "BEGIN READ WRITE; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
+                "BEGIN; set transaction read write; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not disable access to database in new cluster';
         }
     }
