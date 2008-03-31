@@ -87,7 +87,9 @@ default version/cluster and database; overrides
   <td><code>/etc/postgresql-common/autovacuum.conf</code></td>
   <td>Default <code>pg_autovacuum</code> configuration file. This has no effect
   if the package <code>postgresql-contrib-</code><i>version</i> is not
-  installed.</td>
+  installed. This file is irrelevant for PostgreSQL 8.1 or newer,
+  which have integrated autovacuuming; for those versions, autovacuum
+  is configured in <code>postgresql.conf</code> (enabled by default).</td>
 </tr>
 
 <tr>

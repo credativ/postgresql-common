@@ -11,9 +11,9 @@ postgresql-common (87) UNRELEASED; urgency=low
     "off", so both cases get tested. This replicates the problem report from
     Karsten Hilbert.
   * pg_upgradecluster: Work with default_transaction_read_only=on.
-  * debian/autovacuum.conf: Point out that this file is only relevant for
-    PostgreSQL versions earlier than 8.1. Thanks to Ross Boylan for pointing
-    this out.
+  * debian/autovacuum.conf, architecture.html: Point out that this file is
+    only relevant for PostgreSQL versions earlier than 8.1. Thanks to Ross
+    Boylan for pointing this out.
   * Add t/051_inconsistent_encoding_upgrade.t: Check that upgrades from
     pre-8.3 to 8.3 succeed and have correct encodings if the old DB had a
     database whose encoding did not match the server locale. This reproduces
