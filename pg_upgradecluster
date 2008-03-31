@@ -333,16 +333,17 @@ if (!fork) {
     my $newsocket = get_cluster_socketdir $newversion, $cluster;
     my $buffer;
 
-    # get list of databases and allowed connections
+    # get list of databases, owners, and allowed connections
     my %databases;
     open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
         '-F|', '-d', 'template1', '-Atc', 
-        'select datname, datallowconn from pg_database' or 
+        'select datname, datallowconn, usename from pg_database, pg_user where datdba = usesysid' or 
         error 'Could not get pg_database list';
     while (<F>) {
         chomp;
-        my ($n, $a) = split '\|';
-        $databases{$n} = ($a eq 't');
+        my ($n, $a, $o) = split '\|';
+        ($o) = $o =~ /^(.*)$/; # untaint
+        $databases{$n} = [$a eq 't', $o];
     }
     close F;
     error 'could not get list of databases' if $?;
@@ -377,7 +378,7 @@ if (!fork) {
 	    (system 'dropdb', '--cluster', "$newversion/$cluster", '-q', 'postgres');
 	}
 
-        unless ($databases{$db}) {
+        unless (${$databases{$db}}[0]) {
             print "Temporary enabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
@@ -397,35 +398,48 @@ if (!fork) {
         open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
              '-Fc', $db or 
             error 'Could not execute pg_dump for old cluster';
+
+        # generate pg_restore call
+        my @restore_argv = ($pg_restore, '-h', $newsocket, '-p', $newinfo{'port'});
+
 	if ($upgrade_scripts) {
 	    if ($newversion eq '8.1') {
-		open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-		    '-X', 'no-data-for-failed-tables', '-d', 'template1', 
-		    ($db eq 'template1' ? '-O' : '-C') or 
-		    error 'Could not execute pg_restore for new cluster';
-	    } else {
-		open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-		    '--no-data-for-failed-tables', '-d', 'template1', 
-		    ($db eq 'template1' ? '-O' : '-C') or 
-		    error 'Could not execute pg_restore for new cluster';
-	    }
-	} else {
-	    open SINK, '|-', $pg_restore, '-h', $newsocket, '-p', $newinfo{'port'},
-		'-d', 'template1', ($db eq 'template1' ? '-O' : '-C') or 
-		error 'Could not execute pg_restore for new cluster';
-	}
+                push @restore_argv, ('-X', 'no-data-for-failed-tables');
+            } elsif ($newversion gt '8.1') {
+                push @restore_argv, '--no-data-for-failed-tables';
+            }
+        }
+
+        if ($lc_ctype eq 'C') {
+            # keep DB encoding exactly as they were
+            push @restore_argv, ('-d', 'template1', '-C');
+        } else {
+            # 8.3+ enforce encoding/locale match, so create the DB with good encoding ourselves
+            if ($db ne 'template1') {
+                (system 'createdb', '--cluster', "$newversion/$cluster", '-q', '-O', ${$databases{$db}}[1], $db) == 0 or
+                    error "could not create target database $db";
+            }
+            push @restore_argv, ('-d', $db);
+        }
+
+        # start pg_restore and copy over everything
+        open SINK, '|-', @restore_argv or
+            error 'Could not execute pg_restore for new cluster';
+
         while (read SOURCE, $buffer, 1048576) {
             print SINK $buffer;
         }
         close SOURCE;
         ($? == 0) or exit 1;
         close SINK;
+        
+        # clean up
         print 'Analyzing database ', $db, "...\n";
         (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
             '-d', $db, '-c', 'ANALYZE') == 0 or
             error 'Could not ANALZYE database';
 
-        unless ($databases{$db}) {
+        unless (${$databases{$db}}[0]) {
             print "Disabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 

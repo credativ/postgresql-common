@@ -18,8 +18,17 @@ postgresql-common (87) UNRELEASED; urgency=low
     pre-8.3 to 8.3 succeed and have correct encodings if the old DB had a
     database whose encoding did not match the server locale. This reproduces
     #472930.
+  * pg_upgradecluster: Fix handling of database encodings on upgrade, since
+    8.3 now forces DB encodings and server locale to match:
+    - With C locale, keep encoding of DBs on upgrade, just as in previous
+      versions. (C is compatible with all encodings, and causes lots of string
+      functions not to work correctly, but people still use it deliberately.)
+    - With other  locales, create the target DB manually with a compatible
+      encoding, and call pg_restore in a way to not create the target DB and
+      automatically convert encoding.
+    - Closes: #472930, LP: #207779
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 30 Mar 2008 22:17:15 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 31 Mar 2008 11:32:39 +0200
 
 postgresql-common (86) unstable; urgency=low
 
