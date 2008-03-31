@@ -1,5 +1,6 @@
-postgresql-common (87) UNRELEASED; urgency=low
+postgresql-common (87) unstable; urgency=medium
 
+  * Urgency medium since #472930 is an important bug fix.
   * debian/init.d-functions: If there are no clusters, exit with 4 (LSB-code
     for "unknown status") instead of 0 (which means "service is running", but
     it is debatable and confusing whether all clusters are running if there
