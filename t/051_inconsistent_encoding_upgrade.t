@@ -12,6 +12,10 @@ use Test::More tests => 19 * 3 + 10;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
+if ($#MAJORS == 0) {
+        pass 'only one major version installed, skipping upgrade tests';
+            exit 0;
+}
 
 # Arguments: <locale> [<old version>] [<new version>]
 sub test_upgrade {
