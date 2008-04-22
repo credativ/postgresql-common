@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 134;
+use Test::More tests => 146;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -16,12 +16,15 @@ my $version = $MAJORS[-1];
 my $socketdir = '/tmp/postgresql-testsuite/';
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
 
-sub create_foo_pid {
-    open F, ">/var/lib/postgresql/$version/main/postmaster.pid" or die "open: $!";
-    print F 'foo';
+# create a pid file with content $1 and return its path
+sub create_pidfile {
+    my $fname = "/var/lib/postgresql/$version/main/postmaster.pid";
+    open F, ">$fname" or die "open: $!";
+    print F $_[0];
     close F;
-    chown $pg_uid, $pg_gid, "/var/lib/postgresql/$version/main/postmaster.pid" or die "chown: $!";
-    chmod 0700, "/var/lib/postgresql/$version/main/postmaster.pid" or die "chmod: $!";
+    chown $pg_uid, $pg_gid, $fname or die "chown: $!";
+    chmod 0700, $fname or die "chmod: $!";
+    return $fname;
 }
 
 sub check_nonexisting_cluster_error {
@@ -93,7 +96,7 @@ ok_dir $socketdir, [], "No sockets in $socketdir";
 # server should not stop with corrupt file
 rename "/var/lib/postgresql/$version/main/postmaster.pid",
     "/var/lib/postgresql/$version/main/postmaster.pid.orig" or die "rename: $!";
-create_foo_pid;
+create_pidfile 'foo';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 1, 
     "Error: pid file is invalid, please manually kill the stale server process.\n",
     'pg_ctlcluster fails with corrupted PID file';
@@ -120,8 +123,33 @@ is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0,
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 ok (! -e "/var/lib/postgresql/$version/main/postmaster.pid", 'no pid file left');
 
+# trying to stop a stopped server cleans up corrupt and stale pid files
+my $pf = create_pidfile 'foo';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 2,
+    "Removed stale pid file.\nCluster is not running.\n", 
+    'pg_ctlcluster stop succeeds with corrupted PID file';
+ok (! -e $pf, 'pid file was cleaned up');
+
+create_pidfile 'foo';
+is_program_out 'postgres', "pg_ctlcluster --force $version main stop", 2,
+    "Removed stale pid file.\nCluster is not running.\n", 
+    'pg_ctlcluster --force stop succeeds with corrupted PID file';
+ok (! -e $pf, 'pid file was cleaned up');
+
+create_pidfile '99998';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 2,
+    "Removed stale pid file.\nCluster is not running.\n", 
+    'pg_ctlcluster stop succeeds with stale PID file';
+ok (! -e $pf, 'pid file was cleaned up');
+
+create_pidfile '99998';
+is_program_out 'postgres', "pg_ctlcluster --force $version main stop", 2,
+    "Removed stale pid file.\nCluster is not running.\n", 
+    'pg_ctlcluster --force stop succeeds with stale PID file';
+ok (! -e $pf, 'pid file was cleaned up');
+
 # corrupt PID file while server is down
-create_foo_pid;
+create_pidfile 'foo';
 is_program_out 'postgres', "pg_ctlcluster $version main start", 0,
     "Removed stale pid file.\n", 'pg_ctlcluster succeeds with corrupted PID file';
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';

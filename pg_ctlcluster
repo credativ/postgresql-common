@@ -35,20 +35,20 @@ sub get_running_pid {
 
     if (open PIDFILE, $_[0]) {
 	my $pid = <PIDFILE>;
-	chomp $pid if defined $pid;
 	close PIDFILE;
+        chomp $pid;
+        ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
 	return $pid;
     } else {
 	return undef;
     }
 }
 
-# Check whether a pid file for the %info cluster is present and belongs to a
-# running postmaster.
+# Check whether a pid file is present and belongs to a running postmaster.
 # Arguments: <pid file path>
 sub check_running_postmaster {
     my $pid = get_running_pid $_[0];
-    if (defined $pid and $pid =~ /^\d+$/) {
+    if (defined $pid) {
 	if (open PS, '-|', '/bin/ps', '-o', 'comm', 'h', 'p', $pid) {
 	    my $process = <PS>;
 	    chomp $process if defined $process;
@@ -80,13 +80,19 @@ sub start_check_pid_file {
     }
 }
 
-# Check if a pid file is not present or it is invalid. If so, abort.
+# Check if a pid file is not present or it is invalid. If so, clean up/abort.
 sub stop_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     my $pid = get_running_pid $pidfile;
-    return if (defined $pid and $pid =~ /^\d+$/); 
+    return if (defined $pid && check_running_postmaster $pidfile); 
     if ($info{'running'}) {
 	error 'pid file is invalid, please manually kill the stale server process.';
+    }
+
+    # Remove invalid or stale PID file
+    if (-e $pidfile) {
+	unlink $pidfile;
+	print "Removed stale pid file.\n";
     }
     print "Cluster is not running.\n";
     exit 2;
@@ -374,10 +380,7 @@ sub stop {
         # if that still not helps, use the big hammer
         if (-f $info{'pgdata'}.'/postmaster.pid') {
             print "(does not shutdown, killing the process)";
-            if (open FPID, $info{'pgdata'}.'/postmaster.pid') {
-                $pid = <FPID>;
-                close FPID;
-            }
+            $pid = get_running_pid $info{'pgdata'}.'/postmaster.pid';
             kill (9, $pid) if $pid;
             unlink $info{'pgdata'}.'/postmaster.pid';
         }
