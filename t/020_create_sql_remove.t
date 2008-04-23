@@ -231,7 +231,7 @@ Bob|1
         # data_directory should trump the pgdata symlink
         PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'data_directory', '/nonexisting';
         like_program_out 0, "pg_ctlcluster $v main start", 1, 
-            qr/could not open file.*\/nonexisting/,
+            qr/\/nonexisting is not accessible/,
             'cluster fails to start with invalid data_directory and valid pgdata symlink';
 
         # if only pgdata symlink is present, it is authoritative
