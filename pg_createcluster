@@ -511,7 +511,10 @@ existing cluster.
 If the data directory does not yet exist, PostgreSQL's L<initdb(1)> command is
 used to generate a new cluster structure. If the data directory already exists,
 it is integrated into the B<postgresql-common> structure by moving the
-configuration file and setting the data_directory option.
+configuration file and setting the data_directory option. Please note that this
+I<only> works for data directories which were created directly with B<initdb>, i.
+e. all the configuration files (C<postgresql.conf> etc.) must be present in the
+data directory.
 
 If a custom socket directory is given and it does not exist, it is created.
 

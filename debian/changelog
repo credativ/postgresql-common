@@ -10,8 +10,11 @@ postgresql-common (88) UNRELEASED; urgency=low
     (Reproduces LP #210322)
   * pg_ctlcluster: Check early whether the data directory exists and is
     accessible, to avoid lots of Perl warning clutter. (LP: #210322)
+  * pg_createcluster POD: Clarify what "integrating existing cluster data
+    directory" means: configuration files must already be present, we cannot
+    create them out of thin air. (Closes: #475954)
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 23 Apr 2008 17:40:38 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 23 Apr 2008 18:05:38 +0200
 
 postgresql-common (87) unstable; urgency=medium
 
