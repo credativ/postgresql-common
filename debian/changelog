@@ -1,4 +1,4 @@
-postgresql-common (88) UNRELEASED; urgency=low
+postgresql-common (88) unstable; urgency=low
 
   * t/030_errors.t: Add various test cases for stopping stopped clusters with
     stale or corrupt PID files, with and without --force. This reproduces
