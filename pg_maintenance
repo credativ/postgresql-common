@@ -66,7 +66,7 @@ if ($cluster) {
     error 'Cluster does not exist' unless cluster_exists $v, $c;
     vacuum_cluster $v, $c;
 } else {
-    for $v (get_versions) {
+    foreach $v (sort (get_versions())) {
 	for $c (get_version_clusters $v) {
 	    vacuum_cluster $v, $c;
 	}

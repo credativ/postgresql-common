@@ -13,8 +13,10 @@ postgresql-common (88) UNRELEASED; urgency=low
   * pg_createcluster POD: Clarify what "integrating existing cluster data
     directory" means: configuration files must already be present, we cannot
     create them out of thin air. (Closes: #475954)
+  * pg_maintenance: Sort versions for predictable output (looks nicer and
+    unbreaks the test suite).
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 23 Apr 2008 19:03:54 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 23 Apr 2008 19:35:30 +0200
 
 postgresql-common (87) unstable; urgency=medium
 
