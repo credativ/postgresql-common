@@ -6,8 +6,12 @@ postgresql-common (88) UNRELEASED; urgency=low
   * pg_ctlcluster: On stop, clean up stale/corrupt PID files if the server is
     not running. Also fix a taint error and simplify the code a bit.
     (Closes: #473879)
+  * t/030_errors.t: Test graceful handling of absent /var/lib/postgresql.
+    (Reproduces LP #210322)
+  * pg_ctlcluster: Check early whether the data directory exists and is
+    accessible, to avoid lots of Perl warning clutter. (LP: #210322)
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 22 Apr 2008 23:13:51 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 23 Apr 2008 17:40:38 +0200
 
 postgresql-common (87) unstable; urgency=medium
 

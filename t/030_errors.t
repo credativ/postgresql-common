@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 146;
+use Test::More tests => 154;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -220,6 +220,24 @@ like_program_out 'postgres', "pg_dropcluster $version main", 1,
     qr/root privileges/, "pg_dropcluster fails as user postgres by default";
 
 # remove cluster and directory
+ok ((system "pg_dropcluster $version main") == 0, 
+    'pg_dropcluster');
+
+# graceful handling of absent data dir (might not be mounted)
+ok ((system "pg_createcluster $version main >/dev/null") == 0,
+    "pg_createcluster succeeds");
+rename "/var/lib/postgresql", "/var/lib/postgresql.orig" or die "rename: $!";
+my $outref;
+is ((exec_as 0, "pg_ctlcluster $version main start", $outref, 1), 1,
+    'pg_ctlcluster fails on nonexisting /var/lib/postgresql');
+like $$outref, qr/^Error:.*\/var\/lib\/postgresql.*not accessible.*$/, 'proper error message for nonexisting /var/lib/postgresql';
+
+rename "/var/lib/postgresql.orig", "/var/lib/postgresql" or die "rename: $!";
+is_program_out 'postgres', "pg_ctlcluster $version main start", 0, '',
+    'pg_ctlcluster start succeeds again with reappeared /var/lib/postgresql';
+is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
+
+# clean up
 ok ((system "pg_dropcluster $version main") == 0, 
     'pg_dropcluster');
 ok_dir $socketdir, [], 'No sockets any more';

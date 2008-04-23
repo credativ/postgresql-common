@@ -432,6 +432,10 @@ unless ($action eq 'stop' || $action eq 'autovac-stop') {
 $ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
+unless (-d $info{'pgdata'} && defined $info{'owneruid'}) {
+    error $info{'pgdata'} . ' is not accessible or does not exist';
+}
+
 # check that owner uig/gid is valid
 unless (getpwuid $info{'owneruid'}) {
     error 'The cluster is owned by user id '.$info{'owneruid'}.' which does not exist any more'

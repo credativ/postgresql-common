@@ -115,6 +115,7 @@ sub exec_as {
     if (defined $_[3] && $_[3] != $result) {
         print "command '$_[1]' did not exit with expected code $_[3]:\n";
         print $out;
+        fail_debug;
     }
     return $result;
 }
