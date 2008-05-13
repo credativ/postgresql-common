@@ -2,8 +2,10 @@ postgresql-common (89) UNRELEASED; urgency=low
 
   * Update Italian debconf translatinons, thanks Luca Monducci!
     (Closes: #479360)
+  * Update Galician debconf translatinons, thanks Jacobo Tarrio!
+    (Closes: #480971)
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 13 May 2008 10:03:20 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 13 May 2008 10:04:20 +0200
 
 postgresql-common (88) unstable; urgency=low
 

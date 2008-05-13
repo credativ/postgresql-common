@@ -1,13 +1,13 @@
 # Galician translation of postgresql-common's debconf templates
 # This file is distributed under the same license as the postgresql-common package.
-# Jacobo Tarrio <jtarrio@debian.org>, 2007.
+# Jacobo Tarrio <jtarrio@debian.org>, 2007, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2007-10-17 20:02+0100\n"
+"PO-Revision-Date: 2008-05-13 00:18+0100\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
@@ -68,3 +68,5 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
+"Consulte /usr/share/doc/postgresql-common/README.Debian.gz para ter máis "
+"detalles."
