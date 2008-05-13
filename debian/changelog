@@ -1,3 +1,10 @@
+postgresql-common (89) UNRELEASED; urgency=low
+
+  * Update Italian debconf translatinons, thanks Luca Monducci!
+    (Closes: #479360)
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 13 May 2008 10:03:20 +0200
+
 postgresql-common (88) unstable; urgency=low
 
   * t/030_errors.t: Add various test cases for stopping stopped clusters with

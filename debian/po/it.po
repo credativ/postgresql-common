@@ -1,14 +1,14 @@
 # Italian (it) translation of debconf templates for postgresql-common
 # Copyright (C) 2006 Software in the Public Interest
 # This file is distributed under the same license as the postgresql-common package.
-# Luca Monducci <luca.mo@tiscali.it>, 2006, 2007.
+# Luca Monducci <luca.mo@tiscali.it>, 2006 - 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 79 italian debconf templates\n"
+"Project-Id-Version: postgresql-common 88 italian debconf templates\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2007-10-17 20:23+0200\n"
+"PO-Revision-Date: 2008-05-03 20:23+0200\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -68,3 +68,4 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
+"Si veda /usr/share/doc/postgresql-common/README.Debian.gz per i dettagli."
