@@ -1,19 +1,21 @@
+# translation of eu.po to Euskara
 # postgresql-common Debconf tempaltes basque translation
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Piarres Beobide <pi@beobide.net>, 2007.
 #
+# Piarres Beobide <pi@beobide.net>, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common Debconf\n"
+"Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date:  2007-10-18 10:11+0200\n"
+"PO-Revision-Date: 2008-05-27 23:31+0200\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
-"Language-Team: Euskara <librezale@librezale.org>\n"
+"Language-Team: Euskara <debian-l10n-basque@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Type: error
 #. Description
@@ -66,6 +68,6 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid ""
-"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr ""
+msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr "Begiratu /usr/share/doc/postgresql-common/README.Debian.gz xehetasunetarako."
+
