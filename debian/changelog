@@ -1,8 +1,8 @@
 postgresql-common (89) UNRELEASED; urgency=low
 
-  * Update Italian debconf translatinons, thanks Luca Monducci!
+  * Update Italian debconf translations, thanks Luca Monducci!
     (Closes: #479360)
-  * Update Galician debconf translatinons, thanks Jacobo Tarrio!
+  * Update Galician debconf translations, thanks Jacobo Tarrio!
     (Closes: #480971)
   * Update Euskara debconf translations, thanks Piarres Beobide!
     (Closes: #483239)
