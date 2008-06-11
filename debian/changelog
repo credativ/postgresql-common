@@ -6,8 +6,10 @@ postgresql-common (89) UNRELEASED; urgency=low
     (Closes: #480971)
   * Update Euskara debconf translations, thanks Piarres Beobide!
     (Closes: #483239)
+  * t/051_inconsistent_encoding_upgrade.t: Don't error out if there is just
+    one major version installed.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 28 May 2008 08:01:56 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 11 Jun 2008 21:05:14 +0200
 
 postgresql-common (88) unstable; urgency=low
 

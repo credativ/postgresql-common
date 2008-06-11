@@ -7,14 +7,14 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 19 * 3 + 10;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 19 * 3 + 10;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 if ($#MAJORS == 0) {
         pass 'only one major version installed, skipping upgrade tests';
-            exit 0;
+        exit 0;
 }
 
 # Arguments: <locale> [<old version>] [<new version>]
