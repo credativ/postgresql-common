@@ -8,8 +8,10 @@ postgresql-common (89) UNRELEASED; urgency=low
     (Closes: #483239)
   * t/051_inconsistent_encoding_upgrade.t: Don't error out if there is just
     one major version installed.
+  * Update Portugese debconf translations, thanks Luis Matos!
+    (Closes: #488570)
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 11 Jun 2008 21:05:14 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 02 Jul 2008 11:52:55 +0200
 
 postgresql-common (88) unstable; urgency=low
 
