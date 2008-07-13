@@ -5,11 +5,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common \n"
+"Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2007-01-21 23:57+0100\n"
-"Last-Translator: Andreas Henriksson <andreas@fatal.se>\n"
+"PO-Revision-Date: 2008-07-13 17:45+0100\n"
+"Last-Translator: Martin Bagge <brother@bsnet.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -26,59 +26,24 @@ msgstr "Obsolet betydande version ${old}"
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-#, fuzzy
-#| msgid ""
-#| "The PostgreSQL version ${old} is obsolete, but you still have the server "
-#| "and/or client package installed. Please install the latest packages "
-#| "(postgresql-${latest} and postgresql-client-${latest}) and upgrade your "
-#| "existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgid ""
-"The PostgreSQL version ${old} is obsolete, but the server or client packages "
-"are still installed. Please install the latest packages (postgresql-"
-"${latest} and postgresql-client-${latest}) and upgrade the existing "
-"${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr ""
-"PostgreSQL-versionen ${old} är obsolet, men du har fortfarande server- och/"
-"eller klient-paketen installerade. Vänligen installera de senaste paketen "
-"(postgresql-${latest} och postgresql-client-${latest}) och uppgradera ditt "
-"existerande ${oldversion} kluster med pg_updatecluster (se manualsidan)."
+msgid "The PostgreSQL version ${old} is obsolete, but the server or client packages are still installed. Please install the latest packages (postgresql-${latest} and postgresql-client-${latest}) and upgrade the existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr "PostgreSQL-versionen ${old} är obsolet, men du har fortfarande server- och/eller klient-paketen installerade. Vänligen installera de senaste paketen (postgresql-${latest} och postgresql-client-${latest}) och uppgradera ditt existerande ${oldversion} kluster med pg_updatecluster (se manualsidan)."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid ""
-"Please be aware that the installation of postgresql-${latest} will "
-"automatically create a default cluster ${latest}/main. If you want to "
-"upgrade the ${old}/main cluster, you need to remove the already existing "
-"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
-"details)."
-msgstr ""
-"Vänligen var vaken över att installationen av postgresql-${latest} kommer "
-"automatiskt skapa ett standard-kluster ${latest}/main. Om du vill uppgradera "
-"${old}/main klustret, kommer du behöva ta bort det redan existerande "
-"${latest} klustret (pg_dropcluster --stop ${latest} main, se manualsida för "
-"detaljer)."
+msgid "Please be aware that the installation of postgresql-${latest} will automatically create a default cluster ${latest}/main. If you want to upgrade the ${old}/main cluster, you need to remove the already existing ${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for details)."
+msgstr "Vänligen var vaken över att installationen av postgresql-${latest} kommer automatiskt skapa ett standard-kluster ${latest}/main. Om du vill uppgradera ${old}/main klustret, kommer du behöva ta bort det redan existerande ${latest} klustret (pg_dropcluster --stop ${latest} main, se manualsida för detaljer)."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-#, fuzzy
-#| msgid ""
-#| "The old server and client packages are not supported any more. After "
-#| "having upgraded the existing clusters, you should remove the postgresql-"
-#| "${old} and postgresql-client-${old} packages."
-msgid ""
-"The old server and client packages are no longer supported. After the "
-"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
-"${old} packages should be removed."
-msgstr ""
-"De gamla server- och klient-paketen stöds inte längre. Efter uppgradering av "
-"det existreande klustren, bör du ta bort postgresql-${old} och postgresql-"
-"client-${old} paketen."
+msgid "The old server and client packages are no longer supported. After the existing clusters are upgraded, the postgresql-${old} and postgresql-client-${old} packages should be removed."
+msgstr "De gamla server- och klient-paketen stöds inte längre. Efter uppgradering av det existreande klustren bör du ta bort paketen postgresql-${old} och postgresql-client-${old}."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid ""
-"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr ""
+msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr "Läs mer i /usr/share/doc/postgresql-common/README.Debian.gz för närmare detaljer."
+
