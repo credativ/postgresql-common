@@ -2,8 +2,10 @@ postgresql-common (90) UNRELEASED; urgency=low
 
   * Update Swedish debconf translations, thanks Martin Bagge!
     (Closes: #490677)
+  * Add Turkish debconf translations, thanks Mert Dirik!
+    (Closes: #491007)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 13 Jul 2008 22:29:51 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 19 Jul 2008 08:46:07 +0100
 
 postgresql-common (89) unstable; urgency=low
 
