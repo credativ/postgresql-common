@@ -648,7 +648,7 @@ sub change_ugid {
 
     # auxiliary groups
     my $uname = (getpwuid $uid)[0];
-    my $groups = "$gid " . `id -G $uname`;
+    my $groups = "$gid " . `/usr/bin/id -G $uname`;
 
     $) = $groups;
     $( = $gid;
