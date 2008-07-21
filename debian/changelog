@@ -1,4 +1,4 @@
-postgresql-common (90) UNRELEASED; urgency=low
+postgresql-common (90) unstable; urgency=low
 
   * Update Swedish debconf translations, thanks Martin Bagge!
     (Closes: #490677)
