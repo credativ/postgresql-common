@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 94 * ($#MAJORS+1);
+use Test::More tests => 97 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -86,6 +86,12 @@ sub check_major {
 
     # verify that the log file is actually used
     ok !-z $default_log, 'log file is actually used';
+
+    # verify log file properties
+    my @logstat = stat $default_log;
+    is $logstat[2], 0100640, 'log file has 0640 permissions';
+    is $logstat[4], (getpwnam 'postgres')[2], 'log file is owned by user"postgres"';
+    is $logstat[5], (getgrnam 'adm')[2], 'log file is owned by group "adm"';
 
     # check default log file configuration; when not specifying -l with
     # pg_createcluster, we should not have a 'log' symlink

@@ -381,8 +381,14 @@ if (! -e $real_logfile) {
     open L, ">>$real_logfile" or error "could not create log file $real_logfile";
     close L;
 }
-chmod 0660, $real_logfile;
-chown $owneruid, $ownergid, $real_logfile;
+chmod 0640, $real_logfile;
+my $g;
+if ($owneruid < 500) {
+    $g = (getgrnam 'adm')[2];
+} else {
+    $g = $ownergid;
+}
+chown $owneruid, $g, $real_logfile;
 # if we are using a non-default log file, create a log symlink
 if ($custom_logfile) {
     symlink $real_logfile, "$confdir/log";
