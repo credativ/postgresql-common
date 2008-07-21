@@ -645,22 +645,10 @@ sub install_file {
 # Arguments: <user id> <group id>
 sub change_ugid {
     my ($uid, $gid) = @_;
-    my $groups = $gid;
-    $groups .= " $groups"; # first additional group
 
-    # collect all auxiliary groups the user is in
-    setgrent;
-    for(;;) {
-	my ($name, undef, $gid, $members) = getgrent;
-	last unless defined $gid;
-	for my $m (split /\s/, $members) {
-	    my $u = getpwnam $m;
-	    if (defined $u && $u == $uid) {
-		$groups .= " $gid";
-	    }
-	}
-    }
-    endgrent;
+    # auxiliary groups
+    my $uname = (getpwuid $uid)[0];
+    my $groups = "$gid " . `id -G $uname`;
 
     $) = $groups;
     $( = $gid;

@@ -8,8 +8,12 @@ postgresql-common (90) UNRELEASED; urgency=low
     (Closes: #491048)
   * Update Russian debconf translations, thanks Sergey Alyoshin!
     (Closes: #491420)
+  * PgCommon.pm, change_ugid(): Use /usr/bin/id instead of manual parsing with
+    getgrent(), which is reportedly magnitudes faster for environments with
+    a large number of groups in remote databases. Thanks to Rodrigo Gallardo!
+    (Closes: #491136)
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 09:25:01 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 09:40:28 +0200
 
 postgresql-common (89) unstable; urgency=low
 
