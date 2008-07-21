@@ -3,13 +3,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # Yuriy Talakan' <yt@amur.elektra.ru>, 2006.
 # Yuriy Talakan' <yt@drsk.ru>, 2007.
+# Sergey Alyoshin <alyoshin.s@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common_79_ru\n"
+"Project-Id-Version: postgresql-common_88+nmu1_ru\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2007-10-20 16:15+0400\n"
+"PO-Revision-Date: 2008-07-19 13:58+0400\n"
 "Last-Translator: Sergey Alyoshin <alyoshin.s@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -49,10 +50,10 @@ msgid ""
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
 msgstr ""
-"Предупреждаю вас, что установка postgresql-${latest} автоматически создаст "
+"Предупреждаю, что установка postgresql-${latest} автоматически создаст "
 "кластер по умолчанию ${latest}/main. Если вы желаете обновить  кластер "
-"${old}/main, вы должны удалить существующий кластер ${latest} "
-"(pg_dropcluster --stop ${latest} main, для деталей смотрите man-страницу)."
+"${old}/main, то должны удалить существующий кластер ${latest} "
+"(pg_dropcluster --stop ${latest} main, смотрите man-страницу)."
 
 #. Type: error
 #. Description
@@ -72,3 +73,4 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
+"Смотрите /usr/share/doc/postgresql-common/README.Debian.gz для дальнейшей информации."

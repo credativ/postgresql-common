@@ -6,8 +6,10 @@ postgresql-common (90) UNRELEASED; urgency=low
     (Closes: #491007)
   * Update Vietnamese debconf translations, thanks Clytie Siddall!
     (Closes: #491048)
+  * Update Russian debconf translations, thanks Sergey Alyoshin!
+    (Closes: #491420)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 19 Jul 2008 08:49:22 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 09:25:01 +0200
 
 postgresql-common (89) unstable; urgency=low
 
