@@ -86,14 +86,17 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'([^']*)'\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/) {
                 # string value
-                $conf{$1} = $2 
+                my $k = $1;
+                my $v = $2;
+                $v =~ s/\\(.)/$1/g;
+                $conf{$k} = $v;
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
                 # simple value
                 $conf{$1} = $2;
             } else {
-                error "Invalid line $. in $_[0]";
+                error "Invalid line $. in $_[0]: »$_«";
             }
         }
         close F;

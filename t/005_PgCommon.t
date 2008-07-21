@@ -10,7 +10,7 @@ use PgCommon;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 18;
+use Test::More tests => 20;
 
 my $tdir = tempdir (CLEANUP => 1);
 
@@ -86,5 +86,39 @@ is (scalar (split "\n", $invalid_hba), $#hba+1, 'returned read_pg_hba array has 
 foreach my $entry (@hba) {
     is $$entry{'type'}, undef, 'line \'' . $$entry{'line'} . '\' parsed as invalid';
 }
+
+# test read_conf_file()
+my %conf = PgCommon::read_conf_file '/nonexisting';
+is_deeply \%conf, {}, 'read_conf_file returns empty dict for nonexisting file';
+
+open F, ">$tdir/foo.conf" or die "Could not create $tdir/foo.conf: $!";
+print F <<EOF;
+# test configuration file
+
+# commented_int = 12
+# commented_str = 'foobar'
+
+intval = 42
+cintval = 1 # blabla
+strval = 'hello'
+cstrval = 'bye' # comment
+emptystr = ''
+cemptystr = '' # moo!
+testpath = '/bin/test'
+quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
+EOF
+close F;
+%conf = PgCommon::read_conf_file "$tdir/foo.conf";
+is_deeply (\%conf, {
+      'intval' => 42, 
+      'cintval' => 1, 
+      'strval' => 'hello', 
+      'cstrval' => 'bye', 
+      'testpath' => '/bin/test', 
+      'emptystr' => '',
+      'cemptystr' => '',
+      'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'"
+    }, 'read_conf_file() parsing');
+
 
 # vim: filetype=perl
