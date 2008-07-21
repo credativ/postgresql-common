@@ -20,8 +20,10 @@ postgresql-common (90) UNRELEASED; urgency=low
     the cluster is owned by a system user (like "postgres"). In the "owned by
     human user" case, keep it as that user's primary group. Check both cases in
     the test suite. (Closes: #483017)
+  * t/TestLib.pm: Return "1" at the end, to avoid "TestLib.pm did not return a
+    true value" error on import.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 10:51:52 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 12:00:16 +0200
 
 postgresql-common (89) unstable; urgency=low
 
