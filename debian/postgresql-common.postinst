@@ -47,9 +47,9 @@ A reasonable choice is to just symlink this file to
 be signed by the postgresql server certificate, which might be desirable in
 many cases. See
 
-  file:///usr/share/doc/postgresql-doc-8.0/html/ssl-tcp.html
+  file:///usr/share/doc/postgresql-doc-8.3/html/ssl-tcp.html
 
-for details (in package postgresql-doc-8.0).
+for details (in package postgresql-doc-8.3).
 EOF
     fi
 

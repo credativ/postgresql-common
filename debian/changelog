@@ -12,8 +12,10 @@ postgresql-common (90) UNRELEASED; urgency=low
     getgrent(), which is reportedly magnitudes faster for environments with
     a large number of groups in remote databases. Thanks to Rodrigo Gallardo!
     (Closes: #491136)
+  * debian/postgresql-common.postinst: Update root.crt header comment for
+    PostgreSQL 8.3. (Closes: #491276)
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 09:40:28 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 10:02:43 +0200
 
 postgresql-common (89) unstable; urgency=low
 
