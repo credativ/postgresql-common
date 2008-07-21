@@ -14,8 +14,10 @@ postgresql-common (90) UNRELEASED; urgency=low
     (Closes: #491136)
   * debian/postgresql-common.postinst: Update root.crt header comment for
     PostgreSQL 8.3. (Closes: #491276)
+  * pg_ctlcluster: Fix typo in pg_ctl error messages. Thanks to Aaron Schrab!
+    (Closes: #488280)
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 10:02:43 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Jul 2008 10:14:45 +0200
 
 postgresql-common (89) unstable; urgency=low
 

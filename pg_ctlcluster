@@ -310,12 +310,12 @@ sub start {
 
     if (fork) {
         wait;
-        error "could not exec $pgctl @options: $!" if $?;
+        error "could not exec $pg_ctl @options: $!" if $?;
     } else {
         setsid or error "could not start session: $!";
         dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
         dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
-        exec $pg_ctl @options or error "could not exec $pgctl @options: $!";
+        exec $pg_ctl @options or error "could not exec $pg_ctl @options: $!";
     }
 
     # wait a bit until the socket exists
