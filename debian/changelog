@@ -1,3 +1,10 @@
+postgresql-common (91) UNRELEASED; urgency=low
+
+  * Update Brazilian Portugese debconf translations, thanks Eder L. Marques!
+    (Closes: #493031)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 02 Sep 2008 09:48:44 +0200
+
 postgresql-common (90) unstable; urgency=low
 
   * Update Swedish debconf translations, thanks Martin Bagge!
