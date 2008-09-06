@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
 Uploaders: Oliver Elphick <Oliver.Elphick@lfix.co.uk> 
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 Build-Depends: cdbs, debhelper (>= 4.1.29)
 
 Package: postgresql-common

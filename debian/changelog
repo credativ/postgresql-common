@@ -4,8 +4,9 @@ postgresql-common (91) UNRELEASED; urgency=low
     (Closes: #493031)
   * Add Romanian debconf translations, thanks Igor Stirbu!
     (Closes: #491823)
+  * debian/control: Bump Standards-Version (no changes necessary).
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 02 Sep 2008 09:55:07 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 06 Sep 2008 10:44:15 +0200
 
 postgresql-common (90) unstable; urgency=low
 
