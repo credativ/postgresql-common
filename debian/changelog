@@ -1,4 +1,4 @@
-postgresql-common (91) UNRELEASED; urgency=low
+postgresql-common (91) unstable; urgency=low
 
   * Update Brazilian Portugese debconf translations, thanks Eder L. Marques!
     (Closes: #493031)
