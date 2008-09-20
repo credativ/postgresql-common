@@ -1,3 +1,9 @@
+postgresql-common (92) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Add Ubuntu 8.10.
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 20 Sep 2008 12:38:19 -0700
+
 postgresql-common (91) unstable; urgency=low
 
   * Update Brazilian Portugese debconf translations, thanks Eder L. Marques!
