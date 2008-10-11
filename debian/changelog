@@ -1,8 +1,10 @@
 postgresql-common (92) UNRELEASED; urgency=low
 
   * debian/supported-versions: Add Ubuntu 8.10.
+  * pg_upgradecluster: Clarify POD about manual mode of the old cluster.
+    Thanks to Toni Mueller for noticing.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 20 Sep 2008 12:38:19 -0700
+ -- Martin Pitt <mpitt@debian.org>  Sat, 11 Oct 2008 13:47:10 +0200
 
 postgresql-common (91) unstable; urgency=low
 

@@ -557,7 +557,11 @@ The cluster of the old version will be configured to use a previously unused
 port since the upgraded one will use the original port. The old cluster is not
 automatically removed. After upgrading, please verify that the new cluster
 indeed works as expected; if so, you should remove the old cluster with
-L<pg_dropcluster(8)>.
+L<pg_dropcluster(8)>. Please note that the old cluster is set to "manual"
+startup mode, in order to avoid inadvertently changing it; this means that it
+will not be started automatically on system boot, and you have to use
+L<pg_ctlcluster(8)> to start/stop it. See section "STARTUP CONTROL" in
+L<pg_createcluster(8)> for details.
 
 The I<newdatadir> argument can be used to specify a non-default data directory
 of the upgraded cluster. It is passed to B<pg_createcluster>. If not specified,
