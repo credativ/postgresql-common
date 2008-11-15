@@ -3,8 +3,9 @@ postgresql-common (92) UNRELEASED; urgency=low
   * debian/supported-versions: Add Ubuntu 8.10 and 9.04.
   * pg_upgradecluster: Clarify POD about manual mode of the old cluster.
     Thanks to Toni Mueller for noticing.
+  * Demote ssl-cert Depends: to Recommends:. (Closes: #498406)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 15 Nov 2008 12:08:13 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 15 Nov 2008 12:26:01 +0100
 
 postgresql-common (91) unstable; urgency=low
 
