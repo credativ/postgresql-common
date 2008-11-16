@@ -13,8 +13,12 @@ postgresql-common (92) UNRELEASED; urgency=low
     cluster for "restart" init.d operation as well. Otherwise restart is not
     guaranteed to succeed and could hang on existing connections.
     (Closes: #481359)
+  * t/052_upgrade_encodings.t: Test upgrading of an SQL_ASCII database in a
+    cluter running under a proper locale. This reproduces #505449.
+  * pg_upgradecluster: Preserve SQL_ASCII encoded databases on upgrade.
+    (Closes: #505449)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 11:36:59 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 13:16:07 +0100
 
 postgresql-common (91) unstable; urgency=low
 

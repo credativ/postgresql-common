@@ -359,13 +359,14 @@ if (!fork) {
     my %databases;
     open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
         '-F|', '-d', 'template1', '-Atc', 
-        'select datname, datallowconn, usename from pg_database, pg_user where datdba = usesysid' or 
+        'select datname, datallowconn, pg_catalog.pg_encoding_to_char(encoding), usename from pg_database, pg_user where datdba = usesysid' or 
         error 'Could not get pg_database list';
     while (<F>) {
         chomp;
-        my ($n, $a, $o) = split '\|';
+        my ($n, $a, $e, $o) = split '\|';
         ($o) = $o =~ /^(.*)$/; # untaint
-        $databases{$n} = [$a eq 't', $o];
+        ($e) = $e =~ /^([\w_]+)$/; # untaint
+        $databases{$n} = [$a eq 't', $o, $e];
     }
     close F;
     error 'could not get list of databases' if $?;
@@ -432,7 +433,7 @@ if (!fork) {
             }
         }
 
-        if ($lc_ctype eq 'C') {
+        if ($lc_ctype eq 'C' or ${$databases{$db}}[2] eq 'SQL_ASCII') {
             # keep DB encoding exactly as they were
             push @restore_argv, ('-d', 'template1', '-C');
         } else {
