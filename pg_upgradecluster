@@ -204,8 +204,23 @@ sub enable_connections {
 
 $newversion = get_newest_version;
 
-exit 1 unless GetOptions ('v|version=s' => \$newversion);
-($newversion) = $newversion =~ /^(\d+\.\d+)$/; # untaint
+my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
+    $lc_time);
+exit 1 unless GetOptions ('v|version=s' => \$newversion,
+    'locale=s' => \$locale, 'lc-collate=s' => \$lc_collate, 
+    'lc-ctype=s' => \$lc_ctype, 'lc-messages=s' => \$lc_messages,
+    'lc-monetary=s' => \$lc_monetary, 'lc-numeric=s' => \$lc_numeric,
+    'lc-time=s' => \$lc_time);
+
+# untaint
+($newversion) = $newversion =~ /^(\d+\.\d+)$/;
+($locale) = $locale =~ /^([\w@._-]+)$/ if $locale;
+($lc_collate) = $lc_collate =~ /^([\w@._-]+)$/ if $lc_collate;
+($lc_ctype) = $lc_ctype =~ /^([\w@._-]+)$/ if $lc_ctype;
+($lc_messages) = $lc_messages =~ /^([\w@._-]+)$/ if $lc_messages;
+($lc_monetary) = $lc_monetary =~ /^([\w@._-]+)$/ if $lc_monetary;
+($lc_numeric) = $lc_numeric =~ /^([\w@._-]+)$/ if $lc_numeric;
+($lc_time) = $lc_time =~ /^([\w@._-]+)$/ if $lc_time;
 
 if ($#ARGV < 1) {
     print "Usage: $0 [-v <newversion>] <version> <cluster name> [<new data directory>]\n";
@@ -224,9 +239,9 @@ error 'cluster is disabled' if $info{'start'} eq 'disabled';
 
 my $encoding = get_db_encoding $version, $cluster, 'template1';
 error 'could not get cluster default encoding' unless $encoding;
-my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
-error 'could not get cluster locale' unless $lc_ctype;
-error 'could not get cluster collating locale' unless $lc_collate;
+my ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
+error 'could not get cluster locale' unless $old_lc_ctype;
+error 'could not get cluster collating locale' unless $old_lc_collate;
 
 if (cluster_exists $newversion, $cluster) {
     error "target cluster $newversion/$cluster already exists";
@@ -271,15 +286,22 @@ wait;
 exit 1 if $?;
 
 # create new cluster, preserving encoding and locales
-
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
-    '--socketdir', $info{'socketdir'}, '--encoding', $encoding, $newversion,
+    '--socketdir', $info{'socketdir'}, $newversion,
     $cluster);
-push @argv, '--datadir', $datadir if $datadir;
 
+push @argv, ('--datadir', $datadir) if $datadir;
+push @argv, ('--encoding', $encoding) unless $locale or $lc_ctype;
+$lc_ctype ||= $locale || $old_lc_ctype;
+$lc_collate ||= $locale || $old_lc_collate;
+push @argv, ('--locale', $locale) if $locale;
+push @argv, ('--lc-collate', $lc_collate) if $lc_collate;
+push @argv, ('--lc-ctype', $lc_ctype) if $lc_ctype;
+push @argv, ('--lc-messages', $lc_messages) if $lc_messages;
+push @argv, ('--lc-monetary', $lc_monetary) if $lc_monetary;
+push @argv, ('--lc-numeric', $lc_numeric) if $lc_numeric;
+push @argv, ('--lc-time', $lc_time) if $lc_time;
 delete $ENV{'LC_ALL'};
-$ENV{'LC_CTYPE'} = $lc_ctype;
-$ENV{'LC_COLLATE'} = $lc_collate;
 error "Could not create target cluster" if system @argv;
 
 @argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
@@ -566,6 +588,33 @@ L<pg_createcluster(8)> for details.
 The I<newdatadir> argument can be used to specify a non-default data directory
 of the upgraded cluster. It is passed to B<pg_createcluster>. If not specified,
 this defaults to /var/lib/postgresql/I<version>/I<name>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-v> I<newversion>
+
+Set the version to upgrade to (default: latest available).
+
+=item B<--locale=>I<locale>
+
+Set the default locale for the upgraded database cluster. If this option is not
+specified, the locale is inherited from the old cluster.
+
+=item B<--lc-collate=>I<locale>
+
+=item B<--lc-ctype=>I<locale>
+
+=item B<--lc-messages=>I<locale>
+
+=item B<--lc-monetary=>I<locale>
+
+=item B<--lc-numeric=>I<locale>
+
+=item B<--lc-time=>I<locale>
+
+Like B<--locale>, but only sets the locale in the specified category.
 
 =head1 HOOK SCRIPTS
 

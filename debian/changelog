@@ -4,8 +4,13 @@ postgresql-common (92) UNRELEASED; urgency=low
   * pg_upgradecluster: Clarify POD about manual mode of the old cluster.
     Thanks to Toni Mueller for noticing.
   * Demote ssl-cert Depends: to Recommends:. (Closes: #498406)
+  * pg_upgradecluster: Provide --locale and -lc-* options similar to
+    pg_createcluster, to provide easy UTF-8 migration from previous
+    legacy-encoded clusters. (Closes: #505785)
+  * t/052_upgrade_encodings.t: Test cases for pg_upgradecluster default and
+    explicit encoding behaviour.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 15 Nov 2008 12:26:01 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 11:08:05 +0100
 
 postgresql-common (91) unstable; urgency=low
 
