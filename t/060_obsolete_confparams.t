@@ -7,7 +7,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : (12 + $#MAJORS * 9);
+use Test::More tests => ($#MAJORS == 0) ? 1 : (23 + $#MAJORS * 9);
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -526,14 +526,10 @@ transform_null_equals = off
 custom_variable_classes = 'foo'
 ";
 
-# create cluster for oldest version
-is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
-
-# Loop over all but the latest major version
-my @testversions = sort @MAJORS;
-while ($#testversions) {
-    my $cur = shift @testversions;
-    my $new = $testversions[0];
+# Test one particular upgrade (old version, new version)
+sub do_upgrade {
+    my $cur = $_[0];
+    my $new = $_[1];
 
     # Write configuration file and start
     my $datadir = PgCommon::cluster_data_directory $cur, 'main';
@@ -563,8 +559,33 @@ while ($#testversions) {
         "Stopping new $new pg_ctlcluster");
 }
 
+# create cluster for oldest version
+is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
+
+# Loop over all but the latest major version
+my @testversions = sort @MAJORS;
+while ($#testversions) {
+    my $cur = shift @testversions;
+    my $new = $testversions[0];
+    do_upgrade $cur, $new;
+}
+
 # remove latest cluster and directory
 is ((system "pg_dropcluster $testversions[0] main"), 0, 'Dropping remaining cluster');
+
+# now test a direct upgrade from oldest to newest, to also catch parameters
+# which changed several times, like syslog -> redirect_stderr ->
+# logging_collector
+if ($#MAJORS > 1) {
+    is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
+    do_upgrade $MAJORS[0], $MAJORS[-1];
+    is ((system "pg_dropcluster $testversions[0] main"), 0, 'Dropping remaining cluster');
+} else {
+    pass 'only two available versions, skipping tests...';
+    for (my $i = 0; $i < 10; ++$i) {
+        pass '...';
+    }
+}
 
 check_clean;
 

@@ -83,6 +83,7 @@ sub adapt_conffiles {
         # make sure log file output actually gets enabled
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
             'redirect_stderr', 'true';
+        %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
     }
 
     # sort_mem -> work_mem transition
