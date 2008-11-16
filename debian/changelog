@@ -1,4 +1,4 @@
-postgresql-common (92) UNRELEASED; urgency=low
+postgresql-common (92) unstable; urgency=low
 
   * debian/supported-versions: Add Ubuntu 8.10 and 9.04.
   * pg_upgradecluster: Clarify POD about manual mode of the old cluster.
@@ -18,7 +18,7 @@ postgresql-common (92) UNRELEASED; urgency=low
   * pg_upgradecluster: Preserve SQL_ASCII encoded databases on upgrade.
     (Closes: #505449)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 13:16:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 13:42:31 +0100
 
 postgresql-common (91) unstable; urgency=low
 
