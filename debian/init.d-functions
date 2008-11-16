@@ -29,7 +29,7 @@ do_ctl_all() {
 
         log_progress_msg "$name"
 	set +e
-	if [ "$1" = "stop" ]; then
+	if [ "$1" = "stop" ] || [ "$1" = "restart" ]; then
 	    ERRMSG=$(pg_ctlcluster --force "$2" "$name" $1 2>&1)
 	else
 	    ERRMSG=$(pg_ctlcluster "$2" "$name" $1 2>&1)
