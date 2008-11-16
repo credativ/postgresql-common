@@ -1,4 +1,4 @@
-postgresql-common (93) UNRELEASED; urgency=low
+postgresql-common (93) unstable; urgency=low
 
   * t/060_obsolete_confparams.t: Test a direct upgrade from oldest to newest
     version in addition to consecutive version-by-version upgrades. This
@@ -9,7 +9,7 @@ postgresql-common (93) UNRELEASED; urgency=low
     "logging_collector" rename will actually be done. This fixes a direct 7.4
     -> 8.3 upgrade. (Closes: #502106)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 19:23:54 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 16 Nov 2008 19:45:34 +0100
 
 postgresql-common (92) unstable; urgency=low
 
