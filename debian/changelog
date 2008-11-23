@@ -5,8 +5,12 @@ postgresql-common (94) UNRELEASED; urgency=low
   * pg_createcluster: Make the cluster configuration directory, "start.conf",
     and "environment" owned by the cluster superuser instead of root.
     (Closes: #481349)
+  * t/030_errors.t: Check behaviour of starting of clusters with colliding
+    ports. Reproduces #472627.
+  * pg_ctlcluster: Error out with a port collision message if another cluster
+    is already running on the port. (Closes: #472627)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 23 Nov 2008 19:19:04 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 23 Nov 2008 20:24:36 +0100
 
 postgresql-common (93) unstable; urgency=low
 

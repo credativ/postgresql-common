@@ -243,6 +243,14 @@ sub start {
 
     start_check_pid_file;
 
+    # check conflicting port
+    foreach my $v (get_versions) {
+        foreach my $c (get_version_clusters $v) {
+            error("Port conflict: cluster $v/$c is already running on port " .
+                $info{'port'}) if cluster_port_running $v, $c, $info{'port'};
+        }
+    }
+
     # get locale used by initdb
     my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
     $lc_ctype or error ('Could not parse locale out of pg_controldata output');
