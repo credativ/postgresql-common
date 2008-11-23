@@ -328,8 +328,6 @@ if (-f "$datadir/PG_VERSION") {
     $newcluster = 1;
 }
 
-chown $owneruid, $ownergid, $datadir;
-
 # create default "start" file
 set_cluster_start_conf $version, $cluster, $startconf;
 
@@ -337,6 +335,7 @@ set_cluster_start_conf $version, $cluster, $startconf;
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, '644';
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, '640', 'hba_file';
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, '640', 'ident_file';
+chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/start.conf" or die "chown: $!";
 
 if ($version ge '8.0') {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
@@ -451,6 +450,7 @@ print ENV "# environment variables for postmaster process
 ";
 close ENV;
 chmod 0644, "$confdir/environment";
+chown $owneruid, $ownergid, "$confdir/environment";
 
 $createsuccess = 1;
 

@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 24;
+use Test::More tests => 40;
 
 my $owner = 'nobody';
 my $v = $MAJORS[0];
@@ -28,11 +28,26 @@ is_program_out $owner, 'ls /tmp/.s.PGSQL.*', 0, "/tmp/.s.PGSQL.5432\n/tmp/.s.PGS
 
 ok_dir '/var/run/postgresql', [], '/var/run/postgresql is empty';
 
+# verify owner of configuration files
+my @st;
+my $confdir = "/etc/postgresql/$v/main";
+my ($owneruid, $ownergid) = (getpwnam $owner)[2,3];
+@st = stat $confdir;
+is $st[4], $owneruid, 'conf dir is owned by user';
+is $st[5], $ownergid, 'conf dir is owned by user\'s primary group';
+opendir D, $confdir or die "opendir: $!";
+for my $f (readdir D) {
+    next if $f eq '.' or $f eq '..';
+    @st = stat "$confdir/$f" or die "stat: $!";
+    is $st[4], $owneruid, "$f is owned by user";
+    is $st[5], $ownergid, "$f is owned by user\'s primary group";
+}
+
 # verify log file properties
-my @logstat = stat "/var/log/postgresql/postgresql-$v-main.log";
-is $logstat[2], 0100640, 'log file has 0640 permissions';
-is $logstat[4], (getpwnam $owner)[2], 'log file is owned by user';
-is $logstat[5], (getpwnam $owner)[3], 'log file is owned by user\'s primary group';
+@st = stat "/var/log/postgresql/postgresql-$v-main.log";
+is $st[2], 0100640, 'log file has 0640 permissions';
+is $st[4], $owneruid, 'log file is owned by user';
+is $st[5], $ownergid, 'log file is owned by user\'s primary group';
 
 # Check proper cleanup
 is ((system "pg_dropcluster $v main --stop"), 0, 'pg_dropcluster');
