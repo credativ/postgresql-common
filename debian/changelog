@@ -9,8 +9,10 @@ postgresql-common (94) UNRELEASED; urgency=low
     ports. Reproduces #472627.
   * pg_ctlcluster: Error out with a port collision message if another cluster
     is already running on the port. (Closes: #472627)
+  * t/090_multicluster.t: Don't reconfigure cluster on conflicting port, since
+    that now fails with above fix.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 23 Nov 2008 20:24:36 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 24 Nov 2008 09:47:14 +0100
 
 postgresql-common (93) unstable; urgency=low
 
