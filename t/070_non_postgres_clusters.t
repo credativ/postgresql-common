@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 40;
+use Test::More tests => 36;
 
 my $owner = 'nobody';
 my $v = $MAJORS[0];
