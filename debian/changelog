@@ -1,3 +1,23 @@
+postgresql-common (95) UNRELEASED; urgency=low
+
+  * Add automatic building of PostgreSQL tsearch/stem dictionaries:
+    - Add pg_updatedicts: Build dictionaries and affix files from installed
+      hunspell/myspell dictionary packages.
+    - Add t/150_tsearch_stemming.t: Test cases for pg_updatedicts, tsearch
+      functionality, and word stem handling.
+    - t/001_packages.t: Ensure that hunspell-en-us is installed, above new
+      test relies on it.
+    - debian/postgresql-common.install: Install pg_updatedicts.
+    - debian/rules: Create man page from pg_udpatedicts POD.
+    - Add debian/postgresql-common.triggers: Register interest on
+      /usr/share/myspell/dicts.
+    - debian/postgresql-common.postinst: Call pg_updatedicts on upgrade to
+      this version, fresh install, and our trigger.
+    - debian/postgresql-common.postrm: Remove /var/cache/postgresql on purge.
+    - (LP: #301770)
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 06 Dec 2008 11:30:02 -0800
+
 postgresql-common (94) unstable; urgency=low
 
   * t/070_non_postgres_clusters.t: Test that all cluster configuration files

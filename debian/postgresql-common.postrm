@@ -8,6 +8,8 @@ if [ "$1" = purge ]; then
     rm -rf /etc/postgresql-common/root.crt 
 
     [ -d /etc/postgresql-common ] && rmdir --ignore-fail-on-non-empty /etc/postgresql-common || true
+
+    rm -rf /var/cache/postgresql
 fi
 
 #DEBHELPER#

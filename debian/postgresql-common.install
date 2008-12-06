@@ -6,6 +6,7 @@ pg_dropcluster usr/bin
 pg_ctlcluster usr/bin
 pg_upgradecluster usr/bin
 pg_maintenance usr/sbin
+pg_updatedicts usr/sbin
 upgrade-scripts/* usr/share/postgresql-common/upgrade-scripts
 run-upgrade-scripts usr/share/postgresql-common
 pg_checksystem usr/share/postgresql-common
