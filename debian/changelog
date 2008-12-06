@@ -1,4 +1,4 @@
-postgresql-common (94) UNRELEASED; urgency=low
+postgresql-common (94) unstable; urgency=low
 
   * t/070_non_postgres_clusters.t: Test that all cluster configuration files
     are owned by the cluster superuser. Reproduces #481349.
@@ -12,7 +12,7 @@ postgresql-common (94) UNRELEASED; urgency=low
   * t/090_multicluster.t: Don't reconfigure cluster on conflicting port, since
     that now fails with above fix.
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 24 Nov 2008 09:47:14 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 06 Dec 2008 11:19:54 -0800
 
 postgresql-common (93) unstable; urgency=low
 
