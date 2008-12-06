@@ -1,4 +1,4 @@
-postgresql-common (95) UNRELEASED; urgency=low
+postgresql-common (95) experimental; urgency=low
 
   * Add automatic building of PostgreSQL tsearch/stem dictionaries:
     - Add pg_updatedicts: Build dictionaries and affix files from installed
@@ -16,7 +16,7 @@ postgresql-common (95) UNRELEASED; urgency=low
     - debian/postgresql-common.postrm: Remove /var/cache/postgresql on purge.
     - (LP: #301770)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 06 Dec 2008 11:30:02 -0800
+ -- Martin Pitt <mpitt@debian.org>  Sat, 06 Dec 2008 11:35:52 -0800
 
 postgresql-common (94) unstable; urgency=low
 
