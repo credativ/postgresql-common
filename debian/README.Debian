@@ -73,6 +73,22 @@ manual page):
    pg_lsclusters     - Show a list of all existing clusters and their status.
    pg_upgradecluster - Migrate a cluster from one major version to another one.
 
+Port assignment
+---------------
+Please note that the pg_* tools automatically manage the server ports
+unless you specify them manually. The first cluster which is ever
+created (by any major version) will run on the default port 5432, and
+each new cluster will use the next higher free one. 
+
+E. g. if you first install "postgresql-8.2" on a clean system, the
+default 8.2/main cluster will run on port 5432. If you then create
+another 8.2 cluster, or install the "postgresql-8.3" package, that new
+one will run on 5433.
+
+Please use "pg_lsclusters" for displaying the cluster <-> port
+mapping, and please have a look at the pg_createcluster manpage (the
+--port option) for details.
+
 Default clusters and upgrading
 ------------------------------
 When installing a postgresql-X.Y package from scratch, a default
