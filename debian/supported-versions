@@ -31,7 +31,11 @@ lsb_debian() {
         3.1 | 4.0*)
             /bin/echo -e "7.4\n8.1\n8.2\n8.3"
             ;;
-        # Lenny and unstable
+        # Lenny
+        5.0*)
+            /bin/echo -e "8.3"
+            ;;
+        # unstable
         testing/unstable | testing | unstable)
             /bin/echo -e "8.3"
             ;;
