@@ -4,8 +4,9 @@ postgresql-common (96) UNRELEASED; urgency=low
     (Closes: #509144)
   * debian/README.Debian: Document port handling, and point to
     relevant manpages and tools. (Closes: #508977)
+  * debian/README.Debian: Fix "confident" typo. (Closes: #512648)
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 04 Jan 2009 22:00:09 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 24 Jan 2009 23:38:18 +0100
 
 postgresql-common (95) experimental; urgency=low
 
