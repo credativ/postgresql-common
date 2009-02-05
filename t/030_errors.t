@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 162;
+use Test::More tests => 154;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -236,22 +236,6 @@ rename "/var/lib/postgresql.orig", "/var/lib/postgresql" or die "rename: $!";
 is_program_out 'postgres', "pg_ctlcluster $version main start", 0, '',
     'pg_ctlcluster start succeeds again with reappeared /var/lib/postgresql';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
-
-# pg_ctlcluster checks colliding ports
-ok ((system "pg_createcluster $version other >/dev/null") == 0,
-    "pg_createcluster other");
-set_cluster_port $version, 'other', '5432';
-is ((exec_as 'postgres', "pg_ctlcluster $version main start"), 0,
-    'pg_ctlcluster: main cluster on conflicting port starts');
-like_program_out 'postgres', "pg_ctlcluster $version other start", 1,
-    qr/conflict.*8.3\/main/, 
-    'pg_ctlcluster other cluster on conflicting port fails';
-is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 
-    'stopping main cluster';
-is ((exec_as 'postgres', "pg_ctlcluster $version other start"), 0,
-    'pg_ctlcluster: other cluster on conflicting port starts after main is down');
-ok ((system "pg_dropcluster $version other --stop") == 0, 
-    'pg_dropcluster other');
 
 # clean up
 ok ((system "pg_dropcluster $version main") == 0, 
