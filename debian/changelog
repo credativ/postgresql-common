@@ -1,11 +1,12 @@
-postgresql-common (94lenny1) UNRELEASED; urgency=low
+postgresql-common (94lenny1) unstable; urgency=high
 
+  * Urgency high because of RC bug fix (regression from Etch).
   * pg_ctlcluster, t/030_errors.t: Back out colliding ports check
     (r896), since in its current form it breaks setups where multiple
     clusters listen to the same port number, but are using different
     socket directories. This reopens #472627. (Closes: #514132)
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 06 Feb 2009 00:02:41 +0100
+ -- Martin Pitt <mpitt@debian.org>  Fri, 06 Feb 2009 00:06:00 +0100
 
 postgresql-common (94) unstable; urgency=low
 
