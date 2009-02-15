@@ -560,6 +560,8 @@ specified, the locale is inherited from the old cluster.
 
 Like B<--locale>, but only sets the locale in the specified category.
 
+=back
+
 =head1 HOOK SCRIPTS
 
 Some PostgreSQL extensions like PostGIS need metadata in auxiliary tables which

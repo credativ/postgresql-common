@@ -54,6 +54,8 @@ This command shows a list about the configuration and status of all clusters.
 
 Do not print the column header line.
 
+=back
+
 =head1 AUTHOR
 
 Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
