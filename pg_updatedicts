@@ -59,6 +59,7 @@ for my $aff (glob "$srcdir/*.aff") {
         print STDERR "ERROR: Conversion of $dic failed\n";
         next;
     }
+    chmod 0644, "$cachedir/$locale.affix", "$cachedir/$locale.dict";
 
     # install symlinks to all versions >= 8.3
     foreach my $v (get_versions) {

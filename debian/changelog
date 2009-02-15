@@ -27,8 +27,10 @@ postgresql-common (96) UNRELEASED; urgency=low
   * pg_lsclusters, pg_upgradecluster: Fix forgotten "=back" after
     itemize list in the POD. Thanks lintian.
   * debian/compat, debian/control: Bump compat level to 6.
+  * pg_updatedicts: Ensure generated tsearch dictionaries are world
+    readable when being generated under umask 077.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 15:11:07 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 15:59:51 +0100
 
 postgresql-common (95) experimental; urgency=low
 
