@@ -22,8 +22,10 @@ postgresql-common (96) UNRELEASED; urgency=low
     namespaces) with a more modest one which just checks conflict on
     the same Unix socket directory. Thanks to Bernd Helmle for the
     patch! (Closes: #514132)
+  * debian/postgresql-common.postinst: Do not call pg_updatedicts with
+    full path (DP 6.1).
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 14:51:57 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 14:58:11 +0100
 
 postgresql-common (95) experimental; urgency=low
 
