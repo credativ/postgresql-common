@@ -26,8 +26,9 @@ postgresql-common (96) UNRELEASED; urgency=low
     full path (DP 6.1).
   * pg_lsclusters, pg_upgradecluster: Fix forgotten "=back" after
     itemize list in the POD. Thanks lintian.
+  * debian/compat, debian/control: Bump compat level to 6.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 15:03:42 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 15:11:07 +0100
 
 postgresql-common (95) experimental; urgency=low
 
