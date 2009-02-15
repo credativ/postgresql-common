@@ -21,7 +21,7 @@ postgresql-common (96) UNRELEASED; urgency=low
     broke clusters on the same port, but different Unix/TCP
     namespaces) with a more modest one which just checks conflict on
     the same Unix socket directory. Thanks to Bernd Helmle for the
-    patch! (Closes: #514132)
+    patch! (Closes: #514132, #472627)
   * debian/postgresql-common.postinst: Do not call pg_updatedicts with
     full path (DP 6.1).
   * pg_lsclusters, pg_upgradecluster: Fix forgotten "=back" after
