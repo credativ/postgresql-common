@@ -1,4 +1,4 @@
-postgresql-common (96) UNRELEASED; urgency=low
+postgresql-common (96) unstable; urgency=low
 
   * debian/supported-versions: Add "Debian 5.0" aka Lenny.
     (Closes: #509144)
@@ -35,7 +35,7 @@ postgresql-common (96) UNRELEASED; urgency=low
   * debian/maintscripts-functions: Unset $GREP_OPTIONS. Thanks to
     Carlo Calderoni for noticing!
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 17:35:14 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 17:37:58 +0100
 
 postgresql-common (95) experimental; urgency=low
 
