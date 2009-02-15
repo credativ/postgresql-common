@@ -32,8 +32,10 @@ postgresql-common (96) UNRELEASED; urgency=low
   * debian/README.Debian: Point out incompatibility between using the
     upstream tools (initdb) and the Debian tools (pg_createcluster)
     and give some recommendations. (LP: #138793)
+  * debian/maintscripts-functions: Unset $GREP_OPTIONS. Thanks to
+    Carlo Calderoni for noticing!
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 16:59:42 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 17:35:14 +0100
 
 postgresql-common (95) experimental; urgency=low
 

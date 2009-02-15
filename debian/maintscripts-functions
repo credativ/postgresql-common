@@ -3,7 +3,7 @@
 
 # arguments: version package master
 _link_manpages() {
-    MANS=$(dpkg -L $2|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$3")
+    MANS=$(unset GREP_OPTIONS; dpkg -L $2|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$3")
     SLAVES=$(for i in $MANS; do TARGET=$(echo $i | sed "s/postgresql\/$1\///"); echo -n " --slave $TARGET $(basename $i) $i"; done)
     update-alternatives --install /usr/share/man/man1/$3 \
 	$3 /usr/share/postgresql/$1/man/man1/$3 \
