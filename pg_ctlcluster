@@ -138,11 +138,9 @@ sub start {
     start_check_pid_file;
 
     # check conflicting port
-    foreach my $v (get_versions) {
-        foreach my $c (get_version_clusters $v) {
-            error("Port conflict: cluster $v/$c is already running on port " .
-                $info{'port'}) if cluster_port_running $v, $c, $info{'port'};
-        }
+    if (cluster_port_running $version, $cluster, $info{'port'}) {
+        my $sockdir = get_cluster_socketdir $version, $cluster;
+        error("Port conflict: another instance is already running on $sockdir with port $info{'port'}");
     }
 
     # get locale used by initdb

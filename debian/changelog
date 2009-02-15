@@ -14,8 +14,16 @@ postgresql-common (96) UNRELEASED; urgency=low
   * Drop support for pre-8.1 clusters, together with all hacks and
     workarounds for those. Add Conflicts: to postgresql-{7.4,8.0}, to
     ensure that this version isn't used with ancient servers any more.
+  * t/030_errors.t: Check that clusters on the same port can run side
+    by side if they are using different Unix socket directories and
+    different TCP addresses. This reproduces #514132.
+  * pg_ctlcluster: Replace overly harsh port conflict check (which
+    broke clusters on the same port, but different Unix/TCP
+    namespaces) with a more modest one which just checks conflict on
+    the same Unix socket directory. Thanks to Bernd Helmle for the
+    patch! (Closes: #514132)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 14 Feb 2009 21:06:06 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Feb 2009 14:51:57 +0100
 
 postgresql-common (95) experimental; urgency=low
 

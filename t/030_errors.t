@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 162;
+use Test::More tests => 164;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -243,9 +243,20 @@ ok ((system "pg_createcluster $version other >/dev/null") == 0,
 set_cluster_port $version, 'other', '5432';
 is ((exec_as 'postgres', "pg_ctlcluster $version main start"), 0,
     'pg_ctlcluster: main cluster on conflicting port starts');
+
+# clusters can run side by side on different socket directories
+set_cluster_socketdir $version, 'other', '/tmp';
+PgCommon::set_conf_value $version, 'other', 'postgresql.conf',
+    'listen_addresses', ''; # otherwise they will conflict on TCP socket
+is ((exec_as 'postgres', "pg_ctlcluster $version other start"), 0,
+    'pg_ctlcluster: other cluster starts on conflicting port, but different socket dirs');
+is ((exec_as 'postgres', "pg_ctlcluster $version other stop"), 0);
+
+# ... but will give an error when running on the same port
+set_cluster_socketdir $version, 'other', '/var/run/postgresql';
 like_program_out 'postgres', "pg_ctlcluster $version other start", 1,
-    qr/conflict.*8.3\/main/, 
-    'pg_ctlcluster other cluster on conflicting port fails';
+    qr/Port conflict:.*port 5432/,
+    'pg_ctlcluster other cluster fails on conflicting port and same socket dir';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 
     'stopping main cluster';
 is ((exec_as 'postgres', "pg_ctlcluster $version other start"), 0,
