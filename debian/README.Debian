@@ -73,6 +73,17 @@ manual page):
    pg_lsclusters     - Show a list of all existing clusters and their status.
    pg_upgradecluster - Migrate a cluster from one major version to another one.
 
+Please note that you can of course also use the upstream tools for
+creating clusters, such as initdb(1). However, please note that in
+this case you cannot expect *any* of above pg_* tools to work, since
+they use different configuration settings (SSL, data directories,
+etc.) and file locations (e. g.
+/etc/postgresql/8.3/main/postgresql.conf). If in doubt, then do *not*
+use initdb, but only pg_createcluster. Since merely installing
+postgresql-X.Y will already set up a default cluster which is ready to
+work, most people do not need to bother about initdb or
+pg_createcluster at all.
+
 Port assignment
 ---------------
 Please note that the pg_* tools automatically manage the server ports
