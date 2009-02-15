@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 97 * ($#MAJORS+1);
+use Test::More tests => 92 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -26,15 +26,6 @@ sub check_major {
     } else {
 	ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
 	    'Socket is in /var/run/postgresql/';
-    }
-
-    # verify that pg_autovacuum is running if it is available
-    my $pg_autovacuum = get_program_path 'pg_autovacuum', $v;
-
-    if ($pg_autovacuum) {
-	like ((ps 'pg_autovacuum'), qr/$pg_autovacuum/, 'pg_autovacuum is running');
-    } else {
-	is ((ps 'pg_autovacuum'), '', "No pg_autovacuum available for version $v");
     }
 
     # verify that exactly one postmaster is running
@@ -205,15 +196,6 @@ Bob|1
         "4\n", 'calling PL/Tcl function';
     is_program_out 'nobody', 'psql nobodydb -Atc "select tcl_max_u(5,4)"', 0,
         "5\n", 'calling PL/TclU function';
-
-    # Check pg_maintenance
-    if ($pg_autovacuum || $v ge '8.1') {
-        like_program_out 0, 'pg_maintenance', 0, qr/^Skipping.*\n$/, 'pg_maintenance skips autovacuumed cluster';
-    } else {
-        like_program_out 0, 'pg_maintenance', 0, qr/^Doing.*\n$/, 'pg_maintenance handles non-autovacuumed cluster';
-    }
-    like_program_out 0, 'pg_maintenance --force', 0, qr/^Doing.*\n$/, 
-        'pg_maintenance --force always handles cluster';
 
     # fake rotated logs to check that they are cleaned up properly
     open L, ">$default_log.1" or die "could not open fake rotated log file";

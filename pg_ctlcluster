@@ -130,112 +130,6 @@ sub cluster_port_ready {
     return !$result;
 }
 
-sub autovacuum_start {
-    if ($version ge '8.1') {
-	error 'PostgreSQL 8.1 and above has an integrated autovacuum daemon which cannot be controlled by this program.';
-    }
-
-    return unless $info{'avac_enable'};
-
-    error "pg_autovacuum not found. Install postgresql-contrib-$version to get it" 
-        unless $pg_autovacuum;
-
-    return if -f $info{'pgdata'}.'/autovacuum.pid';
-
-    my %avac_flags = ('avac_sleep_base' => '-s', 'avac_sleep_scale' => '-S',
-                      'avac_vac_base'   => '-v', 'avac_vac_scale'   => '-V',
-                      'avac_anal_base'  => '-a', 'avac_anal_scale'  => '-A',
-                      'avac_logfile' => '-L', 'avac_debug' => '-d');
-
-    @options = ('-p', $info{'port'}, '-H', $info{'socketdir'});
-
-    foreach (keys %info) {
-	if (my $option = $avac_flags{$_}) {
-            push (@options, $option, $info{$_}) if $info{$_};
-	}
-    }
-
-    # check that the cluster is actually running
-    my $running = 0;
-    for (my $attempt = 0; $attempt < 10; $attempt++) {
-        select (undef, undef, undef, 0.5);
-        if (cluster_port_running $version, $cluster, $info{'port'}) {
-            $running = 1;
-            last;
-        }
-    }
-    error "Cannot start autovacuum daemon: cluster is not running" unless $running;
-
-    # remember current size of the log
-    my $logsize = -1;
-    if (defined $info{'avac_logfile'}) {
-        $logsize = (stat $info{'avac_logfile'})[7] if -r $info{'avac_logfile'};
-    }
-
-    if (!($pid = fork)) {
-	setsid or die "setsid failed(): $!";
-        close $_ for(STDOUT, STDIN, STDERR);
-        chdir '/';
-        exec $pg_autovacuum, @options;
-	exit -1;
-    } else {
-	# wait a bit and check whether the daemon really started
-        select (undef, undef, undef, 0.5);
-	# clean up process if it exited
-	waitpid($pid, WNOHANG);
-	unless (kill 0, $pid) {
-            print STDERR "The PostgreSQL autovacuum daemon failed to start.\n";
-            if ($logsize >= 0) {
-                print STDERR "Please check the log output:\n";
-                open LOG, $info{'avac_logfile'} or 
-                    error "Could not open log file " . $info{'avac_logfile'};
-                seek LOG, $logsize, SEEK_SET;
-                print STDERR $_ while <LOG>;
-            } else {
-                print STDERR "/etc/postgresql/$version/$cluster/autovacuum_log is missing or a dangling symlink.\n\n";
-            }
-	    exit 1;
-	}
-
-	# write PID file
-        if(open my $AVAC_PID, '>', $info{'pgdata'}.'/autovacuum.pid') {
-            print $AVAC_PID "$pid\n";
-            close $AVAC_PID;
-        }
-        exit 0;
-    }
-}
-
-sub autovacuum_stop {
-    if ($version ge '8.1') {
-	error 'PostgreSQL 8.1 and above has an integrated autovacuum daemon which cannot be controlled by this program.';
-    }
-
-    return unless $info{'avac_enable'};
-
-    error "pg_autovacuum not found. Install postgresql-contrib-$version to get it" 
-        unless $pg_autovacuum;
-
-    if (open my $AVAC_PID, $info{'pgdata'}.'/autovacuum.pid') {
-        $pid = <$AVAC_PID>;
-        ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
-        kill ('TERM', $pid) if $pid;
-        close $AVAC_PID;
-        unlink $info{'pgdata'}.'/autovacuum.pid';
-    }
-}
-
-sub autovacuum_restart {
-    if ($version ge '8.1') {
-	error 'PostgreSQL 8.1 and above has an integrated autovacuum daemon which cannot be controlled by this program.';
-    }
-
-    if (-f $info{'pgdata'}.'/autovacuum.pid') {
-        autovacuum_stop;
-        autovacuum_start;
-    }
-}
-
 sub start {
     my $cdir = $info{'configdir'};
 
@@ -355,11 +249,7 @@ sub start {
 	$success = cluster_port_ready $version, $cluster, $info{'port'}, $info{'socketdir'};
     }
 
-    if ($success) {
-        if ($version lt '8.1' && $info{'avac_enable'} && $pg_autovacuum) {
-            autovacuum_start;
-        }
-    } else {
+    if (!$success) {
         if ($logsize) {
             print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
             open LOG, $info{'logfile'} or 
@@ -374,8 +264,6 @@ sub start {
 }
 
 sub stop {
-    autovacuum_stop if $pg_autovacuum;
-
     stop_check_pid_file;
 
     if ($force) {
@@ -439,7 +327,7 @@ if ($#ARGV != 2) {
 error 'specified cluster does not exist' unless $version && $cluster && cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 
-unless ($action eq 'stop' || $action eq 'autovac-stop') {
+unless ($action eq 'stop') {
     error 'Cluster is disabled' if $info{'start'} eq 'disabled';
 }
 
@@ -470,13 +358,9 @@ if( $> != $info{'owneruid'} ) {
 }
 
 $pg_ctl = get_program_path 'pg_ctl', $version;
-$pg_autovacuum = get_program_path 'pg_autovacuum', $version;
 
 %actions = ('start' => \&start, 'stop' => \&stop, 'reload' => \&reload,
-            'restart' => \&restart,
-            'autovac-start' => \&autovacuum_start,
-            'autovac-stop' => \&autovacuum_stop,
-            'autovac-restart' => \&autovacuum_restart);
+            'restart' => \&restart);
 
 if ($actions{$action}) {
     $actions{$action}->();
@@ -495,7 +379,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action>
 
-where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<autovac-start>|B<autovac-stop>|B<autovac-restart>
+where I<action> = B<start>|B<stop>|B<restart>|B<reload>
 
 =head1 DESCRIPTION
 
@@ -516,19 +400,14 @@ root.
 A log file for this specific cluster is created if it does not exist yet (by
 default,
 C</var/log/postgresql/postgresql->I<cluster-version>C<->I<cluster-name>C<.log>),
-and a PostreSQL server process (L<postmaster(1)>) is started on it. If the
-package B<postgresql-contrib->I<version> is installed, a B<pg_autovacuum>
-process is started as well (unless this gets disabled in
-C</etc/postgresql-common/autovacuum.conf> or a cluster-specific
-C<autovacuum.conf> file). Please note that server version 8.1 and above does
-internal autovacuuming. Exits with 0 on success, with 2 if the server is
-already running, and with 1 on other failure conditions.
+and a PostreSQL server process (L<postmaster(1)>) is started on it. Exits with
+0 on success, with 2 if the server is already running, and with 1 on other
+failure conditions.
 
 =item B<stop>
 
-Stops the L<postmaster(1)> server (and B<pg_autovacuum>, if running) of the
-given cluster. By default, "smart" mode is used, which waits until all clients
-disconnected.
+Stops the L<postmaster(1)> server of the given cluster. By default, "smart"
+mode is used, which waits until all clients disconnected.
 
 With the B<--force> option the "fast" mode is used which rolls back all active
 transactions, disconnects clients immediately and thus shuts down cleanly. If
@@ -541,31 +420,12 @@ is about to be shut down.
 
 =item B<restart>
 
-Stops the server if it is running and starts it (again). If B<pg_autovacuum> is
-running on the server, it is restarted as well.
+Stops the server if it is running and starts it (again).
 
 =item B<reload>
 
 Causes the configuration files to be re-read without a full shutdown of the
 server.
-
-=item B<autovac-start> 
-
-Starts a B<pg_autovacuum> process for an already running cluster. This normally
-happens automatically along with B<start>. This command fails for PostgreSQL 8.1
-and above since they do autovacuuming internally.
-
-=item B<autovac-stop> 
-
-Stops the B<pg_autovacuum> process for a running cluster. This normally happens
-automatically along with B<stop>. This command fails for PostgreSQL 8.1 and above
-since they do autovacuuming internally.
-
-=item B<autovac-restart> 
-
-Restarts a B<pg_autovacuum> process for an already running cluster. This
-normally happens automatically along with B<restart>. This command fails for
-PostgreSQL 8.1 and above since they do autovacuuming internally.
 
 =back
 

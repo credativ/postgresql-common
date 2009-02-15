@@ -9,7 +9,7 @@ use TestLib;
 my $ownver = $MAJORS[-1];
 my $grpver = $MAJORS[0];
 
-use Test::More tests => 38;
+use Test::More tests => 36;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -38,11 +38,6 @@ is ((exec_as $testuser, "pg_createcluster $grpver grp --start"), 0,
 like_program_out $testuser, 'pg_lsclusters -h', 0,
     qr/^$grpver\s+grp.*online.*\n^$ownver\s+own.*online/m;
 like_program_out 'postgres', 'psql -Atl', 0, qr/template1.*UTF8/;
-
-# pg_maintenance
-like_program_out $testuser, 'pg_maintenance --force', 0,
-    qr/^Doing.*$grpver\/grp.*\n^Doing.*$ownver\/own/m,
-    "pg_maintenance works as user $testuser with appropriate directory permissions";
 
 # pg_dropcluster
 is ((exec_as $testuser, "pg_dropcluster $ownver own --stop"), 0,

@@ -119,7 +119,6 @@ sub adapt_conffiles {
         # obsolete rendezvous_name 
         deprecate \%c, 'rendezvous_name', 'obsolete in 8.1';
 
-        # 8.1+ has internal autovacuum
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
             'autovacuum', $info{'avac_enable'} ? 'yes' : 'no';
 

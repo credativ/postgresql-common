@@ -5,8 +5,14 @@ postgresql-common (96) UNRELEASED; urgency=low
   * debian/README.Debian: Document port handling, and point to
     relevant manpages and tools. (Closes: #508977)
   * debian/README.Debian: Fix "confident" typo. (Closes: #512648)
+  * Drop pg_autovacuum handling, which was only necessary for 7.4 (8.0
+    and above have internal autovacuuming). This was kept for Lenny to
+    allow Etch backports. This also gets rid of pg_maintenance and
+    /etc/cron.d/postgresql-common. (Closes: #425914, #481025)
+  * Add debian/postgresql-common.preinst: Remove obsolete conffiles
+    (cronjob and /etc/postgresql-common/autovacuum.conf) on upgrade.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 24 Jan 2009 23:38:18 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 14 Feb 2009 17:06:16 +0100
 
 postgresql-common (95) experimental; urgency=low
 

@@ -84,15 +84,6 @@ default version/cluster and database; overrides
 <code>/etc/postgresql-common/user_clusters</code></td></tr>
 
 <tr>
-  <td><code>/etc/postgresql-common/autovacuum.conf</code></td>
-  <td>Default <code>pg_autovacuum</code> configuration file. This has no effect
-  if the package <code>postgresql-contrib-</code><i>version</i> is not
-  installed. This file is irrelevant for PostgreSQL 8.1 or newer,
-  which have integrated autovacuuming; for those versions, autovacuum
-  is configured in <code>postgresql.conf</code> (enabled by default).</td>
-</tr>
-
-<tr>
   <td><code>/etc/postgresql/<i>version</i>/<i>clustername</i></code></td>
   <td>Cluster-specific configuration files: 
     <ul>
@@ -108,19 +99,6 @@ default version/cluster and database; overrides
       Explicitly setting <code>log_directory</code> and/or
       <code>log_filename</code> in <code>postgresql.conf</code>
       overrides this.</li>
-    </ul>
-
-    For PostgreSQL versions earlier than 8.1:
-
-    <ul>
-      <li>a symbolic link <code>autovacuum_log</code> which points to
-      the log file of the autovacuum daemon (started if
-      <code>postgresql-contrib-</code><i>version</i> is installed). If
-      this directory contains <code>autovacuum.conf</code>, this is used
-      as the cluster specific autovacuum daemon configuration; if it
-      does not exist,
-      <code>/etc/postgresql-common/autovacuum.conf</code> is used as a
-      fallback.</li>
     </ul>
   </td>
 </tr>
@@ -141,7 +119,7 @@ default version/cluster and database; overrides
 <tr><td><code>/usr/bin/<i>program</i></code></td>  <td>symbolic links to pg_wrapper, for all client programs</td></tr>
 <tr><td><code>/usr/bin/pg_lsclusters</code></td> <td>list all available clusters with their status and configuration</td></tr>
 <tr><td><code>/usr/bin/pg_createcluster</code></td><td>wrapper for <code>initdb</code>, sets up the necessary configuration structure</td></tr>
-<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server and <b>pg_autovacuum</b> daemon</td></tr>
+<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server</td></tr>
 <tr><td><code>/usr/bin/pg_upgradecluster</code></td><td>Upgrade a cluster to a newer major version.</td></tr>
 <tr><td><code>/usr/bin/pg_dropcluster</code></td><td>remove a cluster and its configuration</td></tr>
 </table>

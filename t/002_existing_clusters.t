@@ -1,5 +1,4 @@
-# Check that no clusters, postmasters, and pg_autovacuum daemons are present
-# for this test.
+# Check that no clusters and postmasters are present for this test.
 
 use strict;
 use Test::More tests => 10;

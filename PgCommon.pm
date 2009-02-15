@@ -439,28 +439,8 @@ sub cluster_info {
         }
     }
 
-    # autovacuum settings
-
-    if ($_[0] lt '8.1') {
-        $result{'avac_logfile'} = readlink ($result{'configdir'} . "/autovacuum_log");
-        ($result{'avac_logfile'}) = $result{'avac_logfile'} =~ /(.*)/; # untaint
-        if (get_program_path 'pg_autovacuum', $_[0]) {
-            my %autovac_conf = read_cluster_conf_file $_[0], $_[1], 'autovacuum.conf';
-            $result{'avac_enable'} = config_bool $autovac_conf{'start'};
-            $result{'avac_debug'} = $autovac_conf{'avac_debug'};
-            $result{'avac_sleep_base'} = $autovac_conf{'avac_sleep_base'};
-            $result{'avac_sleep_scale'} = $autovac_conf{'avac_sleep_scale'};
-            $result{'avac_vac_base'} = $autovac_conf{'avac_vac_base'};
-            $result{'avac_vac_scale'} = $autovac_conf{'avac_vac_scale'};
-            $result{'avac_anal_base'} = $autovac_conf{'avac_anal_base'};
-            $result{'avac_anal_scale'} = $autovac_conf{'avac_anal_scale'};
-        } else {
-            $result{'avac_enable'} = 0;
-        }
-    } else {
-        # autovacuum defaults to on since 8.3
-        $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($_[0] ge '8.3');
-    }
+    # autovacuum defaults to on since 8.3
+    $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($_[0] ge '8.3');
     
     return %result;
 }

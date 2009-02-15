@@ -68,7 +68,6 @@ unlink $c.'/pg_hba.conf', $c.'/pg_ident.conf', $c.'/postgresql.conf',
     $c.'/start.conf', $c.'/log', $c.'/autovacuum_log', $c.'/pgdata',
     $c.'/environment';
 unlink $info{'logfile'} if defined ($info{'logfile'});
-unlink $info{'avac_logfile'} if defined ($info{'avac_logfile'});
 if ($info{'socketdir'} !~ /^(\/tmp|\/var\/run\/postgresql)\/?$/) {
     rmdir $info{'socketdir'};
 }

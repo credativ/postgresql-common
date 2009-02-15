@@ -167,7 +167,7 @@ sub setup_pg_hba {
 # super user can access the database using some other method.
 # Noninteractive
 # access to all databases is required during automatic maintenance
-# (autovacuum, daily cronjob, replication, and similar tasks).
+# (custom daily cronjobs, replication, and similar tasks).
 #
 # Database administrative login by UNIX sockets
 ";
@@ -280,7 +280,6 @@ error 'invalid cluster name' unless defined $cluster;
 
 $datadir ||= "/var/lib/postgresql/$version/$cluster";
 $confdir = "$PgCommon::confroot/$version/$cluster";
-$avac_log = "$confdir/autovacuum_log";
 
 # some sanity checks
 error "invalid version: $version" unless get_program_path 'initdb', $version;
@@ -394,18 +393,6 @@ if ($custom_logfile) {
     chown $owneruid, $ownergid, "$confdir/log";
 }
 
-# create autovacuum log file for servers < 8.1
-if ($version < 8.1) {
-    $real_logfile = "/var/log/postgresql/pg_autovacuum-$version-$cluster.log";
-    if (! -e $real_logfile) {
-        open L, ">$real_logfile" or error "could not create log file $real_logfile";
-        close L;
-    }
-    chmod 0660, $real_logfile;
-    symlink $real_logfile, $avac_log;
-    chown $owneruid, $ownergid, $real_logfile, $avac_log;
-}
-
 # version specific default configuration tweaking
 $conf_fn = "configure_$version";
 $conf_fn =~tr/./_/;
@@ -503,12 +490,6 @@ C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a postgresql-common
 specific configuration file C<start.conf> (see B<STARTUP CONTROL> below), and a
 symbolic link C<log> which points to the log file (by default,
 C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
-
-To enable easy integration of B<pg_autovacuum> for Servers prior to 8.1, this
-program also creates a symbolic link C<autovacuum_log> which points to the
-pg_autuvacuum log file (by default,
-C</var/log/postgresql/pg_autovacuum->I<version>C<->I<name>C<.log>). PostgreSQL
-8.1 and later has an integrated autovacuuming which does not need this.
 
 C<postgresql.conf> is automatically adapted to use the next available port, i.
 e. the first port (starting from 5432) which is not yet used by an already
