@@ -39,12 +39,6 @@ my $old = "$MAJORS[0]/old";
 my $new1 = "$MAJORS[-1]/new1";
 my $new2 = "$MAJORS[-1]/new2";
 
-# enable network socket for pre-8.0 old clusters
-if ($old lt '8.0') {
-    PgCommon::set_conf_value $MAJORS[0], 'old', 'postgresql.conf',
-	'tcpip_socket', 'true';
-}
-
 # disable password auth for network cluster selection tests
 hba_password_to_ident "/etc/postgresql/$old/pg_hba.conf";
 hba_password_to_ident "/etc/postgresql/$new1/pg_hba.conf";
@@ -288,10 +282,6 @@ if (-f '/etc/postgresql-common/user_clusters.psqltestsuite') {
 is ((system "pg_dropcluster $MAJORS[-1] new1 --stop"), 0, "dropping $new1");
 is ((system "pg_dropcluster $MAJORS[-1] new2 --stop"), 0, "dropping $new2");
 is ((system "pg_dropcluster $MAJORS[0] old --stop"), 0, "dropping $old");
-
-# 7.4 leaves TIME_WAIT sockets around after TCP connections; wait until they
-# have timed out to not disturb later tests
-sleep 1 while (`netstat -avptn|grep '543[2-9].*TIME_WAIT'`);
 
 check_clean;
 

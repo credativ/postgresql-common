@@ -20,7 +20,7 @@ sub dbs_from_scope {
     }
 
     # filter out the postgres database
-    @dbs = grep { $_ ne 'postgres' } @dbs if $v ge '8.1';
+    @dbs = grep { $_ ne 'postgres' } @dbs;
 
     return @dbs if $scope eq 't0';
     return grep { $_ ne 'template0' } @dbs if $scope eq 't1';

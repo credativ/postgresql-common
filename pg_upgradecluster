@@ -60,10 +60,8 @@ sub adapt_conffiles {
 	'ident_file', strrepl($c{'ident_file'}, $version, $newversion) if $c{'ident_file'};
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
 	'external_pid_file', strrepl($c{'external_pid_file'}, $version, $newversion) if $c{'external_pid_file'};
-    if ($newversion ge '8.0') {
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'data_directory', $newinfo{'pgdata'};
-    }
+    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+        'data_directory', $newinfo{'pgdata'};
 
     # tcpip_socket transition
     my $tcpip_socket = config_bool $c{'tcpip_socket'};
@@ -110,22 +108,6 @@ sub adapt_conffiles {
     if ($log_line_prefix) {
         PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
             'log_line_prefix', $log_line_prefix;
-    }
-
-    # obsolete max_expr_depth
-    deprecate \%c, 'max_expr_depth', 'does not exist any more, look at max_stack_depth';
-
-    if ($newversion ge '8.1') {
-        # obsolete rendezvous_name 
-        deprecate \%c, 'rendezvous_name', 'obsolete in 8.1';
-
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'autovacuum', $info{'avac_enable'} ? 'yes' : 'no';
-
-        # bgwriter_percent -> bgwriter_{lru,all}_percent transition
-        rename_ \%c, 'bgwriter_percent', 'bgwriter_all_percent';
-        # bgwriter_maxpages -> bgwriter_{lru,all}_maxpages transition
-        rename_ \%c, 'bgwriter_maxpages', 'bgwriter_all_maxpages';
     }
 
     if ($newversion ge '8.2') {
@@ -250,41 +232,6 @@ if (cluster_exists $newversion, $cluster) {
 my $oldpsql = get_program_path 'psql', $version;
 my $oldsocket = get_cluster_socketdir $version, $cluster;
 
-# do read-only checks for situations that would make the upgrade fail
-if (!fork) {
-    change_ugid $info{'owneruid'}, $info{'ownergid'};
-
-    # check for users and groups with the same name when upgrading < 8.1 to >=
-    # 8.1
-    if ($version lt '8.1' && $newversion ge '8.1') {
-        my @samename;
-        print "Checking for users and groups with the same name...\n";
-        open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
-            '-F|', '-d', 'template1', '-Atc', 
-            'select usename from pg_user,pg_group where usename = groname' or 
-            error 'Could not execute pg_user/pg_group query';
-        while (<F>) {
-            chomp;
-            push @samename, $_;
-        }
-        close F;
-        error 'could not get list of users/groups' if $?;
-
-        if (@samename) {
-            print 
-"PostgreSQL 8.1 and later subsume users and groups into 'roles'. The following\
-names are both a user and a group, so either the user or the group must be\
-uniquely renamed before the cluster can be upgraded:\n";
-            print ((join ' ', @samename), "\n");
-            exit 1;
-        }
-    }
-
-    exit 0;
-}   
-wait;
-exit 1 if $?;
-
 # create new cluster, preserving encoding and locales
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
     '--socketdir', $info{'socketdir'}, $newversion,
@@ -397,9 +344,9 @@ if (!fork) {
     for my $db (keys %databases) {
         next if $db eq 'template0';
 
-	if ($db eq 'postgres' && $newversion ge '8.1') {
-	    (system 'dropdb', '--cluster', "$newversion/$cluster", '-q', 'postgres');
-	}
+        if ($db eq 'postgres') {
+            system 'dropdb', '--cluster', "$newversion/$cluster", '-q', 'postgres';
+        }
 
         unless (${$databases{$db}}[0]) {
             print "Temporary enabling access to database $db\n";
@@ -426,11 +373,7 @@ if (!fork) {
         my @restore_argv = ($pg_restore, '-h', $newsocket, '-p', $newinfo{'port'});
 
 	if ($upgrade_scripts) {
-	    if ($newversion eq '8.1') {
-                push @restore_argv, ('-X', 'no-data-for-failed-tables');
-            } elsif ($newversion gt '8.1') {
-                push @restore_argv, '--no-data-for-failed-tables';
-            }
+            push @restore_argv, '--no-data-for-failed-tables';
         }
 
         if ($lc_ctype eq 'C' or ${$databases{$db}}[2] eq 'SQL_ASCII') {

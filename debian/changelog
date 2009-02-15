@@ -11,8 +11,11 @@ postgresql-common (96) UNRELEASED; urgency=low
     /etc/cron.d/postgresql-common. (Closes: #425914, #481025)
   * Add debian/postgresql-common.preinst: Remove obsolete conffiles
     (cronjob and /etc/postgresql-common/autovacuum.conf) on upgrade.
+  * Drop support for pre-8.1 clusters, together with all hacks and
+    workarounds for those. Add Conflicts: to postgresql-{7.4,8.0}, to
+    ensure that this version isn't used with ancient servers any more.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 14 Feb 2009 17:06:16 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 14 Feb 2009 21:06:06 +0100
 
 postgresql-common (95) experimental; urgency=low
 

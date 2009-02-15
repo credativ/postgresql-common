@@ -1,5 +1,4 @@
-# Check that the necessary packages are installed; we want all major servers,
-# no contrib for 7.4, and contrib for 8.0
+# Check that the necessary packages are installed
 
 use strict;
 
@@ -7,20 +6,13 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL/;
 
-use Test::More tests => 6 + ($#MAJORS+1)*4;
+use Test::More tests => 4 + ($#MAJORS+1)*4;
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
     ok ((deb_installed "postgresql-plpython-$v"), "postgresql-plpython-$v installed");
     ok ((deb_installed "postgresql-plperl-$v"), "postgresql-plperl-$v installed");
     ok ((deb_installed "postgresql-pltcl-$v"), "postgresql-pltcl-$v installed");
-}
-
-ok ((!deb_installed 'postgresql-contrib-7.4'), 'postgresql-contrib-7.4 not installed');
-if (deb_installed 'postgresql-8.0') {
-    ok ((deb_installed 'postgresql-contrib-8.0'), 'postgresql-contrib-8.0 installed');
-} else {
-    pass 'postgresql-8.0 not installed, skipping check for postgresql-contrib-8.0';
 }
 
 ok ((deb_installed 'procps'), 'procps installed');

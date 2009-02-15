@@ -19,14 +19,9 @@ sub check_major {
     ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
 	"pg_createcluster $v main");
 
-    # check that a /var/run/postgresql/ pid file is created for 8.0+
-    if ($v ge '8.0') {
-	ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid"], 
-	    'Socket and pid file are in /var/run/postgresql/';
-    } else {
-	ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
-	    'Socket is in /var/run/postgresql/';
-    }
+    # check that a /var/run/postgresql/ pid file is created
+    ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid"], 
+        'Socket and pid file are in /var/run/postgresql/';
 
     # verify that exactly one postmaster is running
     my @pm_pids = pidof (($v ge '8.2') ? 'postgres' : 'postmaster');
@@ -39,10 +34,8 @@ sub check_major {
         fail "postmaster has unsafe environment variable $_" unless exists $safe_env{$_};
     }
 
-    # activate external_pid_file for 8.0+
-    if ($v ge '8.0') {
-	PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'external_pid_file', '';
-    }
+    # activate external_pid_file
+    PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'external_pid_file', '';
 
     # add variable to environment file, restart, check if it's there
     open E, ">>/etc/postgresql/$v/main/environment" or 
@@ -104,26 +97,17 @@ sub check_major {
     open L, ">$p"; close L; # empty log file
 
     # verify that explicitly configured log file trumps log symlink
-    if ($v ge '8.0') {
-        PgCommon::set_conf_value ($v, 'main', 'postgresql.conf', 
-            ($v ge '8.3' ? 'logging_collector' : 'redirect_stderr'), 'on');
-        PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'log_filename', "$v#main.log";
-        is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 
-            'restarting cluster with explicitly configured log file');
-        ok -z $default_log, "default log is not used";
-        ok -z $p, "log symlink target is not used";
-        my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/pg_log/$v#main.log*");
-        is $#l, 0, 'exactly one log file';
-        ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
-        like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*custom\n$/;
-    } else {
-        is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 'restarting < 8.0 cluster');
-        like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$p\n$/;
-        pass 'Skipping postgresql.conf configured log file tests for versions before 8.0';
-        pass '...';
-        pass '...';
-        pass '...';
-    }
+    PgCommon::set_conf_value ($v, 'main', 'postgresql.conf', 
+        ($v ge '8.3' ? 'logging_collector' : 'redirect_stderr'), 'on');
+    PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'log_filename', "$v#main.log";
+    is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 
+        'restarting cluster with explicitly configured log file');
+    ok -z $default_log, "default log is not used";
+    ok -z $p, "log symlink target is not used";
+    my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/pg_log/$v#main.log*");
+    is $#l, 0, 'exactly one log file';
+    ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
+    like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*custom\n$/;
 
     # verify that the postmaster does not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,
@@ -131,31 +115,20 @@ sub check_major {
 
     # verify that SSL is enabled (which should work for user postgres in a
     # default installation)
-    if ($v ge '8.0') {
-        my $ssl = config_bool (PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'ssl');
-        is $ssl, 1, 'SSL is enabled';
-    } else {
-        pass 'Skipping SSL test for versions before 8.0';
-    }
+    my $ssl = config_bool (PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'ssl');
+    is $ssl, 1, 'SSL is enabled';
 
     # Create user nobody, a database 'nobodydb' for him, check the database list
     my $outref;
     is ((exec_as 'nobody', 'psql -l 2>/dev/null', $outref), 2, 'psql -l fails for nobody');
-    is ((exec_as 'postgres', 'createuser nobody -D ' . (($v ge '8.1') ? '-R -s' : '-A')), 0, 'createuser nobody');
+    is ((exec_as 'postgres', 'createuser nobody -D -R -s'), 0, 'createuser nobody');
     is ((exec_as 'postgres', 'createdb -O nobody nobodydb'), 0, 'createdb nobodydb');
     is ((exec_as 'nobody', 'psql -ltA', $outref), 0, 'psql -ltA succeeds for nobody');
-    if ($v ge '8.1') {
-	is ($$outref, 'nobodydb|nobody|UTF8
+    is ($$outref, 'nobodydb|nobody|UTF8
 postgres|postgres|UTF8
 template0|postgres|UTF8
 template1|postgres|UTF8
 ', 'psql -ltA output');
-    } else {
-	is ($$outref, 'nobodydb|nobody|UNICODE
-template0|postgres|UNICODE
-template1|postgres|UNICODE
-', 'psql -ltA output');
-}
 
     # Then fill nobodydb with some data.
     is ((exec_as 'nobody', 'psql nobodydb -c "create table phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)" 2>/dev/null'), 
@@ -209,30 +182,22 @@ Bob|1
     }
 
     # Check that old-style pgdata symbolic link still works (p-common 0.90+
-    # does not create them any more for >= 8.0 clusters, but they still need to
-    # work for existing installations)
-    if ($v ge '8.0') {
-        is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
-        my $datadir = PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'data_directory';
-        symlink $datadir, "/etc/postgresql/$v/main/pgdata";
+    # does not create them any more, but they still need to work for existing
+    # installations)
+    is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+    my $datadir = PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'data_directory';
+    symlink $datadir, "/etc/postgresql/$v/main/pgdata";
 
-        # data_directory should trump the pgdata symlink
-        PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'data_directory', '/nonexisting';
-        like_program_out 0, "pg_ctlcluster $v main start", 1, 
-            qr/\/nonexisting is not accessible/,
-            'cluster fails to start with invalid data_directory and valid pgdata symlink';
+    # data_directory should trump the pgdata symlink
+    PgCommon::set_conf_value $v, 'main', 'postgresql.conf', 'data_directory', '/nonexisting';
+    like_program_out 0, "pg_ctlcluster $v main start", 1, 
+        qr/\/nonexisting is not accessible/,
+        'cluster fails to start with invalid data_directory and valid pgdata symlink';
 
-        # if only pgdata symlink is present, it is authoritative
-        PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'data_directory', 'disabled for test';
-        is_program_out 0, "pg_ctlcluster $v main start", 0, '',
-            'cluster restarts with pgdata symlink';
-    } else {
-        pass 'Skipping pgdata symlink compatibility test for versions before 8.0';
-        pass '...';
-        pass '...';
-        pass '...';
-        pass '...';
-    }
+    # if only pgdata symlink is present, it is authoritative
+    PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'data_directory', 'disabled for test';
+    is_program_out 0, "pg_ctlcluster $v main start", 0, '',
+        'cluster restarts with pgdata symlink';
 
     # Drop database and user again.
     sleep 1;

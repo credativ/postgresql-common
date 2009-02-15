@@ -12,39 +12,6 @@ use POSIX qw/setlocale LC_ALL/;
 
 $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
-# Determine the encoding from the current locale and translate it into a valid
-# PostgreSQL locale. Return SQL_ASCII as a default fallback. This copies the
-# functionality of 8.0's initdb to make it available for 7.4.
-sub get_encoding_from_locale {
-    my %localeenc_pgenc = qw/EUC-JP EUC_JP eucJP EUC_JP IBM-eucJP EUC_JP
-    sdeckanji EUC_JP EUC-CN EUC_CN eucCN EUC_CN IBM-eucCN EUC_CN GB2312 EUC_CN
-    dechanzi EUC_CN EUC-KR EUC_KR eucKR EUC_KR IBM-eucKR EUC_KR deckorean
-    EUC_KR 5601 EUC_KR EUC-TW EUC_TW eucTW EUC_TW IBM-eucTW EUC_TW cns11643
-    EUC_TW UTF-8 UTF8 utf8 UTF8 ISO-8859-1 LATIN1 ISO8859-1 LATIN1 iso88591
-    LATIN1 ISO-8859-2 LATIN2 ISO8859-2 LATIN2 iso88592 LATIN2 ISO-8859-3 LATIN3
-    ISO8859-3 LATIN3 iso88593 LATIN3 ISO-8859-4 LATIN4 ISO8859-4 LATIN4
-    iso88594 LATIN4 ISO-8859-9 LATIN5 ISO8859-9 LATIN5 iso88599 LATIN5
-    ISO-8859-10 LATIN6 ISO8859-10 LATIN6 iso885910 LATIN6 ISO-8859-13 LATIN7
-    ISO8859-13 LATIN7 iso885913 LATIN7 ISO-8859-14 LATIN8 ISO8859-14 LATIN8
-    iso885914 LATIN8 ISO-8859-15 LATIN9 ISO8859-15 LATIN9 iso885915 LATIN9
-    ISO-8859-16 LATIN10 ISO8859-16 LATIN10 iso885916 LATIN10 ISO-8859-5
-    ISO_8859_5 ISO8859-5 ISO_8859_5 iso88595 ISO_8859_5 ISO-8859-6 ISO_8859_6
-    ISO8859-6 ISO_8859_6 iso88596 ISO_8859_6 ISO-8859-7 ISO_8859_7 ISO8859-7
-    ISO_8859_7 iso88597 ISO_8859_7 ISO-8859-8 ISO_8859_8 ISO8859-8 ISO_8859_8
-    iso88598 ISO_8859_8 CP1251 WIN CP1256 WIN1256 CP1258 TCVN KOI8-R KOI8 
-    CP866 ALT/;
-
-    if ($lc_ctype) {
-        $locale_charset = `LC_ALL="$lc_ctype" locale charmap`;
-    } elsif ($locale) {
-        $locale_charset = `LC_ALL="$locale" locale charmap`;
-    } else {
-        $locale_charset = `locale charmap`;
-    }
-    chomp $locale_charset;
-    return $localeenc_pgenc{$locale_charset} || 'SQL_ASCII'; 
-}
-
 # call initdb 
 # Arguments: <version> <data directory> <owner uid> <owner gid>
 sub init_db {
@@ -55,13 +22,8 @@ sub init_db {
     }
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
-    if ($_[0] ge '8.0') {
-        push @initdb, ('-A', 'ident sameuser');
-    }
     die 'Internal error: could not determine initdb path' unless $initdb[0];
-    if (!$encoding and $version < 8) { 
-        $encoding = get_encoding_from_locale();
-    }
+    push @initdb, ('-A', 'ident sameuser');
     push @initdb, ('--encoding', $encoding) if $encoding;
     push @initdb, ('--locale', $locale) if $locale;
     push @initdb, ('--lc-collate', $lc_collate) if $lc_collate;
@@ -88,9 +50,7 @@ sub init_db {
     }
 }
 
-# move a file to a directory with defined permissions; if $version is smaller
-# than 8.0, put a symlink at the old location (PostgreSQL prior to 8.0 does not
-# support configurable conffiles), otherwise set <postgresql.conf option> in
+# move a file to a directory with defined permissions; set <postgresql.conf option> in
 # postgresql.conf.
 # Arguments: <source file> <target dir> <uid> <gid> <perms> <postgresql.conf option>
 sub move_conffile {
@@ -106,17 +66,7 @@ sub move_conffile {
 
 	@pathcomps = split ('/', $file);
 	$target .= '/' . $pathcomps[-1];
-        if ($version lt '8') {
-            $oldgid = $);
-            $olduid = $>;
-            $) = $gid;
-            $> = $uid;
-            symlink $target, $file;
-            $> = $olduid;
-            $) = $oldgid;
-        } else {
-	    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $confopt, $target if $confopt;
-	}
+	PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $confopt, $target if $confopt;
     } else {
         error "move_conffile: required configuration file $realfile does not exist";
     }
@@ -125,16 +75,6 @@ sub move_conffile {
 #
 # Version specific default configuration
 #
-
-sub configure_7_4 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_timestamp', 'true';
-}
-
-sub configure_8_0 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'true';
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
-}
 
 sub configure_8_1 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
@@ -336,12 +276,7 @@ move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, '640', 'hb
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, '640', 'ident_file';
 chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/start.conf" or die "chown: $!";
 
-if ($version ge '8.0') {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
-} else {
-    # pre-8.0 clusters did not have data_directory and thus need a pgdata symlink
-    symlink $datadir, "$confdir/pgdata";
-}
+PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
 
 # add access for database superuser
 setup_pg_hba if $newcluster;
@@ -413,7 +348,7 @@ die "changing euid back: $!" if $> != $euid;
 # so, enable SSL
 
 if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' && 
-    $ssl_key_access && $version ge '8.0') {
+    $ssl_key_access) {
     symlink '/etc/ssl/certs/ssl-cert-snakeoil.pem', $datadir.'/server.crt';
     symlink '/etc/ssl/private/ssl-cert-snakeoil.key', $datadir.'/server.key';
 
@@ -442,7 +377,7 @@ chown $owneruid, $ownergid, "$confdir/environment";
 $createsuccess = 1;
 
 # configure to create external PID file
-if ($version ge '8.0' && $socketdir eq '/var/run/postgresql') {
+if ($socketdir eq '/var/run/postgresql') {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file', "/var/run/postgresql/$version-$cluster.pid";
 }
 
@@ -483,7 +418,7 @@ testing, with other superusers, a cluster for each user on a shared server,
 etc. C<pg_createcluster> will abort with an error if you try to create a
 cluster with a name that already exists for that version.
 
-Given a major PostgreSQL I<version> (like "7.4" or "8.0") and a cluster
+Given a major PostgreSQL I<version> (like "8.2" or "8.3") and a cluster
 I<name>, it creates the necessary configuration files in
 C</etc/postgresql/>I<version>C</>I<name>C</>; in particular these are
 C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a postgresql-common

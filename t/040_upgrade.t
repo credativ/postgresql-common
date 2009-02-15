@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 72;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 68;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -21,8 +21,7 @@ ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
     "pg_createcluster $MAJORS[0] upgr");
 
 # Create nobody user, test database, and put a table into it
-is ((exec_as 'postgres', 'createuser nobody -D ' . (($MAJORS[0] ge '8.1') ? '-R -s' : '-A') . 
-    '&& createdb -O nobody test && createdb -O nobody testnc'), 
+is ((exec_as 'postgres', 'createuser nobody -D -R -s && createdb -O nobody test && createdb -O nobody testnc'), 
 	0, 'Create nobody user and test databases');
 is ((exec_as 'nobody', 'psql test -c "create table phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)"'), 
     0, 'create table');
@@ -52,16 +51,11 @@ is_program_out 'nobody', 'psql -Atc "select inc2(3)" test', 0, "5\n",
 is_program_out 'nobody', 'psql -Atc "select inc3(3)" test', 0, "6\n", 
     'call function inc3';
 
-# create user and group with same name to check clashing role name on >= 8.1
+# create user and group
 is_program_out 'postgres', "psql -qc 'create user foo' template1", 0, '',
     'create user foo';
-if ($MAJORS[0] lt '8.1') {
-    is_program_out 'postgres', "psql -qc 'create group foo' template1", 0, '', 
-	'create group foo';
-} else {
-    is_program_out 'postgres', "psql -qc 'create group gfoo' template1", 0, '', 
-	'create group gfoo';
-}
+is_program_out 'postgres', "psql -qc 'create group gfoo' template1", 0, '', 
+    'create group gfoo';
 
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -73,19 +67,6 @@ is ((exec_as 'nobody', 'psql -tAc "select * from phone order by name" test', $se
 is ($$select_old, 'Alice|2
 Bob|1
 ', 'check SELECT output');
-
-# Attempt upgrade, should fail due to clashing user and group
-if ($MAJORS[0] lt '8.1') {
-    like_program_out 0, "pg_upgradecluster $MAJORS[0] upgr", 1, qr/uniquely renamed/,
-	'pg_upgradecluster fails due to clashing user and group name';
-# Rename group to fix it
-    is_program_out 'postgres', "psql -qc 'alter group foo rename to gfoo' template1", 0, '', 'rename group foo';
-} else {
-    pass 'Skipping user/group clash tests, not applicable for >= 8.1';
-    pass '...';
-    pass '...';
-    pass '...';
-}
 
 # create inaccessible cwd, to check for confusing error messages
 mkdir '/tmp/pgtest/' or die "Could not create temporary test directory /tmp/pgtest: $!";

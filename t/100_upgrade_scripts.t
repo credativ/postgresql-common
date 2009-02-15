@@ -44,8 +44,7 @@ foreach my $v (@versions) {
     is_program_out 'postgres', "createdb -q --cluster $v/main db2", 0, '';
     is_program_out 'postgres', "psql -q --cluster $v/main db1 -c 'CREATE TABLE log (str varchar)'", 0, '';
     my @dbs = get_cluster_databases $v, 'main';
-    my @expected = ('template0', 'template1', 'db1', 'db2');
-    push @expected, 'postgres' if $v ge '8.1';
+    my @expected = ('template0', 'template1', 'db1', 'db2', 'postgres');
     if (eq_set \@dbs, \@expected) {
         pass 'get_cluster_databases() works';
     } else {
