@@ -322,7 +322,7 @@ END { system "umount /var/lib/postgresql 2>/dev/null; losetup -d /dev/loop7 2>/d
 (system "modprobe loop; losetup /dev/loop7 $loop && mkfs.ext2 /dev/loop7 >/dev/null 2>&1 && mount -t ext2 /dev/loop7 /var/lib/postgresql") == 0 or 
     die 'Could not create and mount loop partition';
 
-like_program_out 0, "pg_createcluster $MAJORS[-1] test", 1, qr/No space left on device/i,
+like_program_out 0, "LC_MESSAGES=C pg_createcluster $MAJORS[-1] test", 1, qr/No space left on device/i,
     'pg_createcluster fails due to insufficient disk space';
 
 ok_dir '/var/lib/postgresql', ['lost+found'], 
