@@ -1,0 +1,8 @@
+#!/bin/sh
+[ `id -u` = 0 ] || SUDO=sudo
+for v in 7.4 8.0 8.1 8.2 8.3; do
+    i=/etc/init.d/postgresql-$v
+    [ -x $i ] && $SUDO $i stop
+done
+$SUDO killall pg_autovacuum postmaster postgres
+$SUDO rm -rf /etc/postgresql /var/lib/postgresql/ /var/log/postgresql/ /tmp/postgresql-testsuite/ /var/run/postgresql/*
