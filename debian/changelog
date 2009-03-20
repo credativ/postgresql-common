@@ -5,6 +5,7 @@ postgresql-common (97) UNRELEASED; urgency=low
   * Add cleanpg: Script to remove all PostgreSQL related processes and files.
     This isn't shipped in the package, just kept in the source as a developer
     tool.
+  * debian/control: Update section to "database".
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 28 Feb 2009 13:45:13 +0100
 

@@ -1,5 +1,5 @@
 Source: postgresql-common
-Section: misc
+Section: database
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
 Uploaders: Oliver Elphick <Oliver.Elphick@lfix.co.uk> 
