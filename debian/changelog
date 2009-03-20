@@ -6,6 +6,7 @@ postgresql-common (97) UNRELEASED; urgency=low
     This isn't shipped in the package, just kept in the source as a developer
     tool.
   * debian/control: Update section to "database".
+  * debian/control: Bump Standards-Version to 3.8.1 (no changes required).
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 28 Feb 2009 13:45:13 +0100
 
