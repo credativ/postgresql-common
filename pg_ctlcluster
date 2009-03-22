@@ -217,6 +217,7 @@ sub start {
         error "could not exec $pg_ctl @options: $!" if $?;
     } else {
         setsid or error "could not start session: $!";
+	# without this, you'll get zombies on startup
         dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
         dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
         exec $pg_ctl @options or error "could not exec $pg_ctl @options: $!";
