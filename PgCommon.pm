@@ -11,7 +11,7 @@ our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
-    get_cluster_start_conf set_cluster_start_conf
+    get_cluster_start_conf set_cluster_start_conf set_cluster_pg_ctl_conf
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_cluster_locales
@@ -404,6 +404,28 @@ $val
 
     open F, '>' . $start_conf or error "Could not open $start_conf for writing: $!";
     chmod $perms, $start_conf;
+    print F $text;
+    close F;
+}
+
+# Change pg_ctl.conf setting.
+# Arguments: <version> <cluster> <options>
+# <options> = options passed to pg_ctl(1)
+sub set_cluster_pg_ctl_conf {
+    my ($v, $c, $opts) = @_;
+    my $perms = 0644;
+
+    # pg_ctl.conf setting
+    my $pg_ctl_conf = "$confroot/$v/$c/pg_ctl.conf";
+    my $text = "# Automatic pg_ctl configuration
+# This configuration file contains cluster specific options to be passed to
+# pg_ctl(1).
+
+pg_ctl_options = '$opts'
+";
+
+    open F, '>' . $pg_ctl_conf or error "Could not open $pg_ctl_conf for writing: $!";
+    chmod $perms, $pg_ctl_conf;
     print F $text;
     close F;
 }

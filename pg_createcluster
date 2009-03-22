@@ -270,11 +270,15 @@ if (-f "$datadir/PG_VERSION") {
 # create default "start" file
 set_cluster_start_conf $version, $cluster, $startconf;
 
+# create default pg_ctl.conf file
+set_cluster_pg_ctl_conf $version, $cluster, '';
+
 # move conffiles, setup permissions
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, '644';
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, '640', 'hba_file';
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, '640', 'ident_file';
 chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/start.conf" or die "chown: $!";
+chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/pg_ctl.conf" or die "chown: $!";
 
 PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
 
@@ -422,9 +426,9 @@ Given a major PostgreSQL I<version> (like "8.2" or "8.3") and a cluster
 I<name>, it creates the necessary configuration files in
 C</etc/postgresql/>I<version>C</>I<name>C</>; in particular these are
 C<postgresql.conf>, C<pg_ident.conf>, C<pg_hba.conf>, a postgresql-common
-specific configuration file C<start.conf> (see B<STARTUP CONTROL> below), and a
-symbolic link C<log> which points to the log file (by default,
-C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
+specific configuration file C<start.conf> (see B<STARTUP CONTROL> below),
+C<pg_ctl.conf>, and a symbolic link C<log> which points to the log file (by
+default, C</var/log/postgresql/postgresql->I<version>C<->I<name>C<.log>).
 
 C<postgresql.conf> is automatically adapted to use the next available port, i.
 e. the first port (starting from 5432) which is not yet used by an already
@@ -568,6 +572,9 @@ Neither the init script nor L<pg_ctlcluster(1)> are permitted to start/stop the
 cluster. Please be aware that this will not stop the cluster owner from calling
 lower level tools to control the postmaster process; this option is only meant
 to prevent accidents during maintenance, not more.
+
+The C<pg_ctl.conf> file in the cluster configuration directory can contain
+additional options passed to pg_ctl of that cluster.
 
 =back
 

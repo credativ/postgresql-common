@@ -11,6 +11,10 @@ postgresql-common (97) UNRELEASED; urgency=low
     Thanks to Cyril Bouthors for pointing this out!
   * t/001_packages.t: Check that postgres user is in the ssl-cert group.
     Thanks to Cyril Bouthors for the patch!
+  * Added support for passing additional options to pg_ctl through a new
+    configuration file pg_ctl.conf, or as additional CLI arguments to
+    pg_ctlcluster. Add tests in t/085_pg_ctl.conf.t. Thanks to Cyril Bouthors
+    <cyril@bouthors.org> for the patch! (Closes: #492843)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 28 Feb 2009 13:45:13 +0100
 

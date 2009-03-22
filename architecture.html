@@ -93,6 +93,7 @@ default version/cluster and database; overrides
         <code>manual</code> (do not start/stop in init script, but manual
         control with <code>pg_ctlcluster</code> is possible), <i>disabled</i>
         (<code>pg_ctlcluster</code> is not allowed).</li>
+      <li>optionally <code>pg_ctl.conf</code>: options to be passed to pg_ctl.</li>
       <li>optionally a symbolic link <code>log</code> which points to
       the postmaster log file. Defaults to
       <code>/var/log/postgresql/postgresql-</code><i>version</i><code>-</code><i>cluster</i><code>.conf</code>.  

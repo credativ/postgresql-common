@@ -5,6 +5,7 @@
 # stops on 'stop'.
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
+# (C) 2009 Cyril Bouthors <cyril@bouthors.org>
 
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
@@ -210,6 +211,13 @@ sub start {
         }
         $logsize = (stat $info{'logfile'})[7];
     }
+
+    push @options, @pg_ctl_opts_from_cli if @pg_ctl_opts_from_cli;
+
+    my %pg_ctl_opts_from_file = read_cluster_conf_file $version, $cluster, 'pg_ctl.conf';
+    push @options, split(' ', $pg_ctl_opts_from_file{'pg_ctl_options'})
+	if defined $pg_ctl_opts_from_file{'pg_ctl_options'} and $pg_ctl_opts_from_file{'pg_ctl_options'} ne '';
+
     push @options, ('-s', '-o', $postmaster_opts);
 
     if (fork) {
@@ -312,12 +320,20 @@ sub reload {
 exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
     'f|force' => \$force);
 
-if ($#ARGV != 2) {
+if ($#ARGV < 2) {
     print "Usage: $0 <version> <cluster> <action>\n";
     exit 1;
 }
 
-($version, $cluster, $action) = @ARGV;
+$version = shift @ARGV;
+$cluster = shift @ARGV;
+$action = shift @ARGV;
+
+@pg_ctl_opts_from_cli=();
+foreach my $argv (@ARGV) {
+    push @pg_ctl_opts_from_cli, $argv =~ /(.*)/; # untaint
+}
+
 ($version) = $version =~ /^(\d+\.\d+)$/; # untaint
 ($cluster) = $cluster =~ /^([^'"\s]+)$/; # untaint
 error 'specified cluster does not exist' unless $version && $cluster && cluster_exists $version, $cluster;
@@ -373,7 +389,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action>
+B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action> B<--> [I<pg_ctl options>]
 
 where I<action> = B<start>|B<stop>|B<restart>|B<reload>
 
@@ -434,6 +450,22 @@ server.
 Pass given I<option> as command line option to the C<postmaster> process. It is
 possible to specify B<-o> multiple times. See L<postmaster(1)> for a
 description of valid options.
+
+=item I<pg_ctl options>
+
+Pass given I<pg_ctl options> as command line options to pg_ctl. See L<pg_ctl(1)>
+for a description of valid options.
+
+=back
+
+=head1 FILES
+
+=over 4
+
+=item C</etc/postgresql/>I<cluster-version>C</>I<cluster-name>C</pg_ctl.options>
+
+This configuration file contains cluster specific options to be passed to
+L<pg_ctl(1)>.
 
 =back
 

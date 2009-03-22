@@ -450,6 +450,11 @@ if ( -e $info{'configdir'}.'/start.conf') {
     install_file $info{'configdir'}.'/start.conf', $newinfo{'configdir'},
 	$newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
 }
+if ( -e $info{'configdir'}.'/pg_ctl.conf') {
+    print "Copying old pg_ctl.conf...\n";
+    install_file $info{'configdir'}.'/pg_ctl.conf', $newinfo{'configdir'},
+	$newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+}
 
 adapt_conffiles;
 
