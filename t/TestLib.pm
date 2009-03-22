@@ -27,11 +27,16 @@ sub fail_debug {
 # Arguments: <deb name>
 sub deb_installed {
     open (DPKG, "dpkg -s $_[0] 2>/dev/null|") or die "call dpkg: $!";
+    my $result = 0;
     while (<DPKG>) {
-	return 1 if /^Version:/;
+	if (/^Version:/) {
+	    $result = 1;
+	    last;
+	}
     }
+    close DPKG;
 
-    return 0;
+    return $result;
 }
 
 # Return the user, group, and command line of running processes for the given
