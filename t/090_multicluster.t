@@ -9,7 +9,7 @@ use Socket;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 117;
+use Test::More tests => 127;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.
@@ -268,6 +268,23 @@ like_program_out 'postgres', 'pg_lsclusters -h | sort -k3', 0, qr/.*5434.*5435.*
 like_program_out 'postgres', "psql -l", 1, 
     qr/no.*default.*man pg_wrapper/i,
     'proper pg_wrapper error message if no cluster is suitable as target';
+like_program_out 'postgres', "psql -Atl --cluster $new1", 0, 
+    qr/test\|postgres\|/,
+    '--cluster selects appropriate cluster';
+like_program_out 'postgres', "psql -Atl -p 5434", 0, 
+    qr/test\|postgres\|/,
+    '-p selects appropriate cluster';
+like_program_out 'postgres', "psql -Atlp 5434", 0, 
+    qr/test\|postgres\|/,
+    '-Atlp selects appropriate cluster';
+like_program_out 'postgres', "psql -Atl --port 5434", 0, 
+    qr/test\|postgres\|/,
+    '--port selects appropriate cluster';
+like_program_out 'postgres', "env PGPORT=5434 psql -Atl", 0, 
+    qr/test\|postgres\|/,
+    '$PGPORT selects appropriate cluster';
+
+# but specifying -p explicitly should work
 
 # restore original user_clusters
 if (-f '/etc/postgresql-common/user_clusters.psqltestsuite') {

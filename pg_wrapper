@@ -21,8 +21,11 @@ if (defined $ENV{'PGCLUSTER'}) {
     error 'No cluster specified with $PGCLUSTER' unless $cluster;
 }
 
-# Check for --cluster argument and filter it out
+# Check for --cluster argument and filter it out, and check if --port is specified
+my $port_specified = exists $ENV{'PGPORT'};
 for (my $i = 0; $i <= $#ARGV; ++$i) {
+    last if $ARGV[$i] eq '--';
+
     if ($ARGV[$i] eq '--cluster') {
         error '--cluster option needs an argument (<version>/<cluster>)' if ($i >= $#ARGV);
 
@@ -34,6 +37,8 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
         splice @ARGV, $i, 2;
         last;
     }
+
+    $port_specified = 1 if $ARGV[$i] eq '--port' || $ARGV[$i] =~ /^-\w*p\w*$/;
 }
 
 # Determine $version, $cluster, $db, $port from map files
@@ -62,6 +67,13 @@ $ENV{'PGSYSCONFDIR'} = '/etc/postgresql-common' if !$ENV{'PGSYSCONFDIR'};
 $ENV{'PGPORT'} = $port if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db && !$ENV{'PGDATABASE'};
 $ENV{'PGHOST'} = $host if $host;
+
+# if we only have a port, but no version here, use the latest version
+# TODO: this could be improved by better argument parsing and mapping back the
+# port to a cluster version/name
+if (!$version and $port_specified) {
+    $version = get_newest_version;
+}
 
 unless ($version) {
     if (get_versions) {
