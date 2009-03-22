@@ -9,6 +9,8 @@ postgresql-common (97) UNRELEASED; urgency=low
   * debian/control: Bump Standards-Version to 3.8.1 (no changes required).
   * t/TestLib.pm, deb_installed(): Properly close the dpkg file descriptor.
     Thanks to Cyril Bouthors for pointing this out!
+  * t/001_packages.t: Check that postgres user is in the ssl-cert group.
+    Thanks to Cyril Bouthors for the patch!
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 28 Feb 2009 13:45:13 +0100
 

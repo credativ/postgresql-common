@@ -6,7 +6,7 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL/;
 
-use Test::More tests => 4 + ($#MAJORS+1)*4;
+use Test::More tests => 5 + ($#MAJORS+1)*4;
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
@@ -22,5 +22,8 @@ ok ((deb_installed 'hunspell-en-us'), 'hunspell-en-us installed');
 # check installed locales to fail tests early if they are missing
 ok (setlocale (LC_ALL, "ru_RU"), 'locale ru_RU exists');
 ok (setlocale (LC_ALL, "ru_RU.UTF-8"), 'locale ru_RU.UTF-8 exists');
+
+ok ((getgrnam('ssl-cert'))[3] =~ /postgres/, 
+    'user postgres in the UNIX group ssl-cert');
 
 # vim: filetype=perl
