@@ -15,6 +15,8 @@ postgresql-common (97) UNRELEASED; urgency=low
     configuration file pg_ctl.conf, or as additional CLI arguments to
     pg_ctlcluster. Add tests in t/085_pg_ctl.conf.t. Thanks to Cyril Bouthors
     <cyril@bouthors.org> for the patch! (Closes: #492843)
+  * t/070_non_postgres_clusters.t: Update number of tests for new pg_ctl.conf
+    file.
   * t/090_multicluster.t: Check that explicit port specification with
     -p/--port/$PGPORT selects the right cluster in the case of multiple
     existing clusters where none runs on the default port. This reproduces
