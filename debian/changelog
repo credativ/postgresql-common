@@ -1,3 +1,10 @@
+postgresql-common (98) UNRELEASED; urgency=low
+
+  * debian/control: Add missing lsb-release dependency (which now ships the
+    lsb_release program). (Closes: #520992)
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 24 Mar 2009 17:26:08 +0100
+
 postgresql-common (97) unstable; urgency=low
 
   * t/030_errors.t: Fix "no space left on device" test for non-English
