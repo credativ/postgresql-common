@@ -15,6 +15,8 @@ postgresql-common (98) UNRELEASED; urgency=low
       8.4 on.
     - pg_createcluster: Do not set root.crt for 8.4 clusters, since it gets
       confused about the dummy one.
+    - t/020_create_sql_remove.t: Fix parsing of psql -Atl output for new 8.4
+      format.
   * t/050_encodings.t: Stop using pg_controldata for checking cluster
     encoding. Just check psql -Atl.
 
