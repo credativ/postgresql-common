@@ -17,8 +17,8 @@ postgresql-common (98) UNRELEASED; urgency=low
       confused about the dummy one.
     - t/020_create_sql_remove.t: Fix parsing of psql -Atl output for new 8.4
       format.
-  * t/050_encodings.t: Stop using pg_controldata for checking cluster
-    encoding. Just check psql -Atl.
+    - t/050_encodings.t: Stop using pg_controldata for checking cluster
+      encoding. Just check psql -Atl.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 24 Mar 2009 17:26:08 +0100
 
