@@ -185,10 +185,18 @@ print F "foo\n";
 close F;
 chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
 
-like_program_out 'postgres', "pg_ctlcluster $version main start", 0, 
-    qr/WARNING.*connection to the database failed.*pg_hba.conf/is,
-    'pg_ctlcluster start warns about invalid pg_hba.conf';
-is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
+if ($version lt '8.4') {
+    like_program_out 'postgres', "pg_ctlcluster $version main start", 0, 
+	qr/WARNING.*connection to the database failed.*pg_hba.conf/is,
+	'pg_ctlcluster start warns about invalid pg_hba.conf';
+    is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
+} else {
+    like_program_out 'postgres', "pg_ctlcluster $version main start", 1, 
+	qr/FATAL.*could not load pg_hba.conf/is,
+	'pg_ctlcluster start fails on invalid pg_hba.conf';
+    is_program_out 'postgres', "pg_ctlcluster $version main stop", 2, 
+	"Cluster is not running.\n", 'stopping cluster';
+}
 
 # test check for pg_hba.conf with removed passwordless local superuser access
 open F, ">/etc/postgresql/$version/main/pg_hba.conf" or die "could not create pg_hba.conf: $!";

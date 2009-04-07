@@ -17,6 +17,8 @@ postgresql-common (98) UNRELEASED; urgency=low
       confused about the dummy one.
     - t/020_create_sql_remove.t: Fix parsing of psql -Atl output for new 8.4
       format.
+    - t/030_errors.t: 8.4 now fails on invalid pg_hba.conf, update
+      accordingly.
     - t/050_encodings.t: Stop using pg_controldata for checking cluster
       encoding. Just check psql -Atl.
 
