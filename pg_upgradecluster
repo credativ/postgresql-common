@@ -161,7 +161,11 @@ sub disable_connections {
     }
     chmod 0400, $hba;
     chown $_[3], 0, $hba;
-    print F "local all $_[2] ident sameuser";
+    if ($_[0] ge '8.4') {
+	print F "local all $_[2] ident";
+    } else {
+	print F "local all $_[2] ident sameuser";
+    }
     close F;
 
     if (system 'pg_ctlcluster', $_[0], $_[1], 'reload') {

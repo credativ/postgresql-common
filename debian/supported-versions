@@ -5,12 +5,12 @@
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
 
-DEFAULT="8.3"
+DEFAULT="8.3\n8.4"
 
 lsb_ubuntu() {
     case "$1" in
         8.04 | 8.10 | 9.04)
-            /bin/echo -e "8.3"
+            /bin/echo -e "8.3\n8.4"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
@@ -23,11 +23,11 @@ lsb_debian() {
     case "$1" in
         # Lenny
         5.0*)
-            /bin/echo -e "8.3"
+            /bin/echo -e "8.3\n8.4"
             ;;
         # unstable
         testing/unstable | testing | unstable)
-            /bin/echo -e "8.3"
+            /bin/echo -e "8.3\n8.4"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -60,7 +60,7 @@ if type lsb_release >/dev/null 2>/dev/null; then
 else
     # Debian?
     if [ -e /etc/debian_version ]; then
-        /bin/echo -e "8.3";
+        /bin/echo -e "8.3\n8.4";
     else
         echo "supported_versions: WARNING: Unknown distribution" >&2
         /bin/echo -e "$DEFAULT"

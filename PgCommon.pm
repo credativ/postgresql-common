@@ -700,6 +700,11 @@ sub get_cluster_locales {
     my ($version, $cluster) = @_;
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
+    if ($version ge '8.4') {
+	print STDERR "Error: get_cluster_locales() does not work for 8.4+\n";
+	exit 1;
+    }
+
     my $pg_controldata = get_program_path 'pg_controldata', $version;
     if (! -e $pg_controldata) {
         print STDERR "Error: pg_controldata not found, please install postgresql-$version\n";
