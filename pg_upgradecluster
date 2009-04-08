@@ -349,7 +349,7 @@ if (!fork) {
         next if $db eq 'template0';
 
         if ($db eq 'postgres') {
-            system 'dropdb', '--cluster', "$newversion/$cluster", '-q', 'postgres';
+            system 'dropdb', '--cluster', "$newversion/$cluster", 'postgres';
         }
 
         unless (${$databases{$db}}[0]) {
@@ -386,7 +386,7 @@ if (!fork) {
         } else {
             # 8.3+ enforce encoding/locale match, so create the DB with good encoding ourselves
             if ($db ne 'template1') {
-                (system 'createdb', '--cluster', "$newversion/$cluster", '-q', '-O', ${$databases{$db}}[1], $db) == 0 or
+                (system 'createdb', '--cluster', "$newversion/$cluster", '-O', ${$databases{$db}}[1], $db) == 0 or
                     error "could not create target database $db";
             }
             push @restore_argv, ('-d', $db);
