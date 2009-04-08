@@ -27,6 +27,7 @@ sub check_cluster {
 
     # check encoding
     sleep 1;
+    my $outref;
     is ((exec_as 'postgres', "psql -Atl --cluster $v/$cluster_name", $outref, 0), 0,
 	'psql -l succeeds');
     my $is_unicode = 0;
@@ -99,8 +100,8 @@ foreach my $v (@MAJORS) {
     is ((system "LANGUAGE= LC_ALL=C LANG=bo_GUS.UTF-8 pg_createcluster --start $v main >/dev/null 2>&1"), 0,
             "pg_createcluster: LC_ALL dominates LANG");
     my $outref;
-    like_program_out, 'postgres', "psql -Atl --cluster $v/main", $outref, 0),
-	0, qr/template1.*ASCII/, 'template1 is ASCII encoded';
+    like_program_out, 'postgres', "psql -Atl --cluster $v/main", $outref, 0,
+	qr/template1.*ASCII/, 'template1 is ASCII encoded';
     is ((system "pg_dropcluster $v main --stop"), 0, 'Dropping cluster');
 }
 
