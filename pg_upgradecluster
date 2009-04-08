@@ -146,6 +146,14 @@ sub adapt_conffiles {
                 'archive_mode', 'yes';
         }
     }
+
+    if ($newversion ge '8.4') {
+        deprecate \%c, 'max_fsm_pages', 'not needed any more';
+        deprecate \%c, 'max_fsm_relations', 'not needed any more';
+        deprecate \%c, 'krb_server_hostname', 'does not exist any more';
+        deprecate \%c, 'krb_realm', 'does not exist any more';
+        rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
