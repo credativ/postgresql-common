@@ -153,6 +153,18 @@ sub adapt_conffiles {
         deprecate \%c, 'krb_server_hostname', 'does not exist any more';
         deprecate \%c, 'krb_realm', 'does not exist any more';
         rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
+
+	# "ident sameuser" -> "ident"
+	my $hba = "/etc/postgresql/$newversion/$cluster/pg_hba.conf";
+	open O, $hba or error "open $hba: $!";
+	open N, ">$hba.new" or error "open $hba.new: $!";
+	while (<O>) {
+	    s/ident sameuser/ident/;
+	    print N $_;
+	}
+	close O;
+	close N;
+	rename "$hba.new", $hba or error "rename: $!";
     }
 }
 
