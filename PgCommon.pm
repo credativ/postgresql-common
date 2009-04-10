@@ -745,10 +745,13 @@ sub get_cluster_databases {
     $> = (stat (cluster_data_directory $version, $cluster))[4];
 
     my @dbs;
+    my @fields;
     if (open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl') {
         while (<PSQL>) {
             chomp;
-            push (@dbs, (split '\|')[0]);
+            @fields = split '\|';
+            next if $#fields < 2; # remove access privs which get line broken
+            push (@dbs, $fields[0]);
         }
         close PSQL;
     }

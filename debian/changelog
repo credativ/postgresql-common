@@ -10,6 +10,8 @@ postgresql-common (98) UNRELEASED; urgency=low
       options, to test configuration migration to 8.4.
     - PgCommon.pm, get_cluster_locales(): Bail out if calling on 8.4 or later
       cluster (where locales are not associated to clusters any more).
+      PgCommon.pm, get_cluster_databases(): Ignore lines from psql -Atl which
+      just describe access permissions.
     - pg_ctlcluster: Only do locales check for <= 8.3 for now.
     - "ident sameuser" does not exist any more in 8.4, just use "ident" from
       8.4 on.
