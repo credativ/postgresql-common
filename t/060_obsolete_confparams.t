@@ -334,7 +334,7 @@ krb_realm = ''
 tcp_keepalives_idle = 0
 tcp_keepalives_interval = 0
 tcp_keepalives_count = 0
-shared_buffers = 32MB
+shared_buffers = 24MB
 temp_buffers = 8MB
 max_prepared_transactions = 5
 work_mem = 1MB
@@ -492,7 +492,7 @@ sub do_upgrade {
     close F;
     # restore data directory, we just scribbled over it
     PgCommon::set_conf_value $cur, 'main', 'postgresql.conf', 'data_directory', $datadir;
-
+    
     is ((exec_as 'postgres', "pg_ctlcluster $cur main start"), 0,
         'pg_ctlcluster start');
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$cur.*online/, 
