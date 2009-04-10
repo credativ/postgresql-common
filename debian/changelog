@@ -29,6 +29,8 @@ postgresql-common (98) UNRELEASED; urgency=low
     8.4 and is not necessary any more with 8.3 either.
   * t/010_defaultport_cluster.t: Ensure that we run the test with
     LC_MESSAGES=C, so that it succeeds in non-English locales, too.
+  * t/051_inconsistent_encoding_upgrade.t: Disable if the oldest available
+    cluster is 8.3 or newer; the test is not relevant there, and will fail.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 24 Mar 2009 17:26:08 +0100
 
