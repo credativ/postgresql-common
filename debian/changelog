@@ -24,6 +24,8 @@ postgresql-common (98) UNRELEASED; urgency=low
       encoding. Just check psql -Atl.
   * pg_upgradecluster: Don't call createdb/dropdb with -q; it got dropped in
     8.4 and is not necessary any more with 8.3 either.
+  * t/010_defaultport_cluster.t: Ensure that we run the test with
+    LC_MESSAGES=C, so that it succeeds in non-English locales, too.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 24 Mar 2009 17:26:08 +0100
 
