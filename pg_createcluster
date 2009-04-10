@@ -369,8 +369,13 @@ if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' &&
 }
 
 # create SSL client certificate root symlink if appropriate
-if ($version lt '8.4' && $newcluster && -e '/etc/postgresql-common/root.crt') {
-    symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+if ($newcluster && -e '/etc/postgresql-common/root.crt') {
+    open F, '/etc/postgresql-common/root.crt';
+    my $val;
+    read F, $val, 4096;
+    if ($val =~ /^-----BEGIN CERTIFICATE-----/m) {
+	symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+    }
 }
 
 # create default (empty) environment file

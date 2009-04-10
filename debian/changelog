@@ -15,8 +15,9 @@ postgresql-common (98) UNRELEASED; urgency=low
     - pg_ctlcluster: Only do locales check for <= 8.3 for now.
     - "ident sameuser" does not exist any more in 8.4, just use "ident" from
       8.4 on.
-    - pg_createcluster: Do not set root.crt for 8.4 clusters, since it gets
-      confused about the dummy one.
+    - pg_createcluster: Do not symlink root.crt if
+      /etc/postgresql-common/root.crt does not have actual certificates (just
+      the help text), since 8.4 gets royally confused about the dummy one.
     - pg_upgradecluster: Migrate obsolete/changed configuration parameters.
     - t/020_create_sql_remove.t: Fix parsing of psql -Atl output for new 8.4
       format.
