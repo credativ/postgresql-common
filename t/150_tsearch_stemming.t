@@ -31,7 +31,7 @@ ok -l "/usr/share/postgresql/$version/tsearch_data/system_en_us.dict",
 is ((system "pg_createcluster $version main --start >/dev/null"), 0, "pg_createcluster $_ main");
 
 # create DB with en_US text search configuration
-is_program_out 'postgres', 'createdb -q fts', 0, '';
+is_program_out 'postgres', 'createdb fts', 0, '';
 
 my $outref;
 

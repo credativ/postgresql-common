@@ -24,7 +24,7 @@ is ((system "pg_createcluster $MAJORS[0] main --start >/dev/null"), 0, "pg_creat
 is_program_out 'postgres', 
     'psql template1 -qc "create table auxdata (x varchar(10)); insert into auxdata values (\'old1\'); insert into auxdata values (\'old2\')"',
     0, '', 'adding auxdata to template1 and fill in some "old..." values';
-is_program_out 'postgres', "createdb -q test", 0, '';
+is_program_out 'postgres', "createdb test", 0, '';
 is_program_out 'postgres', 'psql test -qc "create table userdata(x int); insert into userdata values(42); insert into userdata values(256)"',
     0, '', 'creating userdata table';
 is_program_out 'postgres', 

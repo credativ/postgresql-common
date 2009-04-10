@@ -1,6 +1,6 @@
 #!/bin/sh
 [ `id -u` = 0 ] || SUDO=sudo
-for v in 7.4 8.0 8.1 8.2 8.3; do
+for v in 7.4 8.0 8.1 8.2 8.3 8.4; do
     i=/etc/init.d/postgresql-$v
     [ -x $i ] && $SUDO $i stop
 done

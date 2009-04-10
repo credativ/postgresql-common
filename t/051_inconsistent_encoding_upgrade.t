@@ -7,13 +7,18 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 19 * 3 + 10;
+use Test::More tests => ($#MAJORS == 0 || $MAJORS[0] ge '8.3') ? 1 : 19 * 3 + 10;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 if ($#MAJORS == 0) {
         pass 'only one major version installed, skipping upgrade tests';
+        exit 0;
+}
+
+if ($MAJORS[0] ge '8.3') {
+        pass 'test only relevant for oldest version < 8.3, skipping';
         exit 0;
 }
 

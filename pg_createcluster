@@ -16,6 +16,11 @@ $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 # Arguments: <version> <data directory> <owner uid> <owner gid>
 sub init_db {
     $datadir = (-l $_[1]) ? readlink $_[1] : $_[1];
+    if ($_[0] ge '8.4') {
+	$ident_method = 'ident';
+    } else {
+	$ident_method = 'ident sameuser';
+    }
 
     if (system 'install', '-d', '-o', $_[2], '-g', $_[3], $datadir) {
         error 'could not create data directory; you might need to run this program with root privileges';
@@ -23,7 +28,7 @@ sub init_db {
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
-    push @initdb, ('-A', 'ident sameuser');
+    push @initdb, ('-A', $ident_method);
     push @initdb, ('--encoding', $encoding) if $encoding;
     push @initdb, ('--locale', $locale) if $locale;
     push @initdb, ('--lc-collate', $lc_collate) if $lc_collate;
@@ -93,6 +98,10 @@ sub configure_8_3 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
 }
 
+sub configure_8_4 {
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
+}
+
 # Set up the default pg_hba.conf file:
 # - Add a "local all" entry to pg_hba.conf for the db superuser before all
 # other entries. 
@@ -119,7 +128,7 @@ sub setup_pg_hba {
 	# add superuser entry before column description line
 	if ($search && /#.*TYPE\s+DATABASE/) {
 	    push @lines, $su_comment;
-	    $s = sprintf "%-7s %-11s %-33s %s\n", 'local', 'all', $user, 'ident sameuser';
+	    $s = sprintf "%-7s %-11s %-33s %s\n", 'local', 'all', $user, $ident_method;
 	    push @lines, $s;
 	    push @lines, "\n";
 	    $search = 0;
@@ -127,12 +136,12 @@ sub setup_pg_hba {
 
 	# default authentication for Unix socket connections
 	if ($line =~ /^local/) {
-	    $line =~ s/trust/ident sameuser/;
+	    $line =~ s/trust/$ident_method/;
 	}
 
 	# default authentication for TCP connections
 	if ($line =~ /^host/) {
-	    $line =~ s/(ident sameuser|trust)/md5/;
+	    $line =~ s/($ident_method|trust)/md5/;
 	}
 	push @lines, $line;
     }
@@ -361,7 +370,12 @@ if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' &&
 
 # create SSL client certificate root symlink if appropriate
 if ($newcluster && -e '/etc/postgresql-common/root.crt') {
-    symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+    open F, '/etc/postgresql-common/root.crt';
+    my $val;
+    read F, $val, 4096;
+    if ($val =~ /^-----BEGIN CERTIFICATE-----/m) {
+	symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+    }
 }
 
 # create default (empty) environment file

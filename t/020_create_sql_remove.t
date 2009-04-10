@@ -123,7 +123,7 @@ sub check_major {
     is ((exec_as 'nobody', 'psql -l 2>/dev/null', $outref), 2, 'psql -l fails for nobody');
     is ((exec_as 'postgres', 'createuser nobody -D -R -s'), 0, 'createuser nobody');
     is ((exec_as 'postgres', 'createdb -O nobody nobodydb'), 0, 'createdb nobodydb');
-    is ((exec_as 'nobody', 'psql -ltA', $outref), 0, 'psql -ltA succeeds for nobody');
+    is ((exec_as 'nobody', 'psql -ltA|grep "|" | cut -f1-3 -d"|"', $outref), 0, 'psql -ltA succeeds for nobody');
     is ($$outref, 'nobodydb|nobody|UTF8
 postgres|postgres|UTF8
 template0|postgres|UTF8

@@ -146,6 +146,26 @@ sub adapt_conffiles {
                 'archive_mode', 'yes';
         }
     }
+
+    if ($newversion ge '8.4') {
+        deprecate \%c, 'max_fsm_pages', 'not needed any more';
+        deprecate \%c, 'max_fsm_relations', 'not needed any more';
+        deprecate \%c, 'krb_server_hostname', 'does not exist any more';
+        deprecate \%c, 'krb_realm', 'does not exist any more';
+        rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
+
+	# "ident sameuser" -> "ident"
+	my $hba = "/etc/postgresql/$newversion/$cluster/pg_hba.conf";
+	open O, $hba or error "open $hba: $!";
+	open N, ">$hba.new" or error "open $hba.new: $!";
+	while (<O>) {
+	    s/ident sameuser/ident/;
+	    print N $_;
+	}
+	close O;
+	close N;
+	rename "$hba.new", $hba or error "rename: $!";
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
@@ -161,7 +181,11 @@ sub disable_connections {
     }
     chmod 0400, $hba;
     chown $_[3], 0, $hba;
-    print F "local all $_[2] ident sameuser";
+    if ($_[0] ge '8.4') {
+	print F "local all $_[2] ident";
+    } else {
+	print F "local all $_[2] ident sameuser";
+    }
     close F;
 
     if (system 'pg_ctlcluster', $_[0], $_[1], 'reload') {
@@ -345,7 +369,7 @@ if (!fork) {
         next if $db eq 'template0';
 
         if ($db eq 'postgres') {
-            system 'dropdb', '--cluster', "$newversion/$cluster", '-q', 'postgres';
+            system 'dropdb', '--cluster', "$newversion/$cluster", 'postgres';
         }
 
         unless (${$databases{$db}}[0]) {
@@ -382,7 +406,7 @@ if (!fork) {
         } else {
             # 8.3+ enforce encoding/locale match, so create the DB with good encoding ourselves
             if ($db ne 'template1') {
-                (system 'createdb', '--cluster', "$newversion/$cluster", '-q', '-O', ${$databases{$db}}[1], $db) == 0 or
+                (system 'createdb', '--cluster', "$newversion/$cluster", '-O', ${$databases{$db}}[1], $db) == 0 or
                     error "could not create target database $db";
             }
             push @restore_argv, ('-d', $db);

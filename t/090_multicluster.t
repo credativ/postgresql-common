@@ -72,7 +72,7 @@ like_program_out 0, "psql --cluster $MAJORS[-1]/foo --version", 1,
     'pg_wrapper --cluster errors out for invalid cluster';
 
 # create a database in new1 and check that it doesn't appear in new2
-is_program_out 'postgres', "createdb -q --cluster $new1 test", 0, '';
+is_program_out 'postgres', "createdb --cluster $new1 test", 0, '';
 like_program_out 'postgres', "psql -Atl --cluster $new1", 0, 
     qr/test\|postgres\|/,
     'test db appears in cluster new1';

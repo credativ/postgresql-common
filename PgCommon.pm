@@ -700,6 +700,11 @@ sub get_cluster_locales {
     my ($version, $cluster) = @_;
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
+    if ($version ge '8.4') {
+	print STDERR "Error: get_cluster_locales() does not work for 8.4+\n";
+	exit 1;
+    }
+
     my $pg_controldata = get_program_path 'pg_controldata', $version;
     if (! -e $pg_controldata) {
         print STDERR "Error: pg_controldata not found, please install postgresql-$version\n";
@@ -740,10 +745,13 @@ sub get_cluster_databases {
     $> = (stat (cluster_data_directory $version, $cluster))[4];
 
     my @dbs;
+    my @fields;
     if (open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl') {
         while (<PSQL>) {
             chomp;
-            push (@dbs, (split '\|')[0]);
+            @fields = split '\|';
+            next if $#fields < 2; # remove access privs which get line broken
+            push (@dbs, $fields[0]);
         }
         close PSQL;
     }
