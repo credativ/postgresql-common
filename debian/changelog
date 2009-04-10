@@ -1,4 +1,4 @@
-postgresql-common (98) UNRELEASED; urgency=low
+postgresql-common (98) unstable; urgency=low
 
   * debian/control: Add missing lsb-release dependency (which now ships the
     lsb_release program). (Closes: #520992)
@@ -32,7 +32,7 @@ postgresql-common (98) UNRELEASED; urgency=low
   * t/051_inconsistent_encoding_upgrade.t: Disable if the oldest available
     cluster is 8.3 or newer; the test is not relevant there, and will fail.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 24 Mar 2009 17:26:08 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 09 Apr 2009 21:58:35 -0700
 
 postgresql-common (97) unstable; urgency=low
 
