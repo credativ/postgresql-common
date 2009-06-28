@@ -1,4 +1,4 @@
-postgresql-common (99) UNRELEASED; urgency=low
+postgresql-common (99) unstable; urgency=low
 
   * Update Czech debconf translations, thanks Miroslav Kure.
     (Closes: #534794)
@@ -8,7 +8,7 @@ postgresql-common (99) UNRELEASED; urgency=low
   * t/030_errors.t: Fix "invalid pg_hba.conf" test for translated PostgreSQL
     error message.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 28 Jun 2009 20:07:10 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 28 Jun 2009 21:38:08 +0200
 
 postgresql-common (98) unstable; urgency=low
 
