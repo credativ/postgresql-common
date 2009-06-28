@@ -192,7 +192,7 @@ if ($version lt '8.4') {
     is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
 } else {
     like_program_out 'postgres', "pg_ctlcluster $version main start", 1, 
-	qr/FATAL.*could not load pg_hba.conf/is,
+	qr/FATAL.*pg_hba.conf/is,
 	'pg_ctlcluster start fails on invalid pg_hba.conf';
     is_program_out 'postgres', "pg_ctlcluster $version main stop", 2, 
 	"Cluster is not running.\n", 'stopping cluster';

@@ -5,6 +5,8 @@ postgresql-common (99) UNRELEASED; urgency=low
   * PgCommon.pm, cluster_info(): Do not set a default log file if the cluster
     uses syslog for logging. Thanks Antti Merenluoto!
   * debian/supported-versions: Add Ubuntu 9.10.
+  * t/030_errors.t: Fix "invalid pg_hba.conf" test for translated PostgreSQL
+    error message.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 28 Jun 2009 20:07:10 +0200
 
