@@ -452,7 +452,9 @@ sub cluster_info {
 
     # default log file (only if not expliticly configured in postgresql.conf)
     unless (exists $postgresql_conf{'log_filename'} || 
-	exists $postgresql_conf{'log_directory'}) {
+	exists $postgresql_conf{'log_directory'} ||
+	(defined $postgresql_conf{'log_destination'} &&
+	    $postgresql_conf{'log_destination'} eq 'syslog')) {
         my $log_symlink = $result{'configdir'} . "/log";
         if (-l $log_symlink) {
             ($result{'logfile'}) = readlink ($log_symlink) =~ /(.*)/; # untaint

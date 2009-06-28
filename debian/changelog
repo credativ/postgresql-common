@@ -2,6 +2,8 @@ postgresql-common (99) UNRELEASED; urgency=low
 
   * Update Czech debconf translations, thanks Miroslav Kure.
     (Closes: #534794)
+  * PgCommon.pm, cluster_info(): Do not set a default log file if the cluster
+    uses syslog for logging. Thanks Antti Merenluoto!
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 28 Jun 2009 20:07:10 +0200
 
