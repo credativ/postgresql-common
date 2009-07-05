@@ -3,7 +3,7 @@ Section: database
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
 Uploaders: Oliver Elphick <Oliver.Elphick@lfix.co.uk> 
-Standards-Version: 3.8.1
+Standards-Version: 3.8.2
 Build-Depends: cdbs, debhelper (>= 6)
 
 Package: postgresql-common

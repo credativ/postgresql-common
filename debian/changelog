@@ -14,6 +14,7 @@ postgresql-common (100) UNRELEASED; urgency=low
     more convenient.
   * pg_wrapper: Document PG_CLUSTER_CONF_ROOT in the POD.
   * debian/control: Add missing ${misc:Depends}.
+  * debian/control: Bump Standards-Version to 3.8.2; no changes necessary.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Jul 2009 15:34:11 +0200
 
