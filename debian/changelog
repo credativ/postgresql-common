@@ -1,4 +1,4 @@
-postgresql-common (100) UNRELEASED; urgency=low
+postgresql-common (100) unstable; urgency=low
 
   * t/005_PgCommon.t: Add test case for read_conf_file() for configuration
     files with an include directive. This reproduces #535428.
@@ -16,7 +16,7 @@ postgresql-common (100) UNRELEASED; urgency=low
   * debian/control: Add missing ${misc:Depends}.
   * debian/control: Bump Standards-Version to 3.8.2; no changes necessary.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 05 Jul 2009 15:34:11 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 05 Jul 2009 22:57:11 +0200
 
 postgresql-common (99) unstable; urgency=low
 
