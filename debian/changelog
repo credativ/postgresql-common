@@ -13,6 +13,7 @@ postgresql-common (100) UNRELEASED; urgency=low
     id for owneruid instead of root. This makes using $PG_CLUSTER_CONF_ROOT
     more convenient.
   * pg_wrapper: Document PG_CLUSTER_CONF_ROOT in the POD.
+  * debian/control: Add missing ${misc:Depends}.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Jul 2009 15:34:11 +0200
 
