@@ -79,6 +79,7 @@ sub config_bool {
 # Returns: hash (empty if file does not exist)
 sub read_conf_file {
     my %conf;
+    local (*F);
 
     return %conf unless -e $_[0];
 
@@ -86,6 +87,21 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
+	    } elsif (/^\s*include\s+'([^']+)'\s*$/) {
+		my ($k, $v, $path, %include_conf);
+		$path = $1;
+		unless (substr($path, 0, 1) eq '/') {
+		    my @p = split '/', $_[0];
+		    my $dirname = join '/', @p[0..($#p-1)];
+		    $path = "$dirname/$path";
+		}
+
+		# read included file and merge into %conf
+		%include_conf = read_conf_file($path);
+		while ( ($k, $v) = each(%include_conf) ) {
+		    $conf{$k} = $v;
+		}
+
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/) {
                 # string value
                 my $k = $1;

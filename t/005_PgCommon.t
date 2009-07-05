@@ -10,7 +10,7 @@ use PgCommon;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 20;
+use Test::More tests => 21;
 
 my $tdir = tempdir (CLEANUP => 1);
 
@@ -119,6 +119,33 @@ is_deeply (\%conf, {
       'cemptystr' => '',
       'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'"
     }, 'read_conf_file() parsing');
+
+# test read_conf_file() with an include directive
+open F, ">$tdir/bar.conf" or die "Could not create $tdir/bar.conf: $!";
+print F <<EOF;
+# test configuration file
+
+# commented_int = 24
+# commented_str = 'notme'
+
+intval = -1
+include 'foo.conf'
+strval = 'howdy'
+EOF
+close F;
+
+%conf = PgCommon::read_conf_file "$tdir/bar.conf";
+is_deeply (\%conf, {
+      'intval' => 42, 
+      'cintval' => 1, 
+      'strval' => 'howdy', 
+      'cstrval' => 'bye', 
+      'testpath' => '/bin/test', 
+      'emptystr' => '',
+      'cemptystr' => '',
+      'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'"
+    }, 'read_conf_file() parsing with include directive');
+
 
 
 # vim: filetype=perl
