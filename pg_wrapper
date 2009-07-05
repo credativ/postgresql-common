@@ -168,6 +168,13 @@ If C<$PGCLUSTER> is set, its value (of the form I<version>/I<cluster>)
 specifies the desired cluster, similar to the B<--cluster> option. However, if
 B<--cluster> is specified, it overrides the value of C<$PGCLUSTER>.
 
+=item B<PG_CLUSTER_CONF_ROOT>
+
+This specifies an alternative base directory for cluster configurations. This
+is usually C</etc/postgresql/>, but for testing/development purposes you can
+change this to point to e. g. your home directory, so that you can use the
+postgresql-common tools without root privileges.
+
 =back
 
 =head1 FILES

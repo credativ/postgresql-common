@@ -22,7 +22,7 @@ our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
-our $confroot = "/etc/postgresql";
+our $confroot = $ENV{'PG_CLUSTER_CONF_ROOT'} || "/etc/postgresql";
 my $common_confdir = "/etc/postgresql-common";
 my $binroot = "/usr/lib/postgresql";
 my $defaultport = 5432;

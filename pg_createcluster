@@ -210,9 +210,12 @@ error 'Invalid --start-conf value' if $startconf ne 'auto' &&
 
 if ($owneruid) {
     $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
-} else {
+} elsif ($> == 0) {
     $owneruid = getpwnam 'postgres';
     error 'User postgresql does not exist' unless $owneruid;
+} else
+{
+    $owneruid = $>;
 }
 
 if ($ownergid) {

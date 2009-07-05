@@ -4,6 +4,15 @@ postgresql-common (100) UNRELEASED; urgency=low
     files with an include directive. This reproduces #535428.
   * PgCommon.pm, read_conf_file(): Correctly handle includes.
     (Closes: #535428)
+  * PgCommon.pm: Check environment variable $PG_CLUSTER_CONF_ROOT for an
+    alternative configuration root (default: /etc/postgresql/). For
+    testing/development purposes you can change this to point to e. g. your
+    home directory, so that you can use the postgresql-common tools without
+    root privileges. Thanks to Aidan Van Dyk for the suggestion and patch!
+  * pg_createcluster: If calling as non-root user, default to effective user
+    id for owneruid instead of root. This makes using $PG_CLUSTER_CONF_ROOT
+    more convenient.
+  * pg_wrapper: Document PG_CLUSTER_CONF_ROOT in the POD.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Jul 2009 15:34:11 +0200
 
