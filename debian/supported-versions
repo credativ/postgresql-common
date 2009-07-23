@@ -9,8 +9,11 @@ DEFAULT="8.3\n8.4"
 
 lsb_ubuntu() {
     case "$1" in
-        8.04 | 8.10 | 9.04 | 9.10)
+        8.04 | 8.10 | 9.04)
             /bin/echo -e "8.3\n8.4"
+            ;;
+	9.10)
+            /bin/echo -e "8.4"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
