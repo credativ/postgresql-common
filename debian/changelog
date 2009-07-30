@@ -2,6 +2,8 @@ postgresql-common (101) UNRELEASED; urgency=low
 
   * debian/supported-versions: Only support 8.4 in Ubuntu 9.10. (LP: #403381)
   * PgCommon.pm, change_ugid(): Fix taint error. (LP: #403693)
+  * Update Swedish debconf translations, thanks Martin Bagge!
+    (Closes: #539216)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jul 2009 11:25:08 +0200
 
