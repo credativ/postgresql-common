@@ -12,6 +12,8 @@ postgresql-common (101) UNRELEASED; urgency=low
   * pg_upgradecluster: Fix owner of pg_hba.conf after upgrade, to also work in
     tight umask settings.
   * debian/control: Bump Standards-Version to 3.8.3; no changes necessary.
+  * debian/control: Re-promote ssl-cert to Depends:. Dropping to recommends
+    does not buy anything and causes regressions. (Closes: #540982)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jul 2009 11:25:08 +0200
 
