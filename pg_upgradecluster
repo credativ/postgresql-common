@@ -166,6 +166,8 @@ sub adapt_conffiles {
 	}
 	close O;
 	close N;
+	chown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
+	chmod 0640, "$hba.new";
 	rename "$hba.new", $hba or error "rename: $!";
     }
 }

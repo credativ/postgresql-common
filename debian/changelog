@@ -9,6 +9,8 @@ postgresql-common (101) UNRELEASED; urgency=low
   * pg_upgradecluster: Do not try to migrate "stats_*" settings to
     "track_counts" again if track_counts is already set. This led to disabling
     autovacuum on a 8.3 → 8.4 migration. (Closes: #540351)
+  * pg_upgradecluster: Fix owner of pg_hba.conf after upgrade, to also work in
+    tight umask settings.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jul 2009 11:25:08 +0200
 
