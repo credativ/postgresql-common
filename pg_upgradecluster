@@ -137,8 +137,10 @@ sub adapt_conffiles {
 	# stats_block_level and stats_row_level are merged into track_counts
         deprecate \%c, 'stats_block_level', 'deprecated in favor of track_counts';
         deprecate \%c, 'stats_row_level', 'deprecated in favor of track_counts';
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'yes' : 'no';
+	if (!$c{'track_counts'}) {
+	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+		'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'yes' : 'no';
+	}
 
         # archive_command now has to be enabled explicitly
         if ($c{'archive_command'}) {

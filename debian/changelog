@@ -6,6 +6,9 @@ postgresql-common (101) UNRELEASED; urgency=low
     (Closes: #539216)
   * t/090_multicluster.t: Run psql error tests under LC_MESSAGES=C to not fail
     under non-English locales.
+  * pg_upgradecluster: Do not try to migrate "stats_*" settings to
+    "track_counts" again if track_counts is already set. This led to disabling
+    autovacuum on a 8.3 → 8.4 migration. (Closes: #540351)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jul 2009 11:25:08 +0200
 
