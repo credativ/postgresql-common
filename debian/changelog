@@ -11,6 +11,7 @@ postgresql-common (101) UNRELEASED; urgency=low
     autovacuum on a 8.3 → 8.4 migration. (Closes: #540351)
   * pg_upgradecluster: Fix owner of pg_hba.conf after upgrade, to also work in
     tight umask settings.
+  * debian/control: Bump Standards-Version to 3.8.3; no changes necessary.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jul 2009 11:25:08 +0200
 
