@@ -1,4 +1,4 @@
-postgresql-common (101) UNRELEASED; urgency=low
+postgresql-common (101) unstable; urgency=low
 
   * debian/supported-versions: Only support 8.4 in Ubuntu 9.10. (LP: #403381)
   * PgCommon.pm, change_ugid(): Fix taint error. (LP: #403693)
@@ -15,7 +15,7 @@ postgresql-common (101) UNRELEASED; urgency=low
   * debian/control: Re-promote ssl-cert to Depends:. Dropping to recommends
     does not buy anything and causes regressions. (Closes: #540982)
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 23 Jul 2009 11:25:08 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 06 Sep 2009 21:30:40 +0200
 
 postgresql-common (100) unstable; urgency=low
 
