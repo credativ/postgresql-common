@@ -28,6 +28,7 @@ Please fix this and reinstall this package." >&2
     chown postgres:postgres /var/lib/postgresql
 
     # nicer log directory permissions
+    mkdir -p /var/log/postgresql
     chmod 1775 /var/log/postgresql
     chown root:postgres /var/log/postgresql
 
