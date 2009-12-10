@@ -4,6 +4,7 @@ postgresql-common (102) UNRELEASED; urgency=low
     not exist, before trying to chown/chmod it.
   * t/001_packages.t: Check that -server-dev-* is installed (for
     t/140_pg_config.t)
+  * t/001_packages.t: Check that the system default locale is an UTF-8 one.
   * debian/supported-versions: Add Ubuntu 10.04.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 23 Sep 2009 14:29:34 +0200
