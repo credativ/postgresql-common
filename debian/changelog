@@ -2,6 +2,8 @@ postgresql-common (102) UNRELEASED; urgency=low
 
   * debian/postgresql-common.postinst: Create /var/log/postgresql/ if it does
     not exist, before trying to chown/chmod it.
+  * t/001_packages.t: Check that -server-dev-* is installed (for
+    t/140_pg_config.t)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 23 Sep 2009 14:29:34 +0200
 
