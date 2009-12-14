@@ -6,6 +6,8 @@ postgresql-common (102) UNRELEASED; urgency=low
     t/140_pg_config.t)
   * t/001_packages.t: Check that the system default locale is an UTF-8 one.
   * debian/supported-versions: Add Ubuntu 10.04.
+  * t/050_encodings.t: Disable Russian error message encoding test for now,
+    since Russian translations were dropped upstream (too incomplete).
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 23 Sep 2009 14:29:34 +0200
 
