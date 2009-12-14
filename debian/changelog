@@ -1,4 +1,4 @@
-postgresql-common (102) UNRELEASED; urgency=low
+postgresql-common (102) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Create /var/log/postgresql/ if it does
     not exist, before trying to chown/chmod it.
@@ -9,7 +9,7 @@ postgresql-common (102) UNRELEASED; urgency=low
   * t/050_encodings.t: Disable Russian error message encoding test for now,
     since Russian translations were dropped upstream (too incomplete).
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 23 Sep 2009 14:29:34 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 14 Dec 2009 19:05:19 +0100
 
 postgresql-common (101) unstable; urgency=low
 
