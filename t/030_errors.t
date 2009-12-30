@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 164;
+use Test::More tests => 163;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -224,12 +224,9 @@ is_deeply (\@c, ['main'],
 unlink '/etc/postgresql/postgresql.conf';
 
 # fails by default due to access restrictions
-like_program_out 'postgres', "pg_dropcluster $version main", 1,
-    qr/root privileges/, "pg_dropcluster fails as user postgres by default";
-
-# remove cluster and directory
-ok ((system "pg_dropcluster $version main") == 0, 
-    'pg_dropcluster');
+# remove cluster and directory; this should work as user "postgres"
+is_program_out 'postgres', "pg_dropcluster $version main", 0, '',
+    , "pg_dropcluster works as user postgres";
 
 # graceful handling of absent data dir (might not be mounted)
 ok ((system "pg_createcluster $version main >/dev/null") == 0,

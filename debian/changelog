@@ -24,7 +24,8 @@ postgresql-common (103) UNRELEASED; urgency=low
     configuration directories.
   * pg_createcluster: Make /etc/postgresql/<version> and
     /var/lib/postgresql/<version> owned by 'postgres', so that they can be
-    administrated with 'postgres' privileges. (LP: #236704)
+    administrated with 'postgres' privileges. Update t/030_errors.t
+    accordingly. (LP: #236704, Closes: #525294)
   * t/020_create_sql_remove.t: Check that a missing log file is recreated by
     pg_ctlcluster (if it has enough permissions).
   * pg_ctlcluster: Make re-creation of log file actually work. (LP: #391119,
