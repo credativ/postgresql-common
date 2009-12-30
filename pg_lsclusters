@@ -27,8 +27,8 @@ foreach $v (sort (get_versions())) {
         %info = cluster_info $v, $c;
         printf $fmtstring, ($v, $c, $info{'port'}, 
             $info{'running'} ? "online" : "down", 
-            (getpwuid $info{'owneruid'})[0], $info{'pgdata'},
-            $info{'logfile'} || 'custom');
+            defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>', 
+	    $info{'pgdata'}, $info{'logfile'} || 'custom');
     }
 }
 

@@ -18,6 +18,8 @@ postgresql-common (103) UNRELEASED; urgency=low
     automated fashion due to the nature of tablespaces), just check that this
     errors out with a sane message and does not do any damage.
   * pg_upgradecluster: Add an early check for tablespaces. (Closes: #523574)
+  * pg_lsclusters: Fix undefined value if owneruid cannot be determined (which
+    can happen in special setups). Thanks to Daniel Pittman! (Closes: #541434)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 10:20:41 +0100
 
