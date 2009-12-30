@@ -1,4 +1,4 @@
-postgresql-common (103) UNRELEASED; urgency=low
+postgresql-common (103) unstable; urgency=low
 
   * Move the lsb-release dependency of p-common to a recommends of
     p-client-common. (Closes: #562642)
@@ -34,7 +34,7 @@ postgresql-common (103) UNRELEASED; urgency=low
   * pg_ctlcluster: Make re-creation of log file actually work. (LP: #391119,
     #372476)
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 10:20:41 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 23:06:10 +0100
 
 postgresql-common (102) unstable; urgency=low
 
