@@ -330,6 +330,15 @@ if (!fork) {
     my $newsocket = get_cluster_socketdir $newversion, $cluster;
     my $buffer;
 
+    # check for tablespaces (not supported)
+    open F, '-|', $psql, '-Atc', "select count(*) from pg_tablespace where spclocation <> ''" 
+	or die "Calling $psql: $!";
+    $buffer = <F>;
+    close F;
+    if ($buffer ne "0\n") {
+	error 'automatic upgrade of tablespaces is not supported';
+    }
+
     # get list of databases, owners, and allowed connections
     my %databases;
     open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
@@ -565,6 +574,9 @@ L<pg_createcluster(8)> for details.
 The I<newdatadir> argument can be used to specify a non-default data directory
 of the upgraded cluster. It is passed to B<pg_createcluster>. If not specified,
 this defaults to /var/lib/postgresql/I<version>/I<name>.
+
+Please note that this program cannot upgrade clusters which use tablespaces. If
+you use those, you have to upgrade manually.
 
 =head1 OPTIONS
 

@@ -13,6 +13,11 @@ postgresql-common (103) UNRELEASED; urgency=low
     into a new file and rename it in the end, instead of directly writing into
     the original file. Thanks to Yann Dirson for the original patch.
     (Closes: #549206)
+  * Add t/042_upgrade_tablespaces.t: Test upgrading a cluster with
+    tablespaces. Since this is not currently supported (and hard to do in an
+    automated fashion due to the nature of tablespaces), just check that this
+    errors out with a sane message and does not do any damage.
+  * pg_upgradecluster: Add an early check for tablespaces. (Closes: #523574)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 10:20:41 +0100
 
