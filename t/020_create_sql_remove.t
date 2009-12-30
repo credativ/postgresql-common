@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 96 * ($#MAJORS+1);
+use Test::More tests => 100 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -122,6 +122,10 @@ sub check_major {
     ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*custom\n$/;
 
+    # clean up
+    PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'log_filename', '';
+    unlink "/etc/postgresql/$v/main/log";
+
     # verify that the postmaster does not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,
         'postmaster processes do not have an associated terminal';
@@ -216,6 +220,13 @@ Bob|1
     sleep 1;
     is ((exec_as 'nobody', 'dropdb nobodydb', $outref, 0), 0, 'dropdb nobodydb', );
     is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
+
+    # log file gets re-created by pg_ctlcluster
+    is ((exec_as 'postgres', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+    unlink $default_log;
+    is ((exec_as 'postgres', "pg_ctlcluster $v main start"), 1, 'starting cluster as postgres fails without a log file');
+    is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 'starting cluster as root work without a log file');
+    ok (-e $default_log && ! -z $default_log, 'log file got recreated and used');
 
     # stop server, clean up, check for leftovers
     ok ((system "pg_dropcluster $v main --stop") == 0, 
