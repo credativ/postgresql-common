@@ -1,3 +1,10 @@
+postgresql-common (103) UNRELEASED; urgency=low
+
+  * Move the lsb-release dependency of p-common to a recommends of
+    p-client-common. (Closes: #562642)
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 10:20:41 +0100
+
 postgresql-common (102) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Create /var/log/postgresql/ if it does
