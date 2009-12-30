@@ -2,7 +2,6 @@ Source: postgresql-common
 Section: database
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
-Uploaders: Oliver Elphick <Oliver.Elphick@lfix.co.uk> 
 Standards-Version: 3.8.3
 Build-Depends: cdbs, debhelper (>= 6)
 
