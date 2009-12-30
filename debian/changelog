@@ -1,3 +1,9 @@
+postgresql-common (104) UNRELEASED; urgency=low
+
+  * pg_updatedicts: Process dictionaries from /usr/share/hunspell, too.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 23:33:25 +0100
+
 postgresql-common (103) unstable; urgency=low
 
   * Move the lsb-release dependency of p-common to a recommends of
