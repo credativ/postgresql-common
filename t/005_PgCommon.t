@@ -11,9 +11,10 @@ use PgCommon;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 21;
+use Test::More tests => 24;
 
 my $tdir = tempdir (CLEANUP => 1);
+$PgCommon::confroot = $tdir;
 
 # test read_pg_hba with valid file
 open P, ">$tdir/pg_hba.conf" or die "Could not create $tdir/pg_hba.conf: $!";
@@ -92,7 +93,10 @@ foreach my $entry (@hba) {
 my %conf = PgCommon::read_conf_file '/nonexisting';
 is_deeply \%conf, {}, 'read_conf_file returns empty dict for nonexisting file';
 
-open F, ">$tdir/foo.conf" or die "Could not create $tdir/foo.conf: $!";
+mkdir "$tdir/8.4";
+mkdir "$tdir/8.4/test" or die "mkdir: $!";
+my $c = "$tdir/8.4/test/foo.conf";
+open F, ">$c" or die "Could not create $c: $!";
 print F <<EOF;
 # test configuration file
 
@@ -109,7 +113,7 @@ testpath = '/bin/test'
 quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 EOF
 close F;
-%conf = PgCommon::read_conf_file "$tdir/foo.conf";
+%conf = PgCommon::read_conf_file "$c";
 is_deeply (\%conf, {
       'intval' => 42, 
       'cintval' => 1, 
@@ -130,7 +134,7 @@ print F <<EOF;
 # commented_str = 'notme'
 
 intval = -1
-include 'foo.conf'
+include '8.4/test/foo.conf'
 strval = 'howdy'
 EOF
 close F;
@@ -148,5 +152,83 @@ is_deeply (\%conf, {
     }, 'read_conf_file() parsing with include directive');
 
 
+# test set_conf_value()
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'commented_int', '24';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'commented_str', 'new foo';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'intval', '39';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'cintval', '5';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'newval', 'NEW!';
 
+open F, "$c";
+my $conf;
+read F, $conf, 1024;
+close F;
+is ($conf, <<EOF, 'set_conf_value');
+# test configuration file
+
+commented_int = 24
+commented_str = 'new foo'
+
+intval = 39
+cintval = 5 # blabla
+strval = 'hello'
+cstrval = 'bye' # comment
+emptystr = ''
+cemptystr = '' # moo!
+testpath = '/bin/test'
+quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
+newval = 'NEW!'
+EOF
+
+# test disable_conf_value()
+PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'intval', 'ints are out of fashion';
+PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'cstrval', 'not used any more';
+PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'nonexisting', 'NotMe';
+
+open F, "$c";
+read F, $conf, 1024;
+close F;
+is ($conf, <<EOF, 'disable_conf_value');
+# test configuration file
+
+commented_int = 24
+commented_str = 'new foo'
+
+#intval = 39 #ints are out of fashion
+cintval = 5 # blabla
+strval = 'hello'
+#cstrval = 'bye' # comment #not used any more
+emptystr = ''
+cemptystr = '' # moo!
+testpath = '/bin/test'
+quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
+newval = 'NEW!'
+EOF
+
+# test replace_conf_value()
+PgCommon::replace_conf_value '8.4', 'test', 'foo.conf', 'strval',
+    'renamedstrval', 'newstrval', 'goodbye';
+PgCommon::replace_conf_value '8.4', 'test', 'foo.conf', 'nonexisting',
+    'renamednonexisting', 'newnonexisting', 'XXX';
+
+open F, "$c";
+read F, $conf, 1024;
+close F;
+is ($conf, <<EOF, 'replace_conf_value');
+# test configuration file
+
+commented_int = 24
+commented_str = 'new foo'
+
+#intval = 39 #ints are out of fashion
+cintval = 5 # blabla
+#strval = 'hello' #renamedstrval
+newstrval = goodbye
+#cstrval = 'bye' # comment #not used any more
+emptystr = ''
+cemptystr = '' # moo!
+testpath = '/bin/test'
+quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
+newval = 'NEW!'
+EOF
 # vim: filetype=perl

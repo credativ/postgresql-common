@@ -5,6 +5,7 @@ postgresql-common (103) UNRELEASED; urgency=low
   * Drop Oliver from Uploaders:, he has not been active any more for years.
   * t/005_PgCommon.t: Add '.' to library search path, so that this prefers
     testing PgCommon.pm from the source tree.
+  * t/005_PgCommon.t: Add test cases for {set,disable,replace}_conf_value().
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 10:20:41 +0100
 
