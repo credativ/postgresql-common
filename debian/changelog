@@ -13,6 +13,9 @@ postgresql-common (103) UNRELEASED; urgency=low
     into a new file and rename it in the end, instead of directly writing into
     the original file. Thanks to Yann Dirson for the original patch.
     (Closes: #549206)
+  * pg_createcluster: Change effective gid as well when setting the socket
+    directory, to avoid moving postgresql.conf's group to root (which would
+    happen with the previous change).
   * Add t/042_upgrade_tablespaces.t: Test upgrading a cluster with
     tablespaces. Since this is not currently supported (and hard to do in an
     automated fashion due to the nature of tablespaces), just check that this

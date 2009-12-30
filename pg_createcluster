@@ -320,6 +320,8 @@ if ($socketdir && ! -e $socketdir) {
     }
 }
 $orig_euid = $>;
+$orig_egid = $);
+$) = $ownergid;
 $> = $owneruid;
 unless ($socketdir) {
     if (-w '/var/run/postgresql') {
@@ -334,6 +336,7 @@ in postgresql.conf to a more secure directory.
 }
 set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
 $> = $orig_euid;
+$) = $orig_egid;
 
 print "Configuring postgresql.conf to use port $port...\n";
 set_cluster_port $version, $cluster, $port;
@@ -375,6 +378,7 @@ $< = $uid;
 $( = $gid;
 $) = $egid;
 die "changing euid back: $!" if $> != $euid;
+die "changing egid back: $!" if $) != $egid;
 
 # create SSL certificate symlinks to the default certificate if it exists; if
 # so, enable SSL
