@@ -172,11 +172,12 @@ sub set_conf_value {
     push (@lines, "$_[3] = $value\n") unless $found;
 
     # write configuration file lines
-    open (F, '>'.$fname) or die "Error: could not open $fname for writing";
+    open (F, ">$fname.new") or die "Error: could not open $fname.new for writing";
     foreach (@lines) {
-	print F $_;
+	print F $_ or die "writing $fname.new: $!";
     }
     close F;
+    rename "$fname.new", "$fname";
 }
 
 # Disable a parameter in a PostgreSQL configuration file by prepending it with
@@ -205,11 +206,12 @@ sub disable_conf_value {
 
     # write configuration file lines
     if ($changed) {
-        open (F, '>'.$fname) or die "Error: could not open $fname for writing";
+        open (F, ">$fname.new") or die "Error: could not open $fname.new for writing";
         foreach (@lines) {
-            print F $_;
+	    print F $_ or die "writing $fname.new: $!";
         }
         close F;
+	rename "$fname.new", "$fname";
     }
 }
 
@@ -252,11 +254,12 @@ sub replace_conf_value {
     return if !$found;
 
     # write configuration file lines
-    open (F, '>'.$fname) or die "Error: could not open $fname for writing";
+    open (F, ">$fname.new") or die "Error: could not open $fname.new for writing";
     foreach (@lines) {
-        print F $_;
+	print F $_ or die "writing $fname.new: $!";
     }
     close F;
+    rename "$fname.new", "$fname";
 }
 
 # Return the port of a particular cluster or undef if the cluster
