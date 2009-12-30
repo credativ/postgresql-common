@@ -249,7 +249,7 @@ sub replace_conf_value {
 	}
     }
 
-    push (@lines, "$newparam = $val\n") unless $found;
+    return if !$found;
 
     # write configuration file lines
     open (F, '>'.$fname) or die "Error: could not open $fname for writing";
