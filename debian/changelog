@@ -20,6 +20,11 @@ postgresql-common (103) UNRELEASED; urgency=low
   * pg_upgradecluster: Add an early check for tablespaces. (Closes: #523574)
   * pg_lsclusters: Fix undefined value if owneruid cannot be determined (which
     can happen in special setups). Thanks to Daniel Pittman! (Closes: #541434)
+  * t/020_create_sql_remove.t: Verify permissions of the data and
+    configuration directories.
+  * pg_createcluster: Make /etc/postgresql/<version> and
+    /var/lib/postgresql/<version> owned by 'postgres', so that they can be
+    administrated with 'postgres' privileges. (LP: #236704)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 10:20:41 +0100
 

@@ -12,6 +12,8 @@ use POSIX qw/setlocale LC_ALL/;
 
 $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
+my @postgres_user = getpwnam 'postgres';
+
 # call initdb 
 # Arguments: <version> <data directory> <owner uid> <owner gid>
 sub init_db {
@@ -230,8 +232,19 @@ error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error 'invalid cluster name' unless defined $cluster;
 
-$datadir ||= "/var/lib/postgresql/$version/$cluster";
-$confdir = "$PgCommon::confroot/$version/$cluster";
+if (!defined $datadir) {
+    $pd = "/var/lib/postgresql/$version";
+    $datadir = "$pd/$cluster";
+
+    # ensure that the version data dir is owned by postgres as well, so that
+    # it can be administrated without root permissions
+    if (!stat $pd) {
+        system 'install', '-d', '-o', $postgres_user[2], '-g', $postgres_user[3], $pd;
+    }
+
+}
+$confdirp = "$PgCommon::confroot/$version";
+$confdir = "$confdirp/$cluster";
 
 # some sanity checks
 error "invalid version: $version" unless get_program_path 'initdb', $version;
@@ -253,6 +266,9 @@ if (defined $port) {
 }
 
 # create configuration directory
+if (!stat $confdirp) {
+    system 'install', '-d', '-o', $postgres_user[2], '-g', $postgres_user[3], $confdirp;
+}
 error 'could not create configuration directory; you might ' .
     'need to run this program with root privileges' if system ('install', '-d', $confdir);
 

@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 92 * ($#MAJORS+1);
+use Test::More tests => 96 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -71,10 +71,23 @@ sub check_major {
     # verify that the log file is actually used
     ok !-z $default_log, 'log file is actually used';
 
-    # verify log file properties
+    # verify configuration file permissions
+    my $postgres_uid = (getpwnam 'postgres')[2];
+    my @st = stat "/etc/postgresql/$v";
+    is $st[4], $postgres_uid, 'version configuration directory file is owned by user "postgres"';
+    my @st = stat "/etc/postgresql/$v/main";
+    is $st[4], $postgres_uid, 'configuration directory file is owned by user "postgres"';
+
+    # verify data file permissions
+    my @st = stat "/var/lib/postgresql/$v";
+    is $st[4], $postgres_uid, 'version data directory file is owned by user "postgres"';
+    my @st = stat "/var/lib/postgresql/$v/main";
+    is $st[4], $postgres_uid, 'data directory file is owned by user "postgres"';
+
+    # verify log file permissions
     my @logstat = stat $default_log;
     is $logstat[2], 0100640, 'log file has 0640 permissions';
-    is $logstat[4], (getpwnam 'postgres')[2], 'log file is owned by user"postgres"';
+    is $logstat[4], $postgres_uid, 'log file is owned by user "postgres"';
     is $logstat[5], (getgrnam 'adm')[2], 'log file is owned by group "adm"';
 
     # check default log file configuration; when not specifying -l with
