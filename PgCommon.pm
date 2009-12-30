@@ -177,6 +177,12 @@ sub set_conf_value {
 	print F $_ or die "writing $fname.new: $!";
     }
     close F;
+
+    # copy permissions
+    my @st = stat $fname or die "stat: $!";
+    chown $st[4], $st[5], "$fname.new"; # might fail as non-root
+    chmod $st[2], "$fname.new" or die "chmod: $1";
+
     rename "$fname.new", "$fname";
 }
 
@@ -211,6 +217,12 @@ sub disable_conf_value {
 	    print F $_ or die "writing $fname.new: $!";
         }
         close F;
+
+	# copy permissions
+	my @st = stat $fname or die "stat: $!";
+	chown $st[4], $st[5], "$fname.new"; # might fail as non-root
+	chmod $st[2], "$fname.new" or die "chmod: $1";
+
 	rename "$fname.new", "$fname";
     }
 }
@@ -259,6 +271,12 @@ sub replace_conf_value {
 	print F $_ or die "writing $fname.new: $!";
     }
     close F;
+
+    # copy permissions
+    my @st = stat $fname or die "stat: $!";
+    chown $st[4], $st[5], "$fname.new"; # might fail as non-root
+    chmod $st[2], "$fname.new" or die "chmod: $1";
+
     rename "$fname.new", "$fname";
 }
 
