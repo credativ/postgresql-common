@@ -3,6 +3,8 @@ Section: database
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
 Standards-Version: 3.8.3
+Vcs-Bzr: https://code.launchpad.net/~pitti/postgresql/common/
+Vcs-Browser: http://bazaar.launchpad.net/~pitti/postgresql/common/changes
 Build-Depends: cdbs, debhelper (>= 6)
 
 Package: postgresql-common

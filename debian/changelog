@@ -1,6 +1,7 @@
 postgresql-common (104) UNRELEASED; urgency=low
 
   * pg_updatedicts: Process dictionaries from /usr/share/hunspell, too.
+  * debian/control: Add Vcs-* fields.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 23:33:25 +0100
 
