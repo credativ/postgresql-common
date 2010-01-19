@@ -15,17 +15,17 @@ use PgCommon;
 # test pg_updatedicts
 unlink '/var/cache/postgresql/dicts/en_us.affix';
 unlink '/var/cache/postgresql/dicts/en_us.dict';
-unlink "/usr/share/postgresql/$version/tsearch_data/system_en_us.affix";
-unlink "/usr/share/postgresql/$version/tsearch_data/system_en_us.dict";
+unlink "/usr/share/postgresql/$version/tsearch_data/en_us.affix";
+unlink "/usr/share/postgresql/$version/tsearch_data/en_us.dict";
 is ((exec_as 0, 'pg_updatedicts'), 0, 'pg_updatedicts succeeded');
 ok -f '/var/cache/postgresql/dicts/en_us.affix', 
     'pg_updatedicts created en_us.affix';
 ok -f '/var/cache/postgresql/dicts/en_us.dict',
     'pg_updatedicts created en_us.dict';
-ok -l "/usr/share/postgresql/$version/tsearch_data/system_en_us.affix",
-    'pg_updatedicts created system_en_us.affix symlink';
-ok -l "/usr/share/postgresql/$version/tsearch_data/system_en_us.dict",
-    'pg_updatedicts created system_en_us.dict symlink';
+ok -l "/usr/share/postgresql/$version/tsearch_data/en_us.affix",
+    "pg_updatedicts created $version en_us.affix symlink";
+ok -l "/usr/share/postgresql/$version/tsearch_data/en_us.dict",
+    "pg_updatedicts created $version en_us.dict symlink";
 
 # create cluster
 is ((system "pg_createcluster $version main --start >/dev/null"), 0, "pg_createcluster $_ main");

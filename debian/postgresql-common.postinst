@@ -84,6 +84,12 @@ EOF
 	fi
     fi
 
+    # clean /usr/share/postgresql/*/tsearch_data/system_* stuff
+    if dpkg --compare-versions "$2" lt-nl 104; then
+	find /usr/share/postgresql/*/tsearch_data -type l \( -name 'system_*.dict' -o -name 'system_*.affix' \) -exec rm '{}' \;
+        pg_updatedicts || true
+    fi
+
     if [ "$2" ]; then
         /usr/share/postgresql-common/run-upgrade-scripts "$2" || true
     fi

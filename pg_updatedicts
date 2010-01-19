@@ -77,10 +77,12 @@ for my $d (@srcdirs) {
 	    next if $v lt '8.3';
 	    my $dest = "$pgsharedir/$v/tsearch_data/";
 	    next if ! -d $dest;
-	    unlink "$dest/system_$locale.affix";
-	    unlink "$dest/system_$locale.dict";
-	    symlink "$cachedir/$locale.affix", "$dest/system_$locale.affix";
-	    symlink "$cachedir/$locale.dict", "$dest/system_$locale.dict";
+	    next if -e "$dest/$locale.affix" && ! -l "$dest/$locale.affix";
+	    next if -e "$dest/$locale.dict" && ! -l "$dest/$locale.dict";
+	    unlink "$dest/$locale.affix";
+	    unlink "$dest/$locale.dict";
+	    symlink "$cachedir/$locale.affix", "$dest/$locale.affix";
+	    symlink "$cachedir/$locale.dict", "$dest/$locale.dict";
 	}
     }
 }
@@ -102,7 +104,7 @@ and hunspell dictionary packages available to PostgreSQL for usage with tsearch
 and word stem support. In particular, it takes all I<*.dic> and I<*.aff> files
 from /usr/share/myspell/dicts/, converts them to UTF-8, puts them into
 /var/cache/postgresql/dicts/ with I<*.dict> and I<*.affix> suffixes, and
-symlinks them into /usr/share/postgresql/>I<version>/tsearch_data/system_*, where
+symlinks them into /usr/share/postgresql/>I<version>/tsearch_data/, where
 PostgreSQL looks for them.
 
 Through postgresql-common's dpkg trigger, this program is automatically run

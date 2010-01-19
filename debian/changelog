@@ -6,6 +6,11 @@ postgresql-common (104) UNRELEASED; urgency=low
   * debian/copyright: Update to DEP-5 (Machine-readable debian/copyright), and
     drop Oliver's copyright, since there is nothing left that was written by
     him.
+  * pg_updatedicts: Do not create system_<locale>.{affix,dict} symlinks any
+    more, but use the actual names that upstream PostgreSQL looks for (without
+    system_ prefix). This allows us to drop the system_ lookup patch from
+    PostgreSQL. Update t/150_tsearch_stemming.t accordingly and remove the old
+    system_* symlinks on upgrade in debian/postgresql-common.postinst.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 23:33:25 +0100
 
