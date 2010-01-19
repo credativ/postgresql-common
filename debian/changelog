@@ -3,6 +3,9 @@ postgresql-common (104) UNRELEASED; urgency=low
   * pg_updatedicts: Process dictionaries from /usr/share/hunspell, too.
   * debian/control: Add Vcs-* fields.
   * Add standard license headers to all programs, and update copyright.
+  * debian/copyright: Update to DEP-5 (Machine-readable debian/copyright), and
+    drop Oliver's copyright, since there is nothing left that was written by
+    him.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Dec 2009 23:33:25 +0100
 
