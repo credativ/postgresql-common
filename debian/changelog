@@ -1,3 +1,10 @@
+postgresql-common (105) UNRELEASED; urgency=low
+
+  * debian/postgresql-common.postinst: Fix upgrade failure if no tsearch
+    dictionaries exist. (Closes: #565966)
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jan 2010 12:20:43 +0100
+
 postgresql-common (104) unstable; urgency=low
 
   * pg_updatedicts: Process dictionaries from /usr/share/hunspell, too.
