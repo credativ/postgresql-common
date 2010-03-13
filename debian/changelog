@@ -1,3 +1,10 @@
+postgresql-common (106) UNRELEASED; urgency=low
+
+  * t/001_packages.t: Check for ".utf8" locale instead of ".UTF-8". This
+    seems to be the new canonical spelling now.
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
+
 postgresql-common (105) unstable; urgency=low
 
   * debian/postgresql-common.postinst: Fix upgrade failure if no tsearch

@@ -21,7 +21,7 @@ ok ((deb_installed 'procps'), 'procps installed');
 ok ((deb_installed 'hunspell-en-us'), 'hunspell-en-us installed');
 
 # check installed locales to fail tests early if they are missing
-ok ((index (setlocale(LC_MESSAGES, ''), 'UTF-8')) > 0, 'system has a default UTF-8 locale');
+ok ((index (setlocale(LC_MESSAGES, ''), 'utf8')) > 0, 'system has a default UTF-8 locale');
 ok (setlocale (LC_ALL, "ru_RU"), 'locale ru_RU exists');
 ok (setlocale (LC_ALL, "ru_RU.UTF-8"), 'locale ru_RU.UTF-8 exists');
 
