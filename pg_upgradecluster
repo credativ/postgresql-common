@@ -455,12 +455,12 @@ if (!fork) {
     exit 0;
 }
 
+wait;
 print "Re-enabling connections to the old cluster...\n";
 enable_connections $version, $cluster;
 print "Re-enabling connections to the new cluster...\n";
 enable_connections $newversion, $cluster;
 
-wait;
 if ($?) {
     print STDERR "Error during cluster dumping, removing new cluster\n";
     system 'pg_dropcluster', '--stop', $newversion, $cluster;

@@ -13,6 +13,8 @@ postgresql-common (106) UNRELEASED; urgency=low
     "pg_dumpall -g", to also catch ACLs, global settings, and the like. Drop
     manual database creation and encoding special-cases, since those are being
     taken care of by the -s commands already. (Closes: #543506, #562676)
+  * pg_upgradecluster: Re-enable connections after the upgrade is done, not in
+    between.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
 
