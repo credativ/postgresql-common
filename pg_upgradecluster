@@ -365,10 +365,23 @@ if (!fork) {
     close F;
     error 'could not get list of databases' if $?;
 
-    # real global objects data (roles)
-    print "Creating globals...\n";
+    # Temporarily enable access to all DBs, so that we can upgrade them
+    for my $db (keys %databases) {
+        next if $db eq 'template0';
+
+        unless (${$databases{$db}}[0]) {
+            print "Temporarily enabling access to database $db\n";
+            (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+                '-d', 'template1', '-c', 
+                "BEGIN; set transaction read write; update pg_database set datallowconn = 't' where datname = '$db'; COMMIT") == 0 or
+                error 'Could not enable access to database';
+        }
+    }
+
+    # dump schemas
+    print "Roles, databases, schemas, ACLs...\n";
     open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'},
-         '-g' or error 'Could not execute pg_dumpall for old cluster';
+         '-s' or error 'Could not execute pg_dumpall for old cluster';
     my $data = '';
     while (read SOURCE, $buffer, 1048576) {
 	$data .= $buffer;
@@ -379,7 +392,7 @@ if (!fork) {
     # remove creation of db superuser role to avoid error message
     $data =~ s/^CREATE (ROLE|USER) $owner;\s*$//m;
 
-    # create global objects int target cluster
+    # create global objects in target cluster
     open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
         '-q', '-d', 'template1' or 
         error 'Could not execute psql for new cluster';
@@ -390,18 +403,6 @@ if (!fork) {
     # Upgrade databases
     for my $db (keys %databases) {
         next if $db eq 'template0';
-
-        if ($db eq 'postgres') {
-            system 'dropdb', '--cluster', "$newversion/$cluster", 'postgres';
-        }
-
-        unless (${$databases{$db}}[0]) {
-            print "Temporary enabling access to database $db\n";
-            (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
-                '-d', 'template1', '-c', 
-                "BEGIN; set transaction read write; update pg_database set datallowconn = 't' where datname = '$db'; COMMIT") == 0 or
-                error 'Could not enable access to database';
-        }
 
 	print "Fixing hardcoded library paths for stored procedures...\n";
 	(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
@@ -416,26 +417,13 @@ if (!fork) {
              '-Fc', $db or 
             error 'Could not execute pg_dump for old cluster';
 
-        # generate pg_restore call
-        my @restore_argv = ($pg_restore, '-h', $newsocket, '-p', $newinfo{'port'});
+        # start pg_restore and copy over everything
+        my @restore_argv = ($pg_restore, '-h', $newsocket, '-p',
+	    $newinfo{'port'}, '--data-only', '-d', $db);
 
 	if ($upgrade_scripts) {
             push @restore_argv, '--no-data-for-failed-tables';
         }
-
-        if ($lc_ctype eq 'C' or ${$databases{$db}}[2] eq 'SQL_ASCII') {
-            # keep DB encoding exactly as they were
-            push @restore_argv, ('-d', 'template1', '-C');
-        } else {
-            # 8.3+ enforce encoding/locale match, so create the DB with good encoding ourselves
-            if ($db ne 'template1') {
-                (system 'createdb', '--cluster', "$newversion/$cluster", '-O', ${$databases{$db}}[1], $db) == 0 or
-                    error "could not create target database $db";
-            }
-            push @restore_argv, ('-d', $db);
-        }
-
-        # start pg_restore and copy over everything
         open SINK, '|-', @restore_argv or
             error 'Could not execute pg_restore for new cluster';
 
