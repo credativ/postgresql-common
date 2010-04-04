@@ -149,8 +149,8 @@ is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Chris\', 
     0, '', 'insert Chris into phone table (ACL)';
 
 # check DB parameter
-is_program_out 'postgres', 'psql -Atc "SHOW DateStyle"', 0, 'ISO, YMD', 
-    'check database parameter';
+is_program_out 'postgres', 'psql -Atc "SHOW DateStyle" test', 0, 'ISO, YMD
+', 'check database parameter';
 
 # stop servers, clean up
 is ((system "pg_dropcluster $MAJORS[0] upgr --stop"), 0, 'Dropping original cluster');
