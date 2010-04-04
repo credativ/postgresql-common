@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 68;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 84;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -17,8 +17,10 @@ if ($#MAJORS == 0) {
 }
 
 # create cluster
-ok ((system "pg_createcluster $MAJORS[0] upgr --start >/dev/null") == 0,
+ok ((system "pg_createcluster $MAJORS[0] upgr >/dev/null") == 0,
     "pg_createcluster $MAJORS[0] upgr");
+exec_as 'root', "sed -i '/^local.*postgres/ s/\$/\\nlocal all foo trust/' /etc/postgresql/$MAJORS[0]/upgr/pg_hba.conf";
+is ((system "pg_ctlcluster $MAJORS[0] upgr start"), 0, 'Starting upgr cluster');
 
 # Create nobody user, test database, and put a table into it
 is ((exec_as 'postgres', 'createuser nobody -D -R -s && createdb -O nobody test && createdb -O nobody testnc'), 
@@ -26,7 +28,6 @@ is ((exec_as 'postgres', 'createuser nobody -D -R -s && createdb -O nobody test 
 is ((exec_as 'nobody', 'psql test -c "create table phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)"'), 
     0, 'create table');
 is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Alice\', 2)"'), 0, 'insert Alice into phone table');
-is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Bob\', 1)"'), 0, 'insert Bob into phone table');
 is ((exec_as 'postgres', 'psql template1 -c "update pg_database set datallowconn = \'f\' where datname = \'testnc\'"'), 
     0, 'disallow connection to testnc');
 
@@ -56,6 +57,22 @@ is_program_out 'postgres', "psql -qc 'create user foo' template1", 0, '',
     'create user foo';
 is_program_out 'postgres', "psql -qc 'create group gfoo' template1", 0, '', 
     'create group gfoo';
+
+# create per-database and per-table ACL	
+is_program_out 'postgres', "psql -qc 'GRANT CREATE ON DATABASE test TO foo'", 0, '',
+    'GRANT CREATE ON DATABASE';
+is_program_out 'postgres', "psql -qc 'GRANT INSERT ON phone TO foo' test", 0, '',
+    'GRANT INSERT';
+
+# exercise ACL on old database to ensure they are working
+is_program_out 'nobody', 'psql -U foo -qc "CREATE SCHEMA s_foo" test', 0, '',
+    'CREATE SCHEMA on old cluster (ACL)';
+is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Bob\', 1)" test', 
+    0, '', 'insert Bob into phone table (ACL)';
+
+# set database option
+is_program_out 'postgres', 'psql -qc "ALTER DATABASE test SET DateStyle = \'ISO, YMD\'"',
+    0, '', 'set database parameter';
 
 # Check clusters
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -124,6 +141,16 @@ template1|t
 test|t
 testnc|f
 ', 'dataallowconn values';
+
+# check ACLs
+is_program_out 'nobody', 'psql -U foo -qc "CREATE SCHEMA s_bar" test', 0, '',
+    'CREATE SCHEMA on new cluster (ACL)';
+is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Chris\', 5)" test', 
+    0, '', 'insert Chris into phone table (ACL)';
+
+# check DB parameter
+is_program_out 'postgres', 'psql -Atc "SHOW DateStyle"', 0, 'ISO, YMD', 
+    'check database parameter';
 
 # stop servers, clean up
 is ((system "pg_dropcluster $MAJORS[0] upgr --stop"), 0, 'Dropping original cluster');

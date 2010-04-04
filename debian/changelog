@@ -6,6 +6,9 @@ postgresql-common (106) UNRELEASED; urgency=low
     exists. If we remove it entirely, current versions of logcheck complain
     loudly. This was already fixed a while ago in squeeze, this will ensure it
     stays so. (Closes: #576180)
+  * t/040_upgrade.t: Check upgrade of database and table ACL, an ALTER
+    DATABASE option, and correct upgrading of a custom pg_hba.conf. This
+    reproduces #543506.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
 
