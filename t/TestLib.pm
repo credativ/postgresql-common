@@ -176,7 +176,7 @@ sub check_clean {
     pass ''; # this was pg_autovacuum in the past, which is obsolete
 
     my @check_dirs = ('/etc/postgresql', '/var/lib/postgresql',
-        '/var/run/postgresql', '/var/log/postgresql');
+        '/var/run/postgresql');
     foreach (@check_dirs) {
         if (-d) {
             ok_dir $_, [], "No files in $_ left behind";
@@ -184,6 +184,9 @@ sub check_clean {
             pass "Directory $_ does not exist";
         }
     }
+    # we always want /var/log/postgresql/ to exist, so that logrotate does not
+    # complain about missing directories
+    ok_dir '/var/log/postgresql', [], "No files in /var/log/postgresql left behind";
 
     is_program_out 0, 'netstat -avptn | grep ":543[2-9]\\b"', 1, '',
 	'PostgreSQL TCP ports are closed';

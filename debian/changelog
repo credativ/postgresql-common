@@ -2,6 +2,10 @@ postgresql-common (106) UNRELEASED; urgency=low
 
   * t/001_packages.t: Check for ".utf8" locale instead of ".UTF-8". This
     seems to be the new canonical spelling now.
+  * t/TestLib.pm, check_clean(): Require that /var/log/postgresql/ still
+    exists. If we remove it entirely, current versions of logcheck complain
+    loudly. This was already fixed a while ago in squeeze, this will ensure it
+    stays so. (Closes: #576180)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
 
