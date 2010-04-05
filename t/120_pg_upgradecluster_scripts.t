@@ -53,15 +53,16 @@ newver=\$3
 phase=\$4
 
 if [ \$phase = init ]; then
+    createdb --cluster \$newver/\$cluster idb
+fi
+
+if [ \$phase = finish ]; then
     psql --cluster \$newver/\$cluster template1 <<EOF
+drop table if exists auxdata;
 create table auxdata (x varchar(10));
 insert into auxdata values ('new1');
 insert into auxdata values ('new2');
 EOF
-fi
-
-if [ \$phase = finish ]; then
-    createdb --cluster \$newver/\$cluster finishdb
 fi
 
 EOS
@@ -79,10 +80,10 @@ is ((system "pg_dropcluster $MAJORS[0] main --stop"), 0, 'Dropping old cluster')
 
 # check new version cluster
 is_program_out 'postgres', 'psql template1 -Atc "select * from auxdata order by x"', 0,
-   "new1\nnew2\n", 'new cluster\'s template1/auxdata table was not clobbered by old cluster\'s version';
+   "new1\nnew2\n", 'new cluster\'s template1/auxdata table is the script\'s version';
 
-like_program_out 'postgres', 'psql -Atl', 0, qr/^finishdb\b.*^test\b/ms, 
-    'upgraded cluster has finishdb and test databases';
+like_program_out 'postgres', 'psql -Atl', 0, qr/^idb\b.*^test\b/ms, 
+    'upgraded cluster has idb and test databases';
 
 is_program_out 'postgres', 'psql test -Atc "select * from s.auxdata"', 0,
    "schema1\n", 'new cluster\'s test/auxdata table in schema s was upgraded normally';

@@ -623,7 +623,9 @@ Phases:
 =item B<init>
 
 A virgin cluster of version I<new version> has been created, i. e.  this new
-cluster will already have B<template1>, but no user databases.
+cluster will already have B<template1>, but no user databases. Please note that
+you should not create tables in this phase, since they will be overwritten by
+the dump/restore operation.
 
 =item B<finish>
 

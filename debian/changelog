@@ -15,6 +15,11 @@ postgresql-common (106) UNRELEASED; urgency=low
     taken care of by the -s commands already. (Closes: #543506, #562676)
   * pg_upgradecluster: Re-enable connections after the upgrade is done, not in
     between.
+  * t/120_pg_upgradecluster_scripts.t: Upgrade scripts should not create
+    tables in the "init" phase, since they will be overwritten during
+    dump/restore. Change the test case to move table changes into the "finish"
+    phase, and update documentation in pg_upgradecluster to point out this
+    potential problem.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
 
