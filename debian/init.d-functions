@@ -78,8 +78,8 @@ reload() {
 }
 
 status() {
-    CLUSTERS=`pg_lsclusters -h`
+    CLUSTERS=`pg_lsclusters -h | grep "^$1[[:space:]]"`
     # no clusters -> unknown status
     [ -n "$CLUSTERS" ] || exit 4
-    echo "$CLUSTERS" | awk 'BEGIN {rc=0} {print; if ($4 == "down") rc=3} END { exit rc }'
+    echo "$CLUSTERS" | awk 'BEGIN {rc=0; printf("Running clusters: ")} {if ($4 == "online") printf ("%s/%s ", $1, $2); else rc=3} END { printf("\n"); exit rc }'
 }

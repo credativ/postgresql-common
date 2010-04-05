@@ -20,6 +20,8 @@ postgresql-common (106) UNRELEASED; urgency=low
     dump/restore. Change the test case to move table changes into the "finish"
     phase, and update documentation in pg_upgradecluster to point out this
     potential problem.
+  * debian/init.d-functions, status(): More appropriate output formatting for
+    "status" init script commands. (Closes: #522679)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
 
