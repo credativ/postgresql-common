@@ -1,4 +1,4 @@
-postgresql-common (106) UNRELEASED; urgency=low
+postgresql-common (106) unstable; urgency=low
 
   * t/001_packages.t: Check for ".utf8" locale instead of ".UTF-8". This
     seems to be the new canonical spelling now.
@@ -23,7 +23,7 @@ postgresql-common (106) UNRELEASED; urgency=low
   * debian/init.d-functions, status(): More appropriate output formatting for
     "status" init script commands. (Closes: #522679)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 13 Mar 2010 17:25:02 +0100
+ -- Martin Pitt <mpitt@debian.org>  Mon, 05 Apr 2010 17:58:25 +0200
 
 postgresql-common (105) unstable; urgency=low
 
