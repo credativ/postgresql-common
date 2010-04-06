@@ -1,3 +1,12 @@
+postgresql-common (106.0.1) UNRELEASED; urgency=low
+
+  * Add initial support for 9.0 (pre-release snapshots for now):
+    - cleanpg: Remove 9.0 clusters.
+    - pg_createcluster: Clone configure_8_4() as configure_9_0().
+    - pg_upgradecluster: Migrate obsolete/changed configuration parameters.
+
+ -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
+
 postgresql-common (106) UNRELEASED; urgency=low
 
   * t/001_packages.t: Check for ".utf8" locale instead of ".UTF-8". This
