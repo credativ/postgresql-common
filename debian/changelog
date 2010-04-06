@@ -4,6 +4,7 @@ postgresql-common (106.0.1) UNRELEASED; urgency=low
     - cleanpg: Remove 9.0 clusters.
     - pg_createcluster: Clone configure_8_4() as configure_9_0().
     - pg_upgradecluster: Migrate obsolete/changed configuration parameters.
+  * pg_wrapper: Fix spelling.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
