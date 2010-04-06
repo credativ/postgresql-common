@@ -7,6 +7,7 @@ postgresql-common (106.0.1) UNRELEASED; urgency=low
   * pg_wrapper: Fix spelling.
   * In maintainer scripts, instead of "#!/bin/sh -e" use a separate "set -e",
     per lintian.
+  * debian/control: Bump Standards-Version to 3.8.4; no changes necessary.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
