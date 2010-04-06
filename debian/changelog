@@ -5,6 +5,8 @@ postgresql-common (106.0.1) UNRELEASED; urgency=low
     - pg_createcluster: Clone configure_8_4() as configure_9_0().
     - pg_upgradecluster: Migrate obsolete/changed configuration parameters.
   * pg_wrapper: Fix spelling.
+  * In maintainer scripts, instead of "#!/bin/sh -e" use a separate "set -e",
+    per lintian.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
