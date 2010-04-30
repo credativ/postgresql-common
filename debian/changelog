@@ -15,6 +15,8 @@ postgresql-common (107) UNRELEASED; urgency=low
     contents, to avoid logcheck falling over.
   * t/020_create_sql_remove.t: Do not consider $PG_GRANDPARENT_PID an unsafe
     environment, it's set by 9.0 servers.
+  * t/060_obsolete_confparams.t: Add a full configuration for 8.4, so that
+    upgrades to 9.0 can be tested.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
