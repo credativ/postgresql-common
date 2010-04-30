@@ -1,9 +1,11 @@
-#!/bin/sh -e
+#!/bin/sh
 
 # print a list of PostgreSQL versions that are supported for the platform this
 # script runs on.
 #
 # (C) 2005 Martin Pitt <mpitt@debian.org>
+
+set -e
 
 DEFAULT="8.3\n8.4"
 

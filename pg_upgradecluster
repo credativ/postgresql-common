@@ -180,6 +180,11 @@ sub adapt_conffiles {
 	chmod 0640, "$hba.new";
 	rename "$hba.new", $hba or error "rename: $!";
     }
+
+    if ($newversion ge '9.0') {
+	deprecate \%c, 'add_missing_from', 'does not exist any more';
+	deprecate \%c, 'regex_flavor', 'does not exist any more';
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
