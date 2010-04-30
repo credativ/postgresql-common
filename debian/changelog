@@ -10,6 +10,10 @@ postgresql-common (107) UNRELEASED; urgency=low
     per lintian.
   * debian/control: Bump Standards-Version to 3.8.4; no changes necessary.
 
+  [ Martin Pitt ]
+  * cleanpg: Do not remove the /var/log/postgresql/ directory itself, only its
+    contents, to avoid logcheck falling over.
+
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
 postgresql-common (106) unstable; urgency=low
