@@ -13,6 +13,8 @@ postgresql-common (107) UNRELEASED; urgency=low
   [ Martin Pitt ]
   * cleanpg: Do not remove the /var/log/postgresql/ directory itself, only its
     contents, to avoid logcheck falling over.
+  * t/020_create_sql_remove.t: Do not consider $PG_GRANDPARENT_PID an unsafe
+    environment, it's set by 9.0 servers.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
