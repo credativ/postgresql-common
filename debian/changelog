@@ -40,6 +40,8 @@ postgresql-common (107) UNRELEASED; urgency=low
     running "pg_ctlcluster start" should be able to recreate it. This fixes
     the 020_create_sql_remove.t test failure in "umask 077" mode, and uncovers
     some more inconsistencies wrt. log directory permissions.
+  * pg_createcluster, testsuite: Fix permissions of /var/log/postgresql/ if
+    this script creates it.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 

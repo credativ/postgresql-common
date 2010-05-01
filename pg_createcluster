@@ -356,8 +356,12 @@ print "Configuring postgresql.conf to use port $port...\n";
 set_cluster_port $version, $cluster, $port;
 
 # create log file
-system 'mkdir', '-m', '0755', '-p', '/var/log/postgresql' and 
-    error "could not create log directory; you might need to run this program with root privileges";
+if (! -d '/var/log/postgresql') {
+    mkdir '/var/log/postgresql' or
+	error "could not create log directory; you might need to run this program with root privileges";
+    chmod 01775, '/var/log/postgresql';
+    chown 0, $postgres_user[3], '/var/log/postgresql';
+}
 $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 if (! -e $real_logfile) {
     open L, ">>$real_logfile" or error "could not create log file $real_logfile";

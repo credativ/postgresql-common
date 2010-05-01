@@ -51,7 +51,7 @@ if [ -d /var/lib/postgresql ]; then
 fi
 if [ -d /var/log/postgresql ]; then 
     mv /var/log/postgresql /var/log/postgresql.testsuite;
-    mkdir /var/log/postgresql
+    install -d -m 1775 -o root -g postgres /var/log/postgresql
 fi
 
 # set variables which cause taint check errors
