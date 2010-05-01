@@ -17,6 +17,9 @@ postgresql-common (107) UNRELEASED; urgency=low
     environment, it's set by 9.0 servers.
   * t/060_obsolete_confparams.t: Add a full configuration for 8.4, so that
     upgrades to 9.0 can be tested.
+  * t/052_upgrade_encodings.t: Specify 'C' locale when creating the ASCII
+    encoded test database for versions >= 8.4, otherwise we have a
+    locale/encoding mismatch.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 

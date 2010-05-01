@@ -24,8 +24,13 @@ is ((exec_as 0, "pg_createcluster --start --locale=ru_RU $oldv main", $outref), 
 
 is ((exec_as 'postgres', 'psql -c "create database latintest" template1', $outref), 0,
     "creating latintest DB with LATIN encoding");
-is ((exec_as 'postgres', 'psql -c "create database asctest encoding = \'SQL_ASCII\'" template1', $outref), 0,
-    "creating asctest DB with ASCII encoding");
+if ($oldv le '8.3') {
+    is ((exec_as 'postgres', 'psql -c "create database asctest encoding = \'SQL_ASCII\'" template1', $outref), 0,
+	"creating asctest DB with ASCII encoding");
+} else {
+    is ((exec_as 'postgres', 'psql -c "create database asctest template = template0 lc_collate = \'C\' lc_ctype = \'C\' encoding = \'SQL_ASCII\'" template1', $outref), 0,
+	"creating asctest DB with C locale");
+}
 
 is ((exec_as 'postgres', "printf 'A\\324B' | psql -c \"create table t(x varchar); copy t from stdin\" latintest", $outref), 
     0, 'write LATIN database content to latintest');
