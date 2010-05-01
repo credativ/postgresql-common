@@ -25,7 +25,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_start_conf set_cluster_start_conf set_cluster_pg_ctl_conf
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid config_bool get_db_encoding get_cluster_locales
+    change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales
     get_cluster_databases read_cluster_conf_file read_pg_hba/;
 our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
     disable_conf_value replace_conf_value cluster_data_directory
@@ -744,8 +744,47 @@ sub get_db_encoding {
     return undef;
 }
 
+# Return locale of a particular database in a cluster. This requires access
+# privileges to that database, so this function should be called as the cluster
+# owner. (For versions >= 8.4; for older versions use get_cluster_locales()).
+# Arguments: <version> <cluster> <database>
+# Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
+sub get_db_locales {
+    my ($version, $cluster, $db) = @_;
+    my $port = get_cluster_port $version, $cluster;
+    my $socketdir = get_cluster_socketdir $version, $cluster;
+    my $psql = get_program_path 'psql', $version;
+    return undef unless ($port && $socketdir && $psql);
+    my ($ctype, $collate);
+
+    # try to swich to cluster owner
+    prepare_exec 'LC_ALL';
+    $ENV{'LC_ALL'} = 'C';
+    my $orig_euid = $>;
+    $> = (stat (cluster_data_directory $version, $cluster))[4];
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
+        'SHOW lc_ctype', $db or 
+        die "Internal error: could not call $psql to determine db lc_ctype: $!";
+    my $out = <PSQL>;
+    close PSQL;
+    ($ctype) = $out =~ /^([\w.-]+)$/; # untaint
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
+        'SHOW lc_collate', $db or 
+        die "Internal error: could not call $psql to determine db lc_collate: $!";
+    $out = <PSQL>;
+    close PSQL;
+    ($collate) = $out =~ /^([\w.-]+)$/; # untaint
+    $> = $orig_euid;
+    restore_exec;
+    chomp $ctype;
+    chomp $collate;
+    return ($ctype, $collate) unless $?;
+    return (undef, undef);
+}
+
 # Return the CTYPE and COLLATE locales of a cluster. This needs to be called
-# as root or as the cluster owner.
+# as root or as the cluster owner. (For versions <= 8.3; for >= 8.4, use
+# get_db_locales()).
 # Arguments: <version> <cluster> 
 # Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
 sub get_cluster_locales {

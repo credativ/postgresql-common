@@ -23,6 +23,12 @@ postgresql-common (107) UNRELEASED; urgency=low
   * t/TestLib.pm: Abort tests on FAILURE=shell and the shell exits with
     nonzero. This avoids endless followup error shells once it's clear that
     the following ones are doomed anyway.
+  * PgCommon.pm: Add new function get_db_locales() which reads lc_ctype and
+    lc_locales for a particular database. This replaces the
+    get_cluster_locales() function for >= 8.4 server versions (which moved
+    from global to per-database locales).
+  * pg_upgradecluster: Use get_db_locales() instead of get_cluster_locales()
+    for upgrades from >= 8.4.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 

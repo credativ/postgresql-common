@@ -264,9 +264,16 @@ error 'cluster is disabled' if $info{'start'} eq 'disabled';
 
 my $encoding = get_db_encoding $version, $cluster, 'template1';
 error 'could not get cluster default encoding' unless $encoding;
-my ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
-error 'could not get cluster locale' unless $old_lc_ctype;
-error 'could not get cluster collating locale' unless $old_lc_collate;
+my ($old_lc_ctype, $old_lc_collate);
+if ($version le '8.3') {
+    ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
+    error 'could not get cluster locale' unless $old_lc_ctype;
+    error 'could not get cluster collating locale' unless $old_lc_collate;
+} else {
+    ($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
+    error 'could not get cluster locale' unless $old_lc_ctype;
+    error 'could not get cluster collating locale' unless $old_lc_collate;
+}
 
 if (cluster_exists $newversion, $cluster) {
     error "target cluster $newversion/$cluster already exists";
