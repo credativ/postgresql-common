@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 100 * ($#MAJORS+1);
+use Test::More tests => 99 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -224,8 +224,7 @@ Bob|1
     # log file gets re-created by pg_ctlcluster
     is ((exec_as 'postgres', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
     unlink $default_log;
-    is ((exec_as 'postgres', "pg_ctlcluster $v main start"), 1, 'starting cluster as postgres fails without a log file');
-    is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 'starting cluster as root work without a log file');
+    is ((exec_as 'postgres', "pg_ctlcluster $v main start"), 0, 'starting cluster as postgres works without a log file');
     ok (-e $default_log && ! -z $default_log, 'log file got recreated and used');
 
     # stop server, clean up, check for leftovers

@@ -35,6 +35,11 @@ postgresql-common (107) UNRELEASED; urgency=low
     server to find out the locales, at which point the check is pointless.
   * pg_upgradecluster: Run pg_restore with --disable-triggers when running in
     --data-only mode. (Closes: #579768)
+  * t/020_create_sql_remove.t: We now assume that /var/log/postgresql/ always
+    exists, and is writable by the "postgres" user. Thus if we delete the log,
+    running "pg_ctlcluster start" should be able to recreate it. This fixes
+    the 020_create_sql_remove.t test failure in "umask 077" mode, and uncovers
+    some more inconsistencies wrt. log directory permissions.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 
