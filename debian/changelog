@@ -29,6 +29,10 @@ postgresql-common (107) UNRELEASED; urgency=low
     from global to per-database locales).
   * pg_upgradecluster: Use get_db_locales() instead of get_cluster_locales()
     for upgrades from >= 8.4.
+  * pg_ctlcluster: Drop check for valid locales. We can only determine them
+    (using pg_controldata through get_cluster_locales()) for <= 8.3 clusters,
+    which are obsolete in sid/lenny. For >= 8.4 clusters, we need to start the
+    server to find out the locales, at which point the check is pointless.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 

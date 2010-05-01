@@ -157,19 +157,6 @@ sub start {
     # prepare environment
     %ENV = read_cluster_conf_file $version, $cluster, 'environment';
 
-    if ($version le '8.3') {
-	# get locale used by initdb
-	my ($lc_ctype, $lc_collate) = get_cluster_locales $version, $cluster;
-	$lc_ctype or error ('Could not determine cluster encoding');
-
-	# check validity of locale
-	unless (setlocale (LC_ALL, $lc_ctype)) {
-	    error ("The server must be started under the locale $lc_ctype which does not exist any more.")
-	}
-
-	$ENV{'LC_CTYPE'} = $lc_ctype;
-    } # TODO: check locales for 8.4
-
     my $postmaster_opts = '';
     if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'unix_socket_directory')) {
 	$postmaster_opts .= '-c unix_socket_directory="' . $info{'socketdir'} . '"';
