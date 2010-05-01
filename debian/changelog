@@ -20,6 +20,9 @@ postgresql-common (107) UNRELEASED; urgency=low
   * t/052_upgrade_encodings.t: Specify 'C' locale when creating the ASCII
     encoded test database for versions >= 8.4, otherwise we have a
     locale/encoding mismatch.
+  * t/TestLib.pm: Abort tests on FAILURE=shell and the shell exits with
+    nonzero. This avoids endless followup error shells once it's clear that
+    the following ones are doomed anyway.
 
  -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
 

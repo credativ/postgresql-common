@@ -30,7 +30,9 @@ our @MAJORS = sort (get_versions());
 # FAILURE=shell is set
 sub fail_debug { 
     if ($ENV{'FAILURE'} eq 'shell') {
-	system 'bash';
+	if ((system 'bash') != 0) {
+	    exit 1;
+	}
     }
 }
 
