@@ -433,6 +433,10 @@ if (!fork) {
         my @restore_argv = ($pg_restore, '-h', $newsocket, '-p',
 	    $newinfo{'port'}, '--data-only', '-d', $db);
 
+	if ($newversion ge '8.3') {
+            push @restore_argv, '--disable-triggers';
+        }
+
 	if ($upgrade_scripts) {
             push @restore_argv, '--no-data-for-failed-tables';
         }
