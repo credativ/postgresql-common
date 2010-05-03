@@ -1,4 +1,4 @@
-postgresql-common (107) UNRELEASED; urgency=low
+postgresql-common (107) unstable; urgency=low
 
   [ Peter Eisentraut ]
   * Add initial support for 9.0 (pre-release snapshots for now):
@@ -43,7 +43,7 @@ postgresql-common (107) UNRELEASED; urgency=low
   * pg_createcluster, testsuite: Fix permissions of /var/log/postgresql/ if
     this script creates it.
 
- -- Peter Eisentraut <petere@debian.org>  Tue, 06 Apr 2010 20:51:41 +0000
+ -- Martin Pitt <mpitt@debian.org>  Mon, 03 May 2010 17:40:09 +0200
 
 postgresql-common (106) unstable; urgency=low
 
