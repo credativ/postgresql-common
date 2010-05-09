@@ -7,7 +7,7 @@
 
 set -e
 
-DEFAULT="8.3\n8.4"
+DEFAULT="8.4\n9.0"
 
 lsb_ubuntu() {
     case "$1" in
@@ -15,7 +15,7 @@ lsb_ubuntu() {
             /bin/echo -e "8.3\n8.4"
             ;;
 	9.10|10.04)
-            /bin/echo -e "8.4"
+            /bin/echo -e "8.4\n9.0"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
@@ -28,11 +28,11 @@ lsb_debian() {
     case "$1" in
         # Lenny
         5.0*)
-            /bin/echo -e "8.3\n8.4"
+            /bin/echo -e "8.3\n8.4\n9.0"
             ;;
         # unstable
         testing/unstable | testing | unstable)
-            /bin/echo -e "8.3\n8.4"
+            /bin/echo -e "8.4\n9.0"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -65,7 +65,7 @@ if type lsb_release >/dev/null 2>/dev/null; then
 else
     # Debian?
     if [ -e /etc/debian_version ]; then
-        /bin/echo -e "8.3\n8.4";
+        /bin/echo -e "8.4\n9.0";
     else
         echo "supported_versions: WARNING: Unknown distribution" >&2
         /bin/echo -e "$DEFAULT"
