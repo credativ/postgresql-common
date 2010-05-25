@@ -627,8 +627,11 @@ Some PostgreSQL extensions like PostGIS need metadata in auxiliary tables which
 must not be upgraded from the old version, but rather initialized for the new
 version before copying the table data. For this purpose, extensions (as well as
 administrators, of course) can drop upgrade hook scripts into 
-C</etc/postgresql-common/pg_upgradecluster.d/>. Scripts in that
-directory will be called with the following arguments:
+C</etc/postgresql-common/pg_upgradecluster.d/>. Script file names must consist
+entirely of upper and lower case letters, digits, underscores, and hyphens; in
+particular, dots (i. e. file extensions) are not allowed.
+
+Scripts in that directory will be called with the following arguments:
 
 <old version> <cluster name> <new version> <phase> 
 
