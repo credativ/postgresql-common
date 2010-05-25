@@ -6,8 +6,8 @@ PostgreSQL is a relational database with object-oriented extensions.  It
 implements the greater part of SQL-92 and is intended to implement it in full;
 in addition it supports its own extended facilities.
 
-Since the on-disk data format of all major PostgreSQL versions (like 7.4,
-8.1, etc.) is incompatible to each other, Debian's PostgreSQL packaging
+Since the on-disk data format of all major PostgreSQL versions (like 8.3,
+8.4, etc.) is incompatible to each other, Debian's PostgreSQL packaging
 architecture is designed to maintain clusters of different major versions in
 parallel.
 
@@ -26,7 +26,7 @@ but if you want to get straight into playing SQL, here are the steps to create
 a database user and a database for the Unix user 'joe':
 
 1. Install a database server with the major version of your choice
-   ('postgresql-X.Y', e. g. 'postgresql-8.3').  Preferrably the latest
+   ('postgresql-X.Y', e. g. 'postgresql-8.4').  Preferrably the latest
    version, which you can get by installing the metapackage
    'postgresql'. This will automatically create a default cluster
    'main' with the database superuser 'postgres'.
@@ -78,7 +78,7 @@ creating clusters, such as initdb(1). However, please note that in
 this case you cannot expect *any* of above pg_* tools to work, since
 they use different configuration settings (SSL, data directories,
 etc.) and file locations (e. g.
-/etc/postgresql/8.3/main/postgresql.conf). If in doubt, then do *not*
+/etc/postgresql/8.4/main/postgresql.conf). If in doubt, then do *not*
 use initdb, but only pg_createcluster. Since merely installing
 postgresql-X.Y will already set up a default cluster which is ready to
 work, most people do not need to bother about initdb or
@@ -91,9 +91,9 @@ unless you specify them manually. The first cluster which is ever
 created (by any major version) will run on the default port 5432, and
 each new cluster will use the next higher free one. 
 
-E. g. if you first install "postgresql-8.2" on a clean system, the
-default 8.2/main cluster will run on port 5432. If you then create
-another 8.2 cluster, or install the "postgresql-8.3" package, that new
+E. g. if you first install "postgresql-8.3" on a clean system, the
+default 8.3/main cluster will run on port 5432. If you then create
+another 8.3 cluster, or install the "postgresql-8.4" package, that new
 one will run on 5433.
 
 Please use "pg_lsclusters" for displaying the cluster <-> port
@@ -109,18 +109,18 @@ equivalent to doing 'pg_createcluster X.Y main --start'.
 Due to this default cluster, an immediate attempt to upgrade an
 earlier 'main' cluster to a new version will fail and you need to
 remove the newer default cluster first. E. g., if you have
-postgresql-8.2 installed and want to upgrade to 8.3, you first install
-postgresql-8.3:
+postgresql-8.3 installed and want to upgrade to 8.4, you first install
+postgresql-8.4:
 
-  apt-get install postgresql-8.3
+  apt-get install postgresql-8.4
 
-Then drop the default 8.3 cluster:
+Then drop the default 8.4 cluster:
 
-  pg_dropcluster 8.3 main --stop
+  pg_dropcluster 8.4 main --stop
 
-And then upgrade the 8.2 cluster to 8.3:
+And then upgrade the 8.3 cluster to 8.4:
 
-  pg_upgradecluster 8.2 main
+  pg_upgradecluster 8.3 main
 
 SSL
 ---
@@ -147,9 +147,9 @@ symlink the file to /etc/ssl/certs/ssl-cert-snakeoil.pem; in this
 case, client certificates need to be signed by the snakeoil
 certificate, which might be desirable in many cases. See
 
-  /usr/share/doc/postgresql-doc-8.3/html/ssl-tcp.html
+  /usr/share/doc/postgresql-doc-8.4/html/ssl-tcp.html
 
-for details (in package postgresql-doc-8.3).
+for details (in package postgresql-doc-8.4).
 
 Further documentation
 ---------------------

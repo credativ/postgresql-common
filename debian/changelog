@@ -2,6 +2,8 @@ postgresql-common (108) UNRELEASED; urgency=low
 
   * debian/supported-versions: Drop 8.3 from squeeze/unstable. Add 9.0 to all
     Debian/Ubuntu versions to support backports.
+  * debian/README.Debian: Talk about 8.3 and 8.4, since those are the versions
+    relevant to squeeze installs and upgrades.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 09 May 2010 08:39:55 +0200
 
