@@ -6,6 +6,7 @@ postgresql-common (108) UNRELEASED; urgency=low
     relevant to squeeze installs and upgrades.
   * pg_upgradecluster POD: Describe allowed characters in upgrade script file
     names.
+  * debian/supported-versions: Add Ubuntu 10.10. Welcome, Maverick Meerkat!
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 09 May 2010 08:39:55 +0200
 
