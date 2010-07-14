@@ -38,7 +38,7 @@ foreach $v (sort (get_versions())) {
         printf $fmtstring, ($v, $c, $info{'port'}, 
             $info{'running'} ? "online" : "down", 
             defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>', 
-	    $info{'pgdata'}, $info{'logfile'} || 'custom');
+	    $info{'pgdata'} || '<not set>', $info{'logfile'} || 'custom');
     }
 }
 

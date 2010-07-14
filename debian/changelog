@@ -1,3 +1,11 @@
+postgresql-common (109) UNRELEASED; urgency=low
+
+  * pg_lsclusters: Fix "uninitialized value" warning when a cluster's data
+    directory is not set. This is a rather fatal problem anyway, but we can
+    present it in a nicer way. Thanks Christoph Berg! (Closes: #589014)
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 14 Jul 2010 11:45:21 +0200
+
 postgresql-common (108) unstable; urgency=low
 
   * debian/supported-versions: Drop 8.3 from squeeze/unstable. Add 9.0 to all
