@@ -2,7 +2,7 @@ Source: postgresql-common
 Section: database
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
-Standards-Version: 3.8.4
+Standards-Version: 3.9.0
 Vcs-Bzr: https://code.launchpad.net/~pitti/postgresql/common/
 Vcs-Browser: http://bazaar.launchpad.net/~pitti/postgresql/common/changes
 Build-Depends: cdbs, debhelper (>= 6)

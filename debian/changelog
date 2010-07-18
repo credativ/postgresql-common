@@ -18,6 +18,7 @@ postgresql-common (109) UNRELEASED; urgency=low
     - debian/rules: Install common init script.
     - (Closes: #XXXXXX)
   * Add debian/source/format: 3.0 (native).
+  * debian/control: Bump Standards-Version to 3.9.0 (no changes necessary).
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 14 Jul 2010 11:45:21 +0200
 
