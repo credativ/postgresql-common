@@ -83,3 +83,14 @@ status() {
     [ -n "$CLUSTERS" ] || exit 4
     echo "$CLUSTERS" | awk 'BEGIN {rc=0; printf("Running clusters: ")} {if ($4 == "online") printf ("%s/%s ", $1, $2); else rc=3} END { printf("\n"); exit rc }'
 }
+
+# return all installed versions which do not have their own init script
+get_versions() {
+    versions=''
+    local v
+    for v in `ls /usr/lib/postgresql/ 2>/dev/null`; do
+	if [ -x /usr/lib/postgresql/$v/bin/pg_ctl ] && [ ! -x /etc/init.d/postgresql-$v ]; then
+	    versions="$versions $v"
+	fi
+    done
+}

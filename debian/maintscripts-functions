@@ -33,6 +33,26 @@ or a similar command (see 'man pg_createcluster')." >&2
     fi
 
     _link_manpages "$VERSION" "postgresql-$VERSION" postmaster.1.gz
+
+    if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$VERSION ]; then
+       if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+                invoke-rc.d postgresql start $VERSION || exit $?
+        else
+                /etc/init.d/postgresql start $VERSION || exit $?
+        fi
+
+    fi
+}
+
+stop_version() {
+    if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$1 ]; then
+       if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+                invoke-rc.d postgresql stop $1 || exit $?
+        else
+                /etc/init.d/postgresql stop $1 || exit $?
+        fi
+
+    fi
 }
 
 remove_version() {

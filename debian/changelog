@@ -3,6 +3,20 @@ postgresql-common (109) UNRELEASED; urgency=low
   * pg_lsclusters: Fix "uninitialized value" warning when a cluster's data
     directory is not set. This is a rather fatal problem anyway, but we can
     present it in a nicer way. Thanks Christoph Berg! (Closes: #589014)
+  * Migrate to a common init script for all server versions, to avoid
+    providing the "postgresql" service in multiple packages (which causes
+    insserv to complain bitterly):
+    - debian/init.d-functions: Add function get_versions() which returns all
+      installed versions, but filters out the ones which have their own init
+      script. With that, we can run newer common versions with older server
+      packages.
+    - debian/maintscripts-functions: Add function stop_version() (to be called
+      from "prerm upgrade"), and start cluster in configure_version() if there
+      is no version specific init script.
+    - Add debian/postgresql-common.postgresql.init: Common init script for all
+      installed server versions.
+    - debian/rules: Install common init script.
+    - (Closes: #XXXXXX)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 14 Jul 2010 11:45:21 +0200
 
