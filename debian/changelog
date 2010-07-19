@@ -16,7 +16,7 @@ postgresql-common (109) UNRELEASED; urgency=low
     - Add debian/postgresql-common.postgresql.init: Common init script for all
       installed server versions.
     - debian/rules: Install common init script.
-    - (Closes: #XXXXXX)
+    - (Closes: #589524)
   * Add debian/source/format: 3.0 (native).
   * debian/control: Bump Standards-Version to 3.9.0 (no changes necessary).
 
