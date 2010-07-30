@@ -1,3 +1,9 @@
+postgresql-common (110) UNRELEASED; urgency=low
+
+  * t/080_start.conf.t: Update for common init.d script.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 30 Jul 2010 19:36:52 +0200
+
 postgresql-common (109) unstable; urgency=low
 
   * pg_lsclusters: Fix "uninitialized value" warning when a cluster's data
