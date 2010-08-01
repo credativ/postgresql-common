@@ -4,6 +4,7 @@ postgresql-common (110) UNRELEASED; urgency=low
   * t/080_start.conf.t: Update for common init.d script.
   * debian/rules: Drop installation of lintian overrides and let dh_lintian do
     it for us. Adapt override file accordingly.
+  * debian/control: Drop unnecessary debconf dependency from -client-common.
 
   [ Dimitri Fontaine ]
   * Add new package postgresql-server-dev-all:

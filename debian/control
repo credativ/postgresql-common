@@ -30,7 +30,7 @@ Description: PostgreSQL database-cluster manager
 
 Package: postgresql-client-common
 Architecture: all
-Depends: debconf (>= 0.5.00) | debconf-2.0, ${misc:Depends}
+Depends: ${misc:Depends}
 Recommends: lsb-release
 Description: manager for multiple PostgreSQL client versions
  The postgresql-client-common package provides a structure under which
