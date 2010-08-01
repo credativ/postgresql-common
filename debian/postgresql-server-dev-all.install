@@ -1,0 +1,2 @@
+pgxs_debian_control.mk /usr/share/postgresql-common/
+pg_buildext /usr/bin

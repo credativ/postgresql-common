@@ -1,6 +1,14 @@
 postgresql-common (110) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * t/080_start.conf.t: Update for common init.d script.
+
+  [ Dimitri Fontaine ]
+  * Add new package postgresql-server-dev-all:
+    - "pb_buildext" tool for easy building of extension packages for multiple
+      server versions.
+    - pgxs_debian_control.mk debian/rules include for generating
+      debian/control.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 30 Jul 2010 19:36:52 +0200
 
