@@ -2,7 +2,7 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 
 POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
-POD1PROGS=pg_wrapper pg_lsclusters
+POD1PROGS=pg_wrapper pg_lsclusters pg_buildext
 POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
 
 DEB_DH_INSTALLINIT_ARGS := "--name=postgresql"
@@ -11,15 +11,9 @@ build/postgresql-common::
 	for p in $(POD1PROGS); do $(POD2MAN) --quotes=none --section 1 $$p > $$p.1; done
 	for p in $(POD8PROGS); do $(POD2MAN) --quotes=none --section 8 $$p > $$p.8; done
 
-build/postgresql-server-dev-all:: pg_buildext.pod
-	$(POD2MAN) --quotes=none --section 1 $< > `basename $< .pod`.1
-
 install/postgresql-common::
 	install -D -m 644 debian/postgresql-common.lintian $(DEB_DESTDIR)/usr/share/lintian/overrides/postgresql-common
 
 cleanbuilddir/postgresql-common::
 	for p in $(POD1PROGS); do rm -f $$p.1; done
 	for p in $(POD8PROGS); do rm -f $$p.8; done
-
-cleanbuilddir/postgresql-server-dev-all::
-	rm -f pg_buildext.1

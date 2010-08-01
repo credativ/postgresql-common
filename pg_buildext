@@ -62,3 +62,48 @@ do
 done
 
 exit 0
+
+# POD follows here
+
+=head1 NAME
+
+pg_buildext - Build and install a PostgreSQL extension
+
+=head1 SYNOPSIS
+
+B<pg_buildext> I<action> I<srcdir> I<target> I<opts>
+
+=head1 DESCRIPTION
+
+B<pg_buildext> is a script that will build a PostgreSQL extension in a
+C<VPATH> way. It only supports the B<build> and B<clean> actions, and will
+choose to build the versions known in C<debian/pgversions> and in
+C</usr/share/postgresql-common/supported-versions>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<action>
+
+Either I<clean> or I<build>.
+
+=item B<srcdir>
+
+Where to find the extension sources, including the C<debian> subdirectory.
+
+=item B<target>
+
+The target directory where to build the sources, it will get created for you
+if it does not exist. If the B<target> contains a C<%v> sign, it will get
+replaced by the specific version of PostgreSQL being built against.
+
+=item B<opts>
+
+Custom C<CFLAGS> options to use for the build.
+
+=back
+
+=head1 AUTHOR
+
+Dimitri Fontaine L<E<lt>dim@tapoueh.orgE<gt>>
