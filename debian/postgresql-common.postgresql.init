@@ -34,7 +34,7 @@ case "$1" in
         ;;
     force-reload)
 	for v in $versions; do
-	    reload $VERSION
+	    reload $v
 	done
         ;;
     *)

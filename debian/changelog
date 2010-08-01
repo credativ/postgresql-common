@@ -6,6 +6,8 @@ postgresql-common (110) UNRELEASED; urgency=low
     it for us. Adapt override file accordingly.
   * debian/control: Drop unnecessary debconf dependency from -client-common.
   * Bump Standards-Version to 3.9.1, no changes necessary.
+  * debian/postgresql-common.postgresql.init: Fix force-reload, thanks Pascal
+    Volk. (Closes: #591185)
 
   [ Dimitri Fontaine ]
   * Add new package postgresql-server-dev-all:
