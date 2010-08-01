@@ -5,6 +5,7 @@ postgresql-common (110) UNRELEASED; urgency=low
   * debian/rules: Drop installation of lintian overrides and let dh_lintian do
     it for us. Adapt override file accordingly.
   * debian/control: Drop unnecessary debconf dependency from -client-common.
+  * Bump Standards-Version to 3.9.1, no changes necessary.
 
   [ Dimitri Fontaine ]
   * Add new package postgresql-server-dev-all:
