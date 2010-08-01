@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 #
 # build a PostgreSQL module based on PGXS for give list of supported major
 # versions
 #
 # Author: Dimitri Fontaine <dfontaine@hi-media.com>
 
-action=$1
-srcdir=$2
-target=$3
-opt=$4
+action="$1"
+srcdir="$2"
+target="$3"
+opt="$4"
 
-function prepare_env() {
+prepare_env() {
     if [ ! -d $srcdir ]; then
 	echo "Error: no such directory '$srcdir'"
 	exit 1
@@ -21,7 +21,7 @@ function prepare_env() {
     cflags=`$pgc --cflags`
 }
 
-function build() {
+build() {
     prepare_env $1
 
     mkdir -p $vtarget
@@ -30,13 +30,13 @@ function build() {
     cd -
 }
 
-function clean() {
+clean() {
     prepare_env $1
     make clean PG_CONFIG="$pgc"
     rm -rf $vtarget
 }
 
-function versions() {
+versions() {
     for v in `/usr/share/postgresql-common/supported-versions`
     do
 	grep -q "^$v" $srcdir/debian/pgversions && echo $v

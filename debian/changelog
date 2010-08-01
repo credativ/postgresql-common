@@ -9,6 +9,7 @@ postgresql-common (110) UNRELEASED; urgency=low
   * debian/postgresql-common.postgresql.init: Fix force-reload, thanks Pascal
     Volk. (Closes: #591185)
   * debian/rules: Stop man page build/clean being package dependent.
+  * pg_buildext: Remove bashishms and convert to plain /bin/sh.
 
   [ Dimitri Fontaine ]
   * Add new package postgresql-server-dev-all:
