@@ -8,6 +8,7 @@ postgresql-common (110) UNRELEASED; urgency=low
   * Bump Standards-Version to 3.9.1, no changes necessary.
   * debian/postgresql-common.postgresql.init: Fix force-reload, thanks Pascal
     Volk. (Closes: #591185)
+  * debian/rules: Stop man page build/clean being package dependent.
 
   [ Dimitri Fontaine ]
   * Add new package postgresql-server-dev-all:
