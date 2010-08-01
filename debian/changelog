@@ -1,4 +1,4 @@
-postgresql-common (110) UNRELEASED; urgency=low
+postgresql-common (110) unstable; urgency=low
 
   [ Martin Pitt ]
   * t/080_start.conf.t: Update for common init.d script.
@@ -18,7 +18,7 @@ postgresql-common (110) UNRELEASED; urgency=low
     - pgxs_debian_control.mk debian/rules include for generating
       debian/control.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 30 Jul 2010 19:36:52 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 01 Aug 2010 16:50:41 +0200
 
 postgresql-common (109) unstable; urgency=low
 
