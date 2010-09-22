@@ -65,13 +65,8 @@ if [ -n "$DISTRO" -a -n "$RELEASE" ]; then
             ;;
     esac
 else
-    # Debian?
-    if [ -e /etc/debian_version ]; then
-        /bin/echo -e "8.4\n9.0";
-    else
-        echo "supported_versions: WARNING: Unknown distribution" >&2
-        /bin/echo -e "$DEFAULT"
-    fi
+    echo "supported_versions: WARNING: lsb_release not present, unknown distribution" >&2
+    /bin/echo -e "$DEFAULT"
 fi
 
 exit 0

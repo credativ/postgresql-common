@@ -10,6 +10,10 @@ postgresql-common (111) UNRELEASED; urgency=low
     that cluster happened to not be running at the time. (Closes: #597097)
   * debian/supported-versions: Be more robust against lsb_release failing, e.
     g. in the case where it is not fully configured yet. (Closes: #597561)
+  * debian/supported-versions: Drop check for /etc/debian_version if
+    lsb_release is not working/existing. Derivatives have debian_version as
+    well, and we don't actually evaluate it, so just print a meaningful error
+    message and go with the default versions.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 11:17:48 +0200
 
