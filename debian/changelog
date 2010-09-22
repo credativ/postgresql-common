@@ -1,3 +1,10 @@
+postgresql-common (112) UNRELEASED; urgency=low
+
+  * debian/changelog: Fix changelog entry in version 111 for #597654: init
+    script priority was fixed to S19, not S29.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 12:09:16 +0200
+
 postgresql-common (111) unstable; urgency=high
 
   * Urgency high since this fixes two RC bugs.
@@ -15,7 +22,7 @@ postgresql-common (111) unstable; urgency=high
     lsb_release is not working/existing. Derivatives have debian_version as
     well, and we don't actually evaluate it, so just print a meaningful error
     message and go with the default versions.
-  * debian/rules: Put init script priority back to S29/K21 to match the
+  * debian/rules: Put init script priority back to S19/K21 to match the
     previous postgresql-8.4 init script. Fix the priorities on upgrade in
     debian/postgresql-common.preinst. (Closes: #597654)
 
