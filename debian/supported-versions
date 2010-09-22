@@ -43,9 +43,11 @@ lsb_debian() {
 
 # If we have lsb_release, use it
 if type lsb_release >/dev/null 2>/dev/null; then
-    DISTRO="`lsb_release -is`"
-    RELEASE="`lsb_release -rs`"
+    DISTRO="`lsb_release -is`" || DISTRO=""
+    RELEASE="`lsb_release -rs`" || RELEASE=""
+fi
     
+if [ -n "$DISTRO" -a -n "$RELEASE" ]; then
     # Ubuntu?
     case "$DISTRO" in
         Ubuntu)

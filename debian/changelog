@@ -8,6 +8,8 @@ postgresql-common (111) UNRELEASED; urgency=low
     sanity checks and created files for the new cluster. Before, it would
     erroneously remove an already existing cluster on a sanity check fail, if
     that cluster happened to not be running at the time. (Closes: #597097)
+  * debian/supported-versions: Be more robust against lsb_release failing, e.
+    g. in the case where it is not fully configured yet. (Closes: #597561)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 11:17:48 +0200
 
