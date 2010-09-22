@@ -180,7 +180,9 @@ sub setup_pg_hba {
 
 my $startconf = 'auto';
 
-my $createsuccess = 0;
+# this flag gets set when we started creating the cluster, and thus we need to
+# clean up on errors
+my $cleanup_cruft = 0;
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
@@ -285,6 +287,10 @@ if (!stat $confdirp) {
 }
 error 'could not create configuration directory; you might ' .
     'need to run this program with root privileges' if system ('install', '-d', $confdir);
+
+# now we created the first new directory for this cluster and start to rollback
+# on error
+$cleanup_cruft = 1;
 
 # check whether we have an already existing cluster; check version and
 # determine owner in this case
@@ -433,7 +439,7 @@ close ENV;
 chmod 0644, "$confdir/environment";
 chown $owneruid, $ownergid, "$confdir/environment";
 
-$createsuccess = 1;
+$cleanup_cruft = 0;
 
 # configure to create external PID file
 if ($socketdir eq '/var/run/postgresql') {
@@ -447,7 +453,7 @@ if ($start) {
 
 END {
     # clean up cruft if something went wrong
-    if (!$createsuccess && defined $version && defined $cluster) {
+    if ($cleanup_cruft && defined $version && defined $cluster) {
 	system "pg_dropcluster $version $cluster 2>/dev/null";
 	exit 1;
     }

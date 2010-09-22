@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 163;
+use Test::More tests => 169;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -38,8 +38,15 @@ sub check_nonexisting_cluster_error {
 # create cluster
 ok ((system "pg_createcluster --socketdir '$socketdir' $version main >/dev/null") == 0,
     "pg_createcluster --socketdir");
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$version\s*main.*5432.*down/, 'cluster was created';
 
 is ((get_cluster_port $version, 'main'), 5432, 'Port of created cluster is 5432');
+
+# creating cluster with the same name should fail
+like_program_out 'root', "pg_createcluster --socketdir '$socketdir' $version main", 1, qr/already exists/,
+    "pg_createcluster on existing cluster";
+# and the original one still exists
+like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$version\s*main.*5432.*down/, 'original cluster still exists';
 
 # attempt to create clusters with an invalid port
 like_program_out 0, "pg_createcluster $version test -p foo", 1,

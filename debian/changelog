@@ -1,3 +1,16 @@
+postgresql-common (111) UNRELEASED; urgency=low
+
+  * t/030_errors.t: Check that pg_createcluster leaves the original one intact
+    if the cluster already exists, also when the original one is not running.
+    This reproduces #597097.
+  * pg_createcluster: Be more careful with cleaning up the created cluster if
+    an error occurs: Do not start the cleanup until we actually passed our
+    sanity checks and created files for the new cluster. Before, it would
+    erroneously remove an already existing cluster on a sanity check fail, if
+    that cluster happened to not be running at the time. (Closes: #597097)
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 11:17:48 +0200
+
 postgresql-common (110) unstable; urgency=low
 
   [ Martin Pitt ]
