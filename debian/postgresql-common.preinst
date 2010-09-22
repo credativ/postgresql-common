@@ -29,6 +29,23 @@ case "$1" in
             rm_conffile postgresql-common /etc/postgresql-common/autovacuum.conf
             rm_conffile postgresql-common /etc/cron.d/postgresql-common
         fi
+
+	if dpkg --compare-versions "$2" lt-nl "111~"; then
+	    # versions 109 and 110 installed common init script with wrong
+	    # priority
+	    for l in 2 3 4 5; do
+		if [ -L /etc/rc${l}.d/S20postgresql -a ! -L /etc/rc${l}.d/S19postgresql ]; then
+		    echo "Fixing init script priority of /etc/rc${l}.d/S20postgresql to S19..." >&2
+		    mv /etc/rc${l}.d/S20postgresql /etc/rc${l}.d/S19postgresql
+		fi
+	    done
+	    for l in 0 1 6; do
+		if [ -L /etc/rc${l}.d/K20postgresql -a ! -L /etc/rc${l}.d/K21postgresql ]; then
+		    echo "Fixing init script priority of /etc/rc${l}.d/K20postgresql to K21..." >&2
+		    mv /etc/rc${l}.d/K20postgresql /etc/rc${l}.d/K21postgresql
+		fi
+	    done
+	fi
         ;;
 
     abort-upgrade)

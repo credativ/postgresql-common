@@ -5,7 +5,7 @@ POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
 POD1PROGS=pg_wrapper pg_lsclusters pg_buildext
 POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
 
-DEB_DH_INSTALLINIT_ARGS := "--name=postgresql"
+DEB_DH_INSTALLINIT_ARGS := --name=postgresql -u'defaults 19 21'
 
 common-post-build-indep::
 	for p in $(POD1PROGS); do $(POD2MAN) --quotes=none --section 1 $$p > $$p.1; done
