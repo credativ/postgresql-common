@@ -6,6 +6,12 @@ postgresql-common (112) UNRELEASED; urgency=low
     "reload" mode.
   * pg_ctlcluster: Pass correct exit code from pg_ctl in case of errors.
   * PgCommon.pm, get_db_encoding(): Fix uninitialized variable if psql fails.
+  * t/040_upgrade.t: Check that pg_upgradecluster exits early and gracefully
+    if the old cluster does not stop (usually because there are still active
+    connections to it). This reproduces #509050.
+  * pg_upgradecluster: Move stopping of old cluster and disabling connections
+    to it much ealier, and properly fail without starting the upgrade.
+    (Closes: #509050)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 12:09:16 +0200
 

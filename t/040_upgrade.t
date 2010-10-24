@@ -3,13 +3,15 @@
 
 use strict; 
 
+use POSIX qw/dup2/;
+
 use lib 't';
 use TestLib;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 84;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 91;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -89,6 +91,32 @@ Bob|1
 mkdir '/tmp/pgtest/' or die "Could not create temporary test directory /tmp/pgtest: $!";
 chmod 0100, '/tmp/pgtest/';
 chdir '/tmp/pgtest';
+
+# upgrade attempt fails cleanly if the server is busy
+my $psql = fork;
+if (!$psql) {
+    my @pw = getpwnam 'nobody';
+    change_ugid $pw[2], $pw[3];
+    dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
+    exec 'psql', 'template1' or die "could not exec psql process: $!";
+}
+
+like_program_out 0, "pg_upgradecluster $MAJORS[0] upgr", 1, 
+    qr/Error: Could not stop old cluster/,
+    'pg_upgradecluster fails on busy cluster';
+like_program_out 'nobody', 'pg_lsclusters -h', 0,
+    qr/^$MAJORS[0]\s+upgr\s+5432 online postgres/;
+
+kill 9, $psql;
+waitpid $psql, 0;
+
+# now that the connection went away, postmaster shuts down; so restart it
+# properly
+system "pg_ctlcluster $MAJORS[0] upgr stop";
+sleep 5;
+like_program_out 'nobody', 'pg_lsclusters -h', 0,
+    qr/^$MAJORS[0]\s+upgr\s+5432 down\s+postgres/;
+is ((system "pg_ctlcluster $MAJORS[0] upgr start"), 0, 'Starting upgr cluster');
 
 # Upgrade to latest version
 my $outref;

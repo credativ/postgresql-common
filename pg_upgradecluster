@@ -188,14 +188,14 @@ sub adapt_conffiles {
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
-# to the owner, and reload postmaster.
+# to the owner. Database must be reloaded manually if it is running.
 # Arguments: <version> <cluster> <owner> <owneruid>
 sub disable_connections {
     my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
 
-    rename $hba, "$hba.orig" or error 'could not rename pg_hba.conf';
+    rename $hba, "$hba.orig" or error "could not rename $hba: $!";
     unless (open F, ">$hba") {
-        rename "$hba.orig", $hba; 
+        rename "$hba.orig", $hba;
         error "could not create $hba";
     }
     chmod 0400, $hba;
@@ -206,11 +206,6 @@ sub disable_connections {
 	print F "local all $_[2] ident sameuser";
     }
     close F;
-
-    if (system 'pg_ctlcluster', $_[0], $_[1], 'reload') {
-        rename "$hba.orig", $hba; 
-        error "could not reload cluster $_[0]/$_[1]";
-    }
 }
 
 # Restore original pg_hba.conf, but do not restart postmaster.
@@ -218,7 +213,7 @@ sub disable_connections {
 sub enable_connections {
     my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
 
-    rename "$hba.orig", $hba or error 'could not rename pg_hba.conf';
+    rename "$hba.orig", $hba or error "could not rename $hba.orig: $!";
 }
 
 #
@@ -281,9 +276,25 @@ if (cluster_exists $newversion, $cluster) {
 
 my $oldpsql = get_program_path 'psql', $version;
 my $oldsocket = get_cluster_socketdir $version, $cluster;
+my $owner = getpwuid $info{'owneruid'};
+error 'could not get name of cluster owner' unless $owner;
+
+# stopping old cluster, so that we notice early when there are still
+# connections
+print "Stopping old cluster...\n";
+my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--', '-t', '5');
+error "Could not stop old cluster" if system @argv;
+
+# Disable access to clusters during upgrade
+print "Disabling connections to the old cluster during upgrade...\n";
+disable_connections $version, $cluster, $owner, $info{'owneruid'};
+
+print "Restarting old cluster with restricted connections...\n";
+@argv = ('pg_ctlcluster', $version, $cluster, 'start');
+error "Could not restart old cluster" if system @argv;
 
 # create new cluster, preserving encoding and locales
-my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
+@argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
     '--socketdir', $info{'socketdir'}, $newversion,
     $cluster);
 
@@ -301,12 +312,16 @@ push @argv, ('--lc-time', $lc_time) if $lc_time;
 delete $ENV{'LC_ALL'};
 error "Could not create target cluster" if system @argv;
 
+%newinfo = cluster_info($newversion, $cluster);
+
+print "Disabling connections to the new cluster during upgrade...\n";
+disable_connections $newversion, $cluster, $owner, $newinfo{'owneruid'};
+
 @argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
 error "Could not start target cluster" if system @argv;
 
 sleep(4);
 
-%newinfo = cluster_info($newversion, $cluster);
 my $pg_restore = get_program_path 'pg_restore', $newversion;
 
 # check whether upgrade scripts exist; if so, verify that pg_restore supports
@@ -333,14 +348,6 @@ if ($upgrade_scripts) {
     }
     wait;
 }
-
-# Disable access to clusters during upgrade
-my $owner = getpwuid $info{'owneruid'};
-error 'could not get name of cluster owner' unless $owner;
-print "Disabling connections to the old cluster during upgrade...\n";
-disable_connections $version, $cluster, $owner, $info{'owneruid'};
-print "Disabling connections to the new cluster during upgrade...\n";
-disable_connections $newversion, $cluster, $owner, $newinfo{'owneruid'};
 
 # dump cluster; drop to cluster owner privileges
 
