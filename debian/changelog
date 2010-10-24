@@ -2,6 +2,9 @@ postgresql-common (112) UNRELEASED; urgency=low
 
   * debian/changelog: Fix changelog entry in version 111 for #597654: init
     script priority was fixed to S19, not S29.
+  * pg_ctlcluster: Also pass additional pg_ctl arguments in "stop" and
+    "reload" mode.
+  * pg_ctlcluster: Pass correct exit code from pg_ctl in case of errors.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 12:09:16 +0200
 
