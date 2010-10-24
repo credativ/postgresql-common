@@ -5,6 +5,7 @@ postgresql-common (112) UNRELEASED; urgency=low
   * pg_ctlcluster: Also pass additional pg_ctl arguments in "stop" and
     "reload" mode.
   * pg_ctlcluster: Pass correct exit code from pg_ctl in case of errors.
+  * PgCommon.pm, get_db_encoding(): Fix uninitialized variable if psql fails.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 12:09:16 +0200
 

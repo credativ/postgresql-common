@@ -738,10 +738,10 @@ sub get_db_encoding {
     close PSQL;
     $> = $orig_euid;
     restore_exec;
+    return undef if $?;
     chomp $out;
     ($out) = $out =~ /^([\w.-]+)$/; # untaint
-    return $out unless $?;
-    return undef;
+    return $out;
 }
 
 # Return locale of a particular database in a cluster. This requires access
