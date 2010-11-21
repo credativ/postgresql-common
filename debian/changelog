@@ -1,5 +1,6 @@
-postgresql-common (112) UNRELEASED; urgency=low
+postgresql-common (112) unstable; urgency=medium
 
+  * Urgency medium since this fixes an RC bug.
   * debian/changelog: Fix changelog entry in version 111 for #597654: init
     script priority was fixed to S19, not S29.
   * pg_ctlcluster: Also pass additional pg_ctl arguments in "stop" and
@@ -19,7 +20,7 @@ postgresql-common (112) UNRELEASED; urgency=low
     this is a policy violation, but we can't clean up in -8.3 since that does
     not exist any more in Squeeze. (Closes: #591924)
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 12:09:16 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Nov 2010 13:52:25 +0100
 
 postgresql-common (111) unstable; urgency=high
 
