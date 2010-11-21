@@ -46,6 +46,13 @@ case "$1" in
 		fi
 	    done
 	fi
+	# Remove obsolete init script from postgresql-8.3. It provides
+	# "postgresql" which is also provided by our common init script, and
+	# insserv chokes on this. Note that there is no reason to stop/restart
+	# postgresql-8.3, the new init script will just take over.
+	if dpkg --compare-versions "$2" lt-nl "112~"; then
+	    rm_conffile postgresql-8.3 /etc/init.d/postgresql-8.3
+	fi
         ;;
 
     abort-upgrade)

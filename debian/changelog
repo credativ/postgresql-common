@@ -12,6 +12,12 @@ postgresql-common (112) UNRELEASED; urgency=low
   * pg_upgradecluster: Move stopping of old cluster and disabling connections
     to it much ealier, and properly fail without starting the upgrade.
     (Closes: #509050)
+  * debian/postgresql-common.preinst: Remove obsolete init script from
+    postgresql-8.3 for upgrades from Lenny. It provides "postgresql" which is
+    also provided by our common init script, and insserv chokes on this. Our
+    common init script handles 8.3 as well and will just take over. Note that
+    this is a policy violation, but we can't clean up in -8.3 since that does
+    not exist any more in Squeeze. (Closes: #591924)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 22 Sep 2010 12:09:16 +0200
 
