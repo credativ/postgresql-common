@@ -1,3 +1,12 @@
+postgresql-common (113) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Split testing/squeeze and unstable cases. 9.0
+    is not officially supported in Squeeze and testing, it's only available as
+    a backport. This will make the "obsolete version installed" debconf note
+    point to 8.4 in squeeze, not 9.0. (Closes: #604423)
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 04 Dec 2010 14:48:53 +0100
+
 postgresql-common (112) unstable; urgency=medium
 
   * Urgency medium since this fixes an RC bug.
