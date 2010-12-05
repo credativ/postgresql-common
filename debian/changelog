@@ -1,3 +1,12 @@
+postgresql-common (114) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Add Ubuntu 11.04. Drop versions which are newer
+    than the ones supported in the released versions, as backports are now
+    generally accepted by our .config scripts, but having those newer versions
+    confuses pg_buildext.
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 05 Dec 2010 14:03:33 +0100
+
 postgresql-common (113) unstable; urgency=medium
 
   * Urgency medium, as this is a straightforward bug fix for an important
