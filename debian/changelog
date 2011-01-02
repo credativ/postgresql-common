@@ -7,6 +7,10 @@ postgresql-common (114) UNRELEASED; urgency=low
   * debian/postgresql-common.config: Silence warning from --compare-versions
     when being called through a trigger and $2 is not a version number.
     This works around the underlying dpkg problem. (Closes: #608522)
+  * Add debian/postgresql-common.sysctl: sysctl.d/ template for changing
+    kernel.shmmax and kernel.shmall, which is very common with PostgreSQL.
+    Install it in debian/rules. Thanks to Peter Eisentraut for the suggestion!
+    (Closes: #607946)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Dec 2010 14:03:33 +0100
 
