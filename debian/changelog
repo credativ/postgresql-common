@@ -4,6 +4,9 @@ postgresql-common (114) UNRELEASED; urgency=low
     than the ones supported in the released versions, as backports are now
     generally accepted by our .config scripts, but having those newer versions
     confuses pg_buildext.
+  * debian/postgresql-common.config: Silence warning from --compare-versions
+    when being called through a trigger and $2 is not a version number.
+    This works around the underlying dpkg problem. (Closes: #608522)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Dec 2010 14:03:33 +0100
 
