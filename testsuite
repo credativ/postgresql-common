@@ -42,6 +42,9 @@ for v in $(ls /usr/lib/postgresql/); do
         /etc/init.d/postgresql-$v stop
     fi
 done
+if [ -x "/etc/init.d/postgresql" ]; then
+    /etc/init.d/postgresql stop
+fi
 
 if [ -d /etc/postgresql ]; then 
     mv /etc/postgresql /etc/postgresql.testsuite;

@@ -11,6 +11,8 @@ postgresql-common (114) UNRELEASED; urgency=low
     kernel.shmmax and kernel.shmall, which is very common with PostgreSQL.
     Install it in debian/rules. Thanks to Peter Eisentraut for the suggestion!
     (Closes: #607946)
+  * testsuite: Take new unified init script into account when stopping
+    existing clusters. Thanks Steve Beattie! (LP: #712200)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Dec 2010 14:03:33 +0100
 
