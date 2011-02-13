@@ -31,7 +31,7 @@ Description: PostgreSQL database-cluster manager
 Package: postgresql-client-common
 Architecture: all
 Depends: ${misc:Depends}
-Recommends: lsb-release
+Recommends: lsb-release, libreadline6
 Description: manager for multiple PostgreSQL client versions
  The postgresql-client-common package provides a structure under which
  multiple versions of PostgreSQL client programs may be installed at

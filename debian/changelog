@@ -13,6 +13,12 @@ postgresql-common (114) UNRELEASED; urgency=low
     (Closes: #607946)
   * testsuite: Take new unified init script into account when stopping
     existing clusters. Thanks Steve Beattie! (LP: #712200)
+  * pg_wrapper: If libreadline is installed, LD_PRELOAD this for "psql", to
+    avoid using the rather broken libedit. We need to build the postgresql-X.Y
+    packages against libedit for license reasons (#603599), but as libreadline
+    has a drop-in compatible ABI, this works around the licensing
+    restrictions. Thanks to Andreas Barth for working this out! Add a
+    recommends to libreadline6. (Closes: #608442, #607907, #607109, #611918)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 05 Dec 2010 14:03:33 +0100
 
