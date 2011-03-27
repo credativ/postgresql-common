@@ -1,3 +1,9 @@
+postgresql-common (115) UNRELEASED; urgency=low
+
+  * Add Danish debconf translations, thanks Joe Dalton. (Closes: #619057)
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 27 Mar 2011 17:14:59 +0200
+
 postgresql-common (114) unstable; urgency=low
 
   * debian/supported-versions: Add Ubuntu 11.04. Drop versions which are newer

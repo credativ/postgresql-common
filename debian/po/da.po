@@ -1,0 +1,73 @@
+# Danish translation postgresql-common.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER.
+# This file is distributed under the same license as the postgresql-common package.
+# Joe Hansen (joedalton2@yahoo.dk), 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: postgresql-common\n"
+"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2008-02-03 13:01+0100\n"
+"PO-Revision-Date: 2011-03-20 19:25+0200\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid "Obsolete major version ${old}"
+msgstr "Forældet hovedversion ${old}"
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"The PostgreSQL version ${old} is obsolete, but the server or client packages "
+"are still installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade the existing "
+"${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr ""
+"PostgreSQL-versionen ${old} er forældet, men server- eller klientpakkerne "
+"er stadig installeret. Installer venligst de seneste pakker (postgresql-"
+"${latest} og postgresql-client-${latest}) og opgrader de eksisterende "
+"${oldversion}-klynger med pg_upgradecluster (se manpage)."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please be aware that the installation of postgresql-${latest} will "
+"automatically create a default cluster ${latest}/main. If you want to "
+"upgrade the ${old}/main cluster, you need to remove the already existing "
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
+msgstr ""
+"Vær venligst opmærksom på at installationen af postgresql-${latest} "
+"automatisk vil oprette en standardklynge ${latest}/main. Hvis du ønsker at "
+"opgradere ${old}/main-klyngen, skal du fjerne den allerede eksisterende "
+"${latest}-klynge (pg_dropcluster --stop ${latest} main, se manpage for "
+"detaljer)."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"The old server and client packages are no longer supported. After the "
+"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
+"${old} packages should be removed."
+msgstr ""
+"De gamle server- og klientpakker er ikke længere understøttet. Efter de "
+"eksisterende klynger er opgraderet, bør pakkerne postgresql-${old} og "
+"postgresql-client-${old} fjernes."
+
+#. Type: error
+#. Description
+#: ../postgresql-common.templates:2001
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""
+"Se venligst /usr/share/doc/postgresql-common/README.Debian.gz for detaljer."
+
