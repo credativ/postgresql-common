@@ -5,6 +5,7 @@ postgresql-common (115) UNRELEASED; urgency=low
  -- Martin Pitt <mpitt@debian.org>  Sun, 27 Mar 2011 17:14:59 +0200
   * debian/control: Add missing postgresql-client-common and dctrl-tools
     dependencies, thanks Christoph Berg. (Closes: #620144)
+  * t/001_packages.t: Allow locale names to end in either .utf8 or .UTF-8.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 30 Mar 2011 16:58:31 +0200
 
