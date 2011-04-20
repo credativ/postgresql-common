@@ -3,6 +3,10 @@ postgresql-common (115) UNRELEASED; urgency=low
   * Add Danish debconf translations, thanks Joe Dalton. (Closes: #619057)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 27 Mar 2011 17:14:59 +0200
+  * debian/control: Add missing postgresql-client-common and dctrl-tools
+    dependencies, thanks Christoph Berg. (Closes: #620144)
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 30 Mar 2011 16:58:31 +0200
 
 postgresql-common (114) unstable; urgency=low
 
