@@ -35,9 +35,8 @@ which are available at
 This contains the following branches:
 
   common     (postgresql-common package)
-  debian-8.1 (all available major versions)
-  debian-8.2
-  debian-8.3
+  debian-8.4 (all available major versions)
+  debian-9.0
 
 The orig.tar.gz files are not kept under revision control since they
 would only bloat the archive. They need to be downloaded separately
@@ -57,7 +56,7 @@ develop a feature you need, you should create your own branch where
 you can commit to. As an example, let's create a branch of the
 postgresql-common package:
 
-  $ bzr branch http://bazaar.launchpad.net/~pitti/postgresql/common
+  $ bzr branch lp:~pitti/postgresql/common
 
 Now you can happily use "bzr diff", "bzr commit", "bzr add", "baz
 pull", "bzr merge", and all the other features of revision control.
@@ -69,7 +68,7 @@ The prefered method of publishing your branch is to create a Launchpad
 account and put your branch there as well, so that all branches are
 managed in one place, and can be browsed, subscribed to, etc.
 
-  bzr push bzr+ssh://<username>@bazaar.launchpad.net/~<username>/postgresql/<branchname>
+  bzr push lp:~<username>/postgresql/<branchname>
 
 Of course you can also use any other server where you have ssh or sftp
 access (use sftp:// for the latter) and which is http accessible:
