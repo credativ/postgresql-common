@@ -42,7 +42,12 @@ is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "3\n",
     'check next sequence value';
 
 # create stored procedures
-is_program_out 'postgres', 'createlang plpgsql test', 0, '', 'createlang plpgsql test';
+if ($MAJORS[0] lt '9.0') {
+    is_program_out 'postgres', 'createlang plpgsql test', 0, '', 'createlang plpgsql test';
+} else {
+    pass '>= 9.0 enables PL/pgsql by default';
+    pass '...';
+}
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc2(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 2; END;\';"',
     0, "CREATE FUNCTION\n", 'create function inc2';
 is_program_out 'postgres', "psql -c \"update pg_proc set probin = '/usr/lib/postgresql/$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",

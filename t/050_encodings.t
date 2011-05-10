@@ -82,7 +82,7 @@ sub check_cluster {
 	    'Server rejects incorrect encoding (CVE-2006-2313)';
 	like_program_out 'postgres', 
 	    'printf "set client_encoding=\'SJIS\'; select \'\\\\\\\'a\'" | psql -Atq template1',
-	    0, qr/\\' is insecure/,
+	    0, qr/(\\' is insecure)|(unterminated quoted string)/,
 	    'Server rejects \\\' escaping in unsafe client encoding (CVE-2006-2314)';
 	is_program_out 'postgres', 
 	    "printf \"set client_encoding='UTF-8'; set escape_string_warning='off'; select '\\\\\\'a'\" | psql -Atq template1",

@@ -2,6 +2,18 @@ postgresql-common (115) UNRELEASED; urgency=low
 
   * Add Danish debconf translations, thanks Joe Dalton. (Closes: #619057)
   * debian/README.Devel: Modernize a bit.
+  * pg_upgradecluster: In the "probin" fixup, drop the wrapping in
+    encode()/decode(). This has been wrong all the time, as the "probin"
+    column already is of "text" datatype, and now breaks with 9.1.
+  * Add support for 9.1:
+    - Add 9.1 configuration method to pg_createcluster.
+    - cleanpg: Stop 9.1 clusters.
+    - t/040_upgrade.t: Don't call createlang for upgrades from 9.0 on, as
+      PL/pgsql is enabled there by default.
+    - t/050_encodings.t: Update for changed error message for invalid usage of
+      \' in 9.1.
+    - t/060_obsolete_confparams.t: Add full configuration for 9.0 to test the
+      configuration update to 9.1.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 27 Mar 2011 17:14:59 +0200
 

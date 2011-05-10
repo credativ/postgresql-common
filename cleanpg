@@ -17,7 +17,7 @@
 #  GNU General Public License for more details.
 
 [ `id -u` = 0 ] || SUDO=sudo
-for v in 7.4 8.0 8.1 8.2 8.3 8.4 9.0; do
+for v in 7.4 8.0 8.1 8.2 8.3 8.4 9.0 9.1; do
     i=/etc/init.d/postgresql-$v
     [ -x $i ] && $SUDO $i stop
 done

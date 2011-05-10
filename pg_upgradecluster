@@ -426,9 +426,9 @@ if (!fork) {
 	print "Fixing hardcoded library paths for stored procedures...\n";
 	(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
 	    $db, '-c', "BEGIN; set transaction read write; \
-                update pg_proc set probin = decode(replace(\
-		replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
-		'/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape'); COMMIT") == 0 or
+		update pg_proc set probin = replace(\
+		replace(probin, '/usr/lib/postgresql/lib', '\$libdir'), \
+		'/usr/lib/postgresql/$version/lib', '\$libdir'); COMMIT") == 0 or
 	    error 'Could not fix library paths';
 
         print 'Upgrading database ', $db, "...\n";
