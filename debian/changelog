@@ -1,4 +1,4 @@
-postgresql-common (115) UNRELEASED; urgency=low
+postgresql-common (115) unstable; urgency=low
 
   * Add Danish debconf translations, thanks Joe Dalton. (Closes: #619057)
   * debian/README.Devel: Modernize a bit.
@@ -15,7 +15,7 @@ postgresql-common (115) UNRELEASED; urgency=low
     - t/060_obsolete_confparams.t: Add full configuration for 9.0 to test the
       configuration update to 9.1.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 27 Mar 2011 17:14:59 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 11 May 2011 09:40:00 +0200
 
 postgresql-common (114) unstable; urgency=low
 
