@@ -1,3 +1,10 @@
+postgresql-common (116) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Move Debian testing/unstable and Ubuntu 11.10
+    to 9.0.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 12 May 2011 10:47:15 +0200
+
 postgresql-common (115) unstable; urgency=low
 
   * Add Danish debconf translations, thanks Joe Dalton. (Closes: #619057)
