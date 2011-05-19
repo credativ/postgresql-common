@@ -11,6 +11,8 @@ postgresql-common (116) UNRELEASED; urgency=low
     versions >= 96 only support clusters >= 8.1 anyway. In some cases they
     actively break stuff, like inadvertently setting log_statement=all.
     (Closes: #617493)
+  * t/060_obsolete_confparams.t: Fix remaining "log_timezone=unknown" example
+    configuration files, to also fix upgrade tests for 8.4 → 9.1.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 12 May 2011 10:47:15 +0200
 
