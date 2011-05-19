@@ -7,7 +7,7 @@ postgresql-common (116) UNRELEASED; urgency=low
     versions' replace() function indeed does work on bytea types, not strings,
     so this broke upgrades to 8.4. (Closes: #627227)
   * pg_upgradecluster: Drop all unversioned configuration option transitions,
-    which were still from the 7.4 -> 8.0 days. These are obsolete, and
+    which were still from the 7.4 → 8.0 days. These are obsolete, and
     versions >= 96 only support clusters >= 8.1 anyway. In some cases they
     actively break stuff, like inadvertently setting log_statement=all.
     (Closes: #617493)
