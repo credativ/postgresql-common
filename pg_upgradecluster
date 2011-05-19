@@ -424,12 +424,23 @@ if (!fork) {
         next if $db eq 'template0';
 
 	print "Fixing hardcoded library paths for stored procedures...\n";
-	(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
-	    $db, '-c', "BEGIN; set transaction read write; \
-		update pg_proc set probin = replace(\
-		replace(probin, '/usr/lib/postgresql/lib', '\$libdir'), \
-		'/usr/lib/postgresql/$version/lib', '\$libdir'); COMMIT") == 0 or
-	    error 'Could not fix library paths';
+	# starting from 9.0, replace() works on strings; for ealier versions it
+	# works on bytea
+	if ($version ge '9.0') {
+	    (system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
+		$db, '-c', "BEGIN; set transaction read write; \
+		    update pg_proc set probin = replace(\
+		    replace(probin, '/usr/lib/postgresql/lib', '\$libdir'), \
+		    '/usr/lib/postgresql/$version/lib', '\$libdir'); COMMIT") == 0 or
+		error 'Could not fix library paths';
+	} else {
+	    (system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
+		$db, '-c', "BEGIN; set transaction read write; \
+		    update pg_proc set probin = decode(replace(\
+		   replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
+		   '/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape'); COMMIT") == 0 or
+		error 'Could not fix library paths';
+	}
 
         print 'Upgrading database ', $db, "...\n";
         open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},

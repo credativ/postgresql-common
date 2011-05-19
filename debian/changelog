@@ -2,6 +2,10 @@ postgresql-common (116) UNRELEASED; urgency=low
 
   * debian/supported-versions: Move Debian testing/unstable and Ubuntu 11.10
     to 9.0.
+  * pg_upgradecluster: Revert to the previous encode()/decode() wrapping in
+    the "probin" fixup for cluster upgrades from versions < 9.0. Earlier
+    versions' replace() function indeed does work on bytea types, not strings,
+    so this broke upgrades to 8.4. (Closes: #627227)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 12 May 2011 10:47:15 +0200
 
