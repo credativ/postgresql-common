@@ -6,6 +6,11 @@ postgresql-common (116) UNRELEASED; urgency=low
     the "probin" fixup for cluster upgrades from versions < 9.0. Earlier
     versions' replace() function indeed does work on bytea types, not strings,
     so this broke upgrades to 8.4. (Closes: #627227)
+  * pg_upgradecluster: Drop all unversioned configuration option transitions,
+    which were still from the 7.4 -> 8.0 days. These are obsolete, and
+    versions >= 96 only support clusters >= 8.1 anyway. In some cases they
+    actively break stuff, like inadvertently setting log_statement=all.
+    (Closes: #617493)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 12 May 2011 10:47:15 +0200
 

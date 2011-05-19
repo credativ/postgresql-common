@@ -73,53 +73,6 @@ sub adapt_conffiles {
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
         'data_directory', $newinfo{'pgdata'};
 
-    # tcpip_socket transition
-    my $tcpip_socket = config_bool $c{'tcpip_socket'};
-    deprecate \%c, 'virtual_host', 'deprecated in favor of listen_addresses';
-    if (defined $tcpip_socket) {
-        PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
-                'tcpip_socket', 'deprecated in favor of listen_addresses', 
-                'listen_addresses', ($tcpip_socket ? ($c{'virtual_host'} || '*') : '');
-    }
-
-    # syslog transition
-    if (defined $c{'syslog'}) {
-        my %syslog_values = (0 => 'stderr', 1 => 'stderr,syslog', 2 => 'syslog');
-        PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
-            'syslog', 'deprecated in favor of log_destination',
-            'log_destination', $syslog_values{$c{'syslog'}};
-        # make sure log file output actually gets enabled
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'redirect_stderr', 'true';
-        %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
-    }
-
-    # sort_mem -> work_mem transition
-    rename_ \%c, 'sort_mem', 'work_mem' if $newversion ge '8.0';
-
-    # log_statement transition
-    if (defined $c{'log_statement'}) {
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'log_statement', ($c{'log_statement'} ? 'all' : 'none');
-    }
-
-    # log_* transition
-    my $log_line_prefix = '';
-
-    deprecate \%c, 'log_timestamp', 'deprecated in favor of log_line_prefix';
-    deprecate \%c, 'log_pid', 'deprecated in favor of log_line_prefix';
-    deprecate \%c, 'log_hostname', 'deprecated in favor of log_line_prefix';
-    deprecate \%c, 'log_source_port', 'deprecated in favor of log_line_prefix';
-
-    $log_line_prefix .= '%t ' if config_bool $c{'log_timestamp'};
-    $log_line_prefix .= '[%p] ' if config_bool $c{'log_pid'};
-    $log_line_prefix .= '%r ' if config_bool $c{'log_hostname'} || config_bool $c{'log_source_port'};
-    chop $log_line_prefix if (substr $log_line_prefix, -1) eq ' ';
-    if ($log_line_prefix) {
-        PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-            'log_line_prefix', $log_line_prefix;
-    }
-
     if ($newversion ge '8.2') {
         # preload_libraries -> shared_preload_libraries transition
         rename_ \%c, 'preload_libraries', 'shared_preload_libraries';
