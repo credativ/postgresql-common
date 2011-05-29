@@ -2,6 +2,10 @@
 
 set -e
 
+if [ remove = "$1" -o abort-install = "$1" -o disappear = "$1" ]; then
+    dpkg-divert --package postgresql-common --remove --rename --divert /usr/bin/pg_config.libpq-dev /usr/bin/pg_config
+fi
+
 if [ "$1" = purge ]; then
     # remove socket directory
     rm -rf /var/run/postgresql

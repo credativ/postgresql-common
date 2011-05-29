@@ -6,6 +6,12 @@ postgresql-common (117) UNRELEASED; urgency=low
     (Closes: #628370)
   * debian/control, debian/rules: Let -server-dev-all depend on all supported
     -server-dev-X.Y packages. (Closes: #624749)
+  * Add pg_config wrapper: If postgresql-server-dev-* is installed, this calls
+    pg_config from the latest available one. Otherwise this falls back to
+    libpq-dev's version. This should fix a common confusion for people who
+    want to build e. g. 9.0 server-side extensions with a newer (like 9.1
+    beta) libpq-dev installed. In debian/postgresql-common.{preinst,postrm}:
+    Divert libpq-dev's /usr/bin/pg_config to pg_config.libpq-dev.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 21 May 2011 17:51:32 +0200
 

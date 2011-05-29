@@ -53,6 +53,8 @@ case "$1" in
 	if dpkg --compare-versions "$2" lt-nl "112~"; then
 	    rm_conffile postgresql-8.3 /etc/init.d/postgresql-8.3
 	fi
+
+	dpkg-divert --package postgresql-common --rename --divert /usr/bin/pg_config.libpq-dev --add /usr/bin/pg_config
         ;;
 
     abort-upgrade)
