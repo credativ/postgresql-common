@@ -4,6 +4,8 @@ postgresql-common (117) UNRELEASED; urgency=low
     (Closes: #627520)
   * Add Catalan debconf translations, thanks Innocent De Marchi.
     (Closes: #628370)
+  * debian/control, debian/rules: Let -server-dev-all depend on all supported
+    -server-dev-X.Y packages. (Closes: #624749)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 21 May 2011 17:51:32 +0200
 

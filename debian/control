@@ -51,7 +51,8 @@ Package: postgresql-server-dev-all
 Architecture: all
 Depends: ${misc:Depends}, 
  postgresql-client-common,
- dctrl-tools
+ dctrl-tools,
+ ${server-dev-all-depends}
 Description: extension build tool for multiple PostgreSQL versions
  The postgresql-server-dev-all package provides the pg_buildext script for
  simplifying packaging of a PostgreSQL extension supporting multiple major
