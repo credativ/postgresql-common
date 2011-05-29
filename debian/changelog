@@ -2,6 +2,8 @@ postgresql-common (117) UNRELEASED; urgency=low
 
   * Update Dutch debconf translations, thanks Vincent Zweije.
     (Closes: #627520)
+  * Add Catalan debconf translations, thanks Innocent De Marchi.
+    (Closes: #628370)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 21 May 2011 17:51:32 +0200
 
