@@ -1,4 +1,4 @@
-postgresql-common (117) UNRELEASED; urgency=low
+postgresql-common (117) unstable; urgency=low
 
   * Update Dutch debconf translations, thanks Vincent Zweije.
     (Closes: #627520)
@@ -13,7 +13,7 @@ postgresql-common (117) UNRELEASED; urgency=low
     beta) libpq-dev installed. In debian/postgresql-common.{preinst,postrm}:
     Divert libpq-dev's /usr/bin/pg_config to pg_config.libpq-dev.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 21 May 2011 17:51:32 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 29 May 2011 19:22:27 +0200
 
 postgresql-common (116) unstable; urgency=low
 
