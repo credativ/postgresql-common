@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: postgresql-common 114\n"
 "Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2011-05-10 18:35+0100\n"
+"PO-Revision-Date: 2011-06-01 18:32+0100\n"
 "Last-Translator: Innocent De Marchi <tangram.peces@gmail.com>\n"
 "Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Versió principal ${old} obsoleta"
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "The PostgreSQL version ${old} is obsolete, but the server or client packages are still installed. Please install the latest packages (postgresql-${latest} and postgresql-client-${latest}) and upgrade the existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr "La versió de «PostgreSQL» ${old} és obsoleta, però el paquet del client o del servidor encara estan instal·lats. Heu d'instal·lar les darreres versions dels paquets (postgresql-${latest} i postgresql-client-${latest}) i actualitzar els seus «clusters» ${oldversion} amb l'ordre «pg_upgradecluster» (consulti la pàgina del manual)."
+msgstr "La versió de «PostgreSQL» ${old} és obsoleta, però el paquet del client o del servidor encara estan instal·lats. Heu d'instal·lar les darreres versions dels paquets (postgresql-${latest} i postgresql-client-${latest}) i actualitzar els clusters de la versió ${oldversion} amb l'ordre «pg_upgradecluster» (consulteu la pàgina del manual)."
 
 #. Type: error
 #. Description

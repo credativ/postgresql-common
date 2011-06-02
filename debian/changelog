@@ -1,3 +1,10 @@
+postgresql-common (118) UNRELEASED; urgency=low
+
+  * Update Catalan debconf translations, thanks Innocent De Marchi.  
+    (Closes: #628370)
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 02 Jun 2011 09:34:56 +0200
+
 postgresql-common (117) unstable; urgency=low
 
   * Update Dutch debconf translations, thanks Vincent Zweije.
