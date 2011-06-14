@@ -2,6 +2,8 @@ postgresql-common (118) UNRELEASED; urgency=low
 
   * Update Catalan debconf translations, thanks Innocent De Marchi.  
     (Closes: #628370)
+  * t/050_encodings.t: Update \' escaping test case for 9.1, as this
+    finally has been deprecated.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 02 Jun 2011 09:34:56 +0200
 
