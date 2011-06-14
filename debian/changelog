@@ -1,4 +1,4 @@
-postgresql-common (118) UNRELEASED; urgency=low
+postgresql-common (118) unstable; urgency=low
 
   * Update Catalan debconf translations, thanks Innocent De Marchi.  
     (Closes: #628370)
@@ -7,7 +7,7 @@ postgresql-common (118) UNRELEASED; urgency=low
   * debian/control: Add p-server-dev-all dependency to p-common, so that
     packages that build-dep on it get the pg_config wrapper.
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 02 Jun 2011 09:34:56 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 14 Jun 2011 14:52:08 +0200
 
 postgresql-common (117) unstable; urgency=low
 
