@@ -50,7 +50,7 @@ Description: manager for multiple PostgreSQL client versions
 Package: postgresql-server-dev-all
 Architecture: all
 Depends: ${misc:Depends}, 
- postgresql-client-common,
+ postgresql-common (>= 117~),
  dctrl-tools,
  ${server-dev-all-depends}
 Description: extension build tool for multiple PostgreSQL versions

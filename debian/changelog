@@ -4,6 +4,8 @@ postgresql-common (118) UNRELEASED; urgency=low
     (Closes: #628370)
   * t/050_encodings.t: Update \' escaping test case for 9.1, as this
     finally has been deprecated.
+  * debian/control: Add p-server-dev-all dependency to p-common, so that
+    packages that build-dep on it get the pg_config wrapper.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 02 Jun 2011 09:34:56 +0200
 
