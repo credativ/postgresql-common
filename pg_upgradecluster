@@ -235,7 +235,8 @@ error 'could not get name of cluster owner' unless $owner;
 # stopping old cluster, so that we notice early when there are still
 # connections
 print "Stopping old cluster...\n";
-my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--', '-t', '5');
+my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
+push @argv, ('-t', '5') if $version ge '8.4';
 error "Could not stop old cluster" if system @argv;
 
 # Disable access to clusters during upgrade

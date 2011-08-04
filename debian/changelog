@@ -5,6 +5,8 @@ postgresql-common (119) UNRELEASED; urgency=low
     t/005_PgCommon.t. (Closes: #539651)
   * debian/postgresql-common.postgresql.init: Fix "status" command when some
     clusters are down. (Closes: #635594)
+  * pg_upgradecluster: Only call pg_ctl with the -t option with old clusters
+    >= 8.4, as earlier versions do not yet support it. (Closes: #633801)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 04 Aug 2011 17:51:56 +0200
 
