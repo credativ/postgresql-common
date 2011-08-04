@@ -103,12 +103,14 @@ print F <<EOF;
 # commented_int = 12
 # commented_str = 'foobar'
 
+#intval = 1
 intval = 42
 cintval = 1 # blabla
 strval = 'hello'
 cstrval = 'bye' # comment
 emptystr = ''
 cemptystr = '' # moo!
+#testpath = '/bin/bad'
 testpath = '/bin/test'
 quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 EOF
@@ -158,6 +160,7 @@ PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'commented_str', 'new foo';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'intval', '39';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'cintval', '5';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'newval', 'NEW!';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'testpath', '/bin/new';
 
 open F, "$c";
 my $conf;
@@ -169,13 +172,15 @@ is ($conf, <<EOF, 'set_conf_value');
 commented_int = 24
 commented_str = 'new foo'
 
+#intval = 1
 intval = 39
 cintval = 5 # blabla
 strval = 'hello'
 cstrval = 'bye' # comment
 emptystr = ''
 cemptystr = '' # moo!
-testpath = '/bin/test'
+#testpath = '/bin/bad'
+testpath = '/bin/new'
 quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
 EOF
@@ -184,6 +189,7 @@ EOF
 PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'intval', 'ints are out of fashion';
 PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'cstrval', 'not used any more';
 PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'nonexisting', 'NotMe';
+PgCommon::disable_conf_value '8.4', 'test', 'foo.conf', 'testpath', 'now 2 comments';
 
 open F, "$c";
 read F, $conf, 1024;
@@ -194,13 +200,15 @@ is ($conf, <<EOF, 'disable_conf_value');
 commented_int = 24
 commented_str = 'new foo'
 
+#intval = 1
 #intval = 39 #ints are out of fashion
 cintval = 5 # blabla
 strval = 'hello'
 #cstrval = 'bye' # comment #not used any more
 emptystr = ''
 cemptystr = '' # moo!
-testpath = '/bin/test'
+#testpath = '/bin/bad'
+#testpath = '/bin/new' #now 2 comments
 quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
 EOF
@@ -220,6 +228,7 @@ is ($conf, <<EOF, 'replace_conf_value');
 commented_int = 24
 commented_str = 'new foo'
 
+#intval = 1
 #intval = 39 #ints are out of fashion
 cintval = 5 # blabla
 #strval = 'hello' #renamedstrval
@@ -227,7 +236,8 @@ newstrval = goodbye
 #cstrval = 'bye' # comment #not used any more
 emptystr = ''
 cemptystr = '' # moo!
-testpath = '/bin/test'
+#testpath = '/bin/bad'
+#testpath = '/bin/new' #now 2 comments
 quotestr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
 EOF

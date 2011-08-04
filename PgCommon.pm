@@ -172,14 +172,30 @@ sub set_conf_value {
     close F;
 
     my $found = 0;
+    # first, search for an uncommented setting
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*#?\s*$_[3]\s*=\s*\w+\b((?:\s*#.*)?)/ or
-	    $lines[$i] =~ /^\s*#?\s*$_[3]\s*=\s*'[^']*'((?:\s*#.*)?)/) {
+	if ($lines[$i] =~ /^\s*$_[3]\s*=\s*\w+\b((?:\s*#.*)?)/ or
+	    $lines[$i] =~ /^\s*$_[3]\s*=\s*'[^']*'((?:\s*#.*)?)/) {
 	    $lines[$i] = "$_[3] = $value$1\n";
 	    $found = 1;
 	    last;
 	}
     }
+
+    # now check if the setting exists as a comment; if so, change that instead
+    # of appending
+    if (!$found) {
+	for (my $i=0; $i <= $#lines; ++$i) {
+	    if ($lines[$i] =~ /^\s*#\s*$_[3]\s*=\s*\w+\b((?:\s*#.*)?)/ or
+		$lines[$i] =~ /^\s*#\s*$_[3]\s*=\s*'[^']*'((?:\s*#.*)?)/) {
+		$lines[$i] = "$_[3] = $value$1\n";
+		$found = 1;
+		last;
+	    }
+	}
+    }
+
+    # not found anywhere, append it
     push (@lines, "$_[3] = $value\n") unless $found;
 
     # write configuration file lines
