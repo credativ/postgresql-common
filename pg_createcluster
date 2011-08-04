@@ -28,7 +28,9 @@ my @postgres_user = getpwnam 'postgres';
 # Arguments: <version> <data directory> <owner uid> <owner gid>
 sub init_db {
     $datadir = (-l $_[1]) ? readlink $_[1] : $_[1];
-    if ($_[0] ge '8.4') {
+    if ($_[0] ge '9.1') {
+	$ident_method = 'peer';
+    } elsif ($_[0] ge '8.4') {
 	$ident_method = 'ident';
     } else {
 	$ident_method = 'ident sameuser';
@@ -132,13 +134,11 @@ sub setup_pg_hba {
     $su_comment = "
 # DO NOT DISABLE!
 # If you change this first entry you will need to make sure that the
-# database
-# super user can access the database using some other method.
-# Noninteractive
-# access to all databases is required during automatic maintenance
-# (custom daily cronjobs, replication, and similar tasks).
+# database superuser can access the database using some other method.
+# Noninteractive access to all databases is required during automatic
+# maintenance (custom daily cronjobs, replication, and similar tasks).
 #
-# Database administrative login by UNIX sockets
+# Database administrative login by Unix domain socket
 ";
     
     open (F, $fname) or error "could not open $fname for reading";
@@ -148,7 +148,7 @@ sub setup_pg_hba {
 	# add superuser entry before column description line
 	if ($search && /#.*TYPE\s+DATABASE/) {
 	    push @lines, $su_comment;
-	    $s = sprintf "%-7s %-11s %-33s %s\n", 'local', 'all', $user, $ident_method;
+	    $s = sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $ident_method;
 	    push @lines, $s;
 	    push @lines, "\n";
 	    $search = 0;
