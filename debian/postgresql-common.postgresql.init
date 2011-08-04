@@ -27,9 +27,15 @@ else
 fi
 
 case "$1" in
-    start|stop|restart|reload|status)
+    start|stop|restart|reload)
 	for v in $versions; do
 	    $1 $v
+	done
+        ;;
+    status)
+	set +e
+	for v in $versions; do
+	    ($1 $v)
 	done
         ;;
     force-reload)

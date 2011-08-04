@@ -3,6 +3,8 @@ postgresql-common (119) UNRELEASED; urgency=low
   * PgCommon.pm, set_conf_value(): Fix the case where a key exists first as a
     commented value, and then uncommented. Add appropriate test cases to
     t/005_PgCommon.t. (Closes: #539651)
+  * debian/postgresql-common.postgresql.init: Fix "status" command when some
+    clusters are down. (Closes: #635594)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 04 Aug 2011 17:51:56 +0200
 
