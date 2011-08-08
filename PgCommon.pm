@@ -507,7 +507,13 @@ sub cluster_info {
     $result{'pgdata'} = cluster_data_directory $_[0], $_[1], \%postgresql_conf;
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
-    $result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
+
+    if ($postgresql_conf{'external_pid_file'}) {
+	$result{'running'} = -e $postgresql_conf{'external_pid_file'} ? 1 : 0;
+    } else {
+	$result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
+    }
+
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 
             (stat $result{'pgdata'})[4,5];
