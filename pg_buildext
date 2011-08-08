@@ -5,43 +5,75 @@
 #
 # Author: Dimitri Fontaine <dfontaine@hi-media.com>
 
+set -e
+
 action="$1"
 srcdir="$2"
 target="$3"
 opt="$4"
 
+die() {
+    echo "`basename $0`: error: $*" >&2
+    exit 1
+}
+
 prepare_env() {
-    if [ ! -d $srcdir ]; then
-	echo "Error: no such directory '$srcdir'"
-	exit 1
-    fi
     version=$1
-    vtarget=`echo $target | sed -e "s:%v:$version:"`
+    vtarget=`echo $target | sed -e "s:%v:$version:g"`
     pgc="/usr/lib/postgresql/$version/bin/pg_config"
-    cflags=`$pgc --cflags`
+    [ -e "$pgc" ] || die "$pgc does not exists"
+}
+
+configure() {
+    prepare_env $1
+    confopts=`echo $opt | sed -e "s:%v:$version:g"`
+
+    mkdir -p $vtarget
+    ( echo "calling configure in $vtarget" &&
+      cd $vtarget && $srcdir/configure $confopts PG_CONFIG="$pgc" )
 }
 
 build() {
     prepare_env $1
+    cflags="`$pgc --cflags` `echo $opt | sed -e "s:%v:$version:g"`"
 
     mkdir -p $vtarget
-    cd $vtarget
-    make -f $srcdir/Makefile CFLAGS="$cflags $opt" PG_CONFIG="$pgc" VPATH="$srcdir"
-    cd -
+    # if a Makefile was created by configure, use it, else the top level Makefile
+    [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
+    make -C $vtarget $makefile CFLAGS="$cflags" PG_CONFIG="$pgc" VPATH="$srcdir"
+}
+
+install() {
+    prepare_env $1
+    package=`echo $opt | sed -e "s:%v:$version:g"`
+
+    mkdir -p $vtarget
+    # if a Makefile was created by configure, use it, else the top level Makefile
+    [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
+    make -C $vtarget $makefile install DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir"
 }
 
 clean() {
     prepare_env $1
-    make clean PG_CONFIG="$pgc"
+
+    # if a Makefile was created by configure, use it, else the top level Makefile
+    [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
+    [ -d $vtarget ] && make -C $vtarget clean $makefile PG_CONFIG="$pgc" VPATH="$srcdir"
     rm -rf $vtarget
 }
 
 versions() {
+    [ -e /usr/share/postgresql-common/supported-versions ] ||
+	die "/usr/share/postgresql-common/supported-versions not found"
+    [ -e $srcdir/debian/pgversions ] || die "$srcdir/debian/pgversions not found"
     for v in `/usr/share/postgresql-common/supported-versions`
     do
 	grep -q "^$v" $srcdir/debian/pgversions && echo $v
     done
 }
+
+[ "$srcdir" ] || die "syntax: pg_buildext <action> <srcdir> ..."
+[ -d $srcdir ] || die "no such directory '$srcdir'"
 
 for v in `versions`
 do
@@ -50,13 +82,14 @@ do
 	    echo $v
 	    ;;
 
-	build|clean)
+	configure|build|install|clean)
+	    [ "$target" ] || die "syntax: pg_buildext $action <srcdir> <target> ..."
 	    # be verbose?
 	    $action $v
 	    ;;
 
 	*)
-	    echo "$0: unsupported $action."
+	    die "unsupported $action."
 	    ;;
     esac
 done
@@ -75,10 +108,12 @@ B<pg_buildext> I<action> I<srcdir> I<target> I<opts>
 
 =head1 DESCRIPTION
 
-B<pg_buildext> is a script that will build a PostgreSQL extension in a
-C<VPATH> way. It only supports the B<build> and B<clean> actions, and will
-choose to build the versions known in C<debian/pgversions> and in
-C</usr/share/postgresql-common/supported-versions>.
+B<pg_buildext> is a script that will build a PostgreSQL extension in a C<VPATH>
+way. It supports the B<configure>, B<build>, B<install>, and B<clean> actions,
+and will choose to build for the intersection of versions known in
+C<debian/pgversions> (versions supported by the package) and in
+C</usr/share/postgresql-common/supported-versions> (versions supported in this
+release).
 
 =head1 OPTIONS
 
@@ -86,24 +121,67 @@ C</usr/share/postgresql-common/supported-versions>.
 
 =item B<action>
 
-Either I<clean> or I<build>.
+One of B<configure>, B<build>, B<install>, or B<clean>.
 
 =item B<srcdir>
 
 Where to find the extension sources, including the C<debian> subdirectory.
+(Usually C<$(CURDIR)>.)
 
 =item B<target>
 
 The target directory where to build the sources, it will get created for you
 if it does not exist. If the B<target> contains a C<%v> sign, it will get
 replaced by the specific version of PostgreSQL being built against.
+(Usually C<build-%v>.)
 
 =item B<opts>
 
+C<%v> signs in B<opts> will get replaced as in B<target>.
+
+=over 4
+
+=item B<configure>
+
+Options to pass to the I<configure> script. (Most PostgreSQL extensions do not
+have a configure script.)
+
+=item B<build>
+
 Custom C<CFLAGS> options to use for the build.
+
+=item B<install>
+
+Package name to install for. Make will be called with DESTDIR="I<srcdir>/debian/I<package>".
+
+=item B<clean>
+
+B<clean> does not take extra options.
 
 =back
 
+=back
+
+=head1 USAGE
+
+As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>
+actions, invocations from C<debian/rules> (which is a makefile) should be prefixed
+with B<+> so the sub-makes can talk with the make jobserver.
+
+=head1 EXAMPLE
+
+  build-stamp:
+	  +pg_buildext configure $(CURDIR) build-%v "--libdir=/usr/lib/postgresql/%v/lib --datadir=/usr/share/postgresql-%v-plsh"
+	  +pg_buildext build $(CURDIR) build-%v
+
+  install: build
+	  +pg_buildext install $(CURDIR) build-%v postgresql-%v-plsh
+
+  clean:
+	  +pg_buildext clean $(CURDIR) build-%v
+
+
 =head1 AUTHOR
 
-Dimitri Fontaine L<E<lt>dim@tapoueh.orgE<gt>>
+Dimitri Fontaine L<E<lt>dim@tapoueh.orgE<gt>>, with extensions by
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>.

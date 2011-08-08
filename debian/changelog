@@ -25,6 +25,7 @@ postgresql-common (119) UNRELEASED; urgency=low
     file, check its existence for determining if a cluster is running, instead
     of poking the port. This is more efficient, and also gives correct results
     for overlapping port numbers. Based on a patch from Jens Wilke, thanks!
+  * pg_buildext: Apply various improvements from Christoph Berg, thanks!
 
   [ Peter Eisentraut ]
   * pg_createcluster: Update comment alignment to match existing file better.
