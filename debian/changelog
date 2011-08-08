@@ -1,4 +1,4 @@
-postgresql-common (119) UNRELEASED; urgency=low
+postgresql-common (119) unstable; urgency=low
 
   [ Martin Pitt ]
   * PgCommon.pm, set_conf_value(): Fix the case where a key exists first as a
@@ -25,13 +25,14 @@ postgresql-common (119) UNRELEASED; urgency=low
     file, check its existence for determining if a cluster is running, instead
     of poking the port. This is more efficient, and also gives correct results
     for overlapping port numbers. Based on a patch from Jens Wilke, thanks!
+    (Closes: #606336)
   * pg_buildext: Apply various improvements from Christoph Berg, thanks!
 
   [ Peter Eisentraut ]
   * pg_createcluster: Update comment alignment to match existing file better.
     (Closes: #632702)
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 04 Aug 2011 17:51:56 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 08 Aug 2011 15:31:17 +0200
 
 postgresql-common (118) unstable; urgency=low
 
