@@ -10,6 +10,8 @@ postgresql-common (119) UNRELEASED; urgency=low
     >= 8.4, as earlier versions do not yet support it. (Closes: #633801)
   * debian/postgresql-common.postinst: Remove some obsolete transition
     logic.
+  * architecture.html, cleanpg, debian/init.d-functions, pg_createcluster:
+    Remove obsolete references to per-version init scripts. (Closes: #636957)
 
   [ Peter Eisentraut ]
   * pg_createcluster:

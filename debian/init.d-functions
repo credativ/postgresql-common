@@ -1,6 +1,6 @@
 # This file contains common functionality for all postgresql server
 # package init.d scripts. It is usually included by
-# /etc/init.d/postgresql-X.Y.  
+# /etc/init.d/postgresql
 
 . /lib/lsb/init-functions
 
