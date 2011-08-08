@@ -56,33 +56,10 @@ for details (in package postgresql-doc-8.3).
 EOF
     fi
 
-    # Add postgres user to the ssl-cert group on upgrades or fresh installs
-    if dpkg --compare-versions "$2" lt "52"; then
+    # Add postgres user to the ssl-cert group on fresh installs
+    if [ -z "$2" ]; then
 	if getent group ssl-cert >/dev/null; then
 	    adduser --quiet postgres ssl-cert
-	fi
-    fi
-
-    # Clean up junk from the Sarge->Etch postgresql transition; needs to be
-    # kept until Lenny's release
-    if dpkg --compare-versions "$2" lt "77"; then
-        if [ -d /usr/lib/postgresql/dumpall/ ]; then
-            rm -rf /usr/lib/postgresql/dumpall/
-        fi
-    fi
-
-    # restart all servers
-    if dpkg --compare-versions "$2" lt-nl 53; then
-	if [ -d /usr/lib/postgresql/ ]; then
-	    for v in $(ls /usr/lib/postgresql/); do
-		if [ -x "/etc/init.d/postgresql-$v" ]; then
-			if [ -x /usr/sbin/invoke-rc.d ]; then
-				invoke-rc.d postgresql-$v restart
-			else
-				/etc/init.d/postgresql-$v restart
-			fi
-		fi
-	    done
 	fi
     fi
 

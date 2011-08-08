@@ -8,6 +8,8 @@ postgresql-common (119) UNRELEASED; urgency=low
     clusters are down. (Closes: #635594)
   * pg_upgradecluster: Only call pg_ctl with the -t option with old clusters
     >= 8.4, as earlier versions do not yet support it. (Closes: #633801)
+  * debian/postgresql-common.postinst: Remove some obsolete transition
+    logic.
 
   [ Peter Eisentraut ]
   * pg_createcluster:
