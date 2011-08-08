@@ -86,6 +86,9 @@ sub config_bool {
 
 # Read a 'var = value' style configuration file and return a hash with the
 # values. Error out if the file cannot be read.
+# If the file name ends with '.conf', the keys will be normalized to lower case
+# (suitable for e. g. postgresql.conf), otherwise kept intact (suitable for
+# environment).
 # Arguments: <path>
 # Returns: hash (empty if file does not exist)
 sub read_conf_file {
@@ -115,13 +118,17 @@ sub read_conf_file {
 
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
                 # string value
-                my $k = lc $1;
                 my $v = $2;
+                my $k = $1;
+		$k = lc $k if $_[0] =~ /\.conf$/;
                 $v =~ s/\\(.)/$1/g;
                 $conf{$k} = $v;
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
                 # simple value
-                $conf{lc $1} = $2;
+                my $v = $2;
+		my $k = $1;
+		$k = lc $k if $_[0] =~ /\.conf$/;
+                $conf{$k} = $v;
             } else {
                 error "Invalid line $. in $_[0]: »$_«";
             }
