@@ -14,6 +14,10 @@ _unlink_manpages() {
     update-alternatives --remove $3 /usr/share/postgresql/$1/man/man1/$3
 }
 
+_remove_tsearch() {
+    find /usr/share/postgresql/$1/tsearch_data -type l \( -name '*.dict' -o -name '*.affix' \) -exec rm '{}' \;
+}
+
 # arguments: <major version> <most recently configured package version>
 configure_version() {
     VERSION="$1"
@@ -57,6 +61,7 @@ stop_version() {
 
 remove_version() {
     _unlink_manpages "$1" "postgresql-$1" postmaster.1.gz
+    _remove_tsearch "$1"
 }
 
 configure_client_version() {

@@ -12,6 +12,8 @@ postgresql-common (119) UNRELEASED; urgency=low
     logic.
   * architecture.html, cleanpg, debian/init.d-functions, pg_createcluster:
     Remove obsolete references to per-version init scripts. (Closes: #636957)
+  * debian/maintscripts-functions: Remove our tsearch data symlinks on
+    removal. (Closes: #539611)
 
   [ Peter Eisentraut ]
   * pg_createcluster:
