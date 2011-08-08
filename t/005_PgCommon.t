@@ -101,11 +101,11 @@ print F <<EOF;
 # test configuration file
 
 # Commented_Int = 12
-# commented_str = 'foobar'
+# commented_str='foobar'
 
 #intval = 1
 Intval = 42
-cintval = 1 # blabla
+cintval=1 # blabla
 strval 'hello'
 strval2 'world'
 cstrval = 'bye' # comment
@@ -174,11 +174,11 @@ is ($conf, <<EOF, 'set_conf_value');
 # test configuration file
 
 Commented_Int = 24
-commented_str = 'new foo'
+commented_str='new foo'
 
 #intval = 1
 Intval = 39
-cintval = 5 # blabla
+cintval=5 # blabla
 strval Howdy
 strval2 'world'
 cstrval = 'bye' # comment
@@ -203,11 +203,11 @@ is ($conf, <<EOF, 'disable_conf_value');
 # test configuration file
 
 Commented_Int = 24
-commented_str = 'new foo'
+commented_str='new foo'
 
 #intval = 1
 #Intval = 39 #ints are out of fashion
-cintval = 5 # blabla
+cintval=5 # blabla
 strval Howdy
 strval2 'world'
 #cstrval = 'bye' # comment #not used any more
@@ -232,11 +232,11 @@ is ($conf, <<EOF, 'replace_conf_value');
 # test configuration file
 
 Commented_Int = 24
-commented_str = 'new foo'
+commented_str='new foo'
 
 #intval = 1
 #Intval = 39 #ints are out of fashion
-cintval = 5 # blabla
+cintval=5 # blabla
 #strval Howdy #renamedstrval
 newstrval = goodbye
 strval2 'world'

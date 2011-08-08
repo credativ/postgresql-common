@@ -186,9 +186,9 @@ sub set_conf_value {
     # of appending
     if (!$found) {
 	for (my $i=0; $i <= $#lines; ++$i) {
-	    if ($lines[$i] =~ /^\s*#\s*($_[3])\s*=\s*\w+\b((?:\s*#.*)?)/i or
-		$lines[$i] =~ /^\s*#\s*($_[3])\s*=\s*'[^']*'((?:\s*#.*)?)/i) {
-		$lines[$i] = "$1 = $value$2\n";
+	    if ($lines[$i] =~ /^\s*#\s*($_[3])(\s*(?:=|\s)\s*)\w+\b((?:\s*#.*)?)/i or
+		$lines[$i] =~ /^\s*#\s*($_[3])(\s*(?:=|\s)\s*)'[^']*'((?:\s*#.*)?)/i) {
+		$lines[$i] = "$1$2$value$3\n";
 		$found = 1;
 		last;
 	    }
