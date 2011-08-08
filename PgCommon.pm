@@ -98,7 +98,7 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-	    } elsif (/^\s*include\s+'([^']+)'\s*$/) {
+	    } elsif (/^\s*include\s+'([^']+)'\s*$/i) {
 		my ($k, $v, $path, %include_conf);
 		$path = $1;
 		unless (substr($path, 0, 1) eq '/') {
@@ -113,15 +113,15 @@ sub read_conf_file {
 		    $conf{$k} = $v;
 		}
 
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
                 # string value
-                my $k = $1;
+                my $k = lc $1;
                 my $v = $2;
                 $v =~ s/\\(.)/$1/g;
                 $conf{$k} = $v;
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
                 # simple value
-                $conf{$1} = $2;
+                $conf{lc $1} = $2;
             } else {
                 error "Invalid line $. in $_[0]: »$_«";
             }
@@ -174,9 +174,9 @@ sub set_conf_value {
     my $found = 0;
     # first, search for an uncommented setting
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*$_[3]\s*=\s*\w+\b((?:\s*#.*)?)/ or
-	    $lines[$i] =~ /^\s*$_[3]\s*=\s*'[^']*'((?:\s*#.*)?)/) {
-	    $lines[$i] = "$_[3] = $value$1\n";
+	if ($lines[$i] =~ /^\s*($_[3])\s*=\s*\w+\b((?:\s*#.*)?)/i or
+	    $lines[$i] =~ /^\s*($_[3])\s*=\s*'[^']*'((?:\s*#.*)?)/i) {
+	    $lines[$i] = "$1 = $value$2\n";
 	    $found = 1;
 	    last;
 	}
@@ -186,9 +186,9 @@ sub set_conf_value {
     # of appending
     if (!$found) {
 	for (my $i=0; $i <= $#lines; ++$i) {
-	    if ($lines[$i] =~ /^\s*#\s*$_[3]\s*=\s*\w+\b((?:\s*#.*)?)/ or
-		$lines[$i] =~ /^\s*#\s*$_[3]\s*=\s*'[^']*'((?:\s*#.*)?)/) {
-		$lines[$i] = "$_[3] = $value$1\n";
+	    if ($lines[$i] =~ /^\s*#\s*($_[3])\s*=\s*\w+\b((?:\s*#.*)?)/i or
+		$lines[$i] =~ /^\s*#\s*($_[3])\s*=\s*'[^']*'((?:\s*#.*)?)/i) {
+		$lines[$i] = "$1 = $value$2\n";
 		$found = 1;
 		last;
 	    }
@@ -228,7 +228,7 @@ sub disable_conf_value {
 
     my $changed = 0;
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*$_[3]\s*=/) {
+	if ($lines[$i] =~ /^\s*$_[3]\s*=/i) {
 	    $lines[$i] = '#'.$lines[$i];
 	    chomp $lines[$i];
             $lines[$i] .= ' #'.$_[4]."\n" if $_[4];
@@ -276,7 +276,7 @@ sub replace_conf_value {
 
     my $found = 0;
     for (my $i = 0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*$oldparam\s*=/) {
+	if ($lines[$i] =~ /^\s*$oldparam\s*=/i) {
 	    $lines[$i] = '#'.$lines[$i];
 	    chomp $lines[$i];
             $lines[$i] .= ' #'.$reason."\n" if $reason;

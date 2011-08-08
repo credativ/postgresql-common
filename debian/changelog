@@ -14,6 +14,9 @@ postgresql-common (119) UNRELEASED; urgency=low
     Remove obsolete references to per-version init scripts. (Closes: #636957)
   * debian/maintscripts-functions: Remove our tsearch data symlinks on
     removal. (Closes: #539611)
+  * PgCommon.pm: Make {read,set,disable,replace}_conf_value() case
+    independent, as per upstream specification. Add appropriate test cases to
+    t/005_PgCommon.t. (Closes: #618577)
 
   [ Peter Eisentraut ]
   * pg_createcluster:
