@@ -28,9 +28,7 @@ my @postgres_user = getpwnam 'postgres';
 # Arguments: <version> <data directory> <owner uid> <owner gid>
 sub init_db {
     $datadir = (-l $_[1]) ? readlink $_[1] : $_[1];
-    if ($_[0] ge '9.1') {
-	$ident_method = 'peer';
-    } elsif ($_[0] ge '8.4') {
+    if ($_[0] ge '8.4') {
 	$ident_method = 'ident';
     } else {
 	$ident_method = 'ident sameuser';

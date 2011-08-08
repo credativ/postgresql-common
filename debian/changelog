@@ -19,10 +19,8 @@ postgresql-common (119) UNRELEASED; urgency=low
     t/005_PgCommon.t. (Closes: #618577)
 
   [ Peter Eisentraut ]
-  * pg_createcluster:
-    - Use "peer" instead of "ident" from 9.1 on.
-    - Update comment alignment to match existing file better.
-    - (Closes: #632702)
+  * pg_createcluster: Update comment alignment to match existing file better.
+    (Closes: #632702)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 04 Aug 2011 17:51:56 +0200
 
