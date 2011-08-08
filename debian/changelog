@@ -17,6 +17,10 @@ postgresql-common (119) UNRELEASED; urgency=low
   * PgCommon.pm: Make {read,set,disable,replace}_conf_value() case
     independent, as per upstream specification. Add appropriate test cases to
     t/005_PgCommon.t. (Closes: #618577)
+  * PgCommon.pm: Make {read,set,disable,replace}_conf_value() accept "key
+    value" lines without '=', as tihs is optional as per upstream
+    specification. Add appropriate test cases to t/005_PgCommon.t. Thanks
+    to Frederic Junod for the original patch suggestion. (Closes: #618583)
 
   [ Peter Eisentraut ]
   * pg_createcluster: Update comment alignment to match existing file better.

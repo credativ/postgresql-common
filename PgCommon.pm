@@ -113,13 +113,13 @@ sub read_conf_file {
 		    $conf{$k} = $v;
 		}
 
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
                 # string value
                 my $k = lc $1;
                 my $v = $2;
                 $v =~ s/\\(.)/$1/g;
                 $conf{$k} = $v;
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*=\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
                 # simple value
                 $conf{lc $1} = $2;
             } else {
@@ -174,9 +174,9 @@ sub set_conf_value {
     my $found = 0;
     # first, search for an uncommented setting
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*($_[3])\s*=\s*\w+\b((?:\s*#.*)?)/i or
-	    $lines[$i] =~ /^\s*($_[3])\s*=\s*'[^']*'((?:\s*#.*)?)/i) {
-	    $lines[$i] = "$1 = $value$2\n";
+	if ($lines[$i] =~ /^\s*($_[3])(\s*(?:=|\s)\s*)\w+\b((?:\s*#.*)?)/i or
+	    $lines[$i] =~ /^\s*($_[3])(\s*(?:=|\s)\s*)'[^']*'((?:\s*#.*)?)/i) {
+	    $lines[$i] = "$1$2$value$3\n";
 	    $found = 1;
 	    last;
 	}
@@ -228,7 +228,7 @@ sub disable_conf_value {
 
     my $changed = 0;
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*$_[3]\s*=/i) {
+	if ($lines[$i] =~ /^\s*$_[3]\s*(?:=|\s)/i) {
 	    $lines[$i] = '#'.$lines[$i];
 	    chomp $lines[$i];
             $lines[$i] .= ' #'.$_[4]."\n" if $_[4];
@@ -276,7 +276,7 @@ sub replace_conf_value {
 
     my $found = 0;
     for (my $i = 0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*$oldparam\s*=/i) {
+	if ($lines[$i] =~ /^\s*$oldparam\s*(?:=|\s)/i) {
 	    $lines[$i] = '#'.$lines[$i];
 	    chomp $lines[$i];
             $lines[$i] .= ' #'.$reason."\n" if $reason;

@@ -106,7 +106,8 @@ print F <<EOF;
 #intval = 1
 Intval = 42
 cintval = 1 # blabla
-strval = 'hello'
+strval 'hello'
+strval2 'world'
 cstrval = 'bye' # comment
 emptystr = ''
 cemptystr = '' # moo!
@@ -120,6 +121,7 @@ is_deeply (\%conf, {
       'intval' => 42, 
       'cintval' => 1, 
       'strval' => 'hello', 
+      'strval2' => 'world', 
       'cstrval' => 'bye', 
       'testpath' => '/bin/test', 
       'emptystr' => '',
@@ -146,6 +148,7 @@ is_deeply (\%conf, {
       'intval' => 42, 
       'cintval' => 1, 
       'strval' => 'howdy', 
+      'strval2' => 'world', 
       'cstrval' => 'bye', 
       'testpath' => '/bin/test', 
       'emptystr' => '',
@@ -159,6 +162,7 @@ PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'commented_int', '24';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'commented_str', 'new foo';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'intval', '39';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'cintval', '5';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'strval', 'Howdy';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'newval', 'NEW!';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'testpath', '/bin/new';
 
@@ -175,7 +179,8 @@ commented_str = 'new foo'
 #intval = 1
 Intval = 39
 cintval = 5 # blabla
-strval = 'hello'
+strval Howdy
+strval2 'world'
 cstrval = 'bye' # comment
 emptystr = ''
 cemptystr = '' # moo!
@@ -203,7 +208,8 @@ commented_str = 'new foo'
 #intval = 1
 #Intval = 39 #ints are out of fashion
 cintval = 5 # blabla
-strval = 'hello'
+strval Howdy
+strval2 'world'
 #cstrval = 'bye' # comment #not used any more
 emptystr = ''
 cemptystr = '' # moo!
@@ -231,8 +237,9 @@ commented_str = 'new foo'
 #intval = 1
 #Intval = 39 #ints are out of fashion
 cintval = 5 # blabla
-#strval = 'hello' #renamedstrval
+#strval Howdy #renamedstrval
 newstrval = goodbye
+strval2 'world'
 #cstrval = 'bye' # comment #not used any more
 emptystr = ''
 cemptystr = '' # moo!
