@@ -1,3 +1,11 @@
+postgresql-common (120) UNRELEASED; urgency=low
+
+  * PgCommon.pm, cluster_info(): Do not consider external_pid_file
+    configuration as valid if it is '(none)'. Fixes test suite regression in
+    version 119.
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 21 Aug 2011 12:48:24 +0200
+
 postgresql-common (119) unstable; urgency=low
 
   [ Martin Pitt ]
