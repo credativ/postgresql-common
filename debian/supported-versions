@@ -9,7 +9,7 @@
 
 set -e
 
-DEFAULT="9.0"
+DEFAULT="9.1"
 
 lsb_ubuntu() {
     case "$1" in
@@ -41,7 +41,7 @@ lsb_debian() {
             ;;
         # unstable
         testing | unstable)
-            /bin/echo -e "9.0"
+            /bin/echo -e "9.1"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2

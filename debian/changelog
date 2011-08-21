@@ -3,6 +3,9 @@ postgresql-common (120) UNRELEASED; urgency=low
   * PgCommon.pm, cluster_info(): Do not consider external_pid_file
     configuration as valid if it is '(none)'. Fixes test suite regression in
     version 119.
+  * debian/supported-versions: Switch to 9.1 as default and testing/unstable
+    supported version. This will also cause -server-dev-all to only pull in
+    -9.1.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 21 Aug 2011 12:48:24 +0200
 
