@@ -6,6 +6,10 @@ postgresql-common (120) UNRELEASED; urgency=low
   * debian/supported-versions: Switch to 9.1 as default and testing/unstable
     supported version. This will also cause -server-dev-all to only pull in
     -9.1.
+  * PgCommon.pm: Partially revert changes for #606336: postmaster does not
+    clean up the PID file when it stops, and it is not world readable, so only
+    its absence is a definitive result. If the PID file is present, do the
+    port probe to check if it is really running.
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 21 Aug 2011 12:48:24 +0200
 

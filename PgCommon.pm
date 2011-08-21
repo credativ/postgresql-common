@@ -515,8 +515,12 @@ sub cluster_info {
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
 
-    if ($postgresql_conf{'external_pid_file'} && $postgresql_conf{'external_pid_file'} ne '(none)') {
-	$result{'running'} = -e $postgresql_conf{'external_pid_file'} ? 1 : 0;
+    if ($postgresql_conf{'external_pid_file'} &&
+	$postgresql_conf{'external_pid_file'} ne '(none)' &&
+	! -e $postgresql_conf{'external_pid_file'}) {
+	# postmaster does not clean up the PID file when it stops, and it is
+	# not world readable, so only its absence is a definitive result
+	$result{'running'} = 0;
     } else {
 	$result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
     }
