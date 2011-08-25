@@ -19,8 +19,8 @@ lsb_ubuntu() {
 	9.10|10.04|10.10|11.04)
             /bin/echo -e "8.4"
             ;;
-	11.10)
-            /bin/echo -e "9.0"
+	11.10|12.04)
+            /bin/echo -e "9.1"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
