@@ -2,6 +2,7 @@ postgresql-common (121) UNRELEASED; urgency=low
 
   * debian/supported-versions: Switch Ubuntu 11.10 to 9.1 (LP: #833684) and
     also preemtively add Ubuntu 12.04 (which will ship with 9.1, too).
+  * debian/control: Bump Standards-Version to 3.9.2, no changes necessary.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 25 Aug 2011 14:19:06 +0200
 
