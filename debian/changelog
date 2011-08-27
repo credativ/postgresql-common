@@ -1,10 +1,17 @@
 postgresql-common (121) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/supported-versions: Switch Ubuntu 11.10 to 9.1 (LP: #833684) and
     also preemtively add Ubuntu 12.04 (which will ship with 9.1, too).
   * debian/control: Bump Standards-Version to 3.9.2, no changes necessary.
   * debian/rules: Call dh_installinit with -r to avoid restarting on upgrade.
     (Closes: #639140)
+
+  [ Peter Eisentraut ] 
+  * pg_createcluster:
+    - Use "peer" instead of "ident" on local socket connections from 9.1 on.
+    - Apply pg_hba.conf adjustments to replication connections as well.
+    - (Closes: #632702)
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 25 Aug 2011 14:19:06 +0200
 

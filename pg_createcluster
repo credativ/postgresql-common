@@ -33,6 +33,11 @@ sub init_db {
     } else {
 	$ident_method = 'ident sameuser';
     }
+    if ($_[0] ge '9.1') {
+	$peer_method = 'peer';
+    } else {
+	$peer_method = $ident_method;
+    }
 
     if (system 'install', '-d', '-o', $_[2], '-g', $_[3], $datadir) {
         error 'could not create data directory; you might need to run this program with root privileges';
@@ -146,19 +151,19 @@ sub setup_pg_hba {
 	# add superuser entry before column description line
 	if ($search && /#.*TYPE\s+DATABASE/) {
 	    push @lines, $su_comment;
-	    $s = sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $ident_method;
+	    $s = sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $peer_method;
 	    push @lines, $s;
 	    push @lines, "\n";
 	    $search = 0;
 	}
 
 	# default authentication for Unix socket connections
-	if ($line =~ /^local/) {
-	    $line =~ s/trust/$ident_method/;
+	if ($line =~ /^#?local/) {
+	    $line =~ s/trust/$peer_method/;
 	}
 
 	# default authentication for TCP connections
-	if ($line =~ /^host/) {
+	if ($line =~ /^#?host/) {
 	    $line =~ s/($ident_method|trust)/md5/;
 	}
 	push @lines, $line;
