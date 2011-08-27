@@ -5,7 +5,7 @@ Maintainer: Martin Pitt <mpitt@debian.org>
 Standards-Version: 3.9.2
 Vcs-Bzr: https://code.launchpad.net/~pitti/postgresql/common/
 Vcs-Browser: http://bazaar.launchpad.net/~pitti/postgresql/common/changes
-Build-Depends: cdbs, debhelper (>= 6)
+Build-Depends: debhelper (>= 7.0.50~)
 
 Package: postgresql-common
 Architecture: all

@@ -7,6 +7,8 @@ postgresql-common (121) UNRELEASED; urgency=low
   * debian/rules: Call dh_installinit with -r to avoid restarting on upgrade.
     (Closes: #639140)
   * debian/control: Wrap dependencies.
+  * debian/control, debian/rules: Convert from cdbs to dh, and bump
+    Standards-Version to 7.
 
   [ Peter Eisentraut ] 
   * pg_createcluster:
