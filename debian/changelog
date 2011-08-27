@@ -1,4 +1,4 @@
-postgresql-common (121) UNRELEASED; urgency=low
+postgresql-common (121) unstable; urgency=low
 
   [ Martin Pitt ]
   * debian/supported-versions: Switch Ubuntu 11.10 to 9.1 (LP: #833684) and
@@ -26,7 +26,7 @@ postgresql-common (121) UNRELEASED; urgency=low
     - Apply pg_hba.conf adjustments to replication connections as well.
     - (Closes: #632702)
 
- -- Martin Pitt <mpitt@debian.org>  Thu, 25 Aug 2011 14:19:06 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 27 Aug 2011 14:01:11 +0200
 
 postgresql-common (120) unstable; urgency=low
 
