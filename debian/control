@@ -69,3 +69,69 @@ Description: extension build tool for multiple PostgreSQL versions
  outer joins, multiversion concurrency control, and user-defined types
  and functions.
 
+Package: postgresql
+Architecture: all
+Depends: postgresql-${default-version}, ${misc:Depends}
+Description: object-relational SQL database (supported version)
+ PostgreSQL is a fully featured object-relational database management
+ system.  It supports a large part of the SQL standard and is designed
+ to be extensible by users in many aspects.  Some of the features are:
+ ACID transactions, foreign keys, views, sequences, subqueries,
+ triggers, user-defined types and functions, outer joins, multiversion
+ concurrency control.  Graphical user interfaces and bindings for many
+ programming languages are available as well.
+ .
+ This package always depends on the currently supported PostgreSQL
+ database server version.
+
+Package: postgresql-client
+Architecture: all
+Depends: postgresql-client-${default-version}, ${misc:Depends}
+Description: front-end programs for PostgreSQL (supported version)
+ This package contains client and administrative programs for
+ PostgreSQL: these are the interactive terminal client psql and
+ programs for creating and removing users and databases.
+ .
+ This package always depends on the currently supported database
+ client package for PostgreSQL. If you install PostgreSQL on a
+ standalone machine, you need the server package postgresql, too. On a
+ network, you can install this package on many client machines, while
+ the server package may be installed on only one machine.
+ .  
+ PostgreSQL is an object-relational SQL database management system.
+ .
+ This package always depends on the currently supported PostgreSQL
+ database client version.
+
+Package: postgresql-doc
+Architecture: all
+Section: doc
+Depends: postgresql-doc-${default-version}, ${misc:Depends}
+Description: documentation for the PostgreSQL database management system
+ This package contains all README files, user manual, and examples for
+ the currently supported PostgreSQL version. The manual is in HTML
+ format.
+ .
+ PostgreSQL is an object-relational SQL database management system.
+ .
+ This package always depends on the currently supported PostgreSQL
+ database documentation package.
+
+Package: postgresql-contrib
+Architecture: all
+Depends: postgresql-contrib-${default-version}, ${misc:Depends}
+Description: additional facilities for PostgreSQL (supported version)
+ The PostgreSQL contrib package provides several additional features
+ for the PostgreSQL database. contrib often serves as a testbed for
+ features before they are adopted into PostgreSQL proper.
+ .
+ This package always depends on the currently supported contrib
+ package for PostgreSQL.
+ .
+ PostgreSQL is an object-relational SQL database management system.
+ This package always depends on the currently supported PostgreSQL
+ database documentation package.
+ .
+ This package always depends on the currently supported PostgreSQL
+ database contrib package.
+

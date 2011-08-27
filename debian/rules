@@ -3,6 +3,7 @@
 POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
 POD1PROGS=pg_wrapper pg_lsclusters pg_buildext
 POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
+DEFAULT_VER=$(shell debian/supported-versions | sort -r | head -n 1)
 
 %:
 	dh "$@"
@@ -17,7 +18,15 @@ override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r
 
 override_dh_gencontrol:
-	dh_gencontrol -- -Vserver-dev-all-depends="$(shell for v in `debian/supported-versions`; do echo "postgresql-server-dev-$$v,"; done)"
+	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(shell for v in `debian/supported-versions`; do echo "postgresql-server-dev-$$v,"; done)"
+	
+	# the versionless metapackages need to have version numbers which match
+	# the server version, not the p-common version
+	dh_gencontrol -ppostgresql -ppostgresql-client -ppostgresql-doc -ppostgresql-contrib  -- \
+		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
+		
+	dh_gencontrol --remaining-packages
+	
 
 override_dh_clean:
 	dh_clean

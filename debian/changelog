@@ -9,6 +9,9 @@ postgresql-common (121) UNRELEASED; urgency=low
   * debian/control: Wrap dependencies.
   * debian/control, debian/rules: Convert from cdbs to dh, and bump
     Standards-Version to 7.
+  * debian/control, debian/rules: Build the versionless metapackages from this
+    source instead of the current postgresql-X.Y source. This behaves better
+    with backports. Thanks to Christoph Berg for the suggestion.
 
   [ Peter Eisentraut ] 
   * pg_createcluster:
