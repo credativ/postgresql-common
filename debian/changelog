@@ -12,6 +12,8 @@ postgresql-common (121) UNRELEASED; urgency=low
   * debian/control, debian/rules: Build the versionless metapackages from this
     source instead of the current postgresql-X.Y source. This behaves better
     with backports. Thanks to Christoph Berg for the suggestion.
+  * debian/postgresql-common.lintian-overrides: Don't complain about missing
+    manpage for pg_config, it's shipped by libpq-dev.
 
   [ Peter Eisentraut ] 
   * pg_createcluster:

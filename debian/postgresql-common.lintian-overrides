@@ -12,3 +12,4 @@ postgresql-common: binary-without-manpage psql
 postgresql-common: binary-without-manpage reindexdb
 postgresql-common: binary-without-manpage vacuumdb
 postgresql-common: binary-without-manpage vacuumlo
+postgresql-common: binary-without-manpage usr/bin/pg_config
