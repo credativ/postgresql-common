@@ -10,9 +10,13 @@ Build-Depends: cdbs, debhelper (>= 6)
 Package: postgresql-common
 Architecture: all
 Conflicts: postgresql-7.4, postgresql-8.0
-Depends: postgresql-client-common (>= ${source:Version}), procps, adduser,
- debconf (>= 0.5.00) | debconf-2.0, lsb-base (>= 3.0-3),
- ssl-cert (>= 1.0.11), ${misc:Depends}
+Depends: postgresql-client-common (>= ${source:Version}), 
+ procps, 
+ adduser,
+ debconf (>= 0.5.00) | debconf-2.0,
+ lsb-base (>= 3.0-3),
+ ssl-cert (>= 1.0.11),
+ ${misc:Depends}
 Description: PostgreSQL database-cluster manager
  The postgresql-common package provides a structure under which
  multiple versions of PostgreSQL may be installed and/or multiple

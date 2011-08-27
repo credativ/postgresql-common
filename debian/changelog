@@ -6,6 +6,7 @@ postgresql-common (121) UNRELEASED; urgency=low
   * debian/control: Bump Standards-Version to 3.9.2, no changes necessary.
   * debian/rules: Call dh_installinit with -r to avoid restarting on upgrade.
     (Closes: #639140)
+  * debian/control: Wrap dependencies.
 
   [ Peter Eisentraut ] 
   * pg_createcluster:
