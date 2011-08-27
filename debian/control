@@ -81,7 +81,7 @@ Description: object-relational SQL database (supported version)
  concurrency control.  Graphical user interfaces and bindings for many
  programming languages are available as well.
  .
- This package always depends on the currently supported PostgreSQL
+ This metapackage always depends on the currently supported PostgreSQL
  database server version.
 
 Package: postgresql-client
@@ -100,7 +100,7 @@ Description: front-end programs for PostgreSQL (supported version)
  .  
  PostgreSQL is an object-relational SQL database management system.
  .
- This package always depends on the currently supported PostgreSQL
+ This metapackage always depends on the currently supported PostgreSQL
  database client version.
 
 Package: postgresql-doc
@@ -114,7 +114,7 @@ Description: documentation for the PostgreSQL database management system
  .
  PostgreSQL is an object-relational SQL database management system.
  .
- This package always depends on the currently supported PostgreSQL
+ This metapackage always depends on the currently supported PostgreSQL
  database documentation package.
 
 Package: postgresql-contrib
@@ -132,6 +132,6 @@ Description: additional facilities for PostgreSQL (supported version)
  This package always depends on the currently supported PostgreSQL
  database documentation package.
  .
- This package always depends on the currently supported PostgreSQL
+ This metapackage always depends on the currently supported PostgreSQL
  database contrib package.
 

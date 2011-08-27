@@ -14,6 +14,8 @@ postgresql-common (121) UNRELEASED; urgency=low
     with backports. Thanks to Christoph Berg for the suggestion.
   * debian/postgresql-common.lintian-overrides: Don't complain about missing
     manpage for pg_config, it's shipped by libpq-dev.
+  * debian/control: Update description of the metapackages to actually say
+    "metapackage" to quiesce lintian.
 
   [ Peter Eisentraut ] 
   * pg_createcluster:
