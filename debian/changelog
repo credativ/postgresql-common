@@ -16,6 +16,9 @@ postgresql-common (121) UNRELEASED; urgency=low
     manpage for pg_config, it's shipped by libpq-dev.
   * debian/control: Update description of the metapackages to actually say
     "metapackage" to quiesce lintian.
+  * Split POD of pg_buildext into pg_buildext.pod, and update debian/rules to
+    build the manpage from there. Fixes lintian "shell syntax failure"
+    error.
 
   [ Peter Eisentraut ] 
   * pg_createcluster:

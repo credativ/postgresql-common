@@ -1,0 +1,87 @@
+=head1 NAME
+
+pg_buildext - Build and install a PostgreSQL extension
+
+=head1 SYNOPSIS
+
+B<pg_buildext> I<action> I<srcdir> I<target> I<opts>
+
+=head1 DESCRIPTION
+
+B<pg_buildext> is a script that will build a PostgreSQL extension in a C<VPATH>
+way. It supports the B<configure>, B<build>, B<install>, and B<clean> actions,
+and will choose to build for the intersection of versions known in
+C<debian/pgversions> (versions supported by the package) and in
+C</usr/share/postgresql-common/supported-versions> (versions supported in this
+release).
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<action>
+
+One of B<configure>, B<build>, B<install>, or B<clean>.
+
+=item B<srcdir>
+
+Where to find the extension sources, including the C<debian> subdirectory.
+(Usually C<$(CURDIR)>.)
+
+=item B<target>
+
+The target directory where to build the sources, it will get created for you
+if it does not exist. If the B<target> contains a C<%v> sign, it will get
+replaced by the specific version of PostgreSQL being built against.
+(Usually C<build-%v>.)
+
+=item B<opts>
+
+C<%v> signs in B<opts> will get replaced as in B<target>.
+
+=over 4
+
+=item B<configure>
+
+Options to pass to the I<configure> script. (Most PostgreSQL extensions do not
+have a configure script.)
+
+=item B<build>
+
+Custom C<CFLAGS> options to use for the build.
+
+=item B<install>
+
+Package name to install for. Make will be called with DESTDIR="I<srcdir>/debian/I<package>".
+
+=item B<clean>
+
+B<clean> does not take extra options.
+
+=back
+
+=back
+
+=head1 USAGE
+
+As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>
+actions, invocations from C<debian/rules> (which is a makefile) should be prefixed
+with B<+> so the sub-makes can talk with the make jobserver.
+
+=head1 EXAMPLE
+
+  build-stamp:
+	  +pg_buildext configure $(CURDIR) build-%v "--libdir=/usr/lib/postgresql/%v/lib --datadir=/usr/share/postgresql-%v-plsh"
+	  +pg_buildext build $(CURDIR) build-%v
+
+  install: build
+	  +pg_buildext install $(CURDIR) build-%v postgresql-%v-plsh
+
+  clean:
+	  +pg_buildext clean $(CURDIR) build-%v
+
+
+=head1 AUTHOR
+
+Dimitri Fontaine L<E<lt>dim@tapoueh.orgE<gt>>, with extensions by
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>.
