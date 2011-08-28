@@ -125,9 +125,6 @@ Description: additional facilities for PostgreSQL (supported version)
  for the PostgreSQL database. contrib often serves as a testbed for
  features before they are adopted into PostgreSQL proper.
  .
- This package always depends on the currently supported contrib
- package for PostgreSQL.
- .
  PostgreSQL is an object-relational SQL database management system.
  This package always depends on the currently supported PostgreSQL
  database documentation package.
