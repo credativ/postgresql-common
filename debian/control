@@ -55,6 +55,7 @@ Package: postgresql-server-dev-all
 Architecture: all
 Depends: ${misc:Depends}, 
  postgresql-common (>= 117~),
+ lsb-release,
  dctrl-tools,
  ${server-dev-all-depends}
 Description: extension build tool for multiple PostgreSQL versions
