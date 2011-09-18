@@ -29,6 +29,14 @@ override_dh_gencontrol:
 		
 	dh_gencontrol --remaining-packages
 	
+override_dh_installlogrotate:
+	dh_installlogrotate
+	# logroate 3.8+ requires an additional "su" command which is not
+	# backportable, see #640493
+	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | cut -f2- -d' '` ge 3.8; then \
+		echo "Fixing logrotate configuration for logrotate >= 3.8..."; \
+		sed -i '/^}/ i\       su root root' debian/postgresql-common/etc/logrotate.d/*; \
+	fi
 
 override_dh_clean:
 	dh_clean

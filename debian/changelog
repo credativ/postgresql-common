@@ -5,6 +5,9 @@ postgresql-common (122) UNRELEASED; urgency=low
     pg_buildext tool needs it.
   * pg_wrapper: Find libreadline in multiarch directory, too.
     (Closes: #640520)
+  * debian/rules: logrotate 3.8.0 requires specifying the "su" option, which
+    is not backportable. Dynamically check the available logrotate version,
+    and add it if it is >= 3.8. (Closes: #640493)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 28 Aug 2011 17:19:28 +0200
 
