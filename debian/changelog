@@ -3,6 +3,8 @@ postgresql-common (122) UNRELEASED; urgency=low
   * debian/control: Fix duplicate package description. (Closes: #639562)
   * debian/control: Add lsb-release dependency to -server-dev-all, as the
     pg_buildext tool needs it.
+  * pg_wrapper: Find libreadline in multiarch directory, too.
+    (Closes: #640520)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 28 Aug 2011 17:19:28 +0200
 
