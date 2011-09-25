@@ -1,4 +1,4 @@
-postgresql-common (122) UNRELEASED; urgency=low
+postgresql-common (122) unstable; urgency=low
 
   * debian/control: Fix duplicate package description. (Closes: #639562)
   * debian/control: Add lsb-release dependency to -server-dev-all, as the
@@ -23,7 +23,7 @@ postgresql-common (122) UNRELEASED; urgency=low
     keywords.
   * Correct wrong bug reference in previous changelog.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 25 Sep 2011 21:32:49 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 25 Sep 2011 21:38:20 +0200
 
 postgresql-common (121) unstable; urgency=low
 
