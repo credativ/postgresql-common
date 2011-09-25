@@ -11,7 +11,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 91;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 100;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -25,13 +25,18 @@ exec_as 'root', "sed -i '/^local.*postgres/ s/\$/\\nlocal all foo trust/' /etc/p
 is ((system "pg_ctlcluster $MAJORS[0] upgr start"), 0, 'Starting upgr cluster');
 
 # Create nobody user, test database, and put a table into it
-is ((exec_as 'postgres', 'createuser nobody -D -R -s && createdb -O nobody test && createdb -O nobody testnc'), 
+is ((exec_as 'postgres', 'createuser nobody -D -R -s && createdb -O nobody test && createdb -O nobody testnc && createdb -O nobody testro'), 
 	0, 'Create nobody user and test databases');
 is ((exec_as 'nobody', 'psql test -c "create table phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)"'), 
     0, 'create table');
 is ((exec_as 'nobody', 'psql test -c "insert into phone values (\'Alice\', 2)"'), 0, 'insert Alice into phone table');
 is ((exec_as 'postgres', 'psql template1 -c "update pg_database set datallowconn = \'f\' where datname = \'testnc\'"'), 
     0, 'disallow connection to testnc');
+is ((exec_as 'nobody', 'psql testro -c "create table nums (num int NOT NULL); insert into nums values (1)"'), 0, 'create table in testro');
+is ((exec_as 'postgres', 'psql template1 -c "ALTER DATABASE testro SET default_transaction_read_only TO on"'), 
+    0, 'set testro transaction default to readonly');
+is ((exec_as 'nobody', 'psql testro -c "create table test(num int)"'), 
+    1, 'creating table in testro fails');
 
 # create a sequence
 is ((exec_as 'nobody', 'psql test -c "create sequence odd10 increment by 2 minvalue 1 maxvalue 10 cycle"'),
@@ -148,7 +153,9 @@ $MAJORS[-1]     upgr      5432 online postgres /var/lib/postgresql/$MAJORS[-1]/u
 
 # Check that SELECT output is identical
 is_program_out 'nobody', 'psql -tAc "select * from phone order by name" test', 0,
-    $$select_old, 'SELECT output is the same in original and upgraded cluster';
+    $$select_old, 'SELECT output is the same in original and upgraded test';
+is_program_out 'nobody', 'psql -tAc "select * from nums" testro', 0,
+    "1\n", 'SELECT output is the same in original and upgraded testro';
 
 # Check sequence value
 is_program_out 'nobody', 'psql -Atc "select nextval(\'odd10\')" test', 0, "5\n",
@@ -173,6 +180,7 @@ template0|f
 template1|t
 test|t
 testnc|f
+testro|t
 ', 'dataallowconn values';
 
 # check ACLs
@@ -180,6 +188,16 @@ is_program_out 'nobody', 'psql -U foo -qc "CREATE SCHEMA s_bar" test', 0, '',
     'CREATE SCHEMA on new cluster (ACL)';
 is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Chris\', 5)" test', 
     0, '', 'insert Chris into phone table (ACL)';
+
+# check default transaction r/o
+is ((exec_as 'nobody', 'psql test -c "create table test(num int)"'), 
+    0, 'creating table in test succeeds');
+is ((exec_as 'nobody', 'psql testro -c "create table test(num int)"'), 
+    1, 'creating table in testro fails');
+is ((exec_as 'postgres', 'psql testro -c "create table test(num int)"'), 
+    1, 'creating table in testro as superuser fails');
+is ((exec_as 'nobody', 'psql testro -c "begin read write; create table test(num int); commit"'), 
+    0, 'creating table in test succeeds with RW transaction');
 
 # check DB parameter
 is_program_out 'postgres', 'psql -Atc "SHOW DateStyle" test', 0, 'ISO, YMD

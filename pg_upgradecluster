@@ -370,9 +370,16 @@ if (!fork) {
     open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
         '-q', '-d', 'template1' or 
         error 'Could not execute psql for new cluster';
+
+    # ensure that we can upgrade tables for DBs with default read-only
+    # transactions
+    print SINK "BEGIN READ WRITE; ALTER USER $owner SET default_transaction_read_only to off; COMMIT;\n";
+
     print SINK $data;
+
     close SINK;
     ($? == 0) or exit 1;
+
     
     # Upgrade databases
     for my $db (keys %databases) {
@@ -441,6 +448,12 @@ if (!fork) {
                 error 'Could not disable access to database in new cluster';
         }
     }
+
+    # reset owner specific override for default read-only transactions
+    (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 'template1', '-c', 
+	"BEGIN READ WRITE; ALTER USER $owner RESET default_transaction_read_only; COMMIT;\n") == 0 or
+	error 'Could not reset default_transaction_read_only value for superuser';
+
     exit 0;
 }
 

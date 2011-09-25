@@ -13,6 +13,12 @@ postgresql-common (122) UNRELEASED; urgency=low
     Willi Mann for the patch. (Closes: #640031)
   * pg_upgradecluster: Print message for running the upgrade.d scripts, thanks
     Karsten Hilbert.
+  * t/040_upgrade.t: Add test case for a database with read only default
+    transactions. Reproduces #599085.
+  * pg_upgradecluster: Set superuser configuration value of
+    'default_transaction_read_only' to 'off' during the upgrade, so that
+    upgrading databases with read only default transactions actually works.
+    Thanks Karsten Hilbert for the suggestion. (Closes: #599085)
 
  -- Martin Pitt <mpitt@debian.org>  Sun, 28 Aug 2011 17:19:28 +0200
 
