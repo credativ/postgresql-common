@@ -21,8 +21,9 @@ postgresql-common (122) UNRELEASED; urgency=low
     Thanks Karsten Hilbert for the suggestion. (Closes: #599085)
   * t/040_upgrade.t, pg_upgradecluster: Consistently use upper case for SQL
     keywords.
+  * Correct wrong bug reference in previous changelog.
 
- -- Martin Pitt <mpitt@debian.org>  Sun, 28 Aug 2011 17:19:28 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 25 Sep 2011 21:32:49 +0200
 
 postgresql-common (121) unstable; urgency=low
 
@@ -50,7 +51,7 @@ postgresql-common (121) unstable; urgency=low
   * pg_createcluster:
     - Use "peer" instead of "ident" on local socket connections from 9.1 on.
     - Apply pg_hba.conf adjustments to replication connections as well.
-    - (Closes: #632702)
+    - (Closes: #639016)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 27 Aug 2011 14:01:11 +0200
 
