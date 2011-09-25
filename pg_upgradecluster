@@ -291,6 +291,7 @@ if ($upgrade_scripts) {
 
 # Run upgrade scripts in init phase
 if ($upgrade_scripts) {
+    print "Running <init> phase upgrade helper scripts...\n";
     if (!fork) {
 	change_ugid $info{'owneruid'}, $info{'ownergid'};
 
@@ -421,7 +422,7 @@ if (!fork) {
         close SOURCE;
         ($? == 0) or exit 1;
         close SINK;
-        
+
         # clean up
         print 'Analyzing database ', $db, "...\n";
         (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
@@ -512,6 +513,7 @@ error "Could not start target cluster; please check configuration and log files"
 
 # Run upgrade scripts in finish phase
 if ($upgrade_scripts) {
+    print "Running <finish> phase upgrade helper scripts...\n";
     if (!fork) {
 	change_ugid $info{'owneruid'}, $info{'ownergid'};
 
