@@ -315,7 +315,7 @@ if (!fork) {
     my $buffer;
 
     # check for tablespaces (not supported)
-    open F, '-|', $psql, '-Atc', "select count(*) from pg_tablespace where spclocation <> ''" 
+    open F, '-|', $psql, '-Atc', "SELECT count(*) FROM pg_tablespace WHERE spclocation <> ''" 
 	or die "Calling $psql: $!";
     $buffer = <F>;
     close F;
@@ -327,7 +327,7 @@ if (!fork) {
     my %databases;
     open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
         '-F|', '-d', 'template1', '-Atc', 
-        'select datname, datallowconn, pg_catalog.pg_encoding_to_char(encoding), usename from pg_database, pg_user where datdba = usesysid' or 
+        'SELECT datname, datallowconn, pg_catalog.pg_encoding_to_char(encoding), usename FROM pg_database, pg_user WHERE datdba = usesysid' or 
         error 'Could not get pg_database list';
     while (<F>) {
         chomp;
@@ -347,7 +347,7 @@ if (!fork) {
             print "Temporarily enabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "BEGIN; set transaction read write; update pg_database set datallowconn = 't' where datname = '$db'; COMMIT") == 0 or
+                "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 't' WHERE datname = '$db'; COMMIT") == 0 or
                 error 'Could not enable access to database';
         }
     }
@@ -390,15 +390,15 @@ if (!fork) {
 	# works on bytea
 	if ($version ge '9.0') {
 	    (system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
-		$db, '-c', "BEGIN; set transaction read write; \
-		    update pg_proc set probin = replace(\
+		$db, '-c', "BEGIN READ WRITE; \
+		    UPDATE pg_proc SET probin = replace(\
 		    replace(probin, '/usr/lib/postgresql/lib', '\$libdir'), \
 		    '/usr/lib/postgresql/$version/lib', '\$libdir'); COMMIT") == 0 or
 		error 'Could not fix library paths';
 	} else {
 	    (system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
-		$db, '-c', "BEGIN; set transaction read write; \
-		    update pg_proc set probin = decode(replace(\
+		$db, '-c', "BEGIN READ WRITE; \
+		    UPDATE pg_proc SET probin = decode(replace(\
 		   replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
 		   '/usr/lib/postgresql/$version/lib', '\$libdir'), 'escape'); COMMIT") == 0 or
 		error 'Could not fix library paths';
@@ -440,11 +440,11 @@ if (!fork) {
             print "Disabling access to database $db\n";
             (system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "BEGIN; set transaction read write; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
+                "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not disable access to database in old cluster';
             (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
                 '-d', 'template1', '-c', 
-                "BEGIN; set transaction read write; update pg_database set datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
+                "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
                 error 'Could not disable access to database in new cluster';
         }
     }
