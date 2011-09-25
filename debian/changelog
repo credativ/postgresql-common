@@ -7,7 +7,8 @@ postgresql-common (122) UNRELEASED; urgency=low
     (Closes: #640520)
   * debian/rules: logrotate 3.8.0 requires specifying the "su" option, which
     is not backportable. Dynamically check the available logrotate version,
-    and add it if it is >= 3.8. (Closes: #640493)
+    and add it if it is >= 3.8. Also dynamically generate a dependency or
+    breaks to logrorate 3.8+. (Closes: #640493)
   * PgCommon.pm: Allow '@' characters in LC_CTYPE/LC_COLLATE values. Thanks to
     Willi Mann for the patch. (Closes: #640031)
 

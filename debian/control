@@ -16,7 +16,9 @@ Depends: postgresql-client-common (>= ${source:Version}),
  debconf (>= 0.5.00) | debconf-2.0,
  lsb-base (>= 3.0-3),
  ssl-cert (>= 1.0.11),
+ logrotate ${logrotate:version},
  ${misc:Depends}
+Breaks: ${common-breaks}
 Description: PostgreSQL database-cluster manager
  The postgresql-common package provides a structure under which
  multiple versions of PostgreSQL may be installed and/or multiple

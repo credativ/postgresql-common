@@ -27,6 +27,13 @@ override_dh_gencontrol:
 	dh_gencontrol -ppostgresql -ppostgresql-client -ppostgresql-doc -ppostgresql-contrib  -- \
 		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
 		
+	# will ship different conffiles for logrotate pre- and post-3.8
+	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | cut -f2- -d' '` ge 3.8; then \
+		dh_gencontrol -ppostgresql-common -- -Vlogrotate:version="(>= 3.8)"; \
+	else \
+		dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (<< 3.8)"; \
+	fi
+
 	dh_gencontrol --remaining-packages
 	
 override_dh_installlogrotate:
