@@ -6,11 +6,16 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => 6 + ($#MAJORS+1)*5;
+use Test::More tests => 6 + ($#MAJORS+1)*6;
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
     ok ((deb_installed "postgresql-plpython-$v"), "postgresql-plpython-$v installed");
+    if ($v ge '9.1') {
+	ok ((deb_installed "postgresql-plpython3-$v"), "postgresql-plpython3-$v installed");
+    } else {
+	pass "no Python 3 package for version $v";
+    }
     ok ((deb_installed "postgresql-plperl-$v"), "postgresql-plperl-$v installed");
     ok ((deb_installed "postgresql-pltcl-$v"), "postgresql-pltcl-$v installed");
     ok ((deb_installed "postgresql-server-dev-$v"), "postgresql-server-dev-$v installed");

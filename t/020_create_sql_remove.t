@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 99 * ($#MAJORS+1);
+use Test::More tests => 105 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -170,10 +170,26 @@ Bob|1
 
     # Check PL/Python (untrusted)
     is_program_out 'postgres', 'createlang plpythonu nobodydb', 0, '', 'createlang plpythonu succeeds for user postgres';
-    is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize(text) RETURNS text AS \'return args[0].capitalize()\' LANGUAGE plpythonu;"',
+    is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize(text) RETURNS text AS \'import sys; return args[0].capitalize() + sys.version[0]\' LANGUAGE plpythonu;"',
 	0, '', 'creating PL/Python function as user postgres succeeds';
     is_program_out 'nobody', 'psql nobodydb -Atc "select capitalize(\'foo\')"',
-	0, "Foo\n", 'calling PL/Python function';
+	0, "Foo2\n", 'calling PL/Python function';
+
+    # Check PL/Python3 (untrusted)
+    if ($v ge '9.1') {
+	is_program_out 'postgres', 'createlang plpython3u nobodydb', 0, '', 'createlang plpython3u succeeds for user postgres';
+	is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize3(text) RETURNS text AS \'import sys; return args[0].capitalize() + sys.version[0]\' LANGUAGE plpython3u;"',
+	    0, '', 'creating PL/Python3 function as user postgres succeeds';
+	is_program_out 'nobody', 'psql nobodydb -Atc "select capitalize3(\'foo\')"',
+	    0, "Foo3\n", 'calling PL/Python function';
+    } else {
+	pass "Skipping PL/Python3 test for version $v...";
+	pass '...';
+	pass '...';
+	pass '...';
+	pass '...';
+	pass '...';
+    }
 
     # Check PL/Tcl (trusted/untrusted)
     is_program_out 'postgres', 'createlang pltcl nobodydb', 0, '', 'createlang pltcl succeeds for user postgres';
