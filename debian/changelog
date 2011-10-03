@@ -3,6 +3,7 @@ postgresql-common (123) UNRELEASED; urgency=low
   * t/001_packages.t: Check that the -plpython3 package is installed for
     >= 9.1.
   * t/020_create_sql_remove.t: Check that the "plpython3u" language works.
+  * t/020_create_sql_remove.t: More thoroughly check PL/Perl and PL/PerlU.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 01 Oct 2011 10:20:28 +0200
 

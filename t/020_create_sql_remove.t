@@ -9,7 +9,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 105 * ($#MAJORS+1);
+use Test::More tests => 113 * ($#MAJORS+1);
 
 
 sub check_major {
@@ -138,7 +138,7 @@ sub check_major {
     # Create user nobody, a database 'nobodydb' for him, check the database list
     my $outref;
     is ((exec_as 'nobody', 'psql -l 2>/dev/null', $outref), 2, 'psql -l fails for nobody');
-    is ((exec_as 'postgres', 'createuser nobody -D -R -s'), 0, 'createuser nobody');
+    is ((exec_as 'postgres', 'createuser nobody -D -R -S'), 0, 'createuser nobody');
     is ((exec_as 'postgres', 'createdb -O nobody nobodydb'), 0, 'createdb nobodydb');
     is ((exec_as 'nobody', 'psql -ltA|grep "|" | cut -f1-3 -d"|"', $outref), 0, 'psql -ltA succeeds for nobody');
     is ($$outref, 'nobodydb|nobody|UTF8
@@ -160,9 +160,19 @@ template1|postgres|UTF8
 Bob|1
 ', 'SQL command output: select';
 
-    # Check PL/Perl (trusted/untrusted)
-    is_program_out 'postgres', 'createlang plperl nobodydb', 0, '', 'createlang plperl succeeds for user postgres';
+    # Check PL/Perl untrusted
+    my $fn_cmd = 'CREATE FUNCTION read_file() RETURNS text AS \'open F, \\"/etc/passwd\\"; \\$buf = <F>; close F; return \\$buf;\' LANGUAGE plperl';
+    is ((exec_as 'nobody', 'createlang plperlu nobodydb'), 1, 'createlang plperlu fails for user nobody');
     is_program_out 'postgres', 'createlang plperlu nobodydb', 0, '', 'createlang plperlu succeeds for user postgres';
+    is ((exec_as 'nobody', "psql nobodydb -qc \"${fn_cmd}u;\""), 1, 'creating PL/PerlU function as user nobody fails');
+    is ((exec_as 'postgres', "psql nobodydb -qc \"${fn_cmd};\""), 1, 'creating unsafe PL/Perl function as user postgres fails');
+    is_program_out 'postgres', "psql nobodydb -qc \"${fn_cmd}u;\"", 0, '', 'creating PL/PerlU function as user postgres succeeds';
+    like_program_out 'nobody', 'psql nobodydb -Atc "select read_file()"',
+	0, qr/^root:/, 'calling PL/PerlU function';
+
+    # Check PL/Perl trusted
+    is_program_out 'nobody', 'createlang plperl nobodydb', 0, '', 'createlang plperl succeeds for user nobody';
+    is ((exec_as 'nobody', "psql nobodydb -qc \"${fn_cmd};\""), 1, 'creating unsafe PL/Perl function as user nobody fails');
     is_program_out 'nobody', 'psql nobodydb -qc "CREATE FUNCTION remove_vowels(text) RETURNS text AS \'\\$_[0] =~ s/[aeiou]/_/ig; return \\$_[0];\' LANGUAGE plperl;"',
 	0, '', 'creating PL/Perl function as user nobody succeeds';
     is_program_out 'nobody', 'psql nobodydb -Atc "select remove_vowels(\'foobArish\')"',
