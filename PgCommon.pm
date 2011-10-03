@@ -29,7 +29,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_databases read_cluster_conf_file read_pg_hba/;
 our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
     disable_conf_value replace_conf_value cluster_data_directory
-    get_file_device/;
+    get_file_device read_pidfile check_pidfile_running/;
 
 # configuration
 my $mapfile = "/etc/postgresql-common/user_clusters";
@@ -501,6 +501,50 @@ pg_ctl_options = '$opts'
     close F;
 }
 
+# Return the PID from an existing PID file or undef if it does not exist.
+# Arguments: <pid file path>
+sub read_pidfile {
+    return undef unless -e $_[0];
+
+    if (open PIDFILE, $_[0]) {
+	my $pid = <PIDFILE>;
+	close PIDFILE;
+        chomp $pid;
+        ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
+	return $pid;
+    } else {
+	return undef;
+    }
+}
+
+# Check whether a pid file is present and belongs to a running postmaster.
+# Returns undef if it cannot be determined
+# Arguments: <pid file path>
+sub check_pidfile_running {
+    # postmaster does not clean up the PID file when it stops, and it is
+    # not world readable, so only its absence is a definitive result; if it
+    # is present, we need to read it and check the PID, which will only
+    # work as root
+    return 0 if ! -e $_[0];
+
+    my $pid = read_pidfile $_[0];
+    if (defined $pid) {
+	if (open PS, "/proc/$pid/comm") {
+	    my $process = <PS>;
+	    chomp $process if defined $process;
+	    close PS;
+	    if (defined $process and ($process eq 'postmaster' or $process eq 'postgres')) {
+                return 1;
+            } else {
+		return 0;
+	    }
+        } else {
+            error "Could not open /proc/$pid/comm";
+        }
+    }
+    return undef;
+}
+
 # Return a hash with information about a specific cluster.
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile [unless it
@@ -515,13 +559,15 @@ sub cluster_info {
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
 
+    # if we can determine the running status with the pid file, prefer that
     if ($postgresql_conf{'external_pid_file'} &&
-	$postgresql_conf{'external_pid_file'} ne '(none)' &&
-	! -e $postgresql_conf{'external_pid_file'}) {
-	# postmaster does not clean up the PID file when it stops, and it is
-	# not world readable, so only its absence is a definitive result
-	$result{'running'} = 0;
-    } else {
+	$postgresql_conf{'external_pid_file'} ne '(none)') {
+	$result{'running'} = check_pidfile_running $postgresql_conf{'external_pid_file'};
+    }
+
+    # otherwise fall back to probing the port; this is unreliable if the port
+    # was changed in the configuration file in the meantime
+    if (!defined ($result{'running'})) {
 	$result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
     }
 

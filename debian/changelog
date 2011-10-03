@@ -4,6 +4,10 @@ postgresql-common (123) UNRELEASED; urgency=low
     >= 9.1.
   * t/020_create_sql_remove.t: Check that the "plpython3u" language works.
   * t/020_create_sql_remove.t: More thoroughly check PL/Perl and PL/PerlU.
+  * PgCommon.pm, cluster_info(): If we have a PID file and can read it (i. e.
+    as root), prefer doing this over probing the port. This delivers the
+    correct result with e. g. "pg_ctlcluster restart" when the port got
+    changed in the configuration file. (Closes: #643850)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 01 Oct 2011 10:20:28 +0200
 
