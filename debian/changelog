@@ -12,6 +12,10 @@ postgresql-common (123) UNRELEASED; urgency=low
     dependency to dpkg-dev, and DEB_HOST_MULTIARCH also isn't available in
     backports. Just extend the libreadline.so globbing to cover multiarch
     paths as well. (Closes: #644078)
+  * t/070_non_postgres_clusters.t: Test pg_upgradecluster. This reproduces
+    #644477.
+  * pg_upgradecluster: Supply socket argument for the tablespace test. Thanks
+    to Piotr Szydełko for the patch! (Closes: #644477)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 01 Oct 2011 10:20:28 +0200
 

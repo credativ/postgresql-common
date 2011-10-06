@@ -315,7 +315,8 @@ if (!fork) {
     my $buffer;
 
     # check for tablespaces (not supported)
-    open F, '-|', $psql, '-Atc', "SELECT count(*) FROM pg_tablespace WHERE spclocation <> ''" 
+    open F, '-|', $oldpsql, '-h', $oldsocket, '-d', 'template1', '-Atc', 
+	    "SELECT count(*) FROM pg_tablespace WHERE spclocation <> ''" 
 	or die "Calling $psql: $!";
     $buffer = <F>;
     close F;

@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 38;
+use Test::More tests => 49;
 
 my $owner = 'nobody';
 my $v = $MAJORS[0];
@@ -48,6 +48,41 @@ for my $f (readdir D) {
 is $st[2], 0100640, 'log file has 0640 permissions';
 is $st[4], $owneruid, 'log file is owned by user';
 is $st[5], $ownergid, 'log file is owned by user\'s primary group';
+
+if ($#MAJORS > 0) {
+    my $newv = $MAJORS[-1];
+
+    my $outref;
+    is ((exec_as 0, "(pg_upgradecluster $v main | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 
+	'pg_upgradecluster succeeds');
+    like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
+    like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
+    my @err = grep (!/^STDOUT: /, split (/\n/, $$outref));
+    if (@err) {
+	fail 'no error messages during upgrade';
+	print (join ("\n", @err));
+    } else {
+	pass "no error messages during upgrade";
+    }
+
+    # verify file permissions
+    @st = stat "/etc/postgresql/$newv/main";
+    is $st[4], $owneruid, 'upgraded conf dir is owned by user';
+    is $st[5], $ownergid, 'upgraded conf dir is owned by user\'s primary group';
+    @st = stat "/etc/postgresql/$newv/main/postgresql.conf";
+    is $st[4], $owneruid, 'upgraded postgresql.conf dir is owned by user';
+    is $st[5], $ownergid, 'upgraded postgresql.conf dir is owned by user\'s primary group';
+    @st = stat "/var/log/postgresql/postgresql-$v-main.log";
+    is $st[4], $owneruid, 'upgraded log file is owned by user';
+    is $st[5], $ownergid, 'upgraded log file is owned by user\'s primary group';
+
+    is ((system "pg_dropcluster $newv main --stop"), 0, 'pg_dropcluster');
+} else {
+    pass 'only one major version installed, skipping upgrade test';
+    for (my $i = 0; $i < 10; ++$i) {
+	pass '...';
+    }
+}
 
 # Check proper cleanup
 is ((system "pg_dropcluster $v main --stop"), 0, 'pg_dropcluster');
