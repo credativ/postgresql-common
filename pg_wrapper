@@ -100,7 +100,7 @@ my $cmd = get_program_path ($cmdname, $version);
 # libreadline is a lot better than libedit, so prefer that
 if ($cmdname eq 'psql') {
     my @readlines;
-    my $multiarch = `dpkg-architecture -qDEB_HOST_MULTIARCH`;
+    my $multiarch = `dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null`;
     chomp $multiarch;
     if ($multiarch) {
 	push @readlines, sort(</lib/$multiarch/libreadline.so.*>);

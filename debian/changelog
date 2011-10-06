@@ -8,6 +8,8 @@ postgresql-common (123) UNRELEASED; urgency=low
     as root), prefer doing this over probing the port. This delivers the
     correct result with e. g. "pg_ctlcluster restart" when the port got
     changed in the configuration file. (Closes: #643850)
+  * pg_wrapper: Quiesce stderr from dpkg-architecture call, to avoid confusing
+    error messages when running on older releases without multiarch support.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 01 Oct 2011 10:20:28 +0200
 
