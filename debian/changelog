@@ -1,5 +1,7 @@
-postgresql-common (123) UNRELEASED; urgency=low
+postgresql-common (123) unstable; urgency=medium
 
+  * Urgency medium, as bug 644078 slipped into testing, and is quite a nasty
+    regression for people that it affects.
   * t/001_packages.t: Check that the -plpython3 package is installed for
     >= 9.1.
   * t/020_create_sql_remove.t: Check that the "plpython3u" language works.
@@ -17,7 +19,7 @@ postgresql-common (123) UNRELEASED; urgency=low
   * pg_upgradecluster: Supply socket argument for the tablespace test. Thanks
     to Piotr Szydełko for the patch! (Closes: #644477)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 01 Oct 2011 10:20:28 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 07 Oct 2011 14:10:27 +0200
 
 postgresql-common (122) unstable; urgency=low
 
