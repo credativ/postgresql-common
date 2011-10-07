@@ -1,3 +1,10 @@
+postgresql-common (124) UNRELEASED; urgency=low
+
+  * PgCommon.pm, cluster_info(): Use /bin/ps instead of reading /proc/*/comm,
+    the latter was reported to not work on some systems.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 07 Oct 2011 19:04:19 +0200
+
 postgresql-common (123) unstable; urgency=medium
 
   * Urgency medium, as bug 644078 slipped into testing, and is quite a nasty

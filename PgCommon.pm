@@ -529,7 +529,10 @@ sub check_pidfile_running {
 
     my $pid = read_pidfile $_[0];
     if (defined $pid) {
-	if (open PS, "/proc/$pid/comm") {
+	prepare_exec;
+	my $res = open PS, '-|', '/bin/ps', '-o', 'comm', 'h', 'p', $pid;
+	restore_exec;
+	if ($res) {
 	    my $process = <PS>;
 	    chomp $process if defined $process;
 	    close PS;
@@ -539,7 +542,7 @@ sub check_pidfile_running {
 		return 0;
 	    }
         } else {
-            error "Could not open /proc/$pid/comm";
+            error "Could not exec /bin/ps";
         }
     }
     return undef;
