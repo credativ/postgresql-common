@@ -55,31 +55,11 @@ sub get_running_pid {
     }
 }
 
-# Check whether a pid file is present and belongs to a running postmaster.
-# Arguments: <pid file path>
-sub check_running_postmaster {
-    my $pid = get_running_pid $_[0];
-    if (defined $pid) {
-	if (open PS, '-|', '/bin/ps', '-o', 'comm', 'h', 'p', $pid) {
-	    my $process = <PS>;
-	    chomp $process if defined $process;
-	    close PS;
-	    if (defined $process and ($process eq 'postmaster' or $process eq 'postgres')) {
-                return 1;
-            }
-        } else {
-            error "Could not exec /bin/ps";
-        }
-    }
-    return 0;
-
-}
-
 # If a pid file is already present, delete it if it is stale/invalid, or exit
 # with a notice if it belongs to an already running postmaster.
 sub start_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
-    if (check_running_postmaster $pidfile) {
+    if (PgCommon::check_pidfile_running $pidfile) {
         print "Cluster is already running.\n";
         exit 2;
     }
@@ -95,7 +75,7 @@ sub start_check_pid_file {
 sub stop_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     my $pid = get_running_pid $pidfile;
-    return if (defined $pid && check_running_postmaster $pidfile); 
+    return if (defined $pid && PgCommon::check_pidfile_running $pidfile); 
     if ($info{'running'}) {
 	error 'pid file is invalid, please manually kill the stale server process.';
     }
@@ -232,7 +212,7 @@ sub start {
 
         # if the postmaster wrote something, but the process does not exist any
         # more, there must be a problem and we can stop immediately
-        last if ($currlogsize > $logsize && !check_running_postmaster $pidfile);
+        last if ($currlogsize > $logsize && !PgCommon::check_pidfile_running $pidfile);
     }
 
     # OK, the server runs, now wait until it stabilized

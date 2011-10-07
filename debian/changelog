@@ -2,6 +2,8 @@ postgresql-common (124) UNRELEASED; urgency=low
 
   * PgCommon.pm, cluster_info(): Use /bin/ps instead of reading /proc/*/comm,
     the latter was reported to not work on some systems.
+  * pg_ctlcluster: Use PgCommon::check_pidfile_running and drop duplicated
+    code.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 07 Oct 2011 19:04:19 +0200
 
