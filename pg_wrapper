@@ -102,9 +102,21 @@ my $cmd = get_program_path ($cmdname, $version);
 # libreadline is a lot better than libedit, so prefer that
 if ($cmdname eq 'psql') {
     my @readlines;
-    my $arch = (POSIX::uname)[4];
-    push @readlines, sort(</lib/$arch-*/libreadline.so.*>);
-    push @readlines, sort(</lib/libreadline.so.*>);
+    # non-multiarch path
+    @readlines = sort(</lib/libreadline.so.?>);
+
+    unless (@readlines) {
+	# get multiarch dir for our architecture
+	if (open PS, '-|', '/usr/bin/ldd', $cmd) {
+	    my $out;
+	    read PS, $out, 10000;
+	    close PS;
+	    my ($lib_path) = $out =~ m!(/lib/.*)/libedit.so!;
+
+	    @readlines = sort(<$lib_path/libreadline.so.?>);
+	}
+    }
+
     if (@readlines) {
 	$ENV{'LD_PRELOAD'} = ($ENV{'LD_PRELOAD'} or '') . ':' . $readlines[-1];
     }

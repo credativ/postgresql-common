@@ -4,6 +4,11 @@ postgresql-common (124) UNRELEASED; urgency=low
     the latter was reported to not work on some systems.
   * pg_ctlcluster: Use PgCommon::check_pidfile_running and drop duplicated
     code.
+  * pg_wrapper: The previous multiarch globbing was wrong, as it looked for
+    the architecture in uname() (which doesn't work on i386, where uname says
+    i686). Now get the multiarch library path from whereever psql expects
+    libedit.so to be, so that this even works if you install postgresql-client
+    for a foreign architecture.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 07 Oct 2011 19:04:19 +0200
 
