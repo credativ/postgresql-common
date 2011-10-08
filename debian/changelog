@@ -1,5 +1,6 @@
-postgresql-common (124) UNRELEASED; urgency=low
+postgresql-common (124) unstable; urgency=medium
 
+  * Keeping urgency medium, as 123 did not make it into testing yet.
   * PgCommon.pm, cluster_info(): Use /bin/ps instead of reading /proc/*/comm,
     the latter was reported to not work on some systems.
   * pg_ctlcluster: Use PgCommon::check_pidfile_running and drop duplicated
@@ -10,7 +11,7 @@ postgresql-common (124) UNRELEASED; urgency=low
     libedit.so to be, so that this even works if you install postgresql-client
     for a foreign architecture.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 07 Oct 2011 19:04:19 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sat, 08 Oct 2011 11:48:46 +0200
 
 postgresql-common (123) unstable; urgency=medium
 
