@@ -1,3 +1,10 @@
+postgresql-common (125) UNRELEASED; urgency=low
+
+  * Add debian/backport-ppa: Script to generate and upload backport packages
+    to my Ubuntu PPA. Only for personal use.
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 08 Oct 2011 12:16:13 +0200
+
 postgresql-common (124) unstable; urgency=medium
 
   * Keeping urgency medium, as 123 did not make it into testing yet.
