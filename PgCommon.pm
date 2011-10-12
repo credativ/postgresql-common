@@ -31,18 +31,21 @@ our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
     disable_conf_value replace_conf_value cluster_data_directory
     get_file_device read_pidfile check_pidfile_running/;
 
-# configuration
-my $mapfile = "/etc/postgresql-common/user_clusters";
-our $confroot = $ENV{'PG_CLUSTER_CONF_ROOT'} || "/etc/postgresql";
-my $common_confdir = "/etc/postgresql-common";
-my $binroot = "/usr/lib/postgresql";
-my $defaultport = 5432;
-
 # Print an error message to stderr and exit with status 1
 sub error {
     print STDERR 'Error: ', $_[0], "\n";
     exit 1;
 }
+
+# configuration
+my $mapfile = "/etc/postgresql-common/user_clusters";
+our $confroot = '/etc/postgresql';
+if ($ENV{'PG_CLUSTER_CONF_ROOT'}) {
+    ($confroot) = $ENV{'PG_CLUSTER_CONF_ROOT'} =~ /(.*)/; # untaint
+}
+my $common_confdir = "/etc/postgresql-common";
+my $binroot = "/usr/lib/postgresql";
+my $defaultport = 5432;
 
 {
     my %saved_env;
