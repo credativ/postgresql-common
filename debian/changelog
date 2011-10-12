@@ -6,6 +6,11 @@ postgresql-common (125) UNRELEASED; urgency=low
     removal of clusters as user nobody using $PG_CLUSTER_CONF_ROOT. This
     reproduces LP#835630 and other bugs.
   * PgCommon.pm: If $PG_CLUSTER_CONF_ROOT is set, untaint it.
+  * pg_upgradecluster: Don't hardcode /etc/postgresql/, use
+    $PgCommon::confroot to respect $PG_CLUSTER_CONF_ROOT. (LP: #835630)
+  * pg_upgradecluster: Add --logfile option to specify a custom log file for
+    the upgraded cluster. Necessary if you want to run this on
+    per-user clusters and can't write into /var/log/postgresql/.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 08 Oct 2011 12:16:13 +0200
 

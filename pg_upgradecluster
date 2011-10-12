@@ -120,7 +120,7 @@ sub adapt_conffiles {
         rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
 
 	# "ident sameuser" -> "ident"
-	my $hba = "/etc/postgresql/$newversion/$cluster/pg_hba.conf";
+	my $hba = "$PgCommon::confroot/$newversion/$cluster/pg_hba.conf";
 	open O, $hba or error "open $hba: $!";
 	open N, ">$hba.new" or error "open $hba.new: $!";
 	while (<O>) {
@@ -144,7 +144,7 @@ sub adapt_conffiles {
 # to the owner. Database must be reloaded manually if it is running.
 # Arguments: <version> <cluster> <owner> <owneruid>
 sub disable_connections {
-    my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
+    my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
 
     rename $hba, "$hba.orig" or error "could not rename $hba: $!";
     unless (open F, ">$hba") {
@@ -164,7 +164,7 @@ sub disable_connections {
 # Restore original pg_hba.conf, but do not restart postmaster.
 # Arguments: <version> <cluster>
 sub enable_connections {
-    my $hba = "/etc/postgresql/$_[0]/$_[1]/pg_hba.conf";
+    my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
 
     rename "$hba.orig", $hba or error "could not rename $hba.orig: $!";
 }
@@ -178,12 +178,12 @@ sub enable_connections {
 $newversion = get_newest_version;
 
 my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
-    $lc_time);
+    $lc_time, $logfile);
 exit 1 unless GetOptions ('v|version=s' => \$newversion,
     'locale=s' => \$locale, 'lc-collate=s' => \$lc_collate, 
     'lc-ctype=s' => \$lc_ctype, 'lc-messages=s' => \$lc_messages,
     'lc-monetary=s' => \$lc_monetary, 'lc-numeric=s' => \$lc_numeric,
-    'lc-time=s' => \$lc_time);
+    'lc-time=s' => \$lc_time, 'logfile=s' => \$logfile);
 
 # untaint
 ($newversion) = $newversion =~ /^(\d+\.\d+)$/;
@@ -194,9 +194,10 @@ exit 1 unless GetOptions ('v|version=s' => \$newversion,
 ($lc_monetary) = $lc_monetary =~ /^([\w@._-]+)$/ if $lc_monetary;
 ($lc_numeric) = $lc_numeric =~ /^([\w@._-]+)$/ if $lc_numeric;
 ($lc_time) = $lc_time =~ /^([\w@._-]+)$/ if $lc_time;
+($logfile) = $logfile =~ /^([^\n]+)$/ if $logfile;
 
 if ($#ARGV < 1) {
-    print "Usage: $0 [-v <newversion>] <version> <cluster name> [<new data directory>]\n";
+    print "Usage: $0 [OPTIONS] <version> <cluster name> [<new data directory>]\n";
     exit 1;
 }
 
@@ -253,6 +254,7 @@ error "Could not restart old cluster" if system @argv;
     $cluster);
 
 push @argv, ('--datadir', $datadir) if $datadir;
+push @argv, ('--logfile', $logfile) if $logfile;
 push @argv, ('--encoding', $encoding) unless $locale or $lc_ctype;
 $lc_ctype ||= $locale || $old_lc_ctype;
 $lc_collate ||= $locale || $old_lc_collate;
@@ -587,6 +589,10 @@ you use those, you have to upgrade manually.
 =item B<-v> I<newversion>
 
 Set the version to upgrade to (default: latest available).
+
+=item B<--logfile> I<filel>
+
+Set a custom log file path for the upgraded database cluster.
 
 =item B<--locale=>I<locale>
 
