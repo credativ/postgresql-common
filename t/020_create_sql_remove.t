@@ -3,14 +3,15 @@
 
 use strict; 
 
+use POSIX qw/dup2/;
+
 use lib 't';
 use TestLib;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 113 * ($#MAJORS+1);
-
+use Test::More tests => 115 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -241,6 +242,46 @@ Bob|1
     PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'data_directory', 'disabled for test';
     is_program_out 0, "pg_ctlcluster $v main start", 0, '',
         'cluster restarts with pgdata symlink';
+
+    # OOM score adjustment under Linux: postmaster gets bigger shields for >=
+    # 9.1, but client backends stay at default
+    my $psql = fork;
+    if (!$psql) {
+	my @pw = getpwnam 'nobody';
+	change_ugid $pw[2], $pw[3];
+	dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
+	exec 'psql', 'nobodydb' or die "could not exec psql process: $!";
+    }
+
+    my $master_pid = `ps --user postgres hu | grep 'bin/postgres.*-D' | grep -v grep | awk '{print \$2}'`;
+    chomp $master_pid;
+
+    my $client_pid;
+    while (!$client_pid) {
+	sleep 0.1;
+	$client_pid = `ps --user postgres hu | grep 'postgres: nobody nobodydb' | grep -v grep | awk '{print \$2}'`;
+    }
+    chomp $client_pid;
+
+    my $adj;
+    open F, "/proc/$master_pid/oom_adj";
+    $adj = <F>;
+    chomp $adj;
+    close F;
+    if ($v ge '9.1') {
+	cmp_ok $adj, '<=', -5, 'postgres >= 9.1 master has OOM killer protection';
+    } else {
+	is $adj, 0, 'postgres < 9.1 master has no OOM adjustment';
+    }
+
+    open F, "/proc/$client_pid/oom_adj";
+    $adj = <F>;
+    chomp $adj;
+    close F;
+    is $adj, 0, 'postgres client backend has no OOM adjustment';
+
+    kill 9, $psql;
+    waitpid $psql, 0;
 
     # Drop database and user again.
     sleep 1;

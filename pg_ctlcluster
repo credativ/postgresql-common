@@ -357,6 +357,14 @@ if ($info{'logfile'} && ! -e $info{'logfile'}) {
 }
 
 if ($> == 0) {
+    # have the postmaster start with increased OOM killer protection; 9.1 and
+    # later has builtin support for resetting the adjustment of child processes
+    if ($action eq 'start' && $version ge '9.1' && -w '/proc/self/oom_adj') {
+	open F, '>/proc/self/oom_adj';
+	print F "-16\n";
+	close F;
+    }
+
     chdir ('/var/lib/postgresql');
     change_ugid $info{'owneruid'}, $info{'ownergid'};
 }
