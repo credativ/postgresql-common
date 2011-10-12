@@ -2,6 +2,9 @@ postgresql-common (125) UNRELEASED; urgency=low
 
   * Add debian/backport-ppa: Script to generate and upload backport packages
     to my Ubuntu PPA. Only for personal use.
+  * Add t/160_alternate_confroot.t: Test creation, operation, upgrading, and
+    removal of clusters as user nobody using $PG_CLUSTER_CONF_ROOT. This
+    reproduces LP#835630 and other bugs.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 08 Oct 2011 12:16:13 +0200
 
