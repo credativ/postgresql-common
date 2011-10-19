@@ -20,7 +20,8 @@ postgresql-common (125) UNRELEASED; urgency=low
   * debian/control: Add Breaks: to postgresql-9.1 versios before 9.1.1-3, as
     they do not reset oomadj for child processes. This is a precaution to
     avoid running all the client backends with -16 as well.
-  * t/170_extensions.t: Check that all shipped extensions install and remove.
+  * Add t/170_extensions.t: Check that all shipped extensions install and
+    remove.
   * Add t/180_ecpg.t: Check that ecpg works. In t/001_packages.t, check that
     libecpg-dev is installed.
 
