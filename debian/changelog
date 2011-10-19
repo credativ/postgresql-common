@@ -21,6 +21,8 @@ postgresql-common (125) UNRELEASED; urgency=low
     they do not reset oomadj for child processes. This is a precaution to
     avoid running all the client backends with -16 as well.
   * t/170_extensions.t: Check that all shipped extensions install and remove.
+  * Add t/180_ecpg.t: Check that ecpg works. In t/001_packages.t, check that
+    libecpg-dev is installed.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 08 Oct 2011 12:16:13 +0200
 
