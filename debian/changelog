@@ -1,3 +1,10 @@
+postgresql-common (126) UNRELEASED; urgency=low
+
+  * pg_ctlcluster: Prefer setting oom_score_adj over oom_adj, as the latter is
+    deprecated. (Closes: #646096)
+
+ -- Martin Pitt <mpitt@debian.org>  Sat, 22 Oct 2011 17:15:07 +0200
+
 postgresql-common (125) unstable; urgency=low
 
   * Add debian/backport-ppa: Script to generate and upload backport packages
