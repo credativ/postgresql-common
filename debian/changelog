@@ -4,6 +4,8 @@ postgresql-common (126) UNRELEASED; urgency=low
     deprecated. (Closes: #646096)
   * Add debian/tests/{control,system}: DEP-8/autopkgtest control files for
     running the integration tests.
+  * t/020_create_sql_remove.t: Set stdin for forked psql process, so that the
+    test suite run does not need a defined stdin.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 22 Oct 2011 17:15:07 +0200
 

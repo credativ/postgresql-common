@@ -249,6 +249,7 @@ Bob|1
     if (!$psql) {
 	my @pw = getpwnam 'nobody';
 	change_ugid $pw[2], $pw[3];
+	dup2(POSIX::open('/dev/zero', POSIX::O_RDONLY), 0);
 	dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
 	exec 'psql', 'nobodydb' or die "could not exec psql process: $!";
     }
