@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+# install locales; this happens differently on Debian and Ubuntu
+if [ -e /etc/locale.gen ]; then
+    /bin/echo -e 'ru_RU ISO-8859-5\nru_RU.UTF-8 UTF-8' >> /etc/locale.gen
+    locale-gen
+else
+    locale-gen ru_RU ru_RU.UTF-8
+fi
+
+./testsuite

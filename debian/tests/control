@@ -1,0 +1,4 @@
+Tests: system
+Depends: postgresql, libecpg-dev, postgresql-plpython-9.1, postgresql-plpython3-9.1, postgresql-plperl-9.1, postgresql-pltcl-9.1, postgresql-server-dev-all, hunspell-en-us, locales
+Restrictions: needs-root breaks-computer
+Features: no-build-needed

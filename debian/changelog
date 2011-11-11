@@ -2,6 +2,8 @@ postgresql-common (126) UNRELEASED; urgency=low
 
   * pg_ctlcluster: Prefer setting oom_score_adj over oom_adj, as the latter is
     deprecated. (Closes: #646096)
+  * Add debian/tests/{control,system}: DEP-8/autopkgtest control files for
+    running the integration tests.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 22 Oct 2011 17:15:07 +0200
 
