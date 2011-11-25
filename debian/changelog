@@ -1,4 +1,4 @@
-postgresql-common (126) UNRELEASED; urgency=low
+postgresql-common (126) unstable; urgency=low
 
   * pg_ctlcluster: Prefer setting oom_score_adj over oom_adj, as the latter is
     deprecated. (Closes: #646096)
@@ -8,7 +8,7 @@ postgresql-common (126) UNRELEASED; urgency=low
     test suite run does not need a defined stdin.
   * debian/control: Clean up metapackage descriptions. (Closes: #649400)
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 22 Oct 2011 17:15:07 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 25 Nov 2011 11:20:29 +0100
 
 postgresql-common (125) unstable; urgency=low
 
