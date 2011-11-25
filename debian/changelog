@@ -1,3 +1,9 @@
+postgresql-common (127) UNRELEASED; urgency=low
+
+  * debian/backport-ppa: Add oneiric.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 25 Nov 2011 11:40:56 +0100
+
 postgresql-common (126) unstable; urgency=low
 
   * pg_ctlcluster: Prefer setting oom_score_adj over oom_adj, as the latter is

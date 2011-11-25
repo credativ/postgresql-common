@@ -9,7 +9,7 @@ if [ -n "`bzr modified`" ]; then
     exit 1
 fi
 
-RELEASES='lucid maverick natty'
+RELEASES='lucid maverick natty oneiric'
 
 CUR_VERSION=`dpkg-parsechangelog | grep ^Version | cut -f2 -d' '`
 SINCE_VERSION=`dpkg-parsechangelog -n2 | grep urgency=| tail -n1 | awk '{print $2}' | tr -d '()'`
