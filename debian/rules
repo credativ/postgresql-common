@@ -28,7 +28,7 @@ override_dh_gencontrol:
 		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
 		
 	# will ship different conffiles for logrotate pre- and post-3.8
-	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | cut -f2- -d' '` ge 3.8; then \
+	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | head -n1 | cut -f2- -d' '` ge 3.8; then \
 		dh_gencontrol -ppostgresql-common -- -Vlogrotate:version="(>= 3.8)"; \
 	else \
 		dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"; \
@@ -38,9 +38,9 @@ override_dh_gencontrol:
 	
 override_dh_installlogrotate:
 	dh_installlogrotate
-	# logroate 3.8+ requires an additional "su" command which is not
+	# logrotate 3.8+ requires an additional "su" command which is not
 	# backportable, see #640493
-	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | cut -f2- -d' '` ge 3.8; then \
+	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | head -n1 | cut -f2- -d' '` ge 3.8; then \
 		echo "Fixing logrotate configuration for logrotate >= 3.8..."; \
 		sed -i '/^}/ i\       su root root' debian/postgresql-common/etc/logrotate.d/*; \
 	fi
