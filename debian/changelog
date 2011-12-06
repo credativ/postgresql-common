@@ -1,4 +1,4 @@
-postgresql-common (127) UNRELEASED; urgency=low
+postgresql-common (127) unstable; urgency=low
 
   * debian/backport-ppa: Add oneiric.
   * logrotate 3.8 landed in unstable, rebuild against this to get a proper
@@ -7,7 +7,7 @@ postgresql-common (127) UNRELEASED; urgency=low
   * debian/rules: Fix logrotate dependency generation logic to only consider
     the most recent logrotate version.
 
- -- Martin Pitt <mpitt@debian.org>  Tue, 06 Dec 2011 06:12:22 +0100
+ -- Martin Pitt <mpitt@debian.org>  Tue, 06 Dec 2011 06:18:32 +0100
 
 postgresql-common (126) unstable; urgency=low
 
