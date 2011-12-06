@@ -1,6 +1,9 @@
 postgresql-common (127) UNRELEASED; urgency=low
 
   * debian/backport-ppa: Add oneiric.
+  * logrotate 3.8 landed in unstable, rebuild against this to get a proper
+    logrotate config snippet and adjust the depends/breaks. (See Debian
+    #640493)
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 25 Nov 2011 11:40:56 +0100
 
