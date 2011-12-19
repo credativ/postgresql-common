@@ -9,7 +9,12 @@ if [ -n "`bzr modified`" ]; then
     exit 1
 fi
 
-RELEASES='lucid maverick natty oneiric'
+SRC=`dpkg-parsechangelog  | grep ^Source | cut -f2- -d' '`
+if [ "$SRC" = postgresql-9.1 ]; then
+    RELEASES='lucid maverick natty'
+else
+    RELEASES='lucid maverick natty oneiric'
+fi
 
 CUR_VERSION=`dpkg-parsechangelog | grep ^Version | cut -f2 -d' '`
 SINCE_VERSION=`dpkg-parsechangelog -n2 | grep urgency=| tail -n1 | awk '{print $2}' | tr -d '()'`
@@ -19,7 +24,7 @@ export DEBEMAIL=martin.pitt@ubuntu.com
 
 for release in $RELEASES; do
     dch -D$release -v"$CUR_VERSION~$release" -b 'Backport'
-    bzr bd -S -- -v$SINCE_VERSION
+    bzr bd -S -- -sd -v$SINCE_VERSION
     bzr revert --no-backup debian/changelog
-    dput ppa:pitti/postgresql ../postgresql-common_$CUR_VERSION~${release}_source.changes
+    dput ppa:pitti/postgresql ../${SRC}_${CUR_VERSION}~${release}_source.changes
 done

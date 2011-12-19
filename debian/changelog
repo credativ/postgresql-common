@@ -1,3 +1,9 @@
+postgresql-common (128) UNRELEASED; urgency=low
+
+  * debian/backport-ppa: Make this work for postgresql-X.Y packages, too.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 19 Dec 2011 16:17:31 +0100
+
 postgresql-common (127) unstable; urgency=low
 
   * debian/backport-ppa: Add oneiric.
