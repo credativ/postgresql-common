@@ -1,6 +1,8 @@
 postgresql-common (128) UNRELEASED; urgency=low
 
   * debian/backport-ppa: Make this work for postgresql-X.Y packages, too.
+  * debian/postgresql-client-common.links: Wrap pg_basebackup.
+    (Closes: #647224)
 
  -- Martin Pitt <mpitt@debian.org>  Mon, 19 Dec 2011 16:17:31 +0100
 
