@@ -8,7 +8,7 @@
 #
 debian/control: debian/control.in debian/pgversions
 	(set -e; \
-	VERSIONS=`pg_buildext supported-versions $(SRCDIR)` || exit $$?; \
+	VERSIONS=`pg_buildext supported-versions $(CURDIR)` || exit $$?; \
 	grep-dctrl -vP PGVERSION $< > $@.pgxs_tmp; \
 	for v in $$VERSIONS; \
         do                                         \
