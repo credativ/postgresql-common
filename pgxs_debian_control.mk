@@ -7,11 +7,13 @@
 # Author: Dimitri Fontaine <dfontaine@hi-media.com>
 #
 debian/control: debian/control.in debian/pgversions
-	grep-dctrl -vP PGVERSION $< > $@
-
-	for v in `pg_buildext supported-versions $(SRCDIR)`; \
+	(set -e; \
+	VERSIONS=`pg_buildext supported-versions $(SRCDIR)` || exit $$?; \
+	grep-dctrl -vP PGVERSION $< > $@.pgxs_tmp; \
+	for v in $$VERSIONS; \
         do                                         \
 		grep -q "^$$v" debian/pgversions   \
 		&& grep-dctrl -P PGVERSION $<      \
-		| sed -e "s:PGVERSION:$$v:" >> $@; \
-	done
+		| sed -e "s:PGVERSION:$$v:" >> $@.pgxs_tmp; \
+	done; \
+	mv $@.pgxs_tmp $@) || (rm -f $@.pgxs_tmp; exit 1)
