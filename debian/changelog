@@ -1,4 +1,4 @@
-postgresql-common (128) UNRELEASED; urgency=low
+postgresql-common (128) unstable; urgency=low
 
   * debian/backport-ppa: Make this work for postgresql-X.Y packages, too.
   * debian/postgresql-client-common.links: Wrap pg_basebackup.
@@ -13,7 +13,7 @@ postgresql-common (128) UNRELEASED; urgency=low
   * pgxs_debian_control.mk: Drop $(SRCDIR) requirement so that this doesn't
     need to be set separately. Just use $(CURDIR). (Closes: #646712, part 2)
 
- -- Martin Pitt <mpitt@debian.org>  Mon, 19 Dec 2011 16:17:31 +0100
+ -- Martin Pitt <mpitt@debian.org>  Wed, 21 Dec 2011 12:04:01 +0100
 
 postgresql-common (127) unstable; urgency=low
 
