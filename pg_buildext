@@ -8,7 +8,7 @@
 set -e
 
 action="$1"
-srcdir="$2"
+srcdir="${2:-`pwd`}"
 target="$3"
 opt="$4"
 

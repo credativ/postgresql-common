@@ -8,6 +8,8 @@ postgresql-common (128) UNRELEASED; urgency=low
   * pgxs_debian_control.mk: Some robustifications: Write to temporary control
     file first and rename only after everything succeeds, otherwise delete it.
     Catch errors from pg_buildext and abort the build. (Closes: #646702)
+  * pg_buildext, pg_buildext.pod: If second parameter (srcdir) is not
+    specified, assume the current directory. (Closes: #646712, part 1)
 
  -- Martin Pitt <mpitt@debian.org>  Mon, 19 Dec 2011 16:17:31 +0100
 

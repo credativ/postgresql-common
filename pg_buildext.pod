@@ -26,7 +26,7 @@ One of B<configure>, B<build>, B<install>, or B<clean>.
 =item B<srcdir>
 
 Where to find the extension sources, including the C<debian> subdirectory.
-(Usually C<$(CURDIR)>.)
+(Usually C<$(CURDIR)>.) If not specified, defaults to the current directory.
 
 =item B<target>
 
