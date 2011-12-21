@@ -75,7 +75,9 @@ versions() {
 [ "$srcdir" ] || die "syntax: pg_buildext <action> <srcdir> ..."
 [ -d $srcdir ] || die "no such directory '$srcdir'"
 
-for v in `versions`
+VERSIONS=`versions`
+
+for v in $VERSIONS
 do
     case "$action" in
 	"supported-versions")
