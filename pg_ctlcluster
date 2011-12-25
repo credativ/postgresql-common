@@ -473,7 +473,7 @@ for a description of valid options.
 
 =over 4
 
-=item C</etc/postgresql/>I<cluster-version>C</>I<cluster-name>C</pg_ctl.options>
+=item C</etc/postgresql/>I<cluster-version>C</>I<cluster-name>C</pg_ctl.conf>
 
 This configuration file contains cluster specific options to be passed to
 L<pg_ctl(1)>.
