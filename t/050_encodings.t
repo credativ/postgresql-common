@@ -62,7 +62,7 @@ sub check_cluster {
     if (!defined $enc) {
 	# temporarily disable and accept English text, since Russian translations are disabled now
 	like_program_out 'postgres', 'psql test -c "set client_encoding = \'UTF-8\'; select sqrt(-1)"', 1,
-	    qr/^[^?]*(брать|cannot take square root)[^?]*$/, 'Server error message has correct language and encoding';
+	    qr/^[^?]*(брать|отрицательного|cannot take square root)[^?]*$/, 'Server error message has correct language and encoding';
     }
 
     # check that we do not run into 'ignoring unconvertible UTF-8 character'
