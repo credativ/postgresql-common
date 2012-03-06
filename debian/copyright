@@ -1,5 +1,4 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Name: postgresql-common
 Upstream-Contact: Martin Pitt <mpitt@debian.org>
 
 Files: *
