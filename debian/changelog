@@ -1,6 +1,7 @@
 postgresql-common (130) UNRELEASED; urgency=low
 
   * pg_ctlcluster: Add 'promote' action.
+  * pg_updatedicts: Fix a typo.
 
  -- Christoph Berg <myon@debian.org>  Tue, 10 Apr 2012 10:06:23 +0200
 
