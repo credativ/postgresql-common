@@ -295,6 +295,10 @@ sub reload {
     exec $pg_ctl, '-D', $info{'pgdata'}, '-s', @pg_ctl_opts_from_cli, 'reload';
 }
 
+sub promote {
+    exec $pg_ctl, '-D', $info{'pgdata'}, '-s', @pg_ctl_opts_from_cli, 'promote';
+}
+
 #
 # main
 #
@@ -383,13 +387,13 @@ if( $> != $info{'owneruid'} ) {
 $pg_ctl = get_program_path 'pg_ctl', $version;
 
 %actions = ('start' => \&start, 'stop' => \&stop, 'reload' => \&reload,
-            'restart' => \&restart);
+            'restart' => \&restart, 'promote' => \&promote);
 
 if ($actions{$action}) {
     exit $actions{$action}->();
 } else {
-    error 'Error: invalid action (must be one of: '. 
-        (join ', ', keys %actions);
+    error 'Error: invalid action (must be one of: '.
+        (join ', ', sort keys %actions) . ')';
 }
 
 __END__
@@ -402,7 +406,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action> B<--> [I<pg_ctl options>]
 
-where I<action> = B<start>|B<stop>|B<restart>|B<reload>
+where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<promote>
 
 =head1 DESCRIPTION
 
@@ -449,6 +453,11 @@ Stops the server if it is running and starts it (again).
 
 Causes the configuration files to be re-read without a full shutdown of the
 server.
+
+=item B<promote>
+
+Commands a running standby server to exit recovery and begin read-write
+operations.
 
 =back
 

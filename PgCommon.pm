@@ -580,6 +580,7 @@ sub cluster_info {
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) = 
             (stat $result{'pgdata'})[4,5];
+        $result{'recovery'} = -e "$result{'pgdata'}/recovery.conf";
     }
     $result{'start'} = get_cluster_start_conf $_[0], $_[1];
 

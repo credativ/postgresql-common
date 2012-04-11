@@ -634,7 +634,7 @@ This is also the default if the file is missing.
 The postmaster process is not handled by the init script, but manually
 controlling the cluster with L<pg_ctlcluster(1)> is permitted.
 
-=item B<disable>
+=item B<disabled>
 
 Neither the init script nor L<pg_ctlcluster(1)> are permitted to start/stop the
 cluster. Please be aware that this will not stop the cluster owner from calling
