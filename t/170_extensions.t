@@ -37,8 +37,8 @@ foreach (</usr/share/postgresql/$v/extension/*.control>) {
 	$expected_extensions = "cube\n" . $expected_extensions;
     }
 
-    if ($extname eq 'hstore') {
-	# EXFAIL: hstore throws a warning about obsolete => operator
+    if ($extname eq 'hstore' && $v eq '9.1') {
+	# EXFAIL: hstore in 9.1 throws a warning about obsolete => operator
 	like_program_out 'postgres', "psql -qc 'CREATE EXTENSION \"$extname\"'", 0,
 	   qr/=>/, "extension $extname installs (with warning)";
     } else {
