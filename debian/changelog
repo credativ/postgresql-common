@@ -17,6 +17,8 @@ postgresql-common (130) UNRELEASED; urgency=low
     - pg_upgradecluster: In the tablespace test, don't query the "spclocation"
       column, which does not exist any more in 9.2. Just check whether we have
       any table space other than the two default ones.
+    - t/050_encodings.t: Adjust expected "invalid UTF-8" error to also match
+      the 9.2 format.
 
  -- Christoph Berg <myon@debian.org>  Tue, 10 Apr 2012 10:06:23 +0200
 
