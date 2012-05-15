@@ -21,6 +21,7 @@ postgresql-common (130) UNRELEASED; urgency=low
       the 9.2 format.
     - t/170_extensions.t: Adjust the "hstore" exfail to only apply to 9.1.
       9.2's version works without a warning.
+  * debian/backport-ppa: Update Ubuntu releases.
 
  -- Christoph Berg <myon@debian.org>  Tue, 10 Apr 2012 10:06:23 +0200
 
