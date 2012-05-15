@@ -1,9 +1,22 @@
 postgresql-common (130) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * pg_ctlcluster: Add 'promote' action.
   * pg_updatedicts: Fix a typo.
   * pg_lsclusters, PgCommon.pm: Show "recovery" in status column.
   * pg_createcluster: Fix a doc typo.
+
+  [ Martin Pitt ]
+  * Add support for 9.2:
+    - pg_createcluster: Add 9.2 configuration method.
+    - t/060_obsolete_confparams.t: Add full configuration for 9.1 to test the
+      configuration update to 9.2.
+    - pg_upgradecluster: On upgrades to 9.2, deprecate the 'wal_sender_delay',
+      'silent_mode', and 'custom_variable_classes' postgresql.conf options, as
+      they do not exist any more.
+    - pg_upgradecluster: In the tablespace test, don't query the "spclocation"
+      column, which does not exist any more in 9.2. Just check whether we have
+      any table space other than the two default ones.
 
  -- Christoph Berg <myon@debian.org>  Tue, 10 Apr 2012 10:06:23 +0200
 
