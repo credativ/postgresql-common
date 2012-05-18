@@ -13,7 +13,7 @@ SRC=`dpkg-parsechangelog  | grep ^Source | cut -f2- -d' '`
 if [ "$SRC" = postgresql-9.1 ]; then
     RELEASES='lucid natty'
 elif [ "$SRC" = postgresql-9.2 ]; then
-    RELEASES='lucid precise'
+    RELEASES='lucid oneiric precise'
 else
     RELEASES='lucid natty oneiric precise'
 fi
@@ -26,7 +26,10 @@ export DEBEMAIL=martin.pitt@ubuntu.com
 
 for release in $RELEASES; do
     dch -D$release -v"$CUR_VERSION~$release" -b 'Backport'
+    if [ "$release" = lucid ]; then
+        sed -i 's/dpkg-dev.*| hardening-wrapper/hardening-wrapper/' debian/control
+    fi
     bzr bd -S -- -sd -v$SINCE_VERSION
-    bzr revert --no-backup debian/changelog
+    bzr revert --no-backup debian/changelog debian/control
     dput ppa:pitti/postgresql ../${SRC}_${CUR_VERSION}~${release}_source.changes
 done
