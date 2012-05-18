@@ -25,8 +25,8 @@ SINCE_VERSION=`dpkg-parsechangelog -n2 | grep urgency=| tail -n1 | awk '{print $
 export DEBEMAIL=martin.pitt@ubuntu.com
 
 for release in $RELEASES; do
-    dch -D$release -v"$CUR_VERSION~$release" -b 'Backport'
-    if [ "$release" = lucid ]; then
+    dch -D$release -v"$CUR_VERSION~${release}" -b 'Backport'
+    if [ "$release" = lucid -o "$release" = oneiric ]; then
         sed -i 's/dpkg-dev.*| hardening-wrapper/hardening-wrapper/' debian/control
     fi
     bzr bd -S -- -sd -v$SINCE_VERSION
