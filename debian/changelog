@@ -6,6 +6,8 @@ postgresql-common (131) UNRELEASED; urgency=low
   * debian/control: Set Maintainer: to pkg-postgresql group, and move myself
     to Uploaders:.
   * debian/README.Devel: Update for moved packaging branches.
+  * debian/backport-ppa: Disable dpkg 1.16.2 build dependency for natty as
+    well.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 18 May 2012 14:11:01 +0200
 
