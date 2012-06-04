@@ -27,20 +27,14 @@ bazaar to benefit from the features of a revision control system; this
 will also allow the Debian maintainers to easily merge your changes
 into the official packages.
 
-The official Debian packages are built from Martin Pitt's branches
-which are available at
+The official Debian package branches are at
 
-  https://code.launchpad.net/postgresql
-
-This contains the following branches:
-
-  common     (postgresql-common package)
-  debian-8.4 (all available major versions)
-  debian-9.0
+  http://anonscm.debian.org/bzr/pkg-postgresql/
 
 The orig.tar.gz files are not kept under revision control since they
 would only bloat the archive. They need to be downloaded separately
-from any Debian mirror.
+from any Debian mirror. "bzr bd" (from the bzr-builddeb package) will
+fetch those automatically.
 
 Creating your personal branch
 -----------------------------
@@ -56,28 +50,25 @@ develop a feature you need, you should create your own branch where
 you can commit to. As an example, let's create a branch of the
 postgresql-common package:
 
-  $ bzr branch lp:~pitti/postgresql/common
+  $ bzr branch http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
 
-Now you can happily use "bzr diff", "bzr commit", "bzr add", "baz
+Now you can happily use "bzr diff", "bzr commit", "bzr add", "bzr
 pull", "bzr merge", and all the other features of revision control.
 
 Publishing your branch
 ----------------------
 
-The prefered method of publishing your branch is to create a Launchpad
-account and put your branch there as well, so that all branches are
-managed in one place, and can be browsed, subscribed to, etc.
-
-  bzr push lp:~<username>/postgresql/<branchname>
-
-Of course you can also use any other server where you have ssh or sftp
-access (use sftp:// for the latter) and which is http accessible:
+You can use any server where you have ssh or sftp access (use sftp:// for the
+latter) and which is http accessible:
 
   bzr push sftp://myuser@my.server.com:public_html/bzr/psql/common
 
 After this initial command, "bzr push" is enough for subsequent
 pushes, bzr remembers the last push location. This way you can keep
 your remote branch up to date.
+
+If you do not have any server available, you can create an account on Launchpad
+(https://launchpad.net) and push it to lp:~<username>/postgresql/<branchname>.
 
 If you developed a particular feature or bug fix and would like to see
 it in the official package, please send a mail to
