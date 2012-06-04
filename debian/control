@@ -1,7 +1,8 @@
 Source: postgresql-common
 Section: database
 Priority: optional
-Maintainer: Martin Pitt <mpitt@debian.org>
+Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
+Uploaders: Martin Pitt <mpitt@debian.org>
 Standards-Version: 3.9.3
 Vcs-Bzr: http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
 Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/trunk
