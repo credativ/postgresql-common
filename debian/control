@@ -3,8 +3,8 @@ Section: database
 Priority: optional
 Maintainer: Martin Pitt <mpitt@debian.org>
 Standards-Version: 3.9.3
-Vcs-Bzr: https://code.launchpad.net/~pitti/postgresql/common/
-Vcs-Browser: http://bazaar.launchpad.net/~pitti/postgresql/common/changes
+Vcs-Bzr: http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
+Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/trunk
 Build-Depends: debhelper (>= 7.0.50~)
 
 Package: postgresql-common

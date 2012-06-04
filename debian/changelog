@@ -1,6 +1,8 @@
 postgresql-common (131) UNRELEASED; urgency=low
 
   * debian/backport-ppa: Adjust for lucid, build -9.2 for oneiric as well.
+  * debian/control: Move bzr branches to alioth, so that other members of
+    pkg-postgresql can commit. Update Vcs-* tags.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 18 May 2012 14:11:01 +0200
 
