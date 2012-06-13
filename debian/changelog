@@ -1,5 +1,6 @@
 postgresql-common (131) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/backport-ppa: Adjust for lucid, build -9.2 for oneiric as well.
   * debian/control: Move bzr branches to alioth, so that other members of
     pkg-postgresql can commit. Update Vcs-* tags.
@@ -8,6 +9,11 @@ postgresql-common (131) UNRELEASED; urgency=low
   * debian/README.Devel: Update for moved packaging branches.
   * debian/backport-ppa: Disable dpkg 1.16.2 build dependency for natty as
     well.
+
+  [ Christoph Berg ]
+  * pg_buildext: Also set DESTDIR and VPATH for the configure, build and clean
+    targets.
+  * Add myself to Uploaders.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 18 May 2012 14:11:01 +0200
 

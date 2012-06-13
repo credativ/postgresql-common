@@ -30,7 +30,7 @@ configure() {
 
     mkdir -p $vtarget
     ( echo "calling configure in $vtarget" &&
-      cd $vtarget && $srcdir/configure $confopts PG_CONFIG="$pgc" )
+      cd $vtarget && $srcdir/configure $confopts DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" )
 }
 
 build() {
@@ -40,7 +40,7 @@ build() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget $makefile CFLAGS="$cflags" PG_CONFIG="$pgc" VPATH="$srcdir"
+    make -C $vtarget $makefile CFLAGS="$cflags" DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir"
 }
 
 install() {
@@ -58,7 +58,7 @@ clean() {
 
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    [ -d $vtarget ] && make -C $vtarget clean $makefile PG_CONFIG="$pgc" VPATH="$srcdir"
+    [ -d $vtarget ] && make -C $vtarget clean $makefile DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir"
     rm -rf $vtarget
 }
 
