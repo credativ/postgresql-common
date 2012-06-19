@@ -18,6 +18,7 @@ postgresql-common (131) UNRELEASED; urgency=low
     local build tree.
   * debian/tests/system: Unset $TMPDIR so that 'postgres' and 'nobody' do not
     fall over the autopkgtest provided $TMPDIR which is not world writable.
+  * t/030_errors.t: Fix nonzero exit code which caused stderr output.
 
   [ Christoph Berg ]
   * pg_buildext: Also set DESTDIR and VPATH for the configure, build and clean

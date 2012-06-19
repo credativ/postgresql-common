@@ -330,7 +330,7 @@ check_clean;
 my $loop = new File::Temp (UNLINK => 1) or die "could not create temporary file: $!";
 truncate $loop, 10000000 or die "truncate: $!";
 close $loop;
-END { system "umount /var/lib/postgresql 2>/dev/null; losetup -d /dev/loop7 2>/dev/null"; }
+END { system "umount /var/lib/postgresql 2>/dev/null; losetup -d /dev/loop7 2>/dev/null; true"; }
 (system "modprobe loop; losetup /dev/loop7 $loop && mkfs.ext2 /dev/loop7 >/dev/null 2>&1 && mount -t ext2 /dev/loop7 /var/lib/postgresql") == 0 or 
     die 'Could not create and mount loop partition';
 
@@ -342,7 +342,8 @@ ok_dir '/var/lib/postgresql', ['lost+found'],
 ok_dir '/etc/postgresql', [], 
     'No files in /etc/postgresql /left behind after failed pg_createcluster';
 
-system "umount /var/lib/postgresql; losetup -d /dev/loop7";
+(system 'umount /var/lib/postgresql') == 0 or die 'failed to unmount';
+(system "losetup -d /dev/loop7") == 0 or die 'failed to remove loop device';
 
 check_clean;
 
