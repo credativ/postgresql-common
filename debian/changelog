@@ -14,6 +14,10 @@ postgresql-common (131) UNRELEASED; urgency=low
   * debian/tests/system: Run testsuite under en_US.UTF-8, as autopkgtests sets
     it to C by default.
   * t/180_ecpg.t: Ensure that test.pgc is readable for nobody.
+  * debian/tests/system: Run the packaged tests instead of the ones in the
+    local build tree.
+  * debian/tests/system: Unset $TMPDIR so that 'postgres' and 'nobody' do not
+    fall over the autopkgtest provided $TMPDIR which is not world writable.
 
   [ Christoph Berg ]
   * pg_buildext: Also set DESTDIR and VPATH for the configure, build and clean

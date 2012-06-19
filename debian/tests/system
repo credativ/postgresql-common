@@ -15,4 +15,5 @@ if [ -n "`LANG=en_US.utf8 locale 2>&1 1>/dev/null`" ]; then
     exit 1
 fi
 
-LANG=en_US.utf8 ./testsuite
+cd /usr/share/postgresql-common
+env -u TMPDIR LANG=en_US.utf8 ./testsuite
