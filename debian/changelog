@@ -1,4 +1,4 @@
-postgresql-common (131) UNRELEASED; urgency=low
+postgresql-common (131) unstable; urgency=low
 
   [ Martin Pitt ]
   * debian/backport-ppa: Adjust for lucid, build -9.2 for oneiric as well.
@@ -25,7 +25,7 @@ postgresql-common (131) UNRELEASED; urgency=low
     targets.
   * Add myself to Uploaders.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 18 May 2012 14:11:01 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 19 Jun 2012 19:26:12 +0200
 
 postgresql-common (130) unstable; urgency=low
 
