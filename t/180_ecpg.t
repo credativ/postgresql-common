@@ -35,6 +35,7 @@ int main() {
 }
 EOF
 close F;
+chmod 0644, 'test.pgc';
 
 is_program_out 'nobody', 'ecpg test.pgc', 0, '', 'ecpg processing';
 
