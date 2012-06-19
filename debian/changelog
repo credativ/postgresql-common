@@ -9,6 +9,8 @@ postgresql-common (131) UNRELEASED; urgency=low
   * debian/README.Devel: Update for moved packaging branches.
   * debian/backport-ppa: Disable dpkg 1.16.2 build dependency for natty as
     well.
+  * debian/tests/control: Drop "breaks-computer" restriction. While DEP-8
+    mentions it, autopkgtest does not understand it yet and skips the test.
 
   [ Christoph Berg ]
   * pg_buildext: Also set DESTDIR and VPATH for the configure, build and clean
