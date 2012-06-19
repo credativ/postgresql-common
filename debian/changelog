@@ -11,6 +11,8 @@ postgresql-common (131) UNRELEASED; urgency=low
     well.
   * debian/tests/control: Drop "breaks-computer" restriction. While DEP-8
     mentions it, autopkgtest does not understand it yet and skips the test.
+  * debian/tests/system: Run testsuite under en_US.UTF-8, as autopkgtests sets
+    it to C by default.
 
   [ Christoph Berg ]
   * pg_buildext: Also set DESTDIR and VPATH for the configure, build and clean
