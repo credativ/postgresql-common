@@ -1,3 +1,9 @@
+postgresql-common (132) UNRELEASED; urgency=low
+
+  * debian/control: Add XS-Testsuite: header, as per current DEP-8.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jun 2012 11:52:35 +0200
+
 postgresql-common (131) unstable; urgency=low
 
   [ Martin Pitt ]
