@@ -1,7 +1,12 @@
 postgresql-common (132) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/control: Add XS-Testsuite: header, as per current DEP-8.
   * debian/tests/control: Drop undefined "no-build-needed" feature.
+
+  [ Christoph Berg ]
+  * Recognize "online,recovery" clusters in init script. (Closes: #678936)
+    Spotted by Gilbert Roulot.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jun 2012 11:52:35 +0200
 
