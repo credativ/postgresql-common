@@ -1,4 +1,4 @@
-postgresql-common (132) UNRELEASED; urgency=low
+postgresql-common (132) unstable; urgency=low
 
   [ Martin Pitt ]
   * debian/control: Add XS-Testsuite: header, as per current DEP-8.
@@ -8,7 +8,7 @@ postgresql-common (132) UNRELEASED; urgency=low
   * Recognize "online,recovery" clusters in init script. (Closes: #678936)
     Spotted by Gilbert Roulot.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 20 Jun 2012 11:52:35 +0200
+ -- Christoph Berg <myon@debian.org>  Sat, 30 Jun 2012 21:31:49 +0200
 
 postgresql-common (131) unstable; urgency=low
 
