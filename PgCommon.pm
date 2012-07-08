@@ -1,6 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2012 Christoph Berg <myon@debian.org
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -15,6 +16,7 @@
 package PgCommon;
 use strict;
 use Socket;
+use Socket qw(IN6ADDR_ANY);
 use POSIX;
 
 use Exporter;
@@ -670,18 +672,30 @@ sub next_free_port {
     }
 
     my $port;
-    for ($port = $defaultport; ; ++$port) {
+    for ($port = $defaultport; $port < 65536; ++$port) {
 	next if grep { $_ == $port } @ports;
 
         # check if port is already in use
-        socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or 
+	my ($have_ip4, $res4, $have_ip6, $res6);
+	if (socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp'))) { # IPv4
+	    $have_ip4 = 1;
+	    $res4 = bind (SOCK, sockaddr_in($port, INADDR_ANY));
+	}
+	if (socket (SOCK, PF_INET6, SOCK_STREAM, getprotobyname('tcp'))) { # IPv6
+	    $have_ip6 = 1;
+	    $res6 = bind (SOCK, sockaddr_in6($port, IN6ADDR_ANY));
+	}
+	unless ($have_ip4 or $have_ip6) {
+	    # require at least one protocol to work (PostgreSQL needs it anyway
+	    # for the stats collector)
             die "could not create socket: $!";
-        my $res = bind (SOCK, sockaddr_in($port, INADDR_ANY));
+	}
         close SOCK;
-        last if $res;
+	# return port if it is available on all supported protocols
+	return $port if ($have_ip4 ? $res4 : 1) and ($have_ip6 ? $res6 : 1);
     }
 
-    return $port;
+    die "no free port found";
 }
 
 # Return the PostgreSQL version, cluster, and database to connect to. version
