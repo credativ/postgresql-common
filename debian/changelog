@@ -1,3 +1,9 @@
+postgresql-common (133) UNRELEASED; urgency=low
+
+  * Add .bzrignore file.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 08 Jul 2012 10:17:57 +0200
+
 postgresql-common (132) unstable; urgency=low
 
   [ Martin Pitt ]
