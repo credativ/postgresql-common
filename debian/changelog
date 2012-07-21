@@ -1,9 +1,13 @@
 postgresql-common (133) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * Add .bzrignore file.
   * PgCommon.pm: Check IPv4 and IPv6 in next_free_port(). (Closes: #678858)
 
- -- Christoph Berg <myon@debian.org>  Sun, 08 Jul 2012 10:17:57 +0200
+  [ Peter Eisentraut ]
+  * debian/control: Add myself to Uploaders.
+
+ -- Peter Eisentraut <petere@debian.org>  Sat, 21 Jul 2012 12:45:48 +0300
 
 postgresql-common (132) unstable; urgency=low
 
