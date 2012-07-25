@@ -111,9 +111,16 @@ if ($cmdname eq 'psql') {
 	    my $out;
 	    read PS, $out, 10000;
 	    close PS;
-	    my ($lib_path) = $out =~ m!(/lib/.*)/libedit.so!;
+	    if ($out =~ m!/libreadline.so!) {
+		# already linked against libreadline
+		@readlines = ();
+	    }
+	    else
+	    {
+		my ($lib_path) = $out =~ m!(/lib/.*)/libedit.so!;
 
-	    @readlines = sort(<$lib_path/libreadline.so.?>);
+		@readlines = sort(<$lib_path/libreadline.so.?>);
+	    }
 	}
     }
 
