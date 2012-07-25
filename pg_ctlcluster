@@ -260,7 +260,6 @@ sub stop {
             print "(does not shutdown, killing the process)";
             $pid = get_running_pid $info{'pgdata'}.'/postmaster.pid';
             kill (9, $pid) if $pid;
-            unlink $info{'pgdata'}.'/postmaster.pid';
 	    $result = 0;
         }
     } else {

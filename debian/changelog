@@ -11,6 +11,13 @@ postgresql-common (133) UNRELEASED; urgency=low
     postgresql-client-common package).
   * debian/rules: Catch errors in for loops.
 
+  [ Martin Pitt ]
+  * pg_ctlcluster: Do not remove the PID file after SIGKILLing the
+    postmaster in the "last-ditch effort to shut down" in --force mode. This
+    is a potentially dangerous thing to do when trying to start a second
+    postmaster in parallel while the first one is still being shut down.
+    (see http://archives.postgresql.org/pgsql-general/2012-07/msg00475.php)
+
  -- Peter Eisentraut <petere@debian.org>  Mon, 23 Jul 2012 22:42:45 +0300
 
 postgresql-common (132) unstable; urgency=low
