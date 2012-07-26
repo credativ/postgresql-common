@@ -66,15 +66,19 @@ export CDPATH=/usr
 export ENV=/nonexisting
 export BASH_ENV=/nonexisting
 
+if [ $# -eq 0 ]; then
+    set -- $TESTSDIR/*.t
+fi
+
 echo "====== Running all tests with default umask 022 ======="
 umask 022
-for T in $TESTSDIR/*.t; do
+for T; do
     echo "=== Running test `basename $T`... ==="
     perl $T
 done
 echo "====== Running all tests with tight umask 077 ======="
 umask 077
-for T in $TESTSDIR/*.t; do
+for T; do
     echo "=== Running test `basename $T`... ==="
     perl $T
 done

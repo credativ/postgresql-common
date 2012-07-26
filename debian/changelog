@@ -13,6 +13,8 @@ postgresql-common (133) UNRELEASED; urgency=low
   * pg_wrapper: Avoid Perl warnings if psql is linked against libreadline
     instead of libedit, even though that is not standard anymore.
   * testsuite: Reset core limit for pg_ctl tests.
+  * testsuite: Allow running individual tests by passing them on the
+    command line.
 
   [ Martin Pitt ]
   * pg_ctlcluster: Do not remove the PID file after SIGKILLing the
