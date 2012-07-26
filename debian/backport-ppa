@@ -26,7 +26,7 @@ export DEBEMAIL=martin.pitt@ubuntu.com
 
 for release in $RELEASES; do
     dch -D$release -v"$CUR_VERSION~${release}" -b 'Backport'
-    if [ "$release" = lucid -o -o "$release" = "natty" -o "$release" = oneiric ]; then
+    if [ "$release" = lucid -o "$release" = "natty" -o "$release" = oneiric ]; then
         sed -i 's/dpkg-dev.*| hardening-wrapper/hardening-wrapper/' debian/control
     fi
     bzr bd -S -- -sd -v$SINCE_VERSION

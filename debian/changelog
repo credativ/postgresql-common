@@ -1,3 +1,9 @@
+postgresql-common (134) UNRELEASED; urgency=low
+
+  * debian/backport-ppa: Fix syntax error.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 26 Jul 2012 13:42:25 +0200
+
 postgresql-common (133) unstable; urgency=low
 
   [ Christoph Berg ]
