@@ -1,6 +1,9 @@
 postgresql-common (134) UNRELEASED; urgency=low
 
   * debian/backport-ppa: Fix syntax error.
+  * PgCommon.pm: Drop unconditional import of Socket::IN6ADDR_ANY and only do
+    the IPv6 check if it is available. This keeps this version backwards
+    compatible with Debian/Ubuntu releases with older Perl versions.
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 26 Jul 2012 13:42:25 +0200
 
