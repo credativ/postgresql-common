@@ -1,3 +1,13 @@
+postgresql-common (135) UNRELEASED; urgency=low
+
+  * pg_createcluster: For 9.2 and higher, use the new ssl_{cert,key}_file
+    options instead of creating symlinks in the data directory.
+    (Closes: #680162)
+  * pg_upgradecluster: Set above options to the old cluster's SSL cert/key
+    symlink destinations, if they exist.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 15 Aug 2012 12:02:35 +0200
+
 postgresql-common (134) unstable; urgency=low
 
   * debian/backport-ppa: Fix syntax error.

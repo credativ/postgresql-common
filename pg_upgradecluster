@@ -143,6 +143,19 @@ sub adapt_conffiles {
 	deprecate \%c, 'wal_sender_delay', 'does not exist any more';
 	deprecate \%c, 'silent_mode', 'does not exist any more';
 	deprecate \%c, 'custom_variable_classes', 'does not exist any more';
+
+        # SSL certificate paths have an explicit option now, older versions use
+        # a symlink
+        my $ssl_crt = $info{'pgdata'} . '/server.crt';
+        my $ssl_key = $info{'pgdata'} . '/server.key';
+        if (-l $ssl_crt) {
+	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+                'ssl_cert_file', (readlink $ssl_crt);
+        }
+        if (-l $ssl_key) {
+	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+                'ssl_key_file', (readlink $ssl_key);
+        }
     }
 }
 

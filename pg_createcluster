@@ -415,13 +415,18 @@ $) = $egid;
 die "changing euid back: $!" if $> != $euid;
 die "changing egid back: $!" if $) != $egid;
 
-# create SSL certificate symlinks to the default certificate if it exists; if
-# so, enable SSL
-
+# enable SSL if we have the snakeoil default certificate
 if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' && 
     $ssl_key_access) {
-    symlink '/etc/ssl/certs/ssl-cert-snakeoil.pem', $datadir.'/server.crt';
-    symlink '/etc/ssl/private/ssl-cert-snakeoil.key', $datadir.'/server.key';
+    if ($version ge '9.2') {
+        PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
+            'ssl_cert_file', '/etc/ssl/certs/ssl-cert-snakeoil.pem';
+        PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
+            'ssl_key_file', '/etc/ssl/private/ssl-cert-snakeoil.key';
+    } else {
+        symlink '/etc/ssl/certs/ssl-cert-snakeoil.pem', $datadir.'/server.crt';
+        symlink '/etc/ssl/private/ssl-cert-snakeoil.key', $datadir.'/server.key';
+    }
 
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';
 }
