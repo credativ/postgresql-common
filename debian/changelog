@@ -11,6 +11,8 @@ postgresql-common (135) UNRELEASED; urgency=low
   * debian/postgresql-common.postgresql.init: Fix "status" output to be more
     useful and legible, and exit with code 3 if any cluster is down.
     (Closes: #656363)
+  * debian/postgresql-common.postgresql.init: Show a warning message if no
+    clusters exist. (Closes: #677604)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 15 Aug 2012 12:02:35 +0200
 

@@ -28,6 +28,10 @@ fi
 
 case "$1" in
     start|stop|restart|reload)
+	if [ -z "`pg_lsclusters -h`" ]; then
+	    log_warning_msg 'No PostgreSQL clusters exist; see "man pg_createcluster"'
+	    exit 0
+	fi
 	for v in $versions; do
 	    $1 $v
 	done
