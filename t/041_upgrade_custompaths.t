@@ -16,7 +16,7 @@ use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 
-ok ((system "pg_createcluster --datadir /tmp/postgresql-test -l /tmp/postgresql-test.log --start $MAJORS[0] upgr >/dev/null") == 0);
+ok ((system "pg_createcluster --datadir /tmp/postgresql-test -l /tmp/postgresql-test.log $MAJORS[0] upgr >/dev/null") == 0);
 
 # Upgrade to latest version
 my $outref;
