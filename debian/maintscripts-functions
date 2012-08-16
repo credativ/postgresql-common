@@ -1,17 +1,20 @@
 # This file contains common functionality for all postgresql server
 # package maintainer scripts.
 
-# arguments: version package master
+# arguments: version master package [package]
 _link_manpages() {
-    MANS=$(unset GREP_OPTIONS; dpkg -L $2|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$3")
+    MANS=$(unset GREP_OPTIONS; dpkg -L $3 $4 $5 2>/dev/null|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$2")
+    [ -n "$MANS" ] || return
+
     SLAVES=$(for i in $MANS; do TARGET=$(echo $i | sed "s/postgresql\/$1\///"); echo -n " --slave $TARGET $(basename $i) $i"; done)
-    update-alternatives --install /usr/share/man/man1/$3 \
-	$3 /usr/share/postgresql/$1/man/man1/$3 \
+    update-alternatives --install /usr/share/man/man1/$2 \
+	$2 /usr/share/postgresql/$1/man/man1/$2 \
 	$(echo "$1" | tr -cd 0-9) $SLAVES
 }
 
+# arguments: version master
 _unlink_manpages() {
-    update-alternatives --remove $3 /usr/share/postgresql/$1/man/man1/$3
+    update-alternatives --remove $2 /usr/share/postgresql/$1/man/man1/$2
 }
 
 _remove_tsearch() {
@@ -36,7 +39,7 @@ or a similar command (see 'man pg_createcluster')." >&2
 	}
     fi
 
-    _link_manpages "$VERSION" "postgresql-$VERSION" postmaster.1.gz
+    _link_manpages "$VERSION" postmaster.1.gz "postgresql-$1" "postgresql-contrib-$1"
 
     if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$VERSION ]; then
        if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
@@ -60,7 +63,7 @@ stop_version() {
 }
 
 remove_version() {
-    _unlink_manpages "$1" "postgresql-$1" postmaster.1.gz
+    _unlink_manpages "$1" postmaster.1.gz
     _remove_tsearch "$1"
 }
 
@@ -69,14 +72,15 @@ configure_client_version() {
 }
 
 remove_client_version() {
-    _unlink_manpages "$1" "postgresql-client-$1" psql.1.gz
+    _unlink_manpages "$1" psql.1.gz
 }
 
 configure_contrib_version() {
-    :
+    _link_manpages "$1" postmaster.1.gz "postgresql-$1" "postgresql-contrib-$1"
 }
 
 remove_contrib_version() {
-    :
+    # we still want to retain the alternatives for the server packages
+    _link_manpages "$1" postmaster.1.gz "postgresql-$1"
 }
 

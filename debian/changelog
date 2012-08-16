@@ -5,6 +5,9 @@ postgresql-common (135) UNRELEASED; urgency=low
     (Closes: #680162)
   * pg_upgradecluster: Set above options to the old cluster's SSL cert/key
     symlink destinations, if they exist.
+  * debian/maintscripts-functions: Configure alternatives for manpages in
+    -contrib. This will only take effect after (re)installing
+    postgresql-contrib-9.2. (Closes: #680571)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 15 Aug 2012 12:02:35 +0200
 
