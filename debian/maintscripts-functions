@@ -3,8 +3,8 @@
 
 # arguments: version master package [package]
 _link_manpages() {
-    MANS=$(unset GREP_OPTIONS; dpkg -L $3 $4 $5 2>/dev/null|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$2")
-    [ -n "$MANS" ] || return
+    MANS=$(unset GREP_OPTIONS; dpkg -L $3 $4 $5 2>/dev/null|egrep '/man/.*\.[1-9](\.gz)?$' | grep -v "$2") || true
+    [ -n "$MANS" ] || return 0
 
     SLAVES=$(for i in $MANS; do TARGET=$(echo $i | sed "s/postgresql\/$1\///"); echo -n " --slave $TARGET $(basename $i) $i"; done)
     update-alternatives --install /usr/share/man/man1/$2 \
