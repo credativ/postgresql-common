@@ -1,4 +1,4 @@
-postgresql-common (135) UNRELEASED; urgency=low
+postgresql-common (135) experimental; urgency=low
 
   [ Martin Pitt ]
   * pg_createcluster: For 9.2 and higher, use the new ssl_{cert,key}_file
@@ -26,7 +26,7 @@ postgresql-common (135) UNRELEASED; urgency=low
     default authentication methods, instead of modifying the configuration
     file directly. (Closes: #685043)
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 15 Aug 2012 12:02:35 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 17 Aug 2012 15:28:35 +0200
 
 postgresql-common (134) unstable; urgency=low
 
