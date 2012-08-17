@@ -24,12 +24,15 @@ SINCE_VERSION=`dpkg-parsechangelog -n2 | grep urgency=| tail -n1 | awk '{print $
 
 export DEBEMAIL=martin.pitt@ubuntu.com
 
+# do first upload with orig tarball, subsequent ones without
+ORIG="-sa"
 for release in $RELEASES; do
     dch -D$release -v"$CUR_VERSION~${release}" -b 'Backport'
     if [ "$release" = lucid -o "$release" = "natty" -o "$release" = oneiric ]; then
         sed -i 's/dpkg-dev.*| hardening-wrapper/hardening-wrapper/' debian/control
     fi
-    bzr bd -S -- -sd -v$SINCE_VERSION
+    bzr bd -S -- --no-lintian "$ORIG" -v$SINCE_VERSION
     bzr revert --no-backup debian/changelog debian/control
     dput ppa:pitti/postgresql ../${SRC}_${CUR_VERSION}~${release}_source.changes
+    ORIG="-sd"
 done

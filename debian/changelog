@@ -1,3 +1,11 @@
+postgresql-common (136) UNRELEASED; urgency=low
+
+  * debian/backport-ppa: Do first upload with orig tarball, subsequent ones
+    without.
+  * debian/backport-ppa: Do not run lintian.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 17 Aug 2012 16:37:51 +0200
+
 postgresql-common (135) experimental; urgency=low
 
   [ Martin Pitt ]
