@@ -45,7 +45,12 @@ sub init_db {
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
-    push @initdb, ('-A', $ident_method);
+    if ($_[0] ge '9.2') {
+	push @initdb, ('--auth-local', $peer_method);
+	push @initdb, ('--auth-host', 'md5');
+    } else {
+	push @initdb, ('-A', $ident_method);
+    }
     push @initdb, ('--encoding', $encoding) if $encoding;
     push @initdb, ('--locale', $locale) if $locale;
     push @initdb, ('--lc-collate', $lc_collate) if $lc_collate;
@@ -136,6 +141,7 @@ sub configure_9_2 {
 # other entries. 
 # - Change default authentication for host entries to md5.
 sub setup_pg_hba {
+    my ($version) = @_;
     $user = (getpwuid $owneruid)[0];
     $fname = "$confdir/pg_hba.conf";
     $su_comment = "
@@ -161,15 +167,18 @@ sub setup_pg_hba {
 	    $search = 0;
 	}
 
-	# default authentication for Unix socket connections
-	if ($line =~ /^#?local/) {
-	    $line =~ s/trust/$peer_method/;
+	if ($version lt '9.2') {
+	    # default authentication for Unix socket connections
+	    if ($line =~ /^#?local/) {
+		$line =~ s/trust/$peer_method/;
+	    }
+
+	    # default authentication for TCP connections
+	    if ($line =~ /^#?host/) {
+		$line =~ s/($ident_method|trust)/md5/;
+	    }
 	}
 
-	# default authentication for TCP connections
-	if ($line =~ /^#?host/) {
-	    $line =~ s/($ident_method|trust)/md5/;
-	}
 	push @lines, $line;
     }
     close F;
@@ -342,7 +351,7 @@ chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/pg_ctl.conf" or die "c
 PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
 
 # add access for database superuser
-setup_pg_hba if $newcluster;
+setup_pg_hba $version if $newcluster;
 
 # configure socket directory
 if ($socketdir && ! -e $socketdir) {

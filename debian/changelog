@@ -1,5 +1,6 @@
 postgresql-common (135) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * pg_createcluster: For 9.2 and higher, use the new ssl_{cert,key}_file
     options instead of creating symlinks in the data directory.
     (Closes: #680162)
@@ -19,6 +20,11 @@ postgresql-common (135) UNRELEASED; urgency=low
     with restricted connections, and drop the check that the cluster is
     running. With this, pg_upgradecluster also works for clusters which are
     not running. (Closes: #681344)
+
+  [ Peter Eisentraut ]
+  * pg_createcluster: For PostgreSQL >= 9.2, use initdb options to set the
+    default authentication methods, instead of modifying the configuration
+    file directly. (Closes: #685043)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 15 Aug 2012 12:02:35 +0200
 
