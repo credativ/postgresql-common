@@ -68,7 +68,7 @@ versions() {
     [ -e $srcdir/debian/pgversions ] || die "$srcdir/debian/pgversions not found"
     for v in `/usr/share/postgresql-common/supported-versions`
     do
-	grep -q "^$v" $srcdir/debian/pgversions && echo $v
+	if grep -q "^$v" $srcdir/debian/pgversions ; then echo $v ; fi
     done
 }
 

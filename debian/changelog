@@ -1,8 +1,13 @@
 postgresql-common (136) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/backport-ppa: Do first upload with orig tarball, subsequent ones
     without.
   * debian/backport-ppa: Do not run lintian.
+
+  [ Christoph Berg ]
+  * pg_buildext: Fix supported-versions not to die when the last version is
+    not supported.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 17 Aug 2012 16:37:51 +0200
 
