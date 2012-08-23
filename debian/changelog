@@ -4,6 +4,8 @@ postgresql-common (136) UNRELEASED; urgency=low
   * debian/backport-ppa: Do first upload with orig tarball, subsequent ones
     without.
   * debian/backport-ppa: Do not run lintian.
+  * debian/backport-ppa: When building postgresql-9.1 for lucid, drop the
+    library packages as they collide with the ones built from postgresql-9.2.
 
   [ Christoph Berg ]
   * pg_buildext: Fix supported-versions not to die when the last version is
