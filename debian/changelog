@@ -6,6 +6,7 @@ postgresql-common (136) UNRELEASED; urgency=low
   * debian/backport-ppa: Do not run lintian.
   * debian/backport-ppa: When building postgresql-9.1 for lucid, drop the
     library packages as they collide with the ones built from postgresql-9.2.
+  * debian/backport-ppa: Build 9.2 for Quantal.
 
   [ Christoph Berg ]
   * pg_buildext: Fix supported-versions not to die when the last version is
