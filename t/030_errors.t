@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 168;
+use Test::More tests => 171;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -348,6 +348,34 @@ is $result, 0, 'script failed';
 like $$outref, qr/No space left on device/i, 
     'pg_createcluster fails due to insufficient disk space';
 like $$outref, qr/\nls><ls\n/, 'does not leave files behind';
+
+
+# check disk full conditions on startup
+my $cmd = <<EOF;
+set -e
+export LC_MESSAGES=C
+mkdir -p /etc/postgresql /var/lib/postgresql /var/log/postgresql
+mount -t tmpfs -o size=1000000 none /etc/postgresql
+mount -t tmpfs -o size=50000000 none /var/lib/postgresql
+mount -t tmpfs -o size=1000000 none /var/log/postgresql
+pg_createcluster 9.1 test 
+
+# fill up /var/lib/postgresql
+! cat < /dev/zero > /var/lib/postgresql/cruft 2>/dev/null
+echo '-- full lib --'
+! pg_ctlcluster 9.1 test start
+echo '-- end full lib --'
+echo '-- full lib log --'
+cat /var/log/postgresql/postgresql-9.1-test.log
+echo '-- end full lib log --'
+EOF
+
+$result = exec_as 'root', "echo '$cmd' | unshare -m sh", $outref;
+is $result, 0, 'script failed';
+like $$outref, qr/^-- full lib --.*No space left on device.*^-- end full lib --/ims, 
+    'pg_ctlcluster prints error message';
+like $$outref, qr/^-- full lib log --.*No space left on device.*^-- end full lib log --/ims, 
+    'log file has error message';
 
 check_clean;
 

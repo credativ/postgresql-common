@@ -221,7 +221,7 @@ sub start {
     }
 
     if (!$success) {
-        if ($logsize) {
+        if ($currlogsize) {
             print STDERR "The PostgreSQL server failed to start. Please check the log output:\n";
             open LOG, $info{'logfile'} or 
                 error "Could not open log file " . $info{'logfile'};
