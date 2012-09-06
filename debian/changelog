@@ -8,6 +8,9 @@ postgresql-common (136) UNRELEASED; urgency=low
     library packages as they collide with the ones built from postgresql-9.2.
   * debian/backport-ppa: Build 9.2 for Quantal.
   * debian/supported-versions: Add Ubuntu 12.10.
+  * t/030_errors.t: For the "fails on insufficient disk space test", move from
+    setting up a loop device to a tmpfs in unshare -m. This is more robust for
+    cleaning up after itself, and faster as well.
 
   [ Christoph Berg ]
   * pg_buildext: Fix supported-versions not to die when the last version is

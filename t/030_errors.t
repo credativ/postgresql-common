@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 169;
+use Test::More tests => 168;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -325,25 +325,29 @@ unlike_program_out 0, "pg_dropcluster $MAJORS[-1] broken", 0, qr/error/i,
 
 check_clean;
 
-# check that a failed pg_createcluster leaves no cruft behind: create a 10 MB
-# loop partition, temporarily mount it to /var/lib/postgresql
-my $loop = new File::Temp (UNLINK => 1) or die "could not create temporary file: $!";
-truncate $loop, 10000000 or die "truncate: $!";
-close $loop;
-END { system "umount /var/lib/postgresql 2>/dev/null; losetup -d /dev/loop7 2>/dev/null; true"; }
-(system "modprobe loop; losetup /dev/loop7 $loop && mkfs.ext2 /dev/loop7 >/dev/null 2>&1 && mount -t ext2 /dev/loop7 /var/lib/postgresql") == 0 or 
-    die 'Could not create and mount loop partition';
+# check that a failed pg_createcluster leaves no cruft behind: try creating a
+# cluster on a 10 MB tmpfs
+my $cmd = <<EOF;
+exec 2>&1
+set -e
+mkdir -p /var/lib/postgresql
+mount -t tmpfs -o size=10000000 none /var/lib/postgresql
+# this is supposed to fail
+LC_MESSAGES=C pg_createcluster $MAJORS[-1] test && exit 1 || true
+echo -n "ls>"
+# should not output anything
+ls /etc/postgresql 
+ls /var/lib/postgresql
+echo "<ls"
+EOF
 
-like_program_out 0, "LC_MESSAGES=C pg_createcluster $MAJORS[-1] test", 1, qr/No space left on device/i,
+my $result;
+$result = exec_as 'root', "echo '$cmd' | unshare -m sh", $outref;
+
+is $result, 0, 'script failed';
+like $$outref, qr/No space left on device/i, 
     'pg_createcluster fails due to insufficient disk space';
-
-ok_dir '/var/lib/postgresql', ['lost+found'], 
-    'No files in /var/lib/postgresql /left behind after failed pg_createcluster';
-ok_dir '/etc/postgresql', [], 
-    'No files in /etc/postgresql /left behind after failed pg_createcluster';
-
-(system 'umount /var/lib/postgresql') == 0 or die 'failed to unmount';
-(system "losetup -d /dev/loop7") == 0 or die 'failed to remove loop device';
+like $$outref, qr/\nls><ls\n/, 'does not leave files behind';
 
 check_clean;
 
