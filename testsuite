@@ -3,6 +3,7 @@
 # Run integration tests (on the installed package).
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2012 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -14,12 +15,33 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
+# default config
+TESTSDIR="$(dirname $0)/t"
+UMASKS="022 077"
+
+help ()
+{
+    echo "postgresql-common testsuite"
+    echo "Syntax: $0 [options] [test ...]"
+    echo "    -u 'umask ...'  list of umasks to run testsuite with [default: 022 077]"
+    exit ${1:-0}
+}
+
+# option parsing
+while getopts "hu:" opt ; do
+    case $opt in
+        h) help ;;
+        u) UMASKS="$OPTARG" ;;
+        *) help 1 ;;
+    esac
+done
+# shift away args
+shift $(($OPTIND - 1))
+
 if [ "$(id -u)" != 0 ]; then
     echo "Error: this test suite needs to be run as root" >&2
     exit 1
 fi
-
-TESTSDIR="$(dirname $0)/t"
 
 # always clean up behind us
 trap '
@@ -70,15 +92,17 @@ if [ $# -eq 0 ]; then
     set -- $TESTSDIR/*.t
 fi
 
-echo "====== Running all tests with default umask 022 ======="
-umask 022
-for T; do
-    echo "=== Running test `basename $T`... ==="
-    perl $T
-done
-echo "====== Running all tests with tight umask 077 ======="
-umask 077
-for T; do
-    echo "=== Running test `basename $T`... ==="
-    perl $T
+for U in $UMASKS; do
+    case $U in
+        022) TYPE="default" ;;
+        077) TYPE="tight" ;;
+        *) TYPE="custom" ;;
+    esac
+
+    echo "====== Running all tests with $TYPE umask $U ======="
+    umask $U
+    for T; do
+        echo "=== Running test `basename $T`... ==="
+        perl $T
+    done
 done

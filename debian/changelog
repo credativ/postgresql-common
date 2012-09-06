@@ -17,6 +17,8 @@ postgresql-common (136) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * pg_buildext: Fix supported-versions not to die when the last version is
     not supported.
+  * testsuite: Add getopt handling, and make the list of umasks to loop
+    through configurable (-u).
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 17 Aug 2012 16:37:51 +0200
 
