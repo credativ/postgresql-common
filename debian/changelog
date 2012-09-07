@@ -19,6 +19,9 @@ postgresql-common (136) UNRELEASED; urgency=low
     not supported.
   * testsuite: Add getopt handling, and make the list of umasks to loop
     through configurable (-u).
+  * As supported-versions is also used at build-time, add a build-dependency
+    on lsb-base for lsb_release to be available. Also, print supported
+    versions from debian/rules for easier debugging.
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 17 Aug 2012 16:37:51 +0200
 

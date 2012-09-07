@@ -20,6 +20,7 @@ override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r
 
 override_dh_gencontrol:
+	debian/supported-versions
 	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(shell for v in `debian/supported-versions`; do echo "postgresql-server-dev-$$v,"; done)"
 
 	# the versionless metapackages need to have version numbers which match
