@@ -1,3 +1,17 @@
+postgresql-common (113squeeze1) stable; urgency=high
+
+  Cherry-pick from version 133 (bzr r1181):
+
+  [ Martin Pitt ]
+  * pg_ctlcluster: Do not remove the PID file after SIGKILLing the
+    postmaster in the "last-ditch effort to shut down" in --force mode. This
+    is a potentially dangerous thing to do when trying to start a second
+    postmaster in parallel while the first one is still being shut down.
+    (see http://archives.postgresql.org/pgsql-general/2012-07/msg00475.php)
+    (Closes: #686060)
+
+ -- Christoph Berg <myon@debian.org>  Fri, 07 Sep 2012 19:36:39 +0200
+
 postgresql-common (113) unstable; urgency=medium
 
   * Urgency medium, as this is a straightforward bug fix for an important
