@@ -358,15 +358,15 @@ mkdir -p /etc/postgresql /var/lib/postgresql /var/log/postgresql
 mount -t tmpfs -o size=1000000 none /etc/postgresql
 mount -t tmpfs -o size=50000000 none /var/lib/postgresql
 mount -t tmpfs -o size=1000000 none /var/log/postgresql
-pg_createcluster 9.1 test 
+pg_createcluster $MAJORS[-1] test
 
 # fill up /var/lib/postgresql
 ! cat < /dev/zero > /var/lib/postgresql/cruft 2>/dev/null
 echo '-- full lib --'
-! pg_ctlcluster 9.1 test start
+! pg_ctlcluster $MAJORS[-1] test start
 echo '-- end full lib --'
 echo '-- full lib log --'
-cat /var/log/postgresql/postgresql-9.1-test.log
+cat /var/log/postgresql/postgresql-$MAJORS[-1]-test.log
 echo '-- end full lib log --'
 EOF
 
