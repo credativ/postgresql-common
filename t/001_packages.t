@@ -8,6 +8,8 @@ use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
 use Test::More tests => 7 + ($#MAJORS+1)*6;
 
+print "Info: PostgreSQL versions installed: @MAJORS\n";
+
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
     ok ((deb_installed "postgresql-plpython-$v"), "postgresql-plpython-$v installed");
