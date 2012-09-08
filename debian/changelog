@@ -1,4 +1,4 @@
-postgresql-common (113squeeze1) stable; urgency=high
+postgresql-common (113squeeze1) UNRELEASED; urgency=high
 
   Cherry-pick from version 133 (bzr r1181):
 
@@ -9,6 +9,9 @@ postgresql-common (113squeeze1) stable; urgency=high
     postmaster in parallel while the first one is still being shut down.
     (see http://archives.postgresql.org/pgsql-general/2012-07/msg00475.php)
     (Closes: #686060)
+
+  [ Christoph Berg ]
+  * Update Vcs URLs and Maintainer fields for group maintenance.
 
  -- Christoph Berg <myon@debian.org>  Fri, 07 Sep 2012 19:36:39 +0200
 

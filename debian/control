@@ -1,10 +1,11 @@
 Source: postgresql-common
 Section: database
 Priority: optional
-Maintainer: Martin Pitt <mpitt@debian.org>
+Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
+Uploaders: Martin Pitt <mpitt@debian.org>, Peter Eisentraut <petere@debian.org>, Christoph Berg <myon@debian.org>
 Standards-Version: 3.9.1
-Vcs-Bzr: https://code.launchpad.net/~pitti/postgresql/common/
-Vcs-Browser: http://bazaar.launchpad.net/~pitti/postgresql/common/changes
+Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/trunk
+Vcs-Bzr: http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
 Build-Depends: cdbs, debhelper (>= 6)
 
 Package: postgresql-common
