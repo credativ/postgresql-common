@@ -6,7 +6,7 @@ postgresql-common (136) UNRELEASED; urgency=low
   * debian/backport-ppa: Do not run lintian.
   * debian/backport-ppa: When building postgresql-9.1 for lucid, drop the
     library packages as they collide with the ones built from postgresql-9.2.
-  * debian/backport-ppa: Build 9.2 for Quantal.
+  * debian/backport-ppa: Build 9.2 for Quantal and Natty.
   * debian/supported-versions: Add Ubuntu 12.10.
   * t/030_errors.t: For the "fails on insufficient disk space test", move from
     setting up a loop device to a tmpfs in unshare -m. This is more robust for

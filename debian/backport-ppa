@@ -13,7 +13,7 @@ SRC=`dpkg-parsechangelog  | grep ^Source | cut -f2- -d' '`
 if [ "$SRC" = postgresql-9.1 ]; then
     RELEASES='lucid natty'
 elif [ "$SRC" = postgresql-9.2 ]; then
-    RELEASES='lucid oneiric precise quantal'
+    RELEASES='lucid natty oneiric precise quantal'
 else
     RELEASES='lucid natty oneiric precise'
 fi
