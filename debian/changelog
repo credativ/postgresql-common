@@ -1,14 +1,12 @@
 postgresql-common (113squeeze1) UNRELEASED; urgency=high
 
-  Cherry-pick from version 133 (bzr r1181):
-
   [ Martin Pitt ]
   * pg_ctlcluster: Do not remove the PID file after SIGKILLing the
     postmaster in the "last-ditch effort to shut down" in --force mode. This
     is a potentially dangerous thing to do when trying to start a second
     postmaster in parallel while the first one is still being shut down.
     (see http://archives.postgresql.org/pgsql-general/2012-07/msg00475.php)
-    (Closes: #686060)
+    Cherry-picked from version 133 (bzr r1181). (Closes: #686060)
 
   [ Christoph Berg ]
   * Update Vcs URLs and Maintainer fields for group maintenance.
