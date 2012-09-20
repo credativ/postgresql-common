@@ -18,7 +18,9 @@ _unlink_manpages() {
 }
 
 _remove_tsearch() {
-    find /usr/share/postgresql/$1/tsearch_data -type l \( -name '*.dict' -o -name '*.affix' \) -exec rm '{}' \;
+   if [ -e /usr/share/postgresql/$1/tsearch_data ]; then
+       find /usr/share/postgresql/$1/tsearch_data -type l \( -name '*.dict' -o -name '*.affix' \) -exec rm '{}' \;
+   fi
 }
 
 # arguments: <major version> <most recently configured package version>
