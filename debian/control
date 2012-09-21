@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
 Uploaders: Martin Pitt <mpitt@debian.org>, Peter Eisentraut <petere@debian.org>, Christoph Berg <myon@debian.org>
 Standards-Version: 3.9.1
-Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/trunk
-Vcs-Bzr: http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
+Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/squeeze
+Vcs-Bzr: http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/squeeze/
 Build-Depends: cdbs, debhelper (>= 6)
 
 Package: postgresql-common
