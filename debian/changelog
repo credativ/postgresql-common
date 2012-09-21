@@ -1,4 +1,4 @@
-postgresql-common (113squeeze1) UNRELEASED; urgency=high
+postgresql-common (113+squeeze1) stable; urgency=high
 
   [ Martin Pitt ]
   * pg_ctlcluster: Do not remove the PID file after SIGKILLing the
@@ -11,7 +11,7 @@ postgresql-common (113squeeze1) UNRELEASED; urgency=high
   [ Christoph Berg ]
   * Update Vcs URLs and Maintainer fields for group maintenance.
 
- -- Christoph Berg <myon@debian.org>  Fri, 07 Sep 2012 19:36:39 +0200
+ -- Christoph Berg <myon@debian.org>  Fri, 21 Sep 2012 17:13:33 +0200
 
 postgresql-common (113) unstable; urgency=medium
 
