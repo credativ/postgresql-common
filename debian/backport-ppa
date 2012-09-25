@@ -37,6 +37,9 @@ for release in $RELEASES; do
         sed -i 's/fail-missing/list-missing/' debian/rules
         sed -i 's/python-dev,/python-dev, libpq-dev (>= 9.1),/' debian/control
     fi
+    if [ "$release" = "lucid" ]; then
+        sed -i 's/-Zxz//' debian/rules 
+    fi
     bzr bd -S -- --no-lintian "$ORIG" -v$SINCE_VERSION
     bzr revert --no-backup
     dput ppa:pitti/postgresql ../${SRC}_${CUR_VERSION}~${release}_source.changes
