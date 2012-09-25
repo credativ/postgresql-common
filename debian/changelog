@@ -1,6 +1,8 @@
 postgresql-common (137) UNRELEASED; urgency=low
 
   * debian/backport-ppa: Disable xz compression for lucid.
+  * debian/backport-ppa: Disable libraries for -9.1/natty as well, built by
+    9.2 now.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 

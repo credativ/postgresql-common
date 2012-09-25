@@ -31,7 +31,7 @@ for release in $RELEASES; do
     if [ "$release" = lucid -o "$release" = "natty" -o "$release" = oneiric ]; then
         sed -i 's/dpkg-dev.*| hardening-wrapper/hardening-wrapper/' debian/control
     fi
-    if [ "$SRC" = "postgresql-9.1" -a "$release" = "lucid" ]; then
+    if [ "$SRC" = "postgresql-9.1" ]; then
         # libraries are built by -9.2 now, and PPAs disallow building older versions
         perl -000 -ne 'print $_ unless /^Package: lib/' -i debian/control
         sed -i 's/fail-missing/list-missing/' debian/rules
