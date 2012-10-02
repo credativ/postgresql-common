@@ -27,7 +27,8 @@ export DEBEMAIL=martin.pitt@ubuntu.com
 # do first upload with orig tarball, subsequent ones without
 ORIG="-sa"
 for release in $RELEASES; do
-    dch -D$release -v"$CUR_VERSION~${release}" -b 'Backport'
+    BP_VERSION=`echo "$CUR_VERSION~${release}" | sed 's/-/-0ppa/'`
+    dch -D$release -v"$BP_VERSION" -b 'Backport'
     if [ "$release" = lucid -o "$release" = "natty" -o "$release" = oneiric ]; then
         sed -i 's/dpkg-dev.*| hardening-wrapper/hardening-wrapper/' debian/control
     fi
@@ -42,6 +43,6 @@ for release in $RELEASES; do
     fi
     bzr bd -S -- --no-lintian "$ORIG" -v$SINCE_VERSION
     bzr revert --no-backup
-    dput ppa:pitti/postgresql ../${SRC}_${CUR_VERSION}~${release}_source.changes
+    dput ppa:pitti/postgresql ../${SRC}_${BP_VERSION}_source.changes
     ORIG="-sd"
 done
