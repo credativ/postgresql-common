@@ -1,3 +1,9 @@
+postgresql-common (134~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Christoph Berg <myon@debian.org>  Tue, 02 Oct 2012 17:51:12 +0200
+
 postgresql-common (134) unstable; urgency=low
 
   * debian/backport-ppa: Fix syntax error.
@@ -75,6 +81,21 @@ postgresql-common (131) unstable; urgency=low
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 19 Jun 2012 19:26:12 +0200
 
+postgresql-common (130~bpo60+2) squeeze-backports; urgency=low
+
+  * Set the list of supported versions for squeeze to 9.1 and 8.4, making 9.1
+    the default version. This will make the various meta packages depend on
+    9.1 on squeeze. Packages using pg_buildext will now build modules for
+    versions 8.4 and 9.1, instead of only 8.4.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 31 May 2012 22:40:31 +0200
+
+postgresql-common (130~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 30 May 2012 18:23:53 +0200
+
 postgresql-common (130) unstable; urgency=low
 
   [ Christoph Berg ]
@@ -102,6 +123,12 @@ postgresql-common (130) unstable; urgency=low
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 15 May 2012 13:44:17 +0200
 
+postgresql-common (129~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 21 Mar 2012 10:59:41 +0100
+
 postgresql-common (129) unstable; urgency=low
 
   * pg_ctlcluster: Fix wrong configuration file name in documentation, thanks
@@ -112,6 +139,12 @@ postgresql-common (129) unstable; urgency=low
   * debian/control: Bump Standards-Version to 3.9.3.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 06 Mar 2012 12:00:12 +0100
+
+postgresql-common (128~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Christoph Berg <myon@debian.org>  Tue, 03 Jan 2012 10:39:22 +0100
 
 postgresql-common (128) unstable; urgency=low
 
@@ -129,6 +162,12 @@ postgresql-common (128) unstable; urgency=low
     need to be set separately. Just use $(CURDIR). (Closes: #646712, part 2)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 21 Dec 2011 12:04:01 +0100
+
+postgresql-common (127~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 22 Dec 2011 14:03:46 +0100
 
 postgresql-common (127) unstable; urgency=low
 
@@ -182,6 +221,12 @@ postgresql-common (125) unstable; urgency=low
 
  -- Martin Pitt <mpitt@debian.org>  Thu, 20 Oct 2011 12:17:30 +0200
 
+postgresql-common (124~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Gerfried Fuchs <rhonda@debian.org>  Tue, 11 Oct 2011 16:12:38 +0200
+
 postgresql-common (124) unstable; urgency=medium
 
   * Keeping urgency medium, as 123 did not make it into testing yet.
@@ -219,6 +264,12 @@ postgresql-common (123) unstable; urgency=medium
     to Piotr Szydełko for the patch! (Closes: #644477)
 
  -- Martin Pitt <mpitt@debian.org>  Fri, 07 Oct 2011 14:10:27 +0200
+
+postgresql-common (122~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Gerfried Fuchs <rhonda@debian.org>  Tue, 27 Sep 2011 16:10:20 +0200
 
 postgresql-common (122) unstable; urgency=low
 
@@ -328,6 +379,12 @@ postgresql-common (119) unstable; urgency=low
 
  -- Martin Pitt <mpitt@debian.org>  Mon, 08 Aug 2011 15:31:17 +0200
 
+postgresql-common (118~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Gerfried Fuchs <rhonda@debian.org>  Wed, 29 Jun 2011 10:10:09 +0200
+
 postgresql-common (118) unstable; urgency=low
 
   * Update Catalan debconf translations, thanks Innocent De Marchi.  
@@ -392,6 +449,12 @@ postgresql-common (115) unstable; urgency=low
       configuration update to 9.1.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 11 May 2011 09:40:00 +0200
+
+postgresql-common (114~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+
+ -- Gerfried Fuchs <rhonda@debian.org>  Thu, 24 Feb 2011 18:44:03 +0100
 
 postgresql-common (114) unstable; urgency=low
 

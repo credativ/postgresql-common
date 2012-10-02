@@ -37,6 +37,7 @@ lsb_debian() {
             ;;
         # Squeeze
 	6.0*)
+            /bin/echo -e "9.1"
             /bin/echo -e "8.4"
             ;;
         # unstable
