@@ -5,6 +5,9 @@ postgresql-common (134wheezy1) UNRELEASED; urgency=low
     empty. Cherry-picked from trunk r1204.
   * pg_buildext: Fix supported-versions not to die when the last version is
     not supported. Cherry-picked from trunk r1199.
+  * debian/maintscripts-functions: Only try to remove the tsearch_data
+    directory if it already exists. Thanks Peter Palfrader. Cherry-picked from
+    trunk r1211. (Closes: #688105)
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 03 Oct 2012 22:19:10 +0200
 
