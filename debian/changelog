@@ -8,6 +8,10 @@ postgresql-common (134wheezy1) UNRELEASED; urgency=low
   * debian/maintscripts-functions: Only try to remove the tsearch_data
     directory if it already exists. Thanks Peter Palfrader. Cherry-picked from
     trunk r1211. (Closes: #688105)
+  * As debian/supported-versions is also used at build-time, add a
+    build-dependency on lsb-release for lsb_release to be available. Also,
+    print supported versions from debian/rules for easier debugging.
+    Cherry-picked from trunk r1206/r1207.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 03 Oct 2012 22:19:10 +0200
 
