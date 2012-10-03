@@ -1,4 +1,4 @@
-postgresql-common (134wheezy1) UNRELEASED; urgency=low
+postgresql-common (134wheezy1) unstable; urgency=low
 
   * debian/control: Switch Vcs-Bzr: to wheezy branch.
   * pg_ctlcluster: Fix log output to stderr if the log file started out being
@@ -13,7 +13,7 @@ postgresql-common (134wheezy1) UNRELEASED; urgency=low
     print supported versions from debian/rules for easier debugging.
     Cherry-picked from trunk r1206/r1207.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 03 Oct 2012 22:19:10 +0200
+ -- Martin Pitt <mpitt@debian.org>  Wed, 03 Oct 2012 22:30:36 +0200
 
 postgresql-common (134) unstable; urgency=low
 
