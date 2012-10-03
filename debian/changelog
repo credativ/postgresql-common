@@ -3,6 +3,8 @@ postgresql-common (134wheezy1) UNRELEASED; urgency=low
   * debian/control: Switch Vcs-Bzr: to wheezy branch.
   * pg_ctlcluster: Fix log output to stderr if the log file started out being
     empty. Cherry-picked from trunk r1204.
+  * pg_buildext: Fix supported-versions not to die when the last version is
+    not supported. Cherry-picked from trunk r1199.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 03 Oct 2012 22:19:10 +0200
 
