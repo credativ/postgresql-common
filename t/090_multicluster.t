@@ -62,12 +62,12 @@ if (-f '/etc/postgresql-common/user_clusters') {
 }
 
 # check basic cluster selection
-like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[0]/, 
+like_program_out 0, 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[0]/, 
     'pg_wrapper selects port 5432 as default cluster';
-like_program_out 0, "psql --cluster $new1 --version", 0, 
-    qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 0, "createdb --cluster $new1 --version", 0, 
+    qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper --cluster works';
-like_program_out 0, "psql --cluster $MAJORS[-1]/foo --version", 1, 
+like_program_out 0, "createdb --cluster $MAJORS[-1]/foo --version", 1, 
     qr/Specified cluster does not exist/,
     'pg_wrapper --cluster errors out for invalid cluster';
 
@@ -85,9 +85,9 @@ unlike_program_out 'postgres', "psql -Atl", 0, qr/test\|postgres\|/,
 # check network cluster selection
 is_program_out 'postgres', "psql --cluster $MAJORS[0]/127.0.0.1: -Atc 'show port' template1", 0, "5432\n", 
     "psql --cluster $MAJORS[0]/127.0.0.1: defaults to port 5432";
-like_program_out 'postgres', "psql --cluster $MAJORS[-1]/127.0.0.1:5432 --version", 0, 
-    qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
-    "psql --cluster $MAJORS[-1]/127.0.0.1:5432 uses latest client version";
+like_program_out 'postgres', "createdb --cluster $MAJORS[-1]/127.0.0.1:5432 --version", 0, 
+    qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
+    "createdb --cluster $MAJORS[-1]/127.0.0.1:5432 uses latest client version";
 like_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5434", 0, 
     qr/test\|postgres\|/, "test db appears in cluster $MAJORS[-1]/localhost:5434";
 unlike_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5440", 0, 
@@ -115,7 +115,7 @@ like_program_out 'postgres', "psql -l", 1,
     qr/Invalid version specified with \$PGCLUSTER/, 
     'invalid PGCLUSTER value';
 $ENV{'PGCLUSTER'} = "$MAJORS[-1]/127.0.0.1:";
-like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 0, 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'PGCLUSTER network cluster selection (1)';
 $ENV{'PGCLUSTER'} = "$MAJORS[-1]/localhost:5434";
 like_program_out 'postgres', 'psql -Atl', 0, 
@@ -138,7 +138,7 @@ is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5432\n",
 $ENV{'PGCLUSTER'} = $new2;
 delete $ENV{'PGPORT'};
 $ENV{'PGPORT'} = '5432';
-like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'PGPORT+PGCLUSTER, PGCLUSTER selects version';
 is_program_out 'postgres', 'psql -Atc "show port" template1', 0, "5432\n", 
     'PGPORT+PGCLUSTER, PGPORT selects port';
@@ -155,10 +155,10 @@ delete $ENV{'PGDATABASE'};
 open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_clusters: $!";
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
-like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[0]/, 
+like_program_out 0, 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[0]/, 
     'pg_wrapper selects port 5432 as default cluster with empty user_clusters';
-like_program_out 0, "psql --cluster $new1 --version", 0, 
-    qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 0, "createdb --cluster $new1 --version", 0, 
+    qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper --cluster works with empty user_clusters';
 
 # check default cluster selection with user_clusters
@@ -166,7 +166,7 @@ open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_cl
 print F "* * $MAJORS[-1] new1 *\n";
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
-like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     "pg_wrapper selects correct cluster with user_clusters '* * $MAJORS[-1] new1 *'";
 
 # check default database selection with user_clusters
@@ -187,11 +187,11 @@ open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_cl
 print F "postgres * $MAJORS[-1] new1 *\nnobody * $MAJORS[0] old *\n* * 5.5 * *";
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
-like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper selects correct cluster with per-user user_clusters';
-like_program_out 'nobody', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[0]/, 
+like_program_out 'nobody', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[0]/, 
     'pg_wrapper selects correct cluster with per-user user_clusters';
-like_program_out 0, 'psql --version', 1, qr/user_clusters.*line 3.*version.*not exist/i, 
+like_program_out 0, 'createdb --version', 1, qr/user_clusters.*line 3.*version.*not exist/i, 
     'pg_wrapper error for invalid per-user user_clusters line';
 
 # check by-user network cluster selection with user_clusters
@@ -200,11 +200,11 @@ open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_cl
 print F "postgres * $MAJORS[0] localhost: *\nnobody * $MAJORS[-1] new1 *\n* * $MAJORS[-1] localhost:a *";
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
-like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[0]/, 
+like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[0]/, 
     'pg_wrapper selects correct version with per-user user_clusters';
-like_program_out 'nobody', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/, 
+like_program_out 'nobody', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper selects correct version with per-user user_clusters';
-like_program_out 0, 'psql --version', 1, qr/user_clusters.*line 3.*cluster.*not exist/i, 
+like_program_out 0, 'createdb --version', 1, qr/user_clusters.*line 3.*cluster.*not exist/i, 
     'pg_wrapper error for invalid per-user user_clusters line';
 # check PGHOST environment variable precedence
 $ENV{'PGHOST'} = '127.0.0.2';
@@ -218,7 +218,7 @@ open F, '>/etc/postgresql-common/user_clusters' or die "Could not create user_cl
 print F 'foo';
 close F;
 chmod 0644, '/etc/postgresql-common/user_clusters';
-like_program_out 'postgres', 'psql --version', 0, qr/ignoring invalid line 1/, 
+like_program_out 'postgres', 'createdb --version', 0, qr/ignoring invalid line 1/, 
     'pg_wrapper ignores invalid lines in user_clusters';
 
 # remove test user_clusters

@@ -11,7 +11,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 115 * ($#MAJORS+1);
+use Test::More tests => 117 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -58,7 +58,11 @@ sub check_major {
 	'Socket, but not PID file in /var/run/postgresql/';
 
     # verify that the correct client version is selected
-    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $v/,
+    like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $v/,
+        'pg_wrapper selects version number of cluster';
+
+    # we always want to use the latest version of "psql", though.
+    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/,
         'pg_wrapper selects version number of cluster';
 
     my $default_log = "/var/log/postgresql/postgresql-$v-main.log";

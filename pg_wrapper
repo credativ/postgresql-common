@@ -97,7 +97,15 @@ unless ($version) {
 
 error 'Invalid PostgreSQL cluster version' unless -d "/usr/lib/postgresql/$version";
 my $cmdname = (split '/', $0)[-1];
-my $cmd = get_program_path ($cmdname, $version);
+my $cmd;
+
+# for psql we always want the latest version, as this is backwards compatible
+# to every major version that that we support
+if ($cmdname eq 'psql') {
+    $cmd = get_program_path ('psql', get_newest_version);
+} else {
+    $cmd = get_program_path ($cmdname, $version);
+}
 
 # libreadline is a lot better than libedit, so prefer that
 if ($cmdname eq 'psql') {

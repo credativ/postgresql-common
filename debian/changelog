@@ -5,6 +5,11 @@ postgresql-common (137) UNRELEASED; urgency=low
     9.2 now.
   * debian/backport-ppa: Ensure that backport PPA versions are always smaller
     than the versions in -updates.
+  * pg_wrapper: Always use the latest available client version of "psql"
+    instead of the target cluster's. psql is backwards compatible to all major
+    versions that we support in any release. Update tests to use "createdb"
+    instead of "psql" for --version tests, and add a new test for the psql
+    special case to t/020_create_sql_remove.t. (Closes: #639108)
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 
