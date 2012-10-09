@@ -10,6 +10,9 @@ postgresql-common (137) UNRELEASED; urgency=low
     versions that we support in any release. Update tests to use "createdb"
     instead of "psql" for --version tests, and add a new test for the psql
     special case to t/020_create_sql_remove.t. (Closes: #639108)
+  * debian/postgresql-common.triggers: Also watch for changes in
+    /usr/share/hunspell/; pg_updatedicts handles these as well.
+    (Closes: #689994)
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 
