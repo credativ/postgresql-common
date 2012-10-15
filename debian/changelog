@@ -1,3 +1,20 @@
+postgresql-common (134wheezy1) unstable; urgency=low
+
+  * debian/control: Switch Vcs-Bzr: to wheezy branch.
+  * pg_ctlcluster: Fix log output to stderr if the log file started out being
+    empty. Cherry-picked from trunk r1204.
+  * pg_buildext: Fix supported-versions not to die when the last version is
+    not supported. Cherry-picked from trunk r1199.
+  * debian/maintscripts-functions: Only try to remove the tsearch_data
+    directory if it already exists. Thanks Peter Palfrader. Cherry-picked from
+    trunk r1211. (Closes: #688105)
+  * As debian/supported-versions is also used at build-time, add a
+    build-dependency on lsb-release for lsb_release to be available. Also,
+    print supported versions from debian/rules for easier debugging.
+    Cherry-picked from trunk r1206/r1207.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 03 Oct 2012 22:30:36 +0200
+
 postgresql-common (134~bpo60+1) squeeze-backports; urgency=low
 
   * Rebuild for squeeze-backports.
