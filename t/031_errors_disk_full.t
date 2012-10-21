@@ -6,16 +6,14 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 16;
+use Test::More tests => (-x "/usr/bin/unshare") ? 16 : 1;
 
 # unshare needs squeeze's util-linux, so skip this on lenny
 unless (-x "/usr/bin/unshare") {
-	pass "Skipping 'disk full' tests because /usr/bin/unshare is unavailable...";
-	pass '...' for (2 .. 16);
+	pass 'Skipping "disk full" tests because /usr/bin/unshare is unavailable';
 	exit 0;
 }
 
-my $version = $MAJORS[-1];
 my $outref;
 
 # check that a failed pg_createcluster leaves no cruft behind: try creating a
