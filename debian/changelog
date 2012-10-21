@@ -1,5 +1,6 @@
 postgresql-common (137) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/backport-ppa: Disable xz compression for lucid.
   * debian/backport-ppa: Disable libraries for -9.1/natty as well, built by
     9.2 now.
@@ -13,6 +14,11 @@ postgresql-common (137) UNRELEASED; urgency=low
   * debian/postgresql-common.triggers: Also watch for changes in
     /usr/share/hunspell/; pg_updatedicts handles these as well.
     (Closes: #689994)
+
+  [ Christoph Berg ]
+  * testsuite: Move 'disk full' tests from 030_errors to new file
+    031_errors_disk_full, and skip tests when /usr/bin/unshare is missing.
+    (Compatibility workaround for lenny.)
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 
