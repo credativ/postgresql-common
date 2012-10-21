@@ -19,6 +19,8 @@ postgresql-common (137) UNRELEASED; urgency=low
   * testsuite: Move 'disk full' tests from 030_errors to new file
     031_errors_disk_full, and skip tests when /usr/bin/unshare is missing.
     (Compatibility workaround for lenny.)
+  * testsuite: Note that Test::More 0.87 is required for done_testing() in
+    170_extensions.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 

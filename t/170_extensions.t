@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More;
+use Test::More 0.87; # needs libtest-simple-perl backport on lenny
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
