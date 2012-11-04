@@ -599,7 +599,7 @@ sub cluster_info {
     }
 
     # autovacuum defaults to on since 8.3
-    $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($_[0] ge '8.3');
+    $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($_[0] >= '8.3');
     
     return %result;
 }
@@ -895,7 +895,7 @@ sub get_cluster_locales {
     my ($version, $cluster) = @_;
     my ($lc_ctype, $lc_collate) = (undef, undef);
 
-    if ($version ge '8.4') {
+    if ($version >= '8.4') {
 	print STDERR "Error: get_cluster_locales() does not work for 8.4+\n";
 	exit 1;
     }

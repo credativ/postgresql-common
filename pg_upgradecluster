@@ -73,7 +73,7 @@ sub adapt_conffiles {
     PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
         'data_directory', $newinfo{'pgdata'};
 
-    if ($newversion ge '8.2') {
+    if ($newversion >= '8.2') {
         # preload_libraries -> shared_preload_libraries transition
         rename_ \%c, 'preload_libraries', 'shared_preload_libraries';
 
@@ -86,7 +86,7 @@ sub adapt_conffiles {
 	}
     }
 
-    if ($newversion ge '8.3') {
+    if ($newversion >= '8.3') {
         deprecate \%c, 'bgwriter_lru_percent', 'deprecated';
         deprecate \%c, 'bgwriter_all_percent', 'deprecated';
         deprecate \%c, 'bgwriter_all_maxpages', 'deprecated';
@@ -112,7 +112,7 @@ sub adapt_conffiles {
         }
     }
 
-    if ($newversion ge '8.4') {
+    if ($newversion >= '8.4') {
         deprecate \%c, 'max_fsm_pages', 'not needed any more';
         deprecate \%c, 'max_fsm_relations', 'not needed any more';
         deprecate \%c, 'krb_server_hostname', 'does not exist any more';
@@ -134,12 +134,12 @@ sub adapt_conffiles {
 	rename "$hba.new", $hba or error "rename: $!";
     }
 
-    if ($newversion ge '9.0') {
+    if ($newversion >= '9.0') {
 	deprecate \%c, 'add_missing_from', 'does not exist any more';
 	deprecate \%c, 'regex_flavor', 'does not exist any more';
     }
 
-    if ($newversion ge '9.2') {
+    if ($newversion >= '9.2') {
 	deprecate \%c, 'wal_sender_delay', 'does not exist any more';
 	deprecate \%c, 'silent_mode', 'does not exist any more';
 	deprecate \%c, 'custom_variable_classes', 'does not exist any more';
@@ -172,7 +172,7 @@ sub disable_connections {
     }
     chmod 0400, $hba;
     chown $_[3], 0, $hba;
-    if ($_[0] ge '8.4') {
+    if ($_[0] >= '8.4') {
 	print F "local all $_[2] ident";
     } else {
 	print F "local all $_[2] ident sameuser";
@@ -243,7 +243,7 @@ error 'could not get name of cluster owner' unless $owner;
 if ($info{'running'}) {
     print "Stopping old cluster...\n";
     my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
-    push @argv, ('-t', '5') if $version ge '8.4';
+    push @argv, ('-t', '5') if $version >= '8.4';
     error "Could not stop old cluster" if system @argv;
 }
 
@@ -258,7 +258,7 @@ error "Could not restart old cluster" if system @argv;
 # get encodings of cluster
 my $encoding = get_db_encoding $version, $cluster, 'template1';
 my ($old_lc_ctype, $old_lc_collate);
-if ($version le '8.3') {
+if ($version <= '8.3') {
     ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
 } else {
     ($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
@@ -412,7 +412,7 @@ if (!fork) {
 	print "Fixing hardcoded library paths for stored procedures...\n";
 	# starting from 9.0, replace() works on strings; for ealier versions it
 	# works on bytea
-	if ($version ge '9.0') {
+	if ($version >= '9.0') {
 	    (system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
 		$db, '-c', "BEGIN READ WRITE; \
 		    UPDATE pg_proc SET probin = replace(\
@@ -437,7 +437,7 @@ if (!fork) {
         my @restore_argv = ($pg_restore, '-h', $newsocket, '-p',
 	    $newinfo{'port'}, '--data-only', '-d', $db);
 
-	if ($newversion ge '8.3') {
+	if ($newversion >= '8.3') {
             push @restore_argv, '--disable-triggers';
         }
 

@@ -47,7 +47,7 @@ is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "3\n",
     'check next sequence value';
 
 # create stored procedures
-if ($MAJORS[0] lt '9.0') {
+if ($MAJORS[0] < '9.0') {
     is_program_out 'postgres', 'createlang plpgsql test', 0, '', 'createlang plpgsql test';
 } else {
     pass '>= 9.0 enables PL/pgsql by default';

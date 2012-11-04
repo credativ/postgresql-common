@@ -20,7 +20,7 @@ like_program_out $owner, 'pg_lsclusters -h', 0,
     qr/^$v\s+main\s+5432\s+online\s+$owner/, 
     'pg_lsclusters shows running cluster';
 
-my $master_process = ($v ge '8.2') ? 'postgres' : 'postmaster';
+my $master_process = ($v >= '8.2') ? 'postgres' : 'postmaster';
 like ((ps $master_process), qr/^$owner.*bin\/$master_process .*\/var\/lib\/postgresql\/$v\/main/m,
     "$master_process is running as user $owner");
 

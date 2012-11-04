@@ -84,7 +84,7 @@ sub check_cluster {
 	    'printf "set client_encoding=\'SJIS\'; select \'\\\\\\\'a\'" | psql -Atq template1',
 	    0, qr/(\\' is insecure)|(unterminated quoted string)/,
 	    'Server rejects \\\' escaping in unsafe client encoding (CVE-2006-2314)';
-	if ($v ge '9.1') {
+	if ($v >= '9.1') {
 	    like_program_out 'postgres', 
 		"printf \"set client_encoding='UTF-8'; set escape_string_warning='off'; select '\\\\\\'a'\" | psql -Atq template1",
 		0, qr/unterminated quoted string/,

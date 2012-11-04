@@ -13,7 +13,7 @@ use PgCommon;
 # check version specific output
 my $version;
 foreach $version (@MAJORS) {
-    if ($version lt '8.2') {
+    if ($version < '8.2') {
         pass "Skipping known-broken pg_config check for version $version";
         for (my $i = 0; $i < 7; ++$i) { pass '...'; }
         next;

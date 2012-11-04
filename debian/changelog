@@ -27,6 +27,9 @@ postgresql-common (137) UNRELEASED; urgency=low
     (Closes: #646700)
   * supported-versions: Add debian-backports and pgdg sections.
     (Closes: #650680)
+  * Replace version string comparisions in perl scripts to use numerical
+    operators, so things will continue to work when PostgreSQL 10.0 is
+    released.
   * debian/rules: Use sort -n for sorting supported-versions output.
   * debian/rules: Use apt-cache policy instead of apt-cache show to determine
     the "candidate" logrotate version.

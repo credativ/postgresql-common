@@ -28,12 +28,12 @@ my @postgres_user = getpwnam 'postgres';
 # Arguments: <version> <data directory> <owner uid> <owner gid>
 sub init_db {
     $datadir = (-l $_[1]) ? readlink $_[1] : $_[1];
-    if ($_[0] ge '8.4') {
+    if ($_[0] >= '8.4') {
 	$ident_method = 'ident';
     } else {
 	$ident_method = 'ident sameuser';
     }
-    if ($_[0] ge '9.1') {
+    if ($_[0] >= '9.1') {
 	$peer_method = 'peer';
     } else {
 	$peer_method = $ident_method;
@@ -45,7 +45,7 @@ sub init_db {
 
     @initdb = ((get_program_path 'initdb', $_[0]), '-D', $datadir);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
-    if ($_[0] ge '9.2') {
+    if ($_[0] >= '9.2') {
 	push @initdb, ('--auth-local', $peer_method);
 	push @initdb, ('--auth-host', 'md5');
     } else {
@@ -62,7 +62,7 @@ sub init_db {
 
     # pre-8.2 servers do not ignore LANG when LC_ALL is set; work around this
     # bug
-    if ($_[0] le '8.2' && $ENV{'LC_ALL'}) {
+    if ($_[0] <= '8.2' && $ENV{'LC_ALL'}) {
         $ENV{'LANG'} = $ENV{'LC_ALL'};
     }
 
@@ -427,7 +427,7 @@ die "changing egid back: $!" if $) != $egid;
 # enable SSL if we have the snakeoil default certificate
 if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' && 
     $ssl_key_access) {
-    if ($version ge '9.2') {
+    if ($version >= '9.2') {
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
             'ssl_cert_file', '/etc/ssl/certs/ssl-cert-snakeoil.pem';
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',

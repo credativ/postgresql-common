@@ -192,7 +192,7 @@ print F "foo\n";
 close F;
 chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
 
-if ($version lt '8.4') {
+if ($version < '8.4') {
     like_program_out 'postgres', "pg_ctlcluster $version main start", 0, 
 	qr/WARNING.*connection to the database failed.*pg_hba.conf/is,
 	'pg_ctlcluster start warns about invalid pg_hba.conf';

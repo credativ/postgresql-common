@@ -12,7 +12,7 @@ use PgCommon;
 
 my $v = $MAJORS[-1];
 
-if ($v lt '9.1') {
+if ($v < '9.1') {
     pass 'No extensions for version < 9.1';
     done_testing(1);
     exit 0;
