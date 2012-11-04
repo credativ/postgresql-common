@@ -4,7 +4,7 @@ POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
 POD1PROGS=pg_wrapper pg_lsclusters
 POD1PROGS_POD=pg_buildext
 POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
-DEFAULT_VER=$(shell debian/supported-versions | sort -r | head -n 1)
+DEFAULT_VER=$(shell debian/supported-versions | LC_ALL=C sort -nr | head -n 1)
 LOGROTATE_VER=$(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { print $$2 }')
 LOGROTATE38=$(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo yes)
 
