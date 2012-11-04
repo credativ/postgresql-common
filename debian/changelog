@@ -21,6 +21,11 @@ postgresql-common (137) UNRELEASED; urgency=low
     (Compatibility workaround for lenny.)
   * testsuite: Note that Test::More 0.87 is required for done_testing() in
     170_extensions.
+  * supported-versions: Make output configurable via $PG_SUPPORTED_VERSIONS,
+    ~/.pg_supported_versions, and /etc/postgresql-common/supported_versions.
+    (Closes: #646700)
+  * supported-versions: Add debian-backports and pgdg sections.
+    (Closes: #650680)
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 
