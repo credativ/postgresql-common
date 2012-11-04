@@ -27,6 +27,8 @@ postgresql-common (137) UNRELEASED; urgency=low
     (Closes: #646700)
   * supported-versions: Add debian-backports and pgdg sections.
     (Closes: #650680)
+  * debian/rules: Use apt-cache policy instead of apt-cache show to determine
+    the "candidate" logrotate version.
 
  -- Martin Pitt <mpitt@debian.org>  Tue, 25 Sep 2012 07:00:30 +0200
 

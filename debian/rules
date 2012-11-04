@@ -5,6 +5,8 @@ POD1PROGS=pg_wrapper pg_lsclusters
 POD1PROGS_POD=pg_buildext
 POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
 DEFAULT_VER=$(shell debian/supported-versions | sort -r | head -n 1)
+LOGROTATE_VER=$(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { print $$2 }')
+LOGROTATE38=$(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo yes)
 
 %:
 	dh "$@"
@@ -28,23 +30,25 @@ override_dh_gencontrol:
 	dh_gencontrol -ppostgresql -ppostgresql-client -ppostgresql-doc -ppostgresql-contrib  -- \
 		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
 
-	# will ship different conffiles for logrotate pre- and post-3.8
-	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | head -n1 | cut -f2- -d' '` ge 3.8; then \
-		dh_gencontrol -ppostgresql-common -- -Vlogrotate:version="(>= 3.8)"; \
-	else \
-		dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"; \
-	fi
+	# ship different conffiles for logrotate pre- and post-3.8
+ifeq ($(LOGROTATE38),yes)
+	# logrotate >= 3.8: depend on new logrotate version
+	dh_gencontrol -ppostgresql-common -- -Vlogrotate:version="(>= 3.8)"
+else
+	# logrotate < 3.8: depend on logrotate, and declare breaks new version
+	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"
+endif
 
 	dh_gencontrol --remaining-packages
 
 override_dh_installlogrotate:
 	dh_installlogrotate
-	# logrotate 3.8+ requires an additional "su" command which is not
+ifeq ($(LOGROTATE38),yes)
+	# logrotate >= 3.8 requires an additional "su" command which is not
 	# backportable, see #640493
-	if dpkg --compare-versions `apt-cache show logrotate | grep ^Version | head -n1 | cut -f2- -d' '` ge 3.8; then \
-		echo "Fixing logrotate configuration for logrotate >= 3.8..."; \
-		sed -i '/^}/ i\       su root root' debian/postgresql-common/etc/logrotate.d/*; \
-	fi
+	echo "Fixing logrotate configuration for logrotate >= 3.8..."
+	sed -i '/^}/ i\       su root root' debian/postgresql-common/etc/logrotate.d/*
+endif
 
 override_dh_clean:
 	dh_clean
