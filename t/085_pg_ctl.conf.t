@@ -8,10 +8,14 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 31;
+use Test::More tests => $MAJORS[-1] >= '8.3' ? 31 : 1;
 
 # Do test with newest version
 my $v = $MAJORS[-1];
+if ($v < '8.3') {
+    pass 'Skipping core limit tests for versions < 8.3';
+    exit 0;
+}
 
 is ((system "pg_createcluster $v main >/dev/null"), 0, "pg_createcluster $v main");
 

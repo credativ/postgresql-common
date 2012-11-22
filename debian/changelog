@@ -38,8 +38,9 @@ postgresql-common (137) UNRELEASED; urgency=low
   * debian/rules: Use apt-cache policy instead of apt-cache show to determine
     the "candidate" logrotate version.
   * testsuite 020_create_sql_remove: Fix plperl test to work with 8.2.
+  * testsuite 085_pg_ctl.conf: Skip for 8.2.
 
- -- Christoph Berg <myon@debian.org>  Thu, 22 Nov 2012 13:15:33 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 22 Nov 2012 14:24:27 +0100
 
 postgresql-common (136) experimental; urgency=low
 
