@@ -29,6 +29,8 @@ postgresql-common (137) UNRELEASED; urgency=low
     (Closes: #646700)
   * supported-versions: Add debian-backports and pgdg sections.
     (Closes: #650680)
+  * For bpo and pgdg builds (determined by the version number), create
+    /etc/postgresql-common/supported_versions with appropriate content.
   * Replace version string comparisions in perl scripts to use numerical
     operators, so things will continue to work when PostgreSQL 10.0 is
     released.
@@ -37,7 +39,7 @@ postgresql-common (137) UNRELEASED; urgency=low
     the "candidate" logrotate version.
   * testsuite 020_create_sql_remove: Fix plperl test to work with 8.2.
 
- -- Christoph Berg <myon@debian.org>  Thu, 22 Nov 2012 12:16:45 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 22 Nov 2012 13:15:33 +0100
 
 postgresql-common (136) experimental; urgency=low
 
