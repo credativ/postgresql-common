@@ -40,6 +40,10 @@ lsb_debian() {
             /bin/echo -e "9.1"
             /bin/echo -e "8.4"
             ;;
+        # Wheezy
+	7.0*)
+            /bin/echo -e "9.1"
+            ;;
         # unstable
         testing | unstable)
             /bin/echo -e "9.1"

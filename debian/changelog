@@ -1,3 +1,14 @@
+postgresql-common (134wheezy2) unstable; urgency=low
+
+  * debian/supported-versions: Add Debian 7.0 "wheezy" to support 9.1 only.
+    This is not a functional change, but avoids the "Unknown Debian release"
+    warning.
+  * debian/postgresql-common.triggers: Also watch for changes in
+    /usr/share/hunspell/; pg_updatedicts handles these as well. Cherry-picked
+    from trunk r1217. (Closes: #689994)
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 05 Nov 2012 08:15:34 +0100
+
 postgresql-common (134wheezy1~bpo60+1) squeeze-backports; urgency=low
 
   * Rebuild for squeeze-backports.
