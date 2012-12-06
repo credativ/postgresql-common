@@ -11,11 +11,11 @@ fi
 
 SRC=`dpkg-parsechangelog  | grep ^Source | cut -f2- -d' '`
 if [ "$SRC" = postgresql-9.1 ]; then
-    RELEASES='lucid natty'
+    RELEASES='lucid'
 elif [ "$SRC" = postgresql-9.2 ]; then
-    RELEASES='lucid natty oneiric precise quantal'
+    RELEASES='lucid oneiric precise quantal raring'
 else
-    RELEASES='lucid natty oneiric precise'
+    RELEASES='lucid oneiric precise'
 fi
 
 CUR_VERSION=`dpkg-parsechangelog | grep ^Version | cut -f2 -d' '`
