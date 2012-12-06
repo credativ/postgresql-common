@@ -17,6 +17,7 @@ postgresql-common (137) UNRELEASED; urgency=low
   * debian/tests/control: Add netcat-openbsd test dependency for the
     next_free_port() tests added below.
   * debian/backport-ppa: Drop natty (EOL), add raring for 9.2.
+  * debian/supported-versions: Add Ubuntu 13.04.
 
   [ Christoph Berg ]
   * testsuite: Move 'disk full' tests from 030_errors to new file
