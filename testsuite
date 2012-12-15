@@ -1,8 +1,9 @@
-#!/bin/sh -e
+#!/bin/sh
 
-# Run integration tests (on the installed package).
+# Run integration tests (on the installed package). This happens on unshared
+# tmpfses, so does not interfere with installed clusters.
 #
-# (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2005-2012 Martin Pitt <mpitt@debian.org>
 # (C) 2012 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
@@ -14,6 +15,15 @@
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
+
+set -e
+
+# call ourselves through unshare in a way that keeps normal stdin
+unshare -uimn sh -- -c "`tail -n +25 $0`" "$0" "$@"
+exit $?
+
+# unshared program starts here
+set -e
 
 # default config
 TESTSDIR="$(dirname $0)/t"
@@ -43,41 +53,24 @@ if [ "$(id -u)" != 0 ]; then
     exit 1
 fi
 
-# always clean up behind us
-trap '
-if [ -d /etc/postgresql.testsuite ]; then 
-    rm -rf /etc/postgresql; 
-    mv /etc/postgresql.testsuite /etc/postgresql;
-fi;
-if [ -d /var/lib/postgresql.testsuite ]; then 
-    rm -rf /var/lib/postgresql;
-    mv /var/lib/postgresql.testsuite /var/lib/postgresql;
-fi;
-if [ -d /var/log/postgresql.testsuite ]; then 
-    rm -rf /var/log/postgresql;
-    mv /var/log/postgresql.testsuite /var/log/postgresql;
-fi' 0 1 2 3 5 7 10 13 15
-
-# temporarily move away existing clusters
-for v in $(ls /usr/lib/postgresql/); do
-    if [ -x "/etc/init.d/postgresql-$v" ]; then
-        /etc/init.d/postgresql-$v stop
+# let everything happen in overlay tmpfses to avoid interfering with already
+# existing clusters; this also speeds up testing
+created_dirs=""
+for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
+    if ! [ -d $d ]; then
+        created_dirs="$created_dirs $d"
+        mkdir -p $d
     fi
+    mount -n -t tmpfs -o mode=755 tmpfs $d
 done
-if [ -x "/etc/init.d/postgresql" ]; then
-    /etc/init.d/postgresql stop
+# clean up created directories after us
+if [ -n "$created_dirs" ]; then
+    trap "umount $created_dirs; rmdir --ignore-fail-on-non-empty -p $created_dirs" 0 HUP INT QUIT ILL ABRT PIPE TERM
 fi
-
-if [ -d /etc/postgresql ]; then 
-    mv /etc/postgresql /etc/postgresql.testsuite;
-fi
-if [ -d /var/lib/postgresql ]; then 
-    mv /var/lib/postgresql /var/lib/postgresql.testsuite;
-fi
-if [ -d /var/log/postgresql ]; then 
-    mv /var/log/postgresql /var/log/postgresql.testsuite;
-    install -d -m 1775 -o root -g postgres /var/log/postgresql
-fi
+chown root:postgres /var/log/postgresql
+chmod 1775 /var/log/postgresql
+chown postgres:postgres /var/run/postgresql
+chmod 2775 /var/run/postgresql
 
 # reset core limit for pg_ctl tests
 ulimit -S -c 0

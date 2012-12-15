@@ -238,13 +238,13 @@ is_program_out 'postgres', "pg_dropcluster $version main", 0, '',
 # graceful handling of absent data dir (might not be mounted)
 ok ((system "pg_createcluster $version main >/dev/null") == 0,
     "pg_createcluster succeeds");
-rename "/var/lib/postgresql", "/var/lib/postgresql.orig" or die "rename: $!";
+rename "/var/lib/postgresql/$version", "/var/lib/postgresql/$version.orig" or die "rename: $!";
 my $outref;
 is ((exec_as 0, "pg_ctlcluster $version main start", $outref, 1), 1,
     'pg_ctlcluster fails on nonexisting /var/lib/postgresql');
 like $$outref, qr/^Error:.*\/var\/lib\/postgresql.*not accessible.*$/, 'proper error message for nonexisting /var/lib/postgresql';
 
-rename "/var/lib/postgresql.orig", "/var/lib/postgresql" or die "rename: $!";
+rename "/var/lib/postgresql/$version.orig", "/var/lib/postgresql/$version" or die "rename: $!";
 is_program_out 'postgres', "pg_ctlcluster $version main start", 0, '',
     'pg_ctlcluster start succeeds again with reappeared /var/lib/postgresql';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';

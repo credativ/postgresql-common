@@ -18,6 +18,10 @@ postgresql-common (137) UNRELEASED; urgency=low
     next_free_port() tests added below.
   * debian/backport-ppa: Drop natty (EOL), add raring for 9.2.
   * debian/supported-versions: Add Ubuntu 13.04.
+  * testsuite: Run with overlaid tmpfses on the postgresql /etc/ and /var
+    directories in an unshared namespace. This is more robust against
+    protecting existing clusters, always cleans up after itself properly, and
+    also speeds up testing.
 
   [ Christoph Berg ]
   * testsuite: Move 'disk full' tests from 030_errors to new file
