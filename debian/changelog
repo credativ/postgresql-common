@@ -1,4 +1,4 @@
-postgresql-common (137) UNRELEASED; urgency=low
+postgresql-common (137) experimental; urgency=low
 
   [ Martin Pitt ]
   * debian/backport-ppa: Disable xz compression for lucid.
@@ -30,8 +30,7 @@ postgresql-common (137) UNRELEASED; urgency=low
 
   [ Christoph Berg ]
   * testsuite: Move 'disk full' tests from 030_errors to new file
-    031_errors_disk_full, and skip tests when /usr/bin/unshare is missing.
-    (Compatibility workaround for lenny.)
+    031_errors_disk_full.
   * testsuite: Note that Test::More 0.87 is required for done_testing() in
     170_extensions.
   * testsuite 005_PgCommon: Add next_free_port tests (using /bin/nc).
@@ -51,7 +50,7 @@ postgresql-common (137) UNRELEASED; urgency=low
   * testsuite 020_create_sql_remove: Fix plperl test to work with 8.2.
   * testsuite 085_pg_ctl.conf: Skip for 8.2.
 
- -- Christoph Berg <myon@debian.org>  Thu, 22 Nov 2012 14:24:27 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sat, 15 Dec 2012 21:32:30 +0100
 
 postgresql-common (136) experimental; urgency=low
 
