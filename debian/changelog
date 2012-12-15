@@ -24,6 +24,9 @@ postgresql-common (137) UNRELEASED; urgency=low
     also speeds up testing.
   * t/031_errors_disk_full.t: Drop check for existence of unshare, as
     ./testsuite now unconditionally requires it.
+  * debian/postgresql-common.postinst: Only chown /var/lib/postgresql if it
+    does not already have the correct ownership. This avoids failures when the
+    directory is NFS mounted. Thanks Hugh Davenport! (Closes: #693958)
 
   [ Christoph Berg ]
   * testsuite: Move 'disk full' tests from 030_errors to new file
