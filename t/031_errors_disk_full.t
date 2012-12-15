@@ -6,13 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => (-x "/usr/bin/unshare") ? 16 : 1;
-
-# unshare needs squeeze's util-linux, so skip this on lenny
-unless (-x "/usr/bin/unshare") {
-	pass 'Skipping "disk full" tests because /usr/bin/unshare is unavailable';
-	exit 0;
-}
+use Test::More tests => 16;
 
 my $outref;
 

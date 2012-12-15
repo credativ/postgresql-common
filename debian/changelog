@@ -22,6 +22,8 @@ postgresql-common (137) UNRELEASED; urgency=low
     directories in an unshared namespace. This is more robust against
     protecting existing clusters, always cleans up after itself properly, and
     also speeds up testing.
+  * t/031_errors_disk_full.t: Drop check for existence of unshare, as
+    ./testsuite now unconditionally requires it.
 
   [ Christoph Berg ]
   * testsuite: Move 'disk full' tests from 030_errors to new file
