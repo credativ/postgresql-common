@@ -6,6 +6,7 @@ postgresql-common (138) UNRELEASED; urgency=low
   [ Martin Pitt ]
   * testsuite: Stop currently running clusters, just as the script has done
     until 136.
+  * testsuite: Use a more elegant way of re-execing ourselves through unshare.
 
  -- Christoph Berg <myon@debian.org>  Sun, 16 Dec 2012 15:36:50 +0100
 

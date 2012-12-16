@@ -19,8 +19,9 @@
 set -e
 
 # call ourselves through unshare in a way that keeps normal stdin
-unshare -uimn sh -- -c "`tail -n +25 $0`" "$0" "$@"
-exit $?
+if [ -z "$UNSHARED" ]; then
+    UNSHARED=1 exec unshare -uimn "$0" "$@"
+fi
 
 # unshared program starts here
 set -e
