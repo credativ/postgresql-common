@@ -75,6 +75,9 @@ chmod 2775 /var/run/postgresql
 # reset core limit for pg_ctl tests
 ulimit -S -c 0
 
+# start localhost interface
+ifconfig lo up
+
 # set variables which cause taint check errors
 export IFS=' '
 export CDPATH=/usr
