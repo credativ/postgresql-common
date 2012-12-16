@@ -53,6 +53,11 @@ if [ "$(id -u)" != 0 ]; then
     exit 1
 fi
 
+# stop currently running clusters
+if [ -x "/etc/init.d/postgresql" ]; then
+    /etc/init.d/postgresql stop
+fi
+
 # let everything happen in overlay tmpfses to avoid interfering with already
 # existing clusters; this also speeds up testing
 created_dirs=""
