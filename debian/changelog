@@ -1,4 +1,4 @@
-postgresql-common (138) UNRELEASED; urgency=low
+postgresql-common (138) experimental; urgency=low
 
   [ Christoph Berg ]
   * testsuite: start localhost interface which is down after unshare -n.
@@ -8,7 +8,7 @@ postgresql-common (138) UNRELEASED; urgency=low
     until 136.
   * testsuite: Use a more elegant way of re-execing ourselves through unshare.
 
- -- Christoph Berg <myon@debian.org>  Sun, 16 Dec 2012 15:36:50 +0100
+ -- Martin Pitt <mpitt@debian.org>  Sun, 16 Dec 2012 18:57:12 +0100
 
 postgresql-common (137) experimental; urgency=low
 
