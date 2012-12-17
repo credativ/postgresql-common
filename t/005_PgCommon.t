@@ -262,14 +262,14 @@ if (-x "/bin/nc") {
     push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 127.0.0.1 5432));
     usleep 50_000;
     is (next_free_port, 5433, 'next_free_port detects localhost ipv4 socket');
-    # open a localhost ipv6 socket
-    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l ::1 5433));
-    usleep 50_000;
-    is (next_free_port, 5434, 'next_free_port detects localhost ipv6 socket');
     # open a wildcard ipv4 socket
-    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 5434));
+    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 5433));
     usleep 50_000;
-    is (next_free_port, 5435, 'next_free_port detects wildcard ipv4 socket');
+    is (next_free_port, 5434, 'next_free_port detects wildcard ipv4 socket');
+    # open a localhost ipv6 socket
+    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l ::1 5434));
+    usleep 50_000;
+    is (next_free_port, 5435, 'next_free_port detects localhost ipv6 socket');
     # open a wildcard ipv6 socket
     push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l 5435));
     usleep 50_000;
