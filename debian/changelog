@@ -1,3 +1,9 @@
+postgresql-common (139) UNRELEASED-experimental; urgency=low
+
+  * testsuite: unshare needs "--" or else it eats our options.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 17 Dec 2012 12:19:31 +0100
+
 postgresql-common (138) experimental; urgency=low
 
   [ Christoph Berg ]

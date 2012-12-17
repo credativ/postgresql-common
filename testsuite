@@ -20,7 +20,7 @@ set -e
 
 # call ourselves through unshare in a way that keeps normal stdin
 if [ -z "$UNSHARED" ]; then
-    UNSHARED=1 exec unshare -uimn "$0" "$@"
+    UNSHARED=1 exec unshare -uimn -- "$0" "$@"
 fi
 
 # unshared program starts here
