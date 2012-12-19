@@ -2,7 +2,8 @@ postgresql-common (139) UNRELEASED-experimental; urgency=low
 
   * testsuite: unshare needs "--" or else it eats our options.
   * testsuite: Require netcat-openbsd to be installed.
-  * testsute 005_PgCommon: Do the ipv4 tests before the ipv6 ones.
+  * testsute 005_PgCommon: Do the ipv4 tests before the ipv6 ones; skip
+    the ipv6 for perl <= 5.10 (i.e. on squeeze and lucid).
 
  -- Christoph Berg <myon@debian.org>  Mon, 17 Dec 2012 12:19:31 +0100
 
