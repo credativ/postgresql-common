@@ -11,7 +11,7 @@ use PgCommon;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 24 + (-x "/bin/nc" ? 5 : 1);
+use Test::More tests => 29;
 
 my $tdir = tempdir (CLEANUP => 1);
 $PgCommon::confroot = $tdir;
@@ -249,35 +249,31 @@ QuoteStr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
 EOF
 
-if (-x "/bin/nc") {
-    # test next_free_port(). We are intentionally using nc as an external tool,
-    # using perl would replicate what next_free_port is doing, and that would
-    # be a pointless test.
-    use IPC::Open2;
-    use Time::HiRes qw(usleep);
-    my @pids;
-    # no ports open
-    is (next_free_port, 5432, 'next_free_port is 5432');
-    # open a localhost ipv4 socket
-    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 127.0.0.1 5432));
-    usleep 50_000;
-    is (next_free_port, 5433, 'next_free_port detects localhost ipv4 socket');
-    # open a wildcard ipv4 socket
-    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 5433));
-    usleep 50_000;
-    is (next_free_port, 5434, 'next_free_port detects wildcard ipv4 socket');
-    # open a localhost ipv6 socket
-    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l ::1 5434));
-    usleep 50_000;
-    is (next_free_port, 5435, 'next_free_port detects localhost ipv6 socket');
-    # open a wildcard ipv6 socket
-    push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l 5435));
-    usleep 50_000;
-    is (next_free_port, 5436, 'next_free_port detects wildcard ipv6 socket');
-    # clean up
-    kill 15, @pids;
-} else {
-    pass 'Skipping next_free_port tests because /bin/nc is unavailable';
-}
+# test next_free_port(). We are intentionally using nc as an external tool,
+# using perl would replicate what next_free_port is doing, and that would
+# be a pointless test.
+use IPC::Open2;
+use Time::HiRes qw(usleep);
+my @pids;
+# no ports open
+is (next_free_port, 5432, 'next_free_port is 5432');
+# open a localhost ipv4 socket
+push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 127.0.0.1 5432));
+usleep 50_000;
+is (next_free_port, 5433, 'next_free_port detects localhost ipv4 socket');
+# open a wildcard ipv4 socket
+push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 5433));
+usleep 50_000;
+is (next_free_port, 5434, 'next_free_port detects wildcard ipv4 socket');
+# open a localhost ipv6 socket
+push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l ::1 5434));
+usleep 50_000;
+is (next_free_port, 5435, 'next_free_port detects localhost ipv6 socket');
+# open a wildcard ipv6 socket
+push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -q0 -l 5435));
+usleep 50_000;
+is (next_free_port, 5436, 'next_free_port detects wildcard ipv6 socket');
+# clean up
+kill 15, @pids;
 
 # vim: filetype=perl
