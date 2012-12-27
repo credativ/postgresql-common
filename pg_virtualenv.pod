@@ -1,0 +1,62 @@
+=head1 NAME
+
+pg_virtualenv - Create a throw-away PostgreSQL environment for running regression tests
+
+=head1 SYNOPSIS
+
+B<pg_virtualenv> [B<-ash> B<-v> 'I<version ...>'] I<command>
+
+=head1 DESCRIPTION
+
+B<pg_buildext> creates a virtual PostgreSQL server environment, and sets
+environment variables such that I<command> can access the PostgreSQL database
+server(s). The servers and I<command> are run in an unshared mount and network
+namespace; the servers are created on tmpfses, so actions caused by I<command>
+do not affect the running system. The servers are destroyed when I<command>
+exits.
+
+The environment variables B<PGHOST>, B<PGDATABASE>, B<PGUSER>, and
+B<PGPASSWORD> will be set. Per default, a single new cluster is created on port
+B<5432>, using the newest PostgreSQL server version installed. When more
+clusters are created for other versions, they will use other port numbers. For
+ease of access, the clusters are registered in
+F</etc/postgresql-common/pg_service.conf>, with the version number as cluster
+name. Clusters can be accessed by passing the connection string
+"B<service=>I<version>", i.e. B<psql service=9.2>.
+
+B<pg_virtualenv> must be run as root. I<command> can drop privileges as needed,
+provided the environment variables are passed.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-a>
+
+Use all PostgreSQL server versions installed.
+
+=item B<-v> I<version ...>
+
+Use these versions (space-separated list).
+
+=item B<-s>
+
+Launch a shell inside the unshared environment when I<command> fails.
+
+=item B<-h>
+
+Show program help.
+
+=back
+
+=head1 EXAMPLE
+
+  # pg_virtualenv make regress
+
+=head1 SEE ALSO
+
+pg_createcluster(1), unshare(1).
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>
