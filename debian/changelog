@@ -4,6 +4,8 @@ postgresql-common (139) UNRELEASED-experimental; urgency=low
     regression tests.
   * debian/tests/control: Use 9.1 and 9.2 packages.
   * debian/tests/system: Also generate en_US.utf8 locale; unset LC_ALL.
+  * debian/tests/system: autopkgtest considers everything on stderr to be an
+    error, redirect to stdout here
   * testsuite: unshare needs "--" or else it eats our options.
   * testsuite: Require netcat-openbsd to be installed.
   * testsute 005_PgCommon: Do the ipv4 tests before the ipv6 ones; skip
