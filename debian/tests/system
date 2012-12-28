@@ -22,4 +22,4 @@ else
 fi
 
 cd /usr/share/postgresql-common
-env -u TMPDIR LANG=en_US.utf8 ./testsuite
+env -u TMPDIR -u LC_ALL LANG=en_US.utf8 ./testsuite
