@@ -2,6 +2,7 @@ postgresql-common (139) UNRELEASED-experimental; urgency=low
 
   * pg_virtualenv: New program to create throw-away clusters for running
     regression tests.
+  * debian/tests/system: Also generate en_US.utf8 locale.
   * testsuite: unshare needs "--" or else it eats our options.
   * testsuite: Require netcat-openbsd to be installed.
   * testsute 005_PgCommon: Do the ipv4 tests before the ipv6 ones; skip

@@ -3,16 +3,22 @@ set -e
 
 # install locales; this happens differently on Debian and Ubuntu
 if [ -e /etc/locale.gen ]; then
-    /bin/echo -e 'ru_RU ISO-8859-5\nru_RU.UTF-8 UTF-8' >> /etc/locale.gen
-    locale-gen
+    # Debian
+    while read locale ; do
+	if ! grep -q "^$locale\$" /etc/locale.gen ; then
+	    echo "$locale" >> /etc/locale.gen
+	    run=1
+	fi
+    done <<-EOF
+	en_US.UTF-8 UTF-8
+	ru_RU ISO-8859-5
+	ru_RU.UTF-8 UTF-8
+EOF
+    [ "$run" ] && locale-gen
 else
-    locale-gen ru_RU ru_RU.UTF-8
-fi
-
-# ensure that en_US.utf8 exists
-if [ -n "`LANG=en_US.utf8 locale 2>&1 1>/dev/null`" ]; then
-    echo "en_US.utf8 locale does not exist, aborting" >&2
-    exit 1
+    # Ubuntu
+    # locale-gen will skip existing locales, so just call it for all here
+    locale-gen en_US.UTF-8 ru_RU ru_RU.UTF-8
 fi
 
 cd /usr/share/postgresql-common
