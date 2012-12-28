@@ -2,8 +2,7 @@ postgresql-common (139) UNRELEASED-experimental; urgency=low
 
   * pg_virtualenv: New program to create throw-away clusters for running
     regression tests.
-  * debian/tests/control: Depend on the virtual packages for
-    pl{perl,python(3),tcl} instead of -9.1.
+  * debian/tests/control: Use 9.1 and 9.2 packages.
   * debian/tests/system: Also generate en_US.utf8 locale.
   * testsuite: unshare needs "--" or else it eats our options.
   * testsuite: Require netcat-openbsd to be installed.
