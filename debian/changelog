@@ -19,6 +19,8 @@ postgresql-common (139) UNRELEASED; urgency=low
     to lsb-release. Exit with a proper error message if neither is present.
     This gets rid of the (currently undeclared) strict dependency on
     lsb-release. (Closes: #697182)
+  * debian/README.Debian: Update versions to 8.4/9.1, as current for Squeeze
+    and Wheezy. (Closes: #697239)
 
  -- Christoph Berg <myon@debian.org>  Thu, 03 Jan 2013 16:27:40 +0100
 
