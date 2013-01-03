@@ -138,8 +138,9 @@ sub start {
     %ENV = read_cluster_conf_file $version, $cluster, 'environment';
 
     my $postmaster_opts = '';
-    if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'unix_socket_directory')) {
-	$postmaster_opts .= '-c unix_socket_directory="' . $info{'socketdir'} . '"';
+    my $usd = $version >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory';
+    if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', $usd)) {
+	$postmaster_opts .= "-c $usd=\"$info{'socketdir'}\"";
     }
 
     $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\""; 

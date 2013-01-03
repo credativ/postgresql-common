@@ -368,8 +368,9 @@ unless ($socketdir) {
 	$socketdir = '/var/run/postgresql';
     } else {
         $socketdir='/tmp';
+	my $usd = $version >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory';
 	print "Warning: The socket directory for owners other than 'postgres'
-defaults to /tmp. You might want to change the unix_socket_directory parameter
+defaults to /tmp. You might want to change the $usd parameter
 in postgresql.conf to a more secure directory.
 "
     }

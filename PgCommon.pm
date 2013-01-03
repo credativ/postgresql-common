@@ -354,7 +354,7 @@ sub cluster_data_directory {
 sub get_cluster_socketdir {
     # if it is explicitly configured, just return it
     my $socketdir = get_conf_value($_[0], $_[1], 'postgresql.conf',
-        'unix_socket_directory');
+        $_[0] >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory');
     return $socketdir if $socketdir;
 
     # try to determine whether this is a postgres owned cluster and we default
@@ -383,7 +383,9 @@ sub get_cluster_socketdir {
 # Set the socket directory of a particular cluster. 
 # Arguments: <version> <cluster> <directory>
 sub set_cluster_socketdir {
-    set_conf_value $_[0], $_[1], 'postgresql.conf', 'unix_socket_directory', $_[2];
+    set_conf_value $_[0], $_[1], 'postgresql.conf',
+        $_[0] >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory',
+        $_[2];
 }
 
 # Return the path of a program of a particular version.
