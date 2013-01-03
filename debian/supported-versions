@@ -18,7 +18,7 @@
 #
 # Recognized tokens:
 # default: use the appropiate defaults for the current distribution and release
-#          (as determined by lsb_release)
+#          (as determined by os-release or lsb_release)
 # debian [release]: use Debian defaults
 # debian-backports [release]: use Debian Backports defaults
 # ubuntu [release]: use Ubuntu defaults
@@ -36,24 +36,28 @@ DEFAULT="9.1"
 
 # functions
 
-get_lsb() {
-    # If we have lsb_release, use it
-    if type lsb_release >/dev/null 2>/dev/null; then
-        DISTRO="`lsb_release -is`" || DISTRO=""
-        RELEASE="`lsb_release -rs`" || RELEASE=""
-    fi
-
-    if [ -z "$DISTRO" -o -z "$RELEASE" ]; then
-        echo "supported_versions: WARNING: lsb_release not present, unknown distribution" >&2
+get_release() {
+    # If we have /etc/os-release, use it
+    if [ -r /etc/os-release ]; then
+        . /etc/os-release
+        DISTRO="$ID"
+        RELEASE="$VERSION_ID"
+    # fall back to lsb_release
+    elif type lsb_release >/dev/null 2>/dev/null; then
+        DISTRO="`lsb_release -is`"
+        RELEASE="`lsb_release -rs`"
+    else
+        echo "supported_versions: WARNING: /etc/os-release and lsb_release not present, unknown distribution" >&2
+        exit 1
     fi
 }
 
 default() {
     case "$DISTRO" in
-        Ubuntu)
+        [uU]buntu)
             ubuntu "$RELEASE"
             ;;
-        Debian)
+        [dD]ebian)
             debian "$RELEASE"
             ;;
         *)
@@ -160,23 +164,23 @@ echo "$SUPPORTED_VERSIONS" | while read version release; do
         "") ;;
         $COMMENT*) ;;
         default)
-            get_lsb
+            get_release
             default
             ;;
         debian)
-            get_lsb
+            get_release
             debian "${release:-$RELEASE}"
             ;;
         debian-backports)
-            get_lsb
+            get_release
             debian_backports "${release:-$RELEASE}"
             ;;
         ubuntu)
-            get_lsb
+            get_release
             ubuntu "${release:-$RELEASE}"
             ;;
         pgdg) # apt.postgresql.org
-            get_lsb
+            get_release
             pgdg "${release:-$RELEASE}"
             ;;
         installed)

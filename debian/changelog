@@ -1,5 +1,6 @@
-postgresql-common (139) UNRELEASED-experimental; urgency=low
+postgresql-common (139) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * pg_virtualenv: New program to create throw-away clusters for running
     regression tests.
   * debian/tests/control: Use 9.1 and 9.2 packages.
@@ -12,6 +13,12 @@ postgresql-common (139) UNRELEASED-experimental; urgency=low
     the ipv6 for perl <= 5.10 (i.e. on squeeze and lucid).
   * PgCommon.pm, pg_ctlcluster, pg_createcluster: 9.3 renames
     unix_socket_directory to unix_socket_directories.
+
+  [ Martin Pitt ]
+  * debian/supported-versions: Read /etc/os-release if present, and fall back
+    to lsb-release. Exit with a proper error message if neither is present.
+    This gets rid of the (currently undeclared) strict dependency on
+    lsb-release. (Closes: #697182)
 
  -- Christoph Berg <myon@debian.org>  Thu, 03 Jan 2013 16:27:40 +0100
 
