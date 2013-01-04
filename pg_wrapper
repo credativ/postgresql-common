@@ -51,7 +51,8 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
         last;
     }
 
-    $port_specified = 1 if $ARGV[$i] eq '--port' || $ARGV[$i] =~ /^-\w*p\w*$/;
+    $port_specified = 1 if $ARGV[$i] =~ /^--port\b/ || $ARGV[$i] =~ /^-\w*p\w*\d*$/;
+    $host = '.from.commandline' if $ARGV[$i] =~ /^--host\b/ || $ARGV[$i] =~ /^-\w*h\w*$/;
 }
 
 # Determine $version, $cluster, $db, $port from map files
@@ -79,7 +80,7 @@ if (!$host && $cluster) {
 $ENV{'PGSYSCONFDIR'} = '/etc/postgresql-common' if !$ENV{'PGSYSCONFDIR'};
 $ENV{'PGPORT'} = $port if $port && !$ENV{'PGPORT'};
 $ENV{'PGDATABASE'} = $db if $db && !$ENV{'PGDATABASE'};
-$ENV{'PGHOST'} = $host if $host;
+$ENV{'PGHOST'} = $host if $host && $host ne '.from.commandline';
 
 # if we only have a port, but no version here, use the latest version
 # TODO: this could be improved by better argument parsing and mapping back the
@@ -170,33 +171,37 @@ precedence:
 
 =item 1.
 
-explicit specification with the B<--cluster> option
+explicit specification with the B<--host> option
 
 =item 2.
 
-if the B<PGHOST> environment variable is set, no further cluster selection is
-performed. The default PostgreSQL version and port number (from the environment
-variable B<PGPORT>, or default 5432) will be used.
+explicit specification with the B<--cluster> option
 
 =item 3.
 
-explicit specification with the B<PGCLUSTER> environment variable
+if the B<PGHOST> environment variable is set, no further cluster selection is
+performed. The default PostgreSQL version and port number (from the command
+line, the environment variable B<PGPORT>, or default 5432) will be used.
 
 =item 4.
+
+explicit specification with the B<PGCLUSTER> environment variable
+
+=item 5.
 
 matching entry in C<~/.postgresqlrc> (see L<postgresqlrc(5)>), if that
 file exists
 
-=item 5.
+=item 6.
 
 matching entry in C</etc/postgresql-common/user_clusters> (see
 L<user_clusters(5)>), if that file exists
 
-=item 6.
+=item 7.
 
 If only one local cluster exists, that one will be selected.
 
-=item 7.
+=item 8.
 
 If several local clusters exist, the one listening on the default port 5432
 will be selected.

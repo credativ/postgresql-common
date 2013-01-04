@@ -14,6 +14,8 @@ postgresql-common (139) UNRELEASED; urgency=low
   * PgCommon.pm, pg_ctlcluster, pg_createcluster, t/030_errors.t: 9.3 renames
     unix_socket_directory to unix_socket_directories.
   * pg_wrapper: Document that PGHOST overrides PGCLUSTER. (Closes: #697291)
+  * pg_wrapper: Skip cluster selection if --host is given on the command line.
+    (Closes: #637017) While we are at it, improve --port parsing, too.
 
   [ Martin Pitt ]
   * debian/supported-versions: Read /etc/os-release if present, and fall back
