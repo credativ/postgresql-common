@@ -4,6 +4,7 @@
 # /etc/postgresql-common/user_clusters.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -173,23 +174,29 @@ explicit specification with the B<--cluster> option
 
 =item 2.
 
-explicit specification with the B<PGCLUSTER> environment variable
+if the B<PGHOST> environment variable is set, no further cluster selection is
+performed. The default PostgreSQL version and port number (from the environment
+variable B<PGPORT>, or default 5432) will be used.
 
 =item 3.
+
+explicit specification with the B<PGCLUSTER> environment variable
+
+=item 4.
 
 matching entry in C<~/.postgresqlrc> (see L<postgresqlrc(5)>), if that
 file exists
 
-=item 4.
+=item 5.
 
 matching entry in C</etc/postgresql-common/user_clusters> (see
 L<user_clusters(5)>), if that file exists
 
-=item 5.
+=item 6.
 
 If only one local cluster exists, that one will be selected.
 
-=item 6.
+=item 7.
 
 If several local clusters exist, the one listening on the default port 5432
 will be selected.

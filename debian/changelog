@@ -13,6 +13,7 @@ postgresql-common (139) UNRELEASED; urgency=low
     the ipv6 for perl <= 5.10 (i.e. on squeeze and lucid).
   * PgCommon.pm, pg_ctlcluster, pg_createcluster, t/030_errors.t: 9.3 renames
     unix_socket_directory to unix_socket_directories.
+  * pg_wrapper: Document that PGHOST overrides PGCLUSTER. (Closes: #697291)
 
   [ Martin Pitt ]
   * debian/supported-versions: Read /etc/os-release if present, and fall back
