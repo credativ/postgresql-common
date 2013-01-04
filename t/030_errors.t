@@ -90,7 +90,7 @@ open F, "+</etc/postgresql/$version/main/postgresql.conf" or
 my @lines = <F>;
 seek F, 0, 0 or die "seek: $!";
 truncate F, 0;
-@lines = grep !/^unix_socket_directory/, @lines;
+@lines = grep !/^unix_socket_dir/, @lines; # <= 9.2: "_directory", >= 9.3: "_directories"
 print F @lines;
 close F;
 

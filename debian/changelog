@@ -11,7 +11,7 @@ postgresql-common (139) UNRELEASED; urgency=low
   * testsuite: Require netcat-openbsd to be installed.
   * testsute 005_PgCommon: Do the ipv4 tests before the ipv6 ones; skip
     the ipv6 for perl <= 5.10 (i.e. on squeeze and lucid).
-  * PgCommon.pm, pg_ctlcluster, pg_createcluster: 9.3 renames
+  * PgCommon.pm, pg_ctlcluster, pg_createcluster, t/030_errors.t: 9.3 renames
     unix_socket_directory to unix_socket_directories.
 
   [ Martin Pitt ]
