@@ -3,6 +3,8 @@ postgresql-common (134wheezy3) UNRELEASED; urgency=low
   * pg_wrapper: Document that PGHOST overrides PGCLUSTER. (Closes: #697291)
   * pg_wrapper: Skip cluster selection if --host is given on the command line.
     (Closes: #637017) While we are at it, improve --port parsing, too.
+  * postgresql-client-common: Add Depends: netbase for getprotobyname() in
+    PgCommon.pm. (Closes: #697377)
 
  -- Christoph Berg <myon@debian.org>  Fri, 04 Jan 2013 13:53:41 +0100
 
