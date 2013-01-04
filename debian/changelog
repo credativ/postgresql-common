@@ -16,6 +16,8 @@ postgresql-common (139) UNRELEASED; urgency=low
   * pg_wrapper: Document that PGHOST overrides PGCLUSTER. (Closes: #697291)
   * pg_wrapper: Skip cluster selection if --host is given on the command line.
     (Closes: #637017) While we are at it, improve --port parsing, too.
+  * t/010_defaultport_cluster.t: Add test cases for the above pg_wrapper
+    changes.
 
   [ Martin Pitt ]
   * debian/supported-versions: Read /etc/os-release if present, and fall back
