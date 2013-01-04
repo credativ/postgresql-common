@@ -19,7 +19,7 @@ postgresql-common (139) UNRELEASED; urgency=low
   * t/010_defaultport_cluster.t: Add test cases for the above pg_wrapper
     changes.
   * postgresql-client-common: Add Depends: netbase for getprotobyname() in
-    PgCommon.pm.
+    PgCommon.pm. (Closes: #697377)
 
   [ Martin Pitt ]
   * debian/supported-versions: Read /etc/os-release if present, and fall back
