@@ -1,6 +1,0 @@
-#!/bin/sh
-set -e
-
-cd /usr/share/postgresql-common
-# autopkgtest considers everything on stderr to be an error, redirect to stdout here
-env -u TMPDIR -u LC_ALL LANG=en_US.utf8 ./testsuite 2>&1

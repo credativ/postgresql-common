@@ -3,13 +3,11 @@ postgresql-common (139) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * pg_virtualenv: New program to create throw-away clusters for running
     regression tests.
-  * debian/tests/control: Use 9.1 and 9.2 packages.
-  * debian/tests/system: autopkgtest considers everything on stderr to be an
-    error, redirect to stdout here
   * testsuite: unshare needs "--" or else it eats our options.
   * testsuite: Require netcat-openbsd to be installed.
   * testsuite: Move locale generation here from debian/tests/system, also
     generate en_US.utf8 locale; unset LC_ALL.
+  * Drop debian/tests, moved to the postgresql-* server packages.
   * testsute 005_PgCommon: Do the ipv4 tests before the ipv6 ones; skip
     the ipv6 for perl <= 5.10 (i.e. on squeeze and lucid).
   * PgCommon.pm, pg_ctlcluster, pg_createcluster, t/030_errors.t: 9.3 renames
