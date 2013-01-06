@@ -1,3 +1,9 @@
+postgresql-common (140) UNRELEASED; urgency=low
+
+  * t/001_packages.t: Also check that -contrib is installed.
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 06 Jan 2013 18:23:41 +0100
+
 postgresql-common (139) experimental; urgency=low
 
   [ Christoph Berg ]

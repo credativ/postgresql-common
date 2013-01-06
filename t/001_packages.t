@@ -6,7 +6,7 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => 8 + ($#MAJORS+1)*6;
+use Test::More tests => 8 + ($#MAJORS+1)*7;
 
 print "Info: PostgreSQL versions installed: @MAJORS\n";
 
@@ -21,6 +21,7 @@ foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-plperl-$v"), "postgresql-plperl-$v installed");
     ok ((deb_installed "postgresql-pltcl-$v"), "postgresql-pltcl-$v installed");
     ok ((deb_installed "postgresql-server-dev-$v"), "postgresql-server-dev-$v installed");
+    ok ((deb_installed "postgresql-contrib-$v"), "postgresql-contrib-$v installed");
 }
 
 ok ((deb_installed 'libecpg-dev'), 'libecpg-dev installed');
