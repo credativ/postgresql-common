@@ -8,7 +8,6 @@ Vcs-Bzr: http://bzr.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
 Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/trunk
 Build-Depends: debhelper (>= 7.0.50~),
  lsb-release
-XS-Testsuite: autopkgtest
 
 Package: postgresql-common
 Architecture: all
