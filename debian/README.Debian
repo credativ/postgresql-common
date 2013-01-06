@@ -91,9 +91,9 @@ unless you specify them manually. The first cluster which is ever
 created (by any major version) will run on the default port 5432, and
 each new cluster will use the next higher free one. 
 
-E. g. if you first install "postgresql-8.3" on a clean system, the
-default 8.3/main cluster will run on port 5432. If you then create
-another 8.3 cluster, or install the "postgresql-8.4" package, that new
+E. g. if you first install "postgresql-9.1" on a clean system, the
+default 9.1/main cluster will run on port 5432. If you then create
+another 9.1 cluster, or install the "postgresql-8.4" package, that new
 one will run on 5433.
 
 Please use "pg_lsclusters" for displaying the cluster <-> port
@@ -109,18 +109,18 @@ equivalent to doing 'pg_createcluster X.Y main --start'.
 Due to this default cluster, an immediate attempt to upgrade an
 earlier 'main' cluster to a new version will fail and you need to
 remove the newer default cluster first. E. g., if you have
-postgresql-8.3 installed and want to upgrade to 8.4, you first install
-postgresql-8.4:
+postgresql-8.4 installed and want to upgrade to 9.1, you first install
+postgresql-9.1:
 
-  apt-get install postgresql-8.4
+  apt-get install postgresql-9.1
 
-Then drop the default 8.4 cluster:
+Then drop the default 9.1 cluster:
 
-  pg_dropcluster 8.4 main --stop
+  pg_dropcluster 9.1 main --stop
 
-And then upgrade the 8.3 cluster to 8.4:
+And then upgrade the 8.4 cluster to 9.1:
 
-  pg_upgradecluster 8.3 main
+  pg_upgradecluster 8.4 main
 
 SSL
 ---
@@ -147,9 +147,9 @@ symlink the file to /etc/ssl/certs/ssl-cert-snakeoil.pem; in this
 case, client certificates need to be signed by the snakeoil
 certificate, which might be desirable in many cases. See
 
-  /usr/share/doc/postgresql-doc-8.4/html/ssl-tcp.html
+  /usr/share/doc/postgresql-doc-9.1/html/ssl-tcp.html
 
-for details (in package postgresql-doc-8.4).
+for details (in package postgresql-doc).
 
 Further documentation
 ---------------------
