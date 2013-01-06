@@ -54,6 +54,26 @@ if [ "$(id -u)" != 0 ]; then
     exit 1
 fi
 
+# install locales; this happens differently on Debian and Ubuntu
+if [ -e /etc/locale.gen ]; then
+    # Debian
+    while read locale ; do
+	if ! grep -q "^$locale\$" /etc/locale.gen ; then
+	    echo "$locale" >> /etc/locale.gen
+	    run=1
+	fi
+    done <<-EOF
+	en_US.UTF-8 UTF-8
+	ru_RU ISO-8859-5
+	ru_RU.UTF-8 UTF-8
+EOF
+    [ "$run" ] && locale-gen
+else
+    # Ubuntu
+    # locale-gen will skip existing locales, so just call it for all here
+    locale-gen en_US.UTF-8 ru_RU ru_RU.UTF-8
+fi
+
 # stop currently running clusters
 if [ -x "/etc/init.d/postgresql" ]; then
     /etc/init.d/postgresql stop
@@ -83,6 +103,11 @@ ulimit -S -c 0
 
 # start localhost interface
 ifconfig lo up
+
+# set environment
+unset TMPDIR
+unset LC_ALL
+export LANG=en_US.utf8
 
 # set variables which cause taint check errors
 export IFS=' '
