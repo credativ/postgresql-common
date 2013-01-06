@@ -108,6 +108,8 @@ if (!$psql) {
     my @pw = getpwnam 'nobody';
     change_ugid $pw[2], $pw[3];
     dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
+    # suppress 'could not change directory to "/tmp/pgtest"'
+    dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
     exec 'psql', 'template1' or die "could not exec psql process: $!";
 }
 

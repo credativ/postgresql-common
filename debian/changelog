@@ -18,6 +18,8 @@ postgresql-common (139) UNRELEASED; urgency=low
     (Closes: #637017) While we are at it, improve --port parsing, too.
   * t/010_defaultport_cluster.t: Add test cases for the above pg_wrapper
     changes.
+  * t/040_upgrade.t: dup2 psql stderr to suppress warning 'could not change
+    directory to "/tmp/pgtest'.
   * postgresql-client-common: Add Depends: netbase for getprotobyname() in
     PgCommon.pm. (Closes: #697377)
 
