@@ -15,7 +15,7 @@ if [ "$SRC" = postgresql-9.1 ]; then
 elif [ "$SRC" = postgresql-9.2 ]; then
     RELEASES='lucid oneiric precise quantal raring'
 else
-    RELEASES='lucid oneiric precise'
+    RELEASES='lucid oneiric precise quantal'
 fi
 
 CUR_VERSION=`dpkg-parsechangelog | grep ^Version | cut -f2 -d' '`
