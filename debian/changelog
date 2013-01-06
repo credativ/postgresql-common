@@ -1,4 +1,4 @@
-postgresql-common (139) UNRELEASED; urgency=low
+postgresql-common (139) experimental; urgency=low
 
   [ Christoph Berg ]
   * pg_virtualenv: New program to create throw-away clusters for running
@@ -30,7 +30,7 @@ postgresql-common (139) UNRELEASED; urgency=low
   * debian/README.Debian: Update versions to 8.4/9.1, as current for Squeeze
     and Wheezy. (Closes: #697239)
 
- -- Christoph Berg <myon@debian.org>  Thu, 03 Jan 2013 16:27:40 +0100
+ -- Christoph Berg <myon@debian.org>  Sun, 06 Jan 2013 10:24:49 +0100
 
 postgresql-common (138) experimental; urgency=low
 
