@@ -4,7 +4,7 @@
 # tmpfses, so does not interfere with installed clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012 Christoph Berg <myon@debian.org>
+# (C) 2012-2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ set -e
 
 # default config
 TESTSDIR="$(dirname $0)/t"
-UMASKS="022 077"
+: ${PG_UMASKS="022 077"}
 
 help ()
 {
@@ -42,7 +42,7 @@ help ()
 while getopts "hu:" opt ; do
     case $opt in
         h) help ;;
-        u) UMASKS="$OPTARG" ;;
+        u) PG_UMASKS="$OPTARG" ;;
         *) help 1 ;;
     esac
 done
@@ -119,7 +119,7 @@ if [ $# -eq 0 ]; then
     set -- $TESTSDIR/*.t
 fi
 
-for U in $UMASKS; do
+for U in $PG_UMASKS; do
     case $U in
         022) TYPE="default" ;;
         077) TYPE="tight" ;;
