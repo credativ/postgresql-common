@@ -24,11 +24,12 @@ use POSIX qw/setlocale LC_ALL/;
 $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
 my @postgres_user = getpwnam 'postgres';
+my $explicit_auth_config = 0;
 
 # call initdb 
-# Arguments: <version> <data directory> <owner uid> <owner gid>
+# Arguments: <version> <data directory> <owner uid> <owner gid> <initdb options>
 sub init_db {
-    my ($version, $datadir, $owneruid, $ownergid) = @_;
+    my ($version, $datadir, $owneruid, $ownergid, $initdb_opts_from_cli) = @_;
     $datadir = readlink $datadir if (-l $datadir);
     if ($version >= '8.4') {
 	$ident_method = 'ident';
@@ -47,7 +48,9 @@ sub init_db {
 
     @initdb = ((get_program_path 'initdb', $version), '-D', $datadir);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
-    if ($version >= '9.2') {
+    if ($explicit_auth_config) {
+	# do nothing
+    } elsif ($version >= '9.2') {
 	push @initdb, ('--auth-local', $peer_method);
 	push @initdb, ('--auth-host', 'md5');
     } else {
@@ -61,6 +64,7 @@ sub init_db {
     push @initdb, ('--lc-monetary', $lc_monetary) if $lc_monetary;
     push @initdb, ('--lc-numeric', $lc_numeric) if $lc_numeric;
     push @initdb, ('--lc-time', $lc_time) if $lc_time;
+    push @initdb, @$initdb_opts_from_cli;
 
     # pre-8.2 servers do not ignore LANG when LC_ALL is set; work around this
     # bug
@@ -169,7 +173,7 @@ sub setup_pg_hba {
 	    $search = 0;
 	}
 
-	if ($version lt '9.2') {
+	if (not $explicit_auth_config and $version lt '9.2') {
 	    # default authentication for Unix socket connections
 	    if ($line =~ /^#?local/) {
 		$line =~ s/trust/$peer_method/;
@@ -220,8 +224,8 @@ unless (setlocale (LC_ALL, "")) {
     error ('The locale requested by the environment is invalid.')
 }
 
-if ($#ARGV != 1) {
-    print "Usage: $0 [options] <version> <cluster name>
+if (@ARGV < 2) {
+    print "Usage: $0 [options] <version> <cluster name> [-- <initdb options>]
 
 Options:
   -u <uid>      cluster owner and superuser (default: 'postgres')
@@ -241,6 +245,7 @@ Options:
   --start       start the cluster after creating it
   --start-conf auto|manual|disabled
                 Set automatic startup behaviour in start.conf (default: 'auto')
+  <initdb options> other options to pass to initdb
 ";
     exit 1;
 }
@@ -267,8 +272,20 @@ if ($ownergid) {
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 
 ($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+error 'invalid version' unless defined $version;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error 'invalid cluster name' unless defined $cluster;
+splice @ARGV, 0, 2;
+
+# initdb options passed after --
+my @initdb_opts_from_cli = ();
+foreach my $argv (@ARGV) {
+    # the user passed an authentication method, don't mess with initdb and pg_hba.conf
+    if ($argv =~ /^(-\w*A|--auth\b)/) { # -A --auth --auth-host --auth-local
+	$explicit_auth_config = 1;
+    }
+    push @initdb_opts_from_cli, $argv =~ /(.*)/; # untaint
+}
 
 if (!defined $datadir) {
     $pd = "/var/lib/postgresql/$version";
@@ -285,7 +302,7 @@ $confdirp = "$PgCommon::confroot/$version";
 $confdir = "$confdirp/$cluster";
 
 # some sanity checks
-error "invalid version: $version" unless get_program_path 'initdb', $version;
+error "no initdb program for version $version found" unless get_program_path 'initdb', $version;
 error 'cluster configuration already exists' 
     if -e "$confdir/postgresql.conf" || -e "$confdir/pg_hba.conf";
 
@@ -333,7 +350,7 @@ if (-f "$datadir/PG_VERSION") {
     }
 } else {
     print "Creating new cluster (configuration: $confdir, data: $datadir)...\n";
-    init_db $version, $datadir, $owneruid, $ownergid;
+    init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
 
@@ -353,7 +370,7 @@ chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/pg_ctl.conf" or die "c
 PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
 
 # add access for database superuser
-setup_pg_hba $version if $newcluster;
+setup_pg_hba $version if $newcluster and not $explicit_auth_config;
 
 # configure socket directory
 if ($socketdir && ! -e $socketdir) {
@@ -495,7 +512,7 @@ pg_createcluster - create a new PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_createcluster> [I<options>] I<version> I<name>
+B<pg_createcluster> [I<options>] I<version> I<name> [B<--> I<initdb options>]
 
 =head1 DESCRIPTION
 
@@ -634,6 +651,16 @@ CONTROL> below. By default, B<auto> is used, which means that the cluster is
 handled by C</etc/init.d/postgresql>, i. e. starts and stops
 automatically on system boot.
 
+=item B<--> I<initdb options>
+
+Options passed directly to L<initdb(1)>.
+
+Per default, B<pg_createcluster> will update the C<pg_hba.conf> file generated
+by initdb to use peer authentication on local (unix) connections, and md5 on
+TCP (host) connections. If explicit authentication config is included here
+(B<-A>, B<--auth>, B<--auth-host>, B<--auth-local>), the C<pg_hba.conf> file
+will be left untouched.
+
 =back
 
 =head1 STARTUP CONTROL
@@ -669,7 +696,7 @@ additional options passed to pg_ctl of that cluster.
 
 =head1 SEE ALSO
 
-L<pg_ctlcluster(8)>, L<pg_lsclusters(1)>, L<pg_wrapper(1)>
+L<initdb(1)>, L<pg_ctlcluster(8)>, L<pg_lsclusters(1)>, L<pg_wrapper(1)>
 
 =head1 AUTHOR
 
