@@ -12,8 +12,8 @@ B<pg_buildext> creates a virtual PostgreSQL server environment, and sets
 environment variables such that I<command> can access the PostgreSQL database
 server(s). The servers and I<command> are run in an unshared mount and network
 namespace; the servers are created on tmpfses, so actions caused by I<command>
-do not affect the running system. The servers are destroyed when I<command>
-exits.
+in the database do not affect the running system. The servers are destroyed
+when I<command> exits.
 
 The environment variables B<PGHOST>, B<PGDATABASE>, B<PGUSER>, and
 B<PGPASSWORD> will be set. Per default, a single new cluster is created on port
@@ -22,7 +22,10 @@ clusters are created for other versions, they will use other port numbers. For
 ease of access, the clusters are registered in
 F</etc/postgresql-common/pg_service.conf>, with the version number as cluster
 name. Clusters can be accessed by passing the connection string
-"B<service=>I<version>", i.e. B<psql service=9.2>.
+"B<service=>I<version>", e.g. B<psql service=9.2>.
+
+B<pg_createcluster> is used to create the database clusters. The clusters are
+named I<version>/regress.
 
 B<pg_virtualenv> must be run as root. I<command> can drop privileges as needed,
 provided the environment variables are passed.
@@ -38,6 +41,14 @@ Use all PostgreSQL server versions installed.
 =item B<-v> I<version ...>
 
 Use these versions (space-separated list).
+
+=item B<-c> I<pg_createcluster options>
+
+Extra options to pass to B<pg_createcluster>.
+
+=item B<-i> I<initdb options>
+
+Extra initdb options to pass to B<pg_createcluster>.
 
 =item B<-s>
 
@@ -55,7 +66,7 @@ Show program help.
 
 =head1 SEE ALSO
 
-pg_createcluster(1), unshare(1).
+initdb(1), pg_createcluster(1), unshare(1).
 
 =head1 AUTHOR
 

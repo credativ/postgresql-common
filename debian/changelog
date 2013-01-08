@@ -10,6 +10,7 @@ postgresql-common (140) UNRELEASED; urgency=low
   * pg_createcluster: Allow passing of initdb arguments on the command line.
     If --auth parameters are passed, skip updating the generated pg_hba.conf
     file.
+  * pg_virtualenv: Allow passing initdb arguments to pg_createcluster.
 
  -- Christoph Berg <myon@debian.org>  Mon, 07 Jan 2013 17:08:00 +0100
 

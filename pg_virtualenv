@@ -4,7 +4,7 @@
 # happens on unshared tmpfses, so does not interfere with installed clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012 Christoph Berg <myon@debian.org>
+# (C) 2012-2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,18 +35,22 @@ help ()
     echo "Syntax: $0 [options] command"
     echo "    -a                use all installed server versions"
     echo "    -v 'version ...'  list of PostgreSQL versions to run [default: latest]"
+    echo "    -c 'options'      extra options to pass to pg_createcluster"
+    echo "    -i 'initdb opts'  extra initdb options to pass to pg_createcluster"
     echo "    -s                open a shell when command fails"
     exit ${1:-0}
 }
 
 # option parsing
 PG_VERSIONS=""
-while getopts "ahsv:" opt ; do
+while getopts "ac:i:hsv:" opt ; do
     case $opt in
 	a) for d in /usr/lib/postgresql/*/bin/pg_ctl; do
 		# prepend version so latest ends up first (i.e. on port 5432)
 		PG_VERSIONS="$(basename ${d%%/bin/pg_ctl}) $PG_VERSIONS"
 	   done ;;
+	c) CREATE_OPTS="$OPTARG" ;;
+	i) INITDB_OPTS="$OPTARG" ;;
 	h) help ;;
 	s) run_shell=1 ;;
 	v) PG_VERSIONS="$OPTARG" ;;
@@ -120,12 +124,13 @@ fi
 for v in $PG_VERSIONS; do
     # create temporary cluster
     # we chdir to / so programs don't throw "could not change directory to ..."
-    (cd / && pg_createcluster $v regress --start 2>&1)
+    (
+	cd /
+	pg_createcluster ${CREATE_OPTS:-} --start $v regress -- ${INITDB_OPTS:-}
+    )
     # set postgres password and retrieve port number
     port=$(cd / && su -c "psql --cluster $v/regress -qtA \
 	-c \"ALTER USER postgres PASSWORD '$PGPASSWORD'; SHOW port\"" postgres)
-    # we do not set PGPORT here because that breaks --cluster
-    # (the first cluster created will use port 5432 anyway)
 
     # record cluster information in service file
     cat >> /etc/postgresql-common/pg_service.conf <<EOF
@@ -142,6 +147,8 @@ done
 export PGHOST="localhost"
 export PGDATABASE="postgres"
 export PGUSER="postgres"
+# we do not set PGPORT here because that breaks --cluster
+# (the first cluster created will use port 5432 anyway)
 
 # run program
 if [ "$run_shell" ]; then
