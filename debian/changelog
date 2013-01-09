@@ -1,4 +1,4 @@
-postgresql-common (134wheezy3) UNRELEASED; urgency=low
+postgresql-common (134wheezy3) unstable; urgency=low
 
   [ Christoph Berg ]
   * pg_wrapper: Document that PGHOST overrides PGCLUSTER. (Closes: #697291)
@@ -13,7 +13,7 @@ postgresql-common (134wheezy3) UNRELEASED; urgency=low
   * debian/README.Debian: Update versions to 8.4/9.1, as current for Squeeze
     and Wheezy. (Closes: #697239)
 
- -- Christoph Berg <myon@debian.org>  Fri, 04 Jan 2013 13:53:41 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 09 Jan 2013 17:12:54 +0100
 
 postgresql-common (134wheezy2) unstable; urgency=low
 
