@@ -105,7 +105,7 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-	    } elsif (/^\s*include\s+'([^']+)'\s*$/i) {
+	    } elsif (/^\s*include(?:_if_exists)?\s+'([^']+)'\s*$/i) {
 		my ($k, $v, $path, %include_conf);
 		$path = $1;
 		unless (substr($path, 0, 1) eq '/') {

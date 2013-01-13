@@ -3,6 +3,7 @@ postgresql-common (140) UNRELEASED; urgency=low
   [ Martin Pitt ]
   * t/001_packages.t: Also check that -contrib is installed.
   * debian/backport-ppa: Backport -common for Ubuntu 12.10.
+  * PgCommon.pm: Recognize "include_if_exists" directive. (LP: #1098986)
 
   [ Christoph Berg ]
   * testsuite: The default list of umasks to test (022 077) can be overridden

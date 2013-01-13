@@ -129,7 +129,11 @@ is_deeply (\%conf, {
       'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'"
     }, 'read_conf_file() parsing');
 
-# test read_conf_file() with an include directive
+# test read_conf_file() with include directives
+open F, ">$tdir/8.4/test/condinc.conf" or die "Could not create $tdir/condinc.conf: $!";
+print F "condint = 42\n";
+close F;
+
 open F, ">$tdir/bar.conf" or die "Could not create $tdir/bar.conf: $!";
 print F <<EOF;
 # test configuration file
@@ -140,6 +144,8 @@ print F <<EOF;
 intval = -1
 include '8.4/test/foo.conf'
 strval = 'howdy'
+include_if_exists '/nonexisting.conf'
+include_if_exists '8.4/test/condinc.conf'
 EOF
 close F;
 
@@ -153,8 +159,9 @@ is_deeply (\%conf, {
       'testpath' => '/bin/test', 
       'emptystr' => '',
       'cemptystr' => '',
-      'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'"
-    }, 'read_conf_file() parsing with include directive');
+      'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'",
+      'condint' => 42,
+    }, 'read_conf_file() parsing with include directives');
 
 
 # test set_conf_value()
