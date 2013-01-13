@@ -6,6 +6,8 @@ postgresql-common (140) UNRELEASED; urgency=low
   * PgCommon.pm: Recognize "include_if_exists" directive. (LP: #1098986)
   * pg_ctlcluster: Recreate a missing /var/log/postgresql/ if needed.
     (LP: #1009989)
+  * debian/postgresql-client-common.links: Wrap pgbench with pg_wrapper.
+    (LP: #1068194)
 
   [ Christoph Berg ]
   * testsuite: The default list of umasks to test (022 077) can be overridden
