@@ -345,8 +345,14 @@ unless (getgrgid $info{'ownergid'}) {
     error 'The cluster is owned by group id '.$info{'ownergid'}.' which does not exist any more'
 }
 
+# recreate missing standard log dir
+if ($> == 0 && ! -e '/var/log/postgresql' &&
+    $info{'logfile'} =~ m!^/var/log/postgresql!) {
+    system 'install', '-d', '-m', '1775', '-o', 'root', '-g', 'postgres', '/var/log/postgresql';
+}
+
 # recreate missing log file
-if ($info{'logfile'} && ! -e $info{'logfile'}) {
+if ($action ne 'stop' && $info{'logfile'} && ! -e $info{'logfile'}) {
     open L, '>', $info{'logfile'} or 
 	error 'Could not create log file ' . $info{'logfile'};
     chmod 0640, $info{'logfile'};
