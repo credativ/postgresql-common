@@ -216,7 +216,7 @@ exit 1 unless GetOptions ('v|version=s' => \$newversion,
 ($logfile) = $logfile =~ /^([^\n]+)$/ if $logfile;
 
 if ($#ARGV < 1) {
-    print "Usage: $0 [OPTIONS] <version> <cluster name> [<new data directory>]\n";
+    print "Usage: $0 [OPTIONS] <old version> <cluster name> [<new data directory>]\n";
     exit 1;
 }
 
@@ -224,6 +224,10 @@ if ($#ARGV < 1) {
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 my $datadir;
 ($datadir) = $ARGV[2] =~ /(.*)/ if defined $ARGV[2];
+
+error "Cannot upgrade from $version to $newversion. " .
+    "You should invoke pg_upgradecluster on a cluster with an old version."
+    if ($version eq $newversion);
 
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
@@ -577,7 +581,7 @@ pg_upgradecluster - upgrade an existing PostgreSQL cluster to a new major versio
 
 =head1 SYNOPSIS
 
-B<pg_upgradecluster> [B<-v> I<newversion>] I<version> I<name> [I<newdatadir>]
+B<pg_upgradecluster> [B<-v> I<newversion>] I<oldversion> I<name> [I<newdatadir>]
 
 =head1 DESCRIPTION
 
@@ -598,7 +602,7 @@ L<pg_createcluster(8)> for details.
 
 The I<newdatadir> argument can be used to specify a non-default data directory
 of the upgraded cluster. It is passed to B<pg_createcluster>. If not specified,
-this defaults to /var/lib/postgresql/I<version>/I<name>.
+this defaults to /var/lib/postgresql/I<newversion>/I<name>.
 
 Please note that this program cannot upgrade clusters which use tablespaces. If
 you use those, you have to upgrade manually.
