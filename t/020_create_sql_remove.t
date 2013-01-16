@@ -4,6 +4,7 @@
 use strict; 
 
 use POSIX qw/dup2/;
+use Time::HiRes qw/usleep/;
 
 use lib 't';
 use TestLib;
@@ -248,27 +249,31 @@ Bob|1
     is_program_out 0, "pg_ctlcluster $v main start", 0, '',
         'cluster restarts with pgdata symlink';
 
-    # OOM score adjustment under Linux: postmaster gets bigger shields for >=
-    # 9.1, but client backends stay at default
+    # check properties of backend processes
+    pipe RH, WH;
     my $psql = fork;
     if (!$psql) {
+	close WH;
 	my @pw = getpwnam 'nobody';
 	change_ugid $pw[2], $pw[3];
-	dup2(POSIX::open('/dev/zero', POSIX::O_RDONLY), 0);
+	open(STDIN, "<& RH");
 	dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
 	exec 'psql', 'nobodydb' or die "could not exec psql process: $!";
     }
+    close RH;
 
     my $master_pid = `ps --user postgres hu | grep 'bin/postgres.*-D' | grep -v grep | awk '{print \$2}'`;
     chomp $master_pid;
 
     my $client_pid;
     while (!$client_pid) {
-	sleep 0.1;
+	usleep 50_000;
 	$client_pid = `ps --user postgres hu | grep 'postgres: nobody nobodydb' | grep -v grep | awk '{print \$2}'`;
     }
     chomp $client_pid;
 
+    # OOM score adjustment under Linux: postmaster gets bigger shields for >=
+    # 9.1, but client backends stay at default
     my $adj;
     open F, "/proc/$master_pid/oom_adj";
     $adj = <F>;
@@ -286,11 +291,20 @@ Bob|1
     close F;
     is $adj, 0, 'postgres client backend has no OOM adjustment';
 
+    # test process title update
+    like_program_out 0, "ps h $client_pid", 0, qr/ idle\s*$/, 'process title is idle';
+    print WH "BEGIN;\n";
+    usleep 50_000;
+    like_program_out 0, "ps h $client_pid", 0, qr/idle in transaction/, 'process title is idle in transaction';
+    print WH "SELECT pg_sleep(1);\n";
+    usleep 50_000;
+    like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
+
     kill 9, $psql;
     waitpid $psql, 0;
 
     # Drop database and user again.
-    sleep 1;
+    usleep 50_000;
     is ((exec_as 'nobody', 'dropdb nobodydb', $outref, 0), 0, 'dropdb nobodydb', );
     is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
 

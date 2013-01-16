@@ -12,6 +12,7 @@ postgresql-common (140) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * testsuite: The default list of umasks to test (022 077) can be overridden
     by setting the environment variable PG_UMASKS.
+  * t/020_create_sql_remove.t: Test process title update.
   * pg_createcluster: Allow passing of initdb arguments on the command line.
     If --auth parameters are passed, skip updating the generated pg_hba.conf
     file.
