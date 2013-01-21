@@ -14,6 +14,8 @@ use PgCommon;
 
 use Test::More tests => 117 * ($#MAJORS+1);
 
+my $delay = 200_000; # 200ms
+
 sub check_major {
     my $v = $_[0];
 
@@ -267,7 +269,7 @@ Bob|1
 
     my $client_pid;
     while (!$client_pid) {
-	usleep 50_000;
+	usleep $delay;
 	$client_pid = `ps --user postgres hu | grep 'postgres: nobody nobodydb' | grep -v grep | awk '{print \$2}'`;
     }
     chomp $client_pid;
@@ -294,17 +296,17 @@ Bob|1
     # test process title update
     like_program_out 0, "ps h $client_pid", 0, qr/ idle\s*$/, 'process title is idle';
     print WH "BEGIN;\n";
-    usleep 50_000;
+    usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/idle in transaction/, 'process title is idle in transaction';
     print WH "SELECT pg_sleep(1);\n";
-    usleep 50_000;
+    usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
 
     kill 9, $psql;
     waitpid $psql, 0;
 
     # Drop database and user again.
-    usleep 50_000;
+    usleep $delay;
     is ((exec_as 'nobody', 'dropdb nobodydb', $outref, 0), 0, 'dropdb nobodydb', );
     is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
 
