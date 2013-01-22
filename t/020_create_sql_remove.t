@@ -12,7 +12,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 117 * ($#MAJORS+1);
+use Test::More tests => 123 * ($#MAJORS+1);
 
 my $delay = 200_000; # 200ms
 
@@ -302,7 +302,7 @@ Bob|1
     usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
 
-    kill 9, $psql;
+    close WH;
     waitpid $psql, 0;
 
     # Drop database and user again.
