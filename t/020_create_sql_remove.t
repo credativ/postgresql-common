@@ -271,8 +271,8 @@ Bob|1
     while (!$client_pid) {
 	usleep $delay;
 	$client_pid = `ps --user postgres hu | grep 'postgres: nobody nobodydb' | grep -v grep | awk '{print \$2}'`;
+	($client_pid) = ($client_pid =~ /(\d+)/); # untaint
     }
-    chomp $client_pid;
 
     # OOM score adjustment under Linux: postmaster gets bigger shields for >=
     # 9.1, but client backends stay at default
