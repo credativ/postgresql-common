@@ -24,6 +24,7 @@ postgresql-common (140) UNRELEASED; urgency=low
   * t/030_errors.t: Adjust testsuite for this.
   * debian/supported-versions: Handle unset variables from /etc/os-release
     gracefully. Spotted by x4rlos on #postgresql.
+  * pg_buildext: Set USE_PGXS=1.
 
  -- Christoph Berg <myon@debian.org>  Mon, 07 Jan 2013 17:08:00 +0100
 

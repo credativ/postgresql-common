@@ -21,7 +21,7 @@ prepare_env() {
     version=$1
     vtarget=`echo $target | sed -e "s:%v:$version:g"`
     pgc="/usr/lib/postgresql/$version/bin/pg_config"
-    [ -e "$pgc" ] || die "$pgc does not exists"
+    [ -e "$pgc" ] || die "$pgc does not exist"
 }
 
 configure() {
@@ -40,7 +40,7 @@ build() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget $makefile CFLAGS="$cflags" DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir"
+    make -C $vtarget $makefile CFLAGS="$cflags" DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1
 }
 
 install() {
@@ -50,7 +50,7 @@ install() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget $makefile install DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir"
+    make -C $vtarget $makefile install DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1
 }
 
 clean() {
@@ -58,7 +58,7 @@ clean() {
 
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    [ -d $vtarget ] && make -C $vtarget clean $makefile DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir"
+    [ -d $vtarget ] && make -C $vtarget clean $makefile DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1
     rm -rf $vtarget
 }
 
