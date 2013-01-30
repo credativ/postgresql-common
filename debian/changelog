@@ -22,6 +22,8 @@ postgresql-common (140) UNRELEASED; urgency=low
   * pg_upgradecluster: Print a helpful message when invoked on the target
     version. Problem seen on #postgresql.
   * t/030_errors.t: Adjust testsuite for this.
+  * debian/supported-versions: Handle unset variables from /etc/os-release
+    gracefully. Spotted by x4rlos on #postgresql.
 
  -- Christoph Berg <myon@debian.org>  Mon, 07 Jan 2013 17:08:00 +0100
 

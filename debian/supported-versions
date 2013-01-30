@@ -27,8 +27,8 @@
 #            postgresql-server-dev-X.Y packages)
 # X.Y: consider this version supported
 #
-# (C) 2005 Martin Pitt <mpitt@debian.org>
-# (C) 2012 Christoph Berg <myon@debian.org>
+# (C) 2005-2013 Martin Pitt <mpitt@debian.org>
+# (C) 2012-2013 Christoph Berg <myon@debian.org>
 
 set -eu
 
@@ -40,8 +40,8 @@ get_release() {
     # If we have /etc/os-release, use it
     if [ -r /etc/os-release ]; then
         . /etc/os-release
-        DISTRO="$ID"
-        RELEASE="$VERSION_ID"
+        DISTRO="${ID:-unknown}" # "unknown" will throw an error in default()
+        RELEASE="${VERSION_ID:-unstable}" # this field is not necessarily always there, assume testing/unstable
     # fall back to lsb_release
     elif type lsb_release >/dev/null 2>/dev/null; then
         DISTRO="`lsb_release -is`"
