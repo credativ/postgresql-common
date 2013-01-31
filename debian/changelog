@@ -1,4 +1,4 @@
-postgresql-common (140) UNRELEASED; urgency=low
+postgresql-common (140) experimental; urgency=low
 
   [ Martin Pitt ]
   * t/001_packages.t: Also check that -contrib is installed.
@@ -26,7 +26,7 @@ postgresql-common (140) UNRELEASED; urgency=low
     gracefully. Spotted by x4rlos on #postgresql.
   * pg_buildext: Set USE_PGXS=1, and srcdir (needed by plr).
 
- -- Christoph Berg <myon@debian.org>  Mon, 07 Jan 2013 17:08:00 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 31 Jan 2013 10:36:41 +0100
 
 postgresql-common (139) experimental; urgency=low
 
