@@ -466,14 +466,19 @@ if ($newcluster && -e '/etc/postgresql-common/root.crt') {
     my $val;
     read F, $val, 4096;
     if ($val =~ /^-----BEGIN CERTIFICATE-----/m) {
-	symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+        if ($version >= '9.2') {
+            PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
+                'ssl_ca_file', '/etc/postgresql-common/root.crt';
+        } else {
+            symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+        }
     }
 }
 
 # create default (empty) environment file
 open ENV, ">$confdir/environment" or error "could not create environment file";
 print ENV "# environment variables for postmaster process
-# This file has the same syntax as postgresql.conf: 
+# This file has the same syntax as postgresql.conf:
 #  VARIABLE = simple_value
 #  VARIABLE2 = 'any value!'
 # I. e. you need to enclose any value which does not only consist of letters,

@@ -1,3 +1,11 @@
+postgresql-common (141) UNRELEASED; urgency=low
+
+  * pg_createcluster: For 9.2 and higher, use the new ssl_ca_file
+    option instead of creating a root.crt symlink in the data directory.
+    (Related to the fix for #680162 below.)
+
+ -- Christoph Berg <myon@debian.org>  Fri, 01 Feb 2013 10:51:05 +0100
+
 postgresql-common (140) experimental; urgency=low
 
   [ Martin Pitt ]
