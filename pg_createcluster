@@ -574,11 +574,17 @@ link C<log> in the cluster configuration directory is ignored.
 
 If the default snakeoil SSL certificate exists
 (C</etc/ssl/certs/ssl-cert-snakeoil.pem> and
-C</etc/ssl/private/ssl-cert-snakeoil.key>), this program creates symlinks to
-these files in the data directory (C<server.crt> and C<server.key>) and enables
-SSL for that cluster (option B<ssl> in C<postgresql.conf>). Therefore all
-clusters will use the same SSL certificate by default. Of course you can
-replace these symlinks with a cluster specific certificate.
+C</etc/ssl/private/ssl-cert-snakeoil.key>), and the C<postgres> user is in the
+C<ssl-cert> Unix group, B<pg_createcluster> configures the cluster to use this
+certificate, and enables SSL. Therefore all clusters will use the same SSL
+certificate by default. For versions up to 9.1, symlinks in the data directory
+will be created (C<server.crt> and C<server.key>); for 9.2 and later, the
+appropriate C<postgresql.conf> options will be set (C<ssl_cert_file> and
+C<ssl_key_file>). Of course you can replace this with a cluster specific
+certificate. Similary for C</etc/postgresql-common/root.crt> and
+C</etc/postgresql-common/root.crl>, these files will be configured as client
+certificate CA and revocation list, when present. (C<root.crt> is initially a
+placeholder that will only be used if real certificates are added to the file.)
 
 =head1 OPTIONS
 
