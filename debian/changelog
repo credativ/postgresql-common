@@ -1,10 +1,15 @@
 postgresql-common (141) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * pg_createcluster: For 9.2 and higher, use the new ssl_ca_file
     option instead of creating a root.crt symlink in the data directory.
     (Related to the fix for #680162 below.)
   * pg_createcluster: If /etc/postgresql-common/root.crl is present, symlink
     it (<= 9.1), or set ssl_crl_file (>= 9.2).
+
+  [ Martin Pitt ]
+  * debian/backport-ppa: Stop building raring packages. The PPA is declared
+    deprecated now, moving to apt.postgresql.org.
 
  -- Christoph Berg <myon@debian.org>  Fri, 01 Feb 2013 10:51:05 +0100
 
