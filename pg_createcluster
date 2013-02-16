@@ -19,7 +19,7 @@
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 use Getopt::Long;
-use POSIX qw/setlocale LC_ALL/;
+use POSIX qw/setlocale LC_ALL LC_CTYPE/;
 
 $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
@@ -348,7 +348,8 @@ if (-f "$datadir/PG_VERSION") {
         error "$datadir already contains a version $existingver cluster";
     }
 } else {
-    print "Creating new cluster (configuration: $confdir, data: $datadir)...\n";
+    my $loc = setlocale (LC_CTYPE);
+    print "Creating new cluster...\n  configuration\t:$confdir\n  data\t\t: $datadir\n  locale\t: $loc\n";
     init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
@@ -397,7 +398,7 @@ set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
 $> = $orig_euid;
 $) = $orig_egid;
 
-print "Configuring postgresql.conf to use port $port...\n";
+print "  port\t\t: $port\n";
 set_cluster_port $version, $cluster, $port;
 
 # create log file
