@@ -93,7 +93,6 @@ sub move_conffile {
         $realfile = readlink $realfile;
     }
     if (-e $file) {
-        print "Moving configuration file $realfile to $target...\n";
 	install_file $realfile, $target, $uid, $gid, $perms;
         unlink $file, $realfile;
 

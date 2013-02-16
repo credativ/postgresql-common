@@ -10,6 +10,8 @@ postgresql-common (141) UNRELEASED; urgency=low
   [ Martin Pitt ]
   * debian/backport-ppa: Stop building raring packages. The PPA is declared
     deprecated now, moving to apt.postgresql.org.
+  * pg_createcluster: Drop "Moving configuration file.." message as it's not
+    all that interesting and we are going to add more status output.
 
  -- Christoph Berg <myon@debian.org>  Fri, 01 Feb 2013 10:51:05 +0100
 
