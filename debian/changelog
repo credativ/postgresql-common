@@ -15,6 +15,9 @@ postgresql-common (141) UNRELEASED; urgency=low
   * pg_createcluster: Print configuration and data directory on separate
     lines, and also show the current locale that the cluster will use.
     (Closes: #700271)
+  * pg_updatedicts: Cleanup tsearch data files which do not have a
+    corresponding hunspell or myspell dictionary installed any more.
+    (Closes: #689996)
 
  -- Christoph Berg <myon@debian.org>  Fri, 01 Feb 2013 10:51:05 +0100
 

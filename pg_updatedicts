@@ -35,6 +35,9 @@ if ((system 'mkdir', '-p', $cachedir) != 0) {
     exit 1;
 }
 
+# keep track of all up to date files, so that we can clean up cruft
+my %current;
+
 print "Building PostgreSQL dictionaries from installed myspell/hunspell packages...\n";
 my ($dic, $enc, $locale);
 for my $d (@srcdirs) {
@@ -54,6 +57,9 @@ for my $d (@srcdirs) {
 
 	$locale = substr ((split '/', $aff)[-1], 0, -4);
 	$locale =~ tr /A-Z/a-z/;
+
+        $current{"$cachedir/$locale.affix"} = undef;
+        $current{"$cachedir/$locale.dict"} = undef;
 
 	# convert to UTF-8 and write to cache dir
 	print "  $locale\n";
@@ -75,8 +81,10 @@ for my $d (@srcdirs) {
 	# install symlinks to all versions >= 8.3
 	foreach my $v (get_versions) {
 	    next if $v lt '8.3';
-	    my $dest = "$pgsharedir/$v/tsearch_data/";
+	    my $dest = "$pgsharedir/$v/tsearch_data";
 	    next if ! -d $dest;
+            $current{"$dest/$locale.affix"} = undef;
+            $current{"$dest/$locale.dict"} = undef;
 	    next if -e "$dest/$locale.affix" && ! -l "$dest/$locale.affix";
 	    next if -e "$dest/$locale.dict" && ! -l "$dest/$locale.dict";
 	    unlink "$dest/$locale.affix";
@@ -85,6 +93,21 @@ for my $d (@srcdirs) {
 	    symlink "$cachedir/$locale.dict", "$dest/$locale.dict";
 	}
     }
+}
+
+# clean up files for locales which do not exist any more
+print "Removing obsolete dictionary files:\n";
+foreach my $f (glob "$cachedir/*") {
+    next if exists $current{$f};
+    print "  $f\n";
+    unlink $f;
+}
+foreach my $f ((glob "$pgsharedir/*/tsearch_data/*.affix"),
+               (glob "$pgsharedir/*/tsearch_data/*.dict")) {
+    next unless -l $f;
+    next if exists $current{$f};
+    print "  $f\n";
+    unlink $f;
 }
 
 __END__
