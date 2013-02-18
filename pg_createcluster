@@ -349,7 +349,8 @@ if (-f "$datadir/PG_VERSION") {
     }
 } else {
     my $loc = setlocale (LC_CTYPE);
-    print "Creating new cluster...\n  configuration\t:$confdir\n  data\t\t: $datadir\n  locale\t: $loc\n";
+    print "Creating new cluster $version/$cluster ...\n";
+    print "  config $confdir\n  data   $datadir\n  locale $loc\n";
     init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
@@ -398,7 +399,7 @@ set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
 $> = $orig_euid;
 $) = $orig_egid;
 
-print "  port\t\t: $port\n";
+print "  port   $port\n";
 set_cluster_port $version, $cluster, $port;
 
 # create log file
