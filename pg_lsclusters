@@ -2,6 +2,7 @@
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -13,33 +14,41 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
+use strict;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 use Getopt::Long;
 
+my $no_header;
 exit 1 unless GetOptions ('h|no-header' => \$no_header);
 
-@columns = ('Version', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory',
-            'Log file');
-@colwidths = qw/7 9 4 6 8 34 1/;
+my @lines;
+push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Log file']
+    unless ($no_header);
 
-foreach $cw (@colwidths) {
-    $fmtstring .= ' ' if $fmtstring;
-    $fmtstring .= '%-'.$cw.'s';
-}
-$fmtstring .= "\n";
-
-printf $fmtstring, @columns unless $no_header;
-
-foreach $v (sort (get_versions())) {
+foreach my $v (sort (get_versions())) {
     my @clusters = get_version_clusters $v;
-    foreach $c (sort @clusters) {
-        %info = cluster_info $v, $c;
-        printf $fmtstring, ($v, $c, $info{'port'}, 
+    foreach my $c (sort @clusters) {
+        my %info = cluster_info $v, $c;
+        push @lines, [$v, $c, $info{'port'},
             ($info{'running'} ? "online" : "down") . ($info{'recovery'} ? ",recovery" : ""),
-            defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>', 
-	    $info{'pgdata'} || '<not set>', $info{'logfile'} || 'custom');
+            defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>',
+            $info{'pgdata'} || '<not set>', $info{'logfile'} || 'custom'];
     }
+}
+
+my @colwidth = qw(1 1 1 1 1 1 1);
+foreach my $line (@lines) {
+    for (my $i = 0; $i < @$line - 1; $i++) { # skip adjustment for last column
+        my $len = length @$line[$i];
+        $colwidth[$i] = $len if ($len > $colwidth[$i]);
+    }
+}
+
+my $fmtstring = join ' ', map { "%-${_}s" } @colwidth;
+
+foreach my $line (@lines) {
+    printf "$fmtstring\n", @$line;
 }
 
 __END__
