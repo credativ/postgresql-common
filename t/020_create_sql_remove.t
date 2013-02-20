@@ -72,8 +72,9 @@ sub check_major {
 
     # verify that the cluster is displayed
     my $ls = `pg_lsclusters -h`;
+    $ls =~ s/\s+/ /g;
     $ls =~ s/\s*$//;
-    is $ls, "$v     main      5432 online postgres /var/lib/postgresql/$v/main       $default_log",
+    is $ls, "$v main 5432 online postgres /var/lib/postgresql/$v/main $default_log",
 	'pg_lscluster reports online cluster on port 5432';
 
     # verify that the log file is actually used
