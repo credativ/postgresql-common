@@ -44,6 +44,11 @@ else
 	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"
 endif
 
+ifneq (,$(findstring pgdg,$(VERSION)))
+	# for apt.postgresql.org builds, pull in the repository key package
+	dh_gencontrol -ppostgresql-client-common -- -Vpgdg:Depends="pgdg-keyring"
+endif
+
 	dh_gencontrol --remaining-packages
 
 override_dh_installlogrotate:

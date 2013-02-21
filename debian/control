@@ -39,7 +39,7 @@ Description: PostgreSQL database-cluster manager
 
 Package: postgresql-client-common
 Architecture: all
-Depends: ${misc:Depends},
+Depends: ${misc:Depends}, ${pgdg:Depends},
  netbase
 Recommends: lsb-release, libreadline6
 Description: manager for multiple PostgreSQL client versions
