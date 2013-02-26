@@ -8,9 +8,14 @@
 set -e
 
 action="$1"
-srcdir="${2:-`pwd`}"
-target="$3"
-opt="$4"
+if [ -d "$2" ]; then # compat mode: $2 is source directory
+    srcdir="$2"
+    shift
+else
+    srcdir="$PWD"
+fi
+target="$2"
+opt="$3"
 
 die() {
     echo "`basename $0`: error: $*" >&2
@@ -62,18 +67,29 @@ clean() {
     rm -rf $vtarget
 }
 
+loop() {
+    echo "### $1 ###"
+    prepare_env $1
+    package=$(echo $target | sed -e "s:%v:$version:g")
+
+    echo "# $1: make clean"
+    make clean            DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    echo "# $1: make"
+    make CFLAGS="$cflags" DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    echo "# $1: make install"
+    make install          DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    echo "### done $1 ###"
+}
+
 versions() {
     [ -e /usr/share/postgresql-common/supported-versions ] ||
 	die "/usr/share/postgresql-common/supported-versions not found"
-    [ -e $srcdir/debian/pgversions ] || die "$srcdir/debian/pgversions not found"
+    [ -e debian/pgversions ] || die "debian/pgversions not found"
     for v in `/usr/share/postgresql-common/supported-versions`
     do
-	if grep -q "^$v" $srcdir/debian/pgversions ; then echo $v ; fi
+	if grep -q "^$v" debian/pgversions ; then echo $v ; fi
     done
 }
-
-[ "$srcdir" ] || die "syntax: pg_buildext <action> <srcdir> ..."
-[ -d $srcdir ] || die "no such directory '$srcdir'"
 
 VERSIONS=`versions`
 
@@ -84,7 +100,7 @@ do
 	    echo $v
 	    ;;
 
-	configure|build|install|clean)
+	configure|build|install|clean|loop)
 	    [ "$target" ] || die "syntax: pg_buildext $action <srcdir> <target> ..."
 	    # be verbose?
 	    $action $v

@@ -4,7 +4,7 @@ pg_buildext - Build and install a PostgreSQL extension
 
 =head1 SYNOPSIS
 
-B<pg_buildext> I<action> I<srcdir> I<target> I<opts>
+B<pg_buildext> I<action> I<target> I<opts>
 
 =head1 DESCRIPTION
 
@@ -22,11 +22,6 @@ release).
 =item B<action>
 
 One of B<configure>, B<build>, B<install>, or B<clean>.
-
-=item B<srcdir>
-
-Where to find the extension sources, including the C<debian> subdirectory.
-(Usually C<$(CURDIR)>.) If not specified, defaults to the current directory.
 
 =item B<target>
 
@@ -52,7 +47,7 @@ Custom C<CFLAGS> options to use for the build.
 
 =item B<install>
 
-Package name to install for. Make will be called with DESTDIR="I<srcdir>/debian/I<package>".
+Package name to install for. Make will be called with DESTDIR="$(CURDIR)/debian/I<package>".
 
 =item B<clean>
 
