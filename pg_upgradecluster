@@ -256,6 +256,18 @@ my $oldsocket = get_cluster_socketdir $version, $cluster;
 my $owner = getpwuid $info{'owneruid'};
 error 'could not get name of cluster owner' unless $owner;
 
+# get encodings of cluster
+my $encoding = get_db_encoding $version, $cluster, 'template1';
+my ($old_lc_ctype, $old_lc_collate);
+if ($version <= '8.3') {
+    ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
+} else {
+    ($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
+}
+unless ($encoding && $old_lc_ctype && $old_lc_collate) {
+    error 'could not get cluster locales';
+}
+
 # stopping old cluster, so that we notice early when there are still
 # connections
 if ($info{'running'}) {
@@ -273,20 +285,6 @@ if ($method eq 'dump') {
     print "Restarting old cluster with restricted connections...\n";
     my @argv = ('pg_ctlcluster', $version, $cluster, 'start');
     error "Could not restart old cluster" if system @argv;
-}
-
-# get encodings of cluster
-my $encoding = get_db_encoding $version, $cluster, 'template1';
-my ($old_lc_ctype, $old_lc_collate);
-if ($version <= '8.3') {
-    ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
-} else {
-    ($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
-}
-unless ($encoding && $old_lc_ctype && $old_lc_collate) {
-    print "Re-enabling connections to the old cluster...\n";
-    enable_connections $version, $cluster;
-    error 'could not get cluster locales';
 }
 
 # create new cluster, preserving encoding and locales
