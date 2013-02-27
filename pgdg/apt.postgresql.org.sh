@@ -61,7 +61,9 @@ deb http://apt.postgresql.org/pub/repos/apt/ $CODENAME-pgdg main
 EOF
 
 echo "Importing repository signing key ..."
-apt-key --keyring /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg add - <<EOF
+KEYRING="/etc/apt/trusted.gpg.d/apt.postgresql.org.gpg"
+test -e $KEYRING || touch $KEYRING
+apt-key --keyring $KEYRING add - <<EOF
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
