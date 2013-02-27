@@ -3,9 +3,9 @@ postgresql-common (141) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * pg_buildext: Deprecate <srcdir> parameter. The docs do not mention it
     anymore, but the script will still accept it.
-  * pg_createcluster: For 9.2 and higher, use the new ssl_ca_file
-    option instead of creating a root.crt symlink in the data directory.
-    (Related to the fix for #680162 below.)
+  * pg_createcluster, pg_upgradecluster: For 9.2 and higher, use the new
+    ssl_ca_file option instead of creating a root.crt symlink in the data
+    directory. (Related to the fix for #680162 below.)
   * pg_createcluster: If /etc/postgresql-common/root.crl is present, symlink
     it (<= 9.1), or set ssl_crl_file (>= 9.2).
   * pg_lsclusters: Make output column widths dynamically adjust to contents;

@@ -149,14 +149,19 @@ sub adapt_conffiles {
         # SSL certificate paths have an explicit option now, older versions use
         # a symlink
         my $ssl_crt = $info{'pgdata'} . '/server.crt';
-        my $ssl_key = $info{'pgdata'} . '/server.key';
         if (-l $ssl_crt) {
 	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
                 'ssl_cert_file', (readlink $ssl_crt);
         }
+        my $ssl_key = $info{'pgdata'} . '/server.key';
         if (-l $ssl_key) {
 	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
                 'ssl_key_file', (readlink $ssl_key);
+        }
+        my $root_crt = $info{'pgdata'} . '/root.crt';
+        if (-l $root_crt) {
+	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+                'ssl_ca_file', (readlink $root_crt);
         }
     }
 }
