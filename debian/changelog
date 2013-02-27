@@ -26,6 +26,12 @@ postgresql-common (141) UNRELEASED; urgency=low
     corresponding hunspell or myspell dictionary installed any more.
     (Closes: #689996)
 
+  [ Peter Eisentraut ]
+  * Add support for pg_upgrade: (Closes: #682938)
+    - pg_upgradecluster: Add options to select pg_upgrade instead of
+      dump/restore, and call pg_upgrade when selected.
+    - t/040_upgrade.t: Test all upgrade methods.
+
  -- Christoph Berg <myon@debian.org>  Fri, 01 Feb 2013 10:51:05 +0100
 
 postgresql-common (140) experimental; urgency=low

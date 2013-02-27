@@ -3,6 +3,8 @@
 # Upgrade a PostgreSQL cluster to a newer major version.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2013 Peter Eisentraut <petere@debian.org>
+# (C) 2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -196,13 +198,25 @@ sub enable_connections {
 
 $newversion = get_newest_version;
 
+my $method = 'dump';
+my $link = 0;
+
 my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
     $lc_time, $logfile);
-exit 1 unless GetOptions ('v|version=s' => \$newversion,
-    'locale=s' => \$locale, 'lc-collate=s' => \$lc_collate, 
-    'lc-ctype=s' => \$lc_ctype, 'lc-messages=s' => \$lc_messages,
-    'lc-monetary=s' => \$lc_monetary, 'lc-numeric=s' => \$lc_numeric,
-    'lc-time=s' => \$lc_time, 'logfile=s' => \$logfile);
+GetOptions ('v|version=s' => \$newversion,
+	    'locale=s' => \$locale,
+	    'lc-collate=s' => \$lc_collate,
+	    'lc-ctype=s' => \$lc_ctype,
+	    'lc-messages=s' => \$lc_messages,
+	    'lc-monetary=s' => \$lc_monetary,
+	    'lc-numeric=s' => \$lc_numeric,
+	    'lc-time=s' => \$lc_time,
+	    'logfile=s' => \$logfile,
+	    'm|method=s' => \$method,
+	    'k|link' => \$link,
+    ) or exit 1;
+
+$method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
 
 # untaint
 ($newversion) = $newversion =~ /^(\d+\.\d+)$/;
@@ -251,6 +265,7 @@ if ($info{'running'}) {
     error "Could not stop old cluster" if system @argv;
 }
 
+if ($method eq 'dump') {
 # Disable access to cluster during upgrade
 print "Disabling connections to the old cluster during upgrade...\n";
 disable_connections $version, $cluster, $owner, $info{'owneruid'};
@@ -258,6 +273,7 @@ disable_connections $version, $cluster, $owner, $info{'owneruid'};
 print "Restarting old cluster with restricted connections...\n";
 my @argv = ('pg_ctlcluster', $version, $cluster, 'start');
 error "Could not restart old cluster" if system @argv;
+}
 
 # get encodings of cluster
 my $encoding = get_db_encoding $version, $cluster, 'template1';
@@ -274,7 +290,7 @@ unless ($encoding && $old_lc_ctype && $old_lc_collate) {
 }
 
 # create new cluster, preserving encoding and locales
-@argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
+my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
     '--socketdir', $info{'socketdir'}, $newversion,
     $cluster);
 
@@ -295,11 +311,13 @@ error "Could not create target cluster" if system @argv;
 
 %newinfo = cluster_info($newversion, $cluster);
 
+if ($method eq 'dump') {
 print "Disabling connections to the new cluster during upgrade...\n";
 disable_connections $newversion, $cluster, $owner, $newinfo{'owneruid'};
 
 @argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
 error "Could not start target cluster" if system @argv;
+}
 
 sleep(4);
 
@@ -341,6 +359,7 @@ if (!fork) {
     my $newsocket = get_cluster_socketdir $newversion, $cluster;
     my $buffer;
 
+    if ($method eq 'dump') {
     # check for tablespaces (not supported)
     open F, '-|', $oldpsql, '-h', $oldsocket, '-d', 'template1', '-Atc', 
             "SELECT count(*) FROM pg_tablespace WHERE spcname <> 'pg_default' AND spcname <> 'pg_global'"
@@ -481,15 +500,59 @@ if (!fork) {
     (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 'template1', '-c', 
 	"BEGIN READ WRITE; ALTER USER $owner RESET default_transaction_read_only; COMMIT;\n") == 0 or
 	error 'Could not reset default_transaction_read_only value for superuser';
+    } else {
+	# pg_upgrade
+
+	use File::Temp qw(tempdir);
+
+	my $pg_upgrade = get_program_path 'pg_upgrade', $newversion;
+	my @argv = ($pg_upgrade,
+		 '-b', "/usr/lib/postgresql/$version/bin",
+		 '-B', "/usr/lib/postgresql/$newversion/bin",
+		 '-d', $info{'pgdata'},
+		 '-D', $newinfo{'pgdata'},
+		 '-p', $info{'port'},
+		 '-P', $newinfo{'port'},
+	    );
+	push @argv, "--link" if $link;
+
+	# Make a directory for pg_upgrade to store its reports and log
+	# files.  It will not be removed.
+	my $logdir = tempdir("/var/log/postgresql/pg_upgradecluster-$version-$newversion-$cluster.XXXX");
+	chdir $logdir;
+
+	# pg_upgrade doesn't support separate configuration and data
+	# directories, so we must fix this up temporarily.  (In 9.2+,
+	# this could be done with the pg_upgrade -o/-O options (see
+	# man page), but we want to support some earlier versions as
+	# well for a while.)
+	foreach my $file ('postgresql.conf', 'pg_hba.conf', 'pg_ident.conf') {
+	    symlink($info{'configdir'}."/$file", $info{'pgdata'}."/$file") or error 'could not symlink configuration file';
+	    symlink($newinfo{'configdir'}."/$file", $newinfo{'pgdata'}."/$file") or error 'could not symlink configuration files';
+	}
+	# Run pg_upgrade.
+	my $status = system @argv;
+	# And remove the temporary configuration files again.
+	foreach my $file ('postgresql.conf', 'pg_hba.conf', 'pg_ident.conf') {
+	    unlink($newinfo{'pgdata'}."/$file");
+	}
+	# Remove the PID file of the old cluster (normally removed by
+	# pg_ctlcluster, but not by pg_upgrade).
+	unlink "/var/run/postgresql/$version-$cluster.pid";
+
+	$status == 0 or error 'pg_upgrade run failed';
+    }
 
     exit 0;
 }
 
 wait;
+if ($method eq 'dump') {
 print "Re-enabling connections to the old cluster...\n";
 enable_connections $version, $cluster;
 print "Re-enabling connections to the new cluster...\n";
 enable_connections $newversion, $cluster;
+}
 
 if ($?) {
     print STDERR "Error during cluster dumping, removing new cluster\n";
@@ -523,6 +586,7 @@ if ( -e $info{'configdir'}.'/pg_ctl.conf') {
 
 adapt_conffiles;
 
+if ($method eq 'dump') {
 print "Stopping target cluster...\n";
 @argv = ('pg_ctlcluster', $newversion, $cluster, 'stop');
 error "Could not stop target cluster" if system @argv;
@@ -530,6 +594,7 @@ error "Could not stop target cluster" if system @argv;
 print "Stopping old cluster...\n";
 @argv = ('pg_ctlcluster', $version, $cluster, 'stop');
 error "Could not stop old cluster" if system @argv;
+}
 
 print "Disabling automatic startup of old cluster...\n";
 my $startconf = $info{'configdir'}.'/start.conf';
@@ -637,6 +702,18 @@ specified, the locale is inherited from the old cluster.
 =item B<--lc-time=>I<locale>
 
 Like B<--locale>, but only sets the locale in the specified category.
+
+=item B<-m>, B<--method=>dump|upgrade
+
+Specify the upgrade method.  "dump" uses L<pg_dump(1)> and
+L<pg_restore(1)>, "upgrade" uses L<pg_upgrade(1)>.  The default is
+"dump".
+
+=item B<-k>, B<--link>
+
+In pg_upgrade mode, use hard links instead of copying files to the new
+cluster.  This option is merely passed on to pg_upgrade.  See
+L<pg_upgrade(1)> for details.
 
 =back
 

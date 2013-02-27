@@ -11,12 +11,15 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 100;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 101 * 3;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
     exit 0;
 }
+
+foreach my $upgrade_options ('-m dump', '-m upgrade', '-m upgrade --link') {
+note ("upgrade method \"$upgrade_options\", $MAJORS[0] -> $MAJORS[-1]");
 
 # create cluster
 ok ((system "pg_createcluster $MAJORS[0] upgr >/dev/null") == 0,
@@ -33,10 +36,13 @@ is ((exec_as 'nobody', 'psql test -c "INSERT INTO phone VALUES (\'Alice\', 2)"')
 is ((exec_as 'postgres', 'psql template1 -c "UPDATE pg_database SET datallowconn = \'f\' WHERE datname = \'testnc\'"'), 
     0, 'disallow connection to testnc');
 is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE nums (num int NOT NULL); INSERT INTO nums VALUES (1)"'), 0, 'create table in testro');
+SKIP: {
+    skip 'read-only not supported with pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
 is ((exec_as 'postgres', 'psql template1 -c "ALTER DATABASE testro SET default_transaction_read_only TO on"'), 
     0, 'set testro transaction default to readonly');
 is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
     1, 'creating table in testro fails');
+}
 
 # create a sequence
 is ((exec_as 'nobody', 'psql test -c "CREATE SEQUENCE odd10 INCREMENT BY 2 MINVALUE 1 MAXVALUE 10 CYCLE"'),
@@ -55,8 +61,11 @@ if ($MAJORS[0] < '9.0') {
 }
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc2(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 2; END;\';"',
     0, "CREATE FUNCTION\n", 'CREATE FUNCTION inc2';
+SKIP: {
+	skip 'hardcoded library paths not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
 is_program_out 'postgres', "psql -c \"UPDATE pg_proc SET probin = '/usr/lib/postgresql/$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",
     0, "UPDATE 1\n", 'hardcoding plpgsql lib path';
+}
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc3(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 3; END;\';"',
     0, "CREATE FUNCTION\n", 'create function inc3';
 is_program_out 'nobody', 'psql -Atc "SELECT inc2(3)" test', 0, "5\n", 
@@ -113,7 +122,7 @@ if (!$psql) {
     exec 'psql', 'template1' or die "could not exec psql process: $!";
 }
 
-like_program_out 0, "pg_upgradecluster $MAJORS[0] upgr", 1, 
+like_program_out 0, "pg_upgradecluster $upgrade_options $MAJORS[0] upgr", 1, 
     qr/Error: Could not stop old cluster/,
     'pg_upgradecluster fails on busy cluster';
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -132,7 +141,7 @@ is ((system "pg_ctlcluster $MAJORS[0] upgr start"), 0, 'Starting upgr cluster');
 
 # Upgrade to latest version
 my $outref;
-is ((exec_as 0, "(pg_upgradecluster $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
+is ((exec_as 0, "(pg_upgradecluster $upgrade_options $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 my @err = grep (!/^STDOUT: /, split (/\n/, $$outref));
@@ -175,6 +184,9 @@ is_program_out 'nobody', 'psql -Atc "SELECT inc2(-3)" test', 0, "-1\n",
 is_program_out 'nobody', 'psql -Atc "SELECT inc3(1)" test', 0, "4\n", 
     'call function inc3 (formerly hardcoded path)';
 
+SKIP: {
+	skip 'upgrading databases with datallowcon = false not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
+
 # Check connection permissions
 is_program_out 'nobody', 'psql -tAc "SELECT datname, datallowconn FROM pg_database ORDER BY datname" template1', 0,
     'postgres|t
@@ -184,6 +196,7 @@ test|t
 testnc|f
 testro|t
 ', 'dataallowconn values';
+}
 
 # check ACLs
 is_program_out 'nobody', 'psql -U foo -qc "CREATE SCHEMA s_bar" test', 0, '',
@@ -194,10 +207,13 @@ is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Chris\', 
 # check default transaction r/o
 is ((exec_as 'nobody', 'psql test -c "CREATE TABLE test(num int)"'), 
     0, 'creating table in test succeeds');
+SKIP: {
+	skip 'read-only not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
 is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
     1, 'creating table in testro fails');
 is ((exec_as 'postgres', 'psql testro -c "CREATE TABLE test(num int)"'), 
     1, 'creating table in testro as superuser fails');
+}
 is ((exec_as 'nobody', 'psql testro -c "BEGIN READ WRITE; CREATE TABLE test(num int); COMMIT"'), 
     0, 'creating table in test succeeds with RW transaction');
 
@@ -211,7 +227,9 @@ is ((system "pg_ctlcluster $MAJORS[-1] upgr restart"), 0, 'Restarting upgraded c
 is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "3\n",
     'upgraded cluster still works after removing old one';
 is ((system "pg_dropcluster $MAJORS[-1] upgr --stop"), 0, 'Dropping upgraded cluster');
+is ((system "rm -rf /var/log/postgresql/pg_upgradecluster-*"), 0, 'Cleaning pg_upgrade log files');
 
 check_clean;
+} # foreach method
 
 # vim: filetype=perl
