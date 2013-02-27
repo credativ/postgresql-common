@@ -38,10 +38,10 @@ is ((exec_as 'postgres', 'psql template1 -c "UPDATE pg_database SET datallowconn
 is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE nums (num int NOT NULL); INSERT INTO nums VALUES (1)"'), 0, 'create table in testro');
 SKIP: {
     skip 'read-only not supported with pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
-is ((exec_as 'postgres', 'psql template1 -c "ALTER DATABASE testro SET default_transaction_read_only TO on"'), 
-    0, 'set testro transaction default to readonly');
-is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
-    1, 'creating table in testro fails');
+    is ((exec_as 'postgres', 'psql template1 -c "ALTER DATABASE testro SET default_transaction_read_only TO on"'), 
+	0, 'set testro transaction default to readonly');
+    is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
+	1, 'creating table in testro fails');
 }
 
 # create a sequence
@@ -62,9 +62,9 @@ if ($MAJORS[0] < '9.0') {
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc2(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 2; END;\';"',
     0, "CREATE FUNCTION\n", 'CREATE FUNCTION inc2';
 SKIP: {
-	skip 'hardcoded library paths not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
-is_program_out 'postgres', "psql -c \"UPDATE pg_proc SET probin = '/usr/lib/postgresql/$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",
-    0, "UPDATE 1\n", 'hardcoding plpgsql lib path';
+    skip 'hardcoded library paths not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
+    is_program_out 'postgres', "psql -c \"UPDATE pg_proc SET probin = '/usr/lib/postgresql/$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",
+	0, "UPDATE 1\n", 'hardcoding plpgsql lib path';
 }
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc3(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 3; END;\';"',
     0, "CREATE FUNCTION\n", 'create function inc3';
@@ -185,10 +185,10 @@ is_program_out 'nobody', 'psql -Atc "SELECT inc3(1)" test', 0, "4\n",
     'call function inc3 (formerly hardcoded path)';
 
 SKIP: {
-	skip 'upgrading databases with datallowcon = false not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
+    skip 'upgrading databases with datallowcon = false not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
 
-# Check connection permissions
-is_program_out 'nobody', 'psql -tAc "SELECT datname, datallowconn FROM pg_database ORDER BY datname" template1', 0,
+    # Check connection permissions
+    is_program_out 'nobody', 'psql -tAc "SELECT datname, datallowconn FROM pg_database ORDER BY datname" template1', 0,
     'postgres|t
 template0|f
 template1|t
@@ -208,11 +208,11 @@ is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Chris\', 
 is ((exec_as 'nobody', 'psql test -c "CREATE TABLE test(num int)"'), 
     0, 'creating table in test succeeds');
 SKIP: {
-	skip 'read-only not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
-is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
-    1, 'creating table in testro fails');
-is ((exec_as 'postgres', 'psql testro -c "CREATE TABLE test(num int)"'), 
-    1, 'creating table in testro as superuser fails');
+    skip 'read-only not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
+    is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
+	1, 'creating table in testro fails');
+    is ((exec_as 'postgres', 'psql testro -c "CREATE TABLE test(num int)"'), 
+	1, 'creating table in testro as superuser fails');
 }
 is ((exec_as 'nobody', 'psql testro -c "BEGIN READ WRITE; CREATE TABLE test(num int); COMMIT"'), 
     0, 'creating table in test succeeds with RW transaction');
