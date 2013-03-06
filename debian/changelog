@@ -11,7 +11,8 @@ postgresql-common (141) UNRELEASED; urgency=low
   * pg_lsclusters: Make output column widths dynamically adjust to contents;
     shorten "Version" in header to "Ver".
   * pg_upgradecluster: Get cluster encoding before shutting down the cluster
-    so we don't need to restart it in pg_upgrade mode.
+    so we don't need to restart it in pg_upgrade mode; temporarily start the
+    cluster if needed.
   * postgresql-client-common: For apt.postgresql.org builds (with "pgdg" in
     the version number), depend on pgdg-keyring.
   * Add a "apt.postgresql.org.sh" script to add that archive to sources.list.

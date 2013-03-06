@@ -29,6 +29,7 @@ delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
 my ($version, $newversion, $cluster);
 my (%info, %newinfo);
+my ($encoding, $old_lc_ctype, $old_lc_collate);
 
 # do not trip over cwd not being accessible to postgres superuser
 chdir '/';
@@ -192,8 +193,24 @@ sub disable_connections {
 sub enable_connections {
     my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
 
-    rename "$hba.orig", $hba or error "could not rename $hba.orig: $!";
+    rename "$hba.orig", $hba or error "could not rename $hba.orig: $!"
+	if (-e "$hba.orig");
 }
+
+# Get encoding and locales of a running cluster
+# Arguments: <version> <cluster>
+sub get_encoding {
+    $encoding = get_db_encoding $version, $cluster, 'template1';
+    if ($version <= '8.3') {
+	($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
+    } else {
+	($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
+    }
+    unless ($encoding && $old_lc_ctype && $old_lc_collate) {
+	error 'could not get cluster locales';
+    }
+}
+
 
 #
 # Execution starts here
@@ -260,37 +277,40 @@ my $oldpsql = get_program_path 'psql', $version;
 my $oldsocket = get_cluster_socketdir $version, $cluster;
 my $owner = getpwuid $info{'owneruid'};
 error 'could not get name of cluster owner' unless $owner;
-
-# get encodings of cluster
-my $encoding = get_db_encoding $version, $cluster, 'template1';
-my ($old_lc_ctype, $old_lc_collate);
-if ($version <= '8.3') {
-    ($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
-} else {
-    ($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
-}
-unless ($encoding && $old_lc_ctype && $old_lc_collate) {
-    error 'could not get cluster locales';
-}
+my $old_hba_modified;
 
 # stopping old cluster, so that we notice early when there are still
 # connections
 if ($info{'running'}) {
+    get_encoding;
     print "Stopping old cluster...\n";
     my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
     push @argv, ('-t', '5') if $version >= '8.4';
     error "Could not stop old cluster" if system @argv;
 }
 
-if ($method eq 'dump') {
+if ($method eq 'dump' or ($method eq 'upgrade' and not $info{'running'})) {
     # Disable access to cluster during upgrade
     print "Disabling connections to the old cluster during upgrade...\n";
     disable_connections $version, $cluster, $owner, $info{'owneruid'};
+    $old_hba_modified = 1;
 
     print "Restarting old cluster with restricted connections...\n";
     my @argv = ('pg_ctlcluster', $version, $cluster, 'start');
     error "Could not restart old cluster" if system @argv;
+
+    get_encoding unless ($encoding); # if the cluster was not running before, get encoding now
+
+    if ($method eq 'upgrade') {
+	print "Stopping old cluster...\n";
+	@argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
+	push @argv, ('-t', '5') if $version >= '8.4';
+	error "Could not stop old cluster" if system @argv;
+    }
 }
+
+# in dump mode, old cluster is running now
+# in upgrade mode, old cluster is stopped
 
 # create new cluster, preserving encoding and locales
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
@@ -550,9 +570,11 @@ if (!fork) {
 }
 
 wait;
-if ($method eq 'dump') {
+if ($old_hba_modified) {
     print "Re-enabling connections to the old cluster...\n";
     enable_connections $version, $cluster;
+}
+if ($method eq 'dump') {
     print "Re-enabling connections to the new cluster...\n";
     enable_connections $newversion, $cluster;
 }
