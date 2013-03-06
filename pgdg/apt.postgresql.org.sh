@@ -2,6 +2,8 @@
 
 # script to add apt.postgresql.org to sources.list
 
+set -e
+
 CODENAME="$1"
 if [ -z "$CODENAME" ]; then
     CODENAME=$(lsb_release -cs 2>/dev/null)
