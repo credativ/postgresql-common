@@ -355,6 +355,7 @@ sub get_cluster_socketdir {
     # if it is explicitly configured, just return it
     my $socketdir = get_conf_value($_[0], $_[1], 'postgresql.conf',
         $_[0] >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory');
+    $socketdir =~ s/\s*,.*//; # ignore additional directories for now
     return $socketdir if $socketdir;
 
     # try to determine whether this is a postgres owned cluster and we default

@@ -167,6 +167,12 @@ sub start {
         }
     }
 
+    if (! -d $info{'socketdir'}) {
+	print "Creating $info{'socketdir'} ...\n";
+	use File::Path qw(make_path);
+	make_path ($info{'socketdir'}, { owner => $info{'owneruid'}, group => $info{'ownergid'} });
+    }
+
     $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
     ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
 

@@ -8,6 +8,7 @@ postgresql-common (141) UNRELEASED; urgency=low
     directory. (Related to the fix for #680162 below.)
   * pg_createcluster: If /etc/postgresql-common/root.crl is present, symlink
     it (<= 9.1), or set ssl_crl_file (>= 9.2).
+  * pg_ctlcluster: Create (first) unix_socket_directory if missing.
   * pg_lsclusters: Make output column widths dynamically adjust to contents;
     shorten "Version" in header to "Ver".
   * pg_upgradecluster: Get cluster encoding before shutting down the cluster
@@ -35,7 +36,7 @@ postgresql-common (141) UNRELEASED; urgency=low
       dump/restore, and call pg_upgrade when selected.
     - t/040_upgrade.t: Test all upgrade methods.
 
- -- Christoph Berg <myon@debian.org>  Fri, 01 Feb 2013 10:51:05 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 06 Mar 2013 17:38:49 +0100
 
 postgresql-common (140) experimental; urgency=low
 
