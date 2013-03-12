@@ -70,7 +70,7 @@ remove_version() {
 }
 
 configure_client_version() {
-    _link_manpages "$1" "postgresql-client-$1" psql.1.gz
+    _link_manpages "$1" psql.1.gz "postgresql-client-$1"
 }
 
 remove_client_version() {
