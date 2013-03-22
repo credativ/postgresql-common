@@ -2,21 +2,30 @@
 
 # script to add apt.postgresql.org to sources.list
 
-set -e
-
 CODENAME="$1"
-if [ -z "$CODENAME" ]; then
-    CODENAME=$(lsb_release -cs 2>/dev/null)
-fi
 if [ -z "$CODENAME" -a -f /etc/os-release ]; then
     . /etc/os-release
     # extract from VERSION="7.0 (wheezy)"
     CODENAME=$(echo $VERSION | sed -ne 's/.*(\(.*\)).*/\1/')
 fi
 if [ -z "$CODENAME" ]; then
+    CODENAME=$(lsb_release -cs 2>/dev/null)
+fi
+if [ -z "$CODENAME" ]; then
     # guess from sources.list
     CODENAME=$(grep '^deb ' /etc/apt/sources.list | head -n1 | awk '{ print $3 }')
 fi
+if [ -z "$CODENAME" ]; then
+    cat <<EOF
+Could not determine the distribution codename. Please report this as a bug to
+pgsql-pkg-debian@postgresql.org. As a workaround, you can call this script with
+the proper codename as parameter, e.g. "$0 squeeze".
+EOF
+    exit 1
+fi
+
+# errors are non-fatal above
+set -e
 
 cat <<EOF
 This script will enable the PostgreSQL APT repository on apt.postgresql.org on
