@@ -2,19 +2,24 @@
 
 # script to add apt.postgresql.org to sources.list
 
+# from command like
 CODENAME="$1"
-if [ -z "$CODENAME" -a -f /etc/os-release ]; then
-    . /etc/os-release
-    # extract from VERSION="7.0 (wheezy)"
-    CODENAME=$(echo $VERSION | sed -ne 's/.*(\(.*\)).*/\1/')
-fi
+# lsb_release is the best interface, but not always available
 if [ -z "$CODENAME" ]; then
     CODENAME=$(lsb_release -cs 2>/dev/null)
 fi
+# parse os-release (unreliable, does not work on Ubuntu)
+if [ -z "$CODENAME" -a -f /etc/os-release ]; then
+    . /etc/os-release
+    # Debian: VERSION="7.0 (wheezy)"
+    # Ubuntu: VERSION="13.04, Raring Ringtail"
+    CODENAME=$(echo $VERSION | sed -ne 's/.*(\(.*\)).*/\1/')
+fi
+# guess from sources.list
 if [ -z "$CODENAME" ]; then
-    # guess from sources.list
     CODENAME=$(grep '^deb ' /etc/apt/sources.list | head -n1 | awk '{ print $3 }')
 fi
+# complain if no result yet
 if [ -z "$CODENAME" ]; then
     cat <<EOF
 Could not determine the distribution codename. Please report this as a bug to
