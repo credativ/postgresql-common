@@ -3,6 +3,7 @@ postgresql-common (141) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * debian/maintscripts-functions: Fix configure_client_version to call
     _link_manpages correctly, spotted by Kris Shannon. (Closes: #701602)
+  * debian/supported-versions: Deprecate 8.3 for pgdg builds.
   * pg_buildext: Deprecate <srcdir> parameter. The docs do not mention it
     anymore, but the script will still accept it.
   * pg_createcluster, pg_upgradecluster: For 9.2 and higher, use the new
@@ -39,7 +40,7 @@ postgresql-common (141) UNRELEASED; urgency=low
       dump/restore, and call pg_upgrade when selected.
     - t/040_upgrade.t: Test all upgrade methods.
 
- -- Christoph Berg <myon@debian.org>  Wed, 06 Mar 2013 17:38:49 +0100
+ -- Christoph Berg <myon@debian.org>  Tue, 02 Apr 2013 15:33:34 +0200
 
 postgresql-common (140) experimental; urgency=low
 
