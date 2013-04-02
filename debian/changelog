@@ -31,6 +31,7 @@ postgresql-common (141) UNRELEASED; urgency=low
   * pg_updatedicts: Cleanup tsearch data files which do not have a
     corresponding hunspell or myspell dictionary installed any more.
     (Closes: #689996)
+  * Adjust upgrade tests according to the changed pg_lscluster formatting.
 
   [ Peter Eisentraut ]
   * Add support for pg_upgrade: (Closes: #682938)

@@ -26,15 +26,15 @@ like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful
 
 # Check clusters
 is_program_out 'nobody', 'pg_lsclusters -h', 0, 
-    "$MAJORS[0]     upgr      5433 down   postgres /tmp/postgresql-test               /tmp/postgresql-test.log
-$MAJORS[-1]     upgr      5432 online postgres /var/lib/postgresql/$MAJORS[-1]/upgr       /var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log
+    "$MAJORS[0] upgr 5433 down   postgres /tmp/postgresql-test         /tmp/postgresql-test.log
+$MAJORS[-1] upgr 5432 online postgres /var/lib/postgresql/$MAJORS[-1]/upgr /var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log
 ", 'pg_lsclusters output';
 
 # clean away new cluster and restart the old one
 is ((system "pg_dropcluster $MAJORS[-1] upgr --stop"), 0, 'Dropping upgraded cluster');
 is_program_out 0, "pg_ctlcluster $MAJORS[0] upgr start", 0, '', 'Restarting old cluster';
 is_program_out 'nobody', 'pg_lsclusters -h', 0, 
-    "$MAJORS[0]     upgr      5433 online postgres /tmp/postgresql-test               /tmp/postgresql-test.log
+    "$MAJORS[0] upgr 5433 online postgres /tmp/postgresql-test /tmp/postgresql-test.log
 ", 'pg_lsclusters output';
 
 # Do another upgrade with using a custom defined data directory
@@ -46,8 +46,8 @@ like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster 
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
 is_program_out 'nobody', 'pg_lsclusters -h', 0, 
-    "$MAJORS[0]     upgr      5432 down   postgres /tmp/postgresql-test               /tmp/postgresql-test.log
-$MAJORS[-1]     upgr      5433 online postgres /tmp/psql-common-testsuite         /var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log
+    "$MAJORS[0] upgr 5432 down   postgres /tmp/postgresql-test       /tmp/postgresql-test.log
+$MAJORS[-1] upgr 5433 online postgres /tmp/psql-common-testsuite /var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log
 ", 'pg_lsclusters output';
 
 # stop servers, clean up
