@@ -39,8 +39,11 @@ postgresql-common (141) UNRELEASED; urgency=low
     - pg_upgradecluster: Add options to select pg_upgrade instead of
       dump/restore, and call pg_upgrade when selected.
     - t/040_upgrade.t: Test all upgrade methods.
+  * debian/rules: Install sysctl file only on linux. procps currently only
+    supports sysctl.d on linux. The sysctl keys in the file would also
+    need to be changed for other kernels.
 
- -- Christoph Berg <myon@debian.org>  Tue, 02 Apr 2013 15:33:34 +0200
+ -- Peter Eisentraut <petere@debian.org>  Fri, 05 Apr 2013 23:51:27 -0400
 
 postgresql-common (140) experimental; urgency=low
 
