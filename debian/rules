@@ -9,16 +9,12 @@ LOGROTATE_VER=$(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { 
 LOGROTATE38=$(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo yes)
 VERSION=$(shell dpkg-parsechangelog | awk '/^Version:/ { print $$2 }')
 
-DEB_HOST_ARCH_OS ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
-
 %:
 	dh "$@"
 
 override_dh_install:
 	dh_install
-ifeq ($(DEB_HOST_ARCH_OS),linux)
 	install -m 644 -D debian/postgresql-common.sysctl debian/postgresql-common/etc/sysctl.d/30-postgresql-shm.conf
-endif
 	for p in $(POD1PROGS); do $(POD2MAN) --quotes=none --section 1 $$p > $$p.1 || exit 1; done
 	for p in $(POD1PROGS_POD); do $(POD2MAN) --quotes=none --section 1 $$p.pod > $$p.1 || exit 1; done
 	for p in $(POD8PROGS); do $(POD2MAN) --quotes=none --section 8 $$p > $$p.8 || exit 1; done
