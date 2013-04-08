@@ -48,7 +48,7 @@ get_release() {
         RELEASE="`lsb_release -rs`"
     else
         echo "supported_versions: WARNING: /etc/os-release and lsb_release not present, unknown distribution" >&2
-        exit 1
+        /bin/echo -e "$DEFAULT"
     fi
 }
 

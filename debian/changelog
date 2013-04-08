@@ -3,7 +3,10 @@ postgresql-common (141) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * debian/maintscripts-functions: Fix configure_client_version to call
     _link_manpages correctly, spotted by Kris Shannon. (Closes: #701602)
-  * debian/supported-versions: Deprecate 8.3 for pgdg builds.
+  * debian/supported-versions:
+    + Deprecate 8.3 for pgdg builds.
+    + Handle missing os-release and lsb_release gracefully, just print a
+      warning. (Affects squeeze systems, Introduced by the fix for #697182).
   * pg_buildext: Deprecate <srcdir> parameter. The docs do not mention it
     anymore, but the script will still accept it.
   * pg_createcluster, pg_upgradecluster: For 9.2 and higher, use the new
