@@ -332,6 +332,7 @@ error 'specified cluster does not exist' unless $version && $cluster && cluster_
 %info = cluster_info ($version, $cluster);
 
 unless ($action eq 'stop') {
+    # check if cluster is disabled in start.conf
     error 'Cluster is disabled' if $info{'start'} eq 'disabled';
 }
 
@@ -499,11 +500,17 @@ for a description of valid options.
 This configuration file contains cluster specific options to be passed to
 L<pg_ctl(1)>.
 
+=item C</etc/postgresql/>I<cluster-version>C</>I<cluster-name>C</start.conf>
+
+This configuration file controls the start/stop behavior of the cluster. See
+section "STARTUP CONTROL" in L<pg_createcluster(8)> for details.
+
 =back
 
 =head1 SEE ALSO
 
-L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>, L<postmaster(1)>
+L<pg_createcluster(8)>, L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>,
+L<postmaster(1)>
 
 =head1 AUTHOR
 

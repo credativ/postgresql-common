@@ -15,6 +15,7 @@ postgresql-common (141) UNRELEASED; urgency=low
   * pg_createcluster: If /etc/postgresql-common/root.crl is present, symlink
     it (<= 9.1), or set ssl_crl_file (>= 9.2).
   * pg_ctlcluster: Create (first) unix_socket_directory if missing.
+  * pg_ctlcluster: Document start.conf by pointing at pg_createcluster(8).
   * pg_lsclusters: Make output column widths dynamically adjust to contents;
     shorten "Version" in header to "Ver".
   * pg_upgradecluster: Get cluster encoding before shutting down the cluster

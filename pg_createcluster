@@ -712,10 +712,10 @@ cluster. Please be aware that this will not stop the cluster owner from calling
 lower level tools to control the postmaster process; this option is only meant
 to prevent accidents during maintenance, not more.
 
+=back
+
 The C<pg_ctl.conf> file in the cluster configuration directory can contain
 additional options passed to pg_ctl of that cluster.
-
-=back
 
 =head1 SEE ALSO
 
