@@ -1,4 +1,4 @@
-postgresql-common (141) UNRELEASED; urgency=low
+postgresql-common (141) experimental; urgency=low
 
   [ Christoph Berg ]
   * debian/maintscripts-functions: Fix configure_client_version to call
@@ -46,7 +46,7 @@ postgresql-common (141) UNRELEASED; urgency=low
       dump/restore, and call pg_upgrade when selected.
     - t/040_upgrade.t: Test all upgrade methods.
 
- -- Christoph Berg <myon@debian.org>  Tue, 02 Apr 2013 15:33:34 +0200
+ -- Christoph Berg <myon@debian.org>  Wed, 10 Apr 2013 16:25:06 +0200
 
 postgresql-common (140) experimental; urgency=low
 
