@@ -3,6 +3,8 @@ postgresql-common (141) UNRELEASED; urgency=low
   [ Christoph Berg ]
   * debian/maintscripts-functions: Fix configure_client_version to call
     _link_manpages correctly, spotted by Kris Shannon. (Closes: #701602)
+  * debian/postgresql-common.sysctl: Note that the file is Linux-specifc and
+    do some rewording of the comments.
   * debian/supported-versions:
     + Deprecate 8.3 for pgdg builds.
     + Handle missing os-release and lsb_release gracefully, just print a
