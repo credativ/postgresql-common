@@ -4,8 +4,10 @@ postgresql-common (142) UNRELEASED; urgency=low
     /etc/postgresql-common).
   * The default behavior of pg_createcluster can be configured in
     /etc/postgresql-common/createcluster.conf.
+  * debian/postgresql-common.postgresql.init: Do not die of one cluster fails
+    to start. (Closes: #699911)
 
- -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:01:19 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:40:38 +0200
 
 postgresql-common (141) experimental; urgency=low
 

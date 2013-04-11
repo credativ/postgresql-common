@@ -33,8 +33,9 @@ case "$1" in
 	    exit 0
 	fi
 	for v in $versions; do
-	    $1 $v
+	    $1 $v || EXIT=$?
 	done
+	exit ${EXIT:-0}
         ;;
     status)
 	LS=`pg_lsclusters -h`
