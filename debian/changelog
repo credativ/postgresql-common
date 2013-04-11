@@ -3,7 +3,8 @@ postgresql-common (142) UNRELEASED; urgency=low
   * Make all scripts honor PGSYSCONFDIR (defaulting to
     /etc/postgresql-common).
   * The default behavior of pg_createcluster can be configured in
-    /etc/postgresql-common/createcluster.conf.
+    /etc/postgresql-common/createcluster.conf. This also allows to disable the
+    creation of "main" clusters when postgresql server packages are installed.
   * debian/postgresql-common.postgresql.init: Do not die of one cluster fails
     to start. (Closes: #699911)
 

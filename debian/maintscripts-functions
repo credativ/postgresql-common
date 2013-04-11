@@ -32,7 +32,10 @@ configure_version() {
     [ "$VERSION" ] || { echo "Error: configure_version: need version parameter" >&2; exit 1; }
     if [ ! -d "/etc/postgresql/$VERSION" ] || [ -z "$(ls /etc/postgresql/$VERSION)" ] || \
        [ -z "$(ls /etc/postgresql/$VERSION/*/postgresql.conf 2>/dev/null)" ]; then
-        [ "$2" ] || /usr/bin/pg_createcluster -u postgres $VERSION main || {
+        # skip creating the main cluster when this is not the first install, or
+        # when explicitely disabled ($create is 1/0/"")
+        create=$(perl -I/usr/share/postgresql-common -mPgCommon -e 'print PgCommon::config_bool(PgCommon::get_conf_value 0, 0, "createcluster.conf", "create_main_cluster")')
+        [ "$2" ] || [ "$create" = "0" ] || /usr/bin/pg_createcluster -u postgres $VERSION main || {
 	echo "Error: could not create default cluster. Please create it manually with
 
   pg_createcluster $VERSION main --start

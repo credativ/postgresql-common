@@ -743,6 +743,10 @@ C</etc/postgresql-common/createcluster.conf>:
 
 =over 4
 
+=item B<create_main_cluster> (Default: B<true>)
+
+Create a B<main> cluster when a new postgresql-x.y server package is installed.
+
 =item B<start_conf> (Default: B<auto>)
 
 Default C<start.conf> value to use.
