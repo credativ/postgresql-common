@@ -12,3 +12,4 @@ run-upgrade-scripts usr/share/postgresql-common
 pg_checksystem usr/share/postgresql-common
 testsuite usr/share/postgresql-common
 t/* usr/share/postgresql-common/t
+createcluster.conf etc/postgresql-common

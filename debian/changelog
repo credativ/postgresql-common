@@ -2,8 +2,10 @@ postgresql-common (142) UNRELEASED; urgency=low
 
   * Make all scripts honor PGSYSCONFDIR (defaulting to
     /etc/postgresql-common).
+  * The default behavior of pg_createcluster can be configured in
+    /etc/postgresql-common/createcluster.conf.
 
- -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 13:46:18 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:01:19 +0200
 
 postgresql-common (141) experimental; urgency=low
 

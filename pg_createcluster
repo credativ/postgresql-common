@@ -24,6 +24,7 @@ use POSIX qw/setlocale LC_ALL LC_CTYPE/;
 $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
 my @postgres_user = getpwnam 'postgres';
+my %defaultconf;
 my $explicit_auth_config = 0;
 
 # call initdb 
@@ -46,8 +47,19 @@ sub init_db {
         error 'could not create data directory; you might need to run this program with root privileges';
     }
 
-    @initdb = ((get_program_path 'initdb', $version), '-D', $datadir);
+    my @initdb = (get_program_path 'initdb', $version);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
+    if (my $options = $defaultconf{'initdb_options'}) {
+	$options =~ s/%v/$version/g;
+	$options =~ s/%c/$cluster/g; # fixme: global var
+	push @initdb, split (/\s+/, $options);
+    }
+    push @initdb, ('-D', $datadir);
+    if (my $xlogdir = $defaultconf{'xlogdir'}) {
+	$xlogdir =~ s/%v/$version/g;
+	$xlogdir =~ s/%c/$cluster/g; # fixme: global var
+	push @initdb, ('--xlogdir', $xlogdir);
+    }
     if ($explicit_auth_config) {
 	# do nothing
     } elsif ($version >= '9.2') {
@@ -201,9 +213,12 @@ sub setup_pg_hba {
 # Execution starts here
 #
 
+# read defaults from /etc/postgresql-common/createcluster.conf
+%defaultconf = PgCommon::read_conf_file ("$PgCommon::common_confdir/createcluster.conf");
+
 # command line arguments
 
-my $startconf = 'auto';
+my $startconf = $defaultconf{'start_conf'} || 'auto';
 
 # this flag gets set when we started creating the cluster, and thus we need to
 # clean up on errors
@@ -249,7 +264,7 @@ Options:
     exit 1;
 }
 
-error 'Invalid --start-conf value' if $startconf ne 'auto' &&
+error "Invalid --start-conf value: $startconf" if $startconf ne 'auto' &&
     $startconf ne 'manual' && $startconf ne 'disabled';
 
 if ($owneruid) {
@@ -287,8 +302,12 @@ foreach my $argv (@ARGV) {
 }
 
 if (!defined $datadir) {
-    $pd = "/var/lib/postgresql/$version";
-    $datadir = "$pd/$cluster";
+    $datadir = $defaultconf{'data_directory'} || "/var/lib/postgresql/%v/%c";
+    $datadir =~ s!/+$!!;
+    $datadir =~ s/%v/$version/g;
+    $datadir =~ s/%c/$cluster/g;
+    my $pd = $datadir;
+    $pd =~ s!/[^/]*$!!;
 
     # ensure that the version data dir is owned by postgres as well, so that
     # it can be administrated without root permissions
@@ -717,10 +736,44 @@ to prevent accidents during maintenance, not more.
 The C<pg_ctl.conf> file in the cluster configuration directory can contain
 additional options passed to pg_ctl of that cluster.
 
+=head1 DEFAULT VALUES
+
+Some default values used by B<pg_createcluster> can be modified in
+C</etc/postgresql-common/createcluster.conf>:
+
+=over 4
+
+=item B<start_conf> (Default: B<auto>)
+
+Default C<start.conf> value to use.
+
+=back
+
+In the following options, occurrences of B<%v> are replaced by the major
+version number, and B<%c> by the cluster name:
+
+=over 4
+
+=item B<data_directory> (Default: B</var/lib/postgresql/%v/%c>)
+
+Default data directory.
+
+=item B<xlogdir> (Default: unset)
+
+Default directory for transaction logs. When used, B<initdb> will create a
+symlink from C<pg_xlog> in the data directory to this location. Unset by
+default, i.e. pg_xlog is remains in the data directory.
+
+=item B<initdb_options> (Default: unset)
+
+Other options to pass to B<initdb>.
+
+=back
+
 =head1 SEE ALSO
 
 L<initdb(1)>, L<pg_ctlcluster(8)>, L<pg_lsclusters(1)>, L<pg_wrapper(1)>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>, Christoph Berg L<E<lt>myon@debian.orgE<gt>>
