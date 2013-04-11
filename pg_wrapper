@@ -239,6 +239,12 @@ is usually C</etc/postgresql/>, but for testing/development purposes you can
 change this to point to e. g. your home directory, so that you can use the
 postgresql-common tools without root privileges.
 
+=item B<PGSYSCONFDIR>
+
+This is the location of PostgreSQL's and postgresql-common's global
+configuration (e. g. C<pg_service.conf>, L<user_clusters(5)>). The default is
+C</etc/postgresql-common/>.
+
 =back
 
 =head1 FILES

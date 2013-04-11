@@ -76,7 +76,8 @@ for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgr
     fi
     mount -n -t tmpfs -o mode=755 tmpfs $d
 done
-pg_service="/etc/postgresql-common/pg_service.conf"
+: ${PGSYSCONFDIR:=/etc/postgresql-common}
+pg_service="$PGSYSCONFDIR/pg_service.conf"
 # clean up created clusters and directories after us
 cleanup () {
     set +e
@@ -133,7 +134,7 @@ for v in $PG_VERSIONS; do
 	-c \"ALTER USER postgres PASSWORD '$PGPASSWORD'; SHOW port\"" postgres)
 
     # record cluster information in service file
-    cat >> /etc/postgresql-common/pg_service.conf <<EOF
+    cat >> $PGSYSCONFDIR/pg_service.conf <<EOF
 [$v]
 host=localhost
 port=$port

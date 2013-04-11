@@ -348,12 +348,12 @@ my $pg_restore = get_program_path 'pg_restore', $newversion;
 
 # check whether upgrade scripts exist; if so, verify that pg_restore supports
 # -X no-data-for-failed-tables.
-my $upgrade_scripts = (-d '/etc/postgresql-common/pg_upgradecluster.d' &&
-     `run-parts --test /etc/postgresql-common/pg_upgradecluster.d`);
+my $upgrade_scripts = (-d "$PgCommon::common_confdir/pg_upgradecluster.d" &&
+     `run-parts --test $PgCommon::common_confdir/pg_upgradecluster.d`);
 
 if ($upgrade_scripts) {
     if (`$pg_restore --help` !~ qr/no-data-for-failed-tables/) {
-	error '/etc/postgresql-common/pg_upgradecluster.d has upgrade scripts, but $pg_restore does not support the "-X no-data-for-failed-tables" option.'
+	error "$PgCommon::common_confdir/pg_upgradecluster.d has upgrade scripts, but $pg_restore does not support the \"-X no-data-for-failed-tables\" option."
     }
 }
 
@@ -365,8 +365,8 @@ if ($upgrade_scripts) {
 
 	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
 	    '-a', $newversion, '-a', 'init',
-	    '/etc/postgresql-common/pg_upgradecluster.d');
-	error '/etc/postgresql-common/pg_upgradecluster.d script failed' if system @argv;
+	    "$PgCommon::common_confdir/pg_upgradecluster.d");
+	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
 	exit 0;
     }
     wait;
@@ -650,8 +650,8 @@ if ($upgrade_scripts) {
 
 	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
 	    '-a', $newversion, '-a', 'finish',
-	    '/etc/postgresql-common/pg_upgradecluster.d');
-	error '/etc/postgresql-common/pg_upgradecluster.d script failed' if system @argv;
+	    "$PgCommon::common_confdir/pg_upgradecluster.d");
+	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
 	exit 0;
     }
     wait;

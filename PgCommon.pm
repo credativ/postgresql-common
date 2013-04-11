@@ -39,12 +39,15 @@ sub error {
 }
 
 # configuration
-my $mapfile = "/etc/postgresql-common/user_clusters";
 our $confroot = '/etc/postgresql';
 if ($ENV{'PG_CLUSTER_CONF_ROOT'}) {
     ($confroot) = $ENV{'PG_CLUSTER_CONF_ROOT'} =~ /(.*)/; # untaint
 }
-my $common_confdir = "/etc/postgresql-common";
+our $common_confdir = "/etc/postgresql-common";
+if ($ENV{'PGSYSCONFDIR'}) {
+    ($common_confdir) = $ENV{'PGSYSCONFDIR'} =~ /(.*)/; # untaint
+}
+my $mapfile = "$common_confdir/user_clusters";
 my $binroot = "/usr/lib/postgresql";
 my $defaultport = 5432;
 

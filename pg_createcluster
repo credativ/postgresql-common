@@ -462,28 +462,28 @@ if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' &&
 }
 
 # SSL client certificate CA
-if ($newcluster && -e '/etc/postgresql-common/root.crt') {
+if ($newcluster && -e "$PgCommon::common_confdir/root.crt") {
     # check if we have a cert in there or just the boilerplate installed by our postinst
-    open F, '/etc/postgresql-common/root.crt';
+    open F, "$PgCommon::common_confdir/root.crt";
     my $val;
     read F, $val, 4096;
     if ($val =~ /^-----BEGIN CERTIFICATE-----/m) {
         if ($version >= '9.2') {
             PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-                'ssl_ca_file', '/etc/postgresql-common/root.crt';
+                'ssl_ca_file', "$PgCommon::common_confdir/root.crt";
         } else {
-            symlink '/etc/postgresql-common/root.crt', $datadir.'/root.crt';
+            symlink "$PgCommon::common_confdir/root.crt", $datadir.'/root.crt';
         }
     }
 }
 
 # SSL client certificate revocation list
-if ($newcluster && -e '/etc/postgresql-common/root.crl') {
+if ($newcluster && -e "$PgCommon::common_confdir/root.crl") {
     if ($version >= '9.2') {
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-            'ssl_crl_file', '/etc/postgresql-common/root.crl';
+            'ssl_crl_file', "$PgCommon::common_confdir/root.crl";
     } else {
-        symlink '/etc/postgresql-common/root.crl', $datadir.'/root.crl';
+        symlink "$PgCommon::common_confdir/root.crl", $datadir.'/root.crl';
     }
 }
 
