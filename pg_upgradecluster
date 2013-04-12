@@ -173,17 +173,19 @@ sub adapt_conffiles {
 sub disable_connections {
     my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
 
-    rename $hba, "$hba.orig" or error "could not rename $hba: $!";
+    return if (-e "$hba.pg_upgradecluster"); # leftover from a previous upgrade
+		# attempt, do not rename again so we do not lose the original
+    rename $hba, "$hba.pg_upgradecluster" or error "could not rename $hba: $!";
     unless (open F, ">$hba") {
-        rename "$hba.orig", $hba;
+        rename "$hba.pg_upgradecluster", $hba;
         error "could not create $hba";
     }
     chmod 0400, $hba;
     chown $_[3], 0, $hba;
     if ($_[0] >= '8.4') {
-	print F "local all $_[2] ident";
+	print F "local all $_[2] ident\n";
     } else {
-	print F "local all $_[2] ident sameuser";
+	print F "local all $_[2] ident sameuser\n";
     }
     close F;
 }
@@ -193,8 +195,8 @@ sub disable_connections {
 sub enable_connections {
     my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
 
-    rename "$hba.orig", $hba or error "could not rename $hba.orig: $!"
-	if (-e "$hba.orig");
+    rename "$hba.pg_upgradecluster", $hba or error "could not rename $hba.pg_upgradecluster: $!"
+	if (-e "$hba.pg_upgradecluster");
 }
 
 # Get encoding and locales of a running cluster

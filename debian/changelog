@@ -7,6 +7,9 @@ postgresql-common (142) UNRELEASED; urgency=low
     creation of "main" clusters when postgresql server packages are installed.
   * debian/postgresql-common.postgresql.init: Do not die of one cluster fails
     to start. (Closes: #699911)
+  * pg_upgradecluster: Use a distinct name (pg_hba.conf.pg_upgradecluster) for
+    the pg_hba.conf backup, and handle the case where this file already exists
+    gracefully.
 
  -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:40:38 +0200
 
