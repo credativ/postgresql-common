@@ -31,8 +31,8 @@ my $explicit_auth_config = 0;
 # Arguments: <string> <version> <cluster>
 sub replace_v_c ($$$) {
     my ($str, $version, $cluster) = @_;
-    $str =~ s/%v/$version/g;
-    $str =~ s/%c/$cluster/g;
+    $str =~ s/%([vc%])/$1 eq 'v' ? $version :
+		       $1 eq 'c' ? $cluster : '%'/eg;
     return $str;
 }
 
@@ -764,7 +764,7 @@ Default C<start.conf> value to use.
 =back
 
 In the following options, occurrences of B<%v> are replaced by the major
-version number, and B<%c> by the cluster name:
+version number, and B<%c> by the cluster name. Use B<%%> for a literal B<%>.
 
 =over 4
 
