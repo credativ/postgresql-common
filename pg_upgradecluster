@@ -628,7 +628,8 @@ if (open F, ">$startconf") {
 # cluster has been preserved for backup purposes, but is not started
 # automatically.
 
-manual";
+manual
+";
     close F;
 } else {
     error "could not create $startconf: $!";
