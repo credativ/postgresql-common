@@ -128,35 +128,13 @@ sub move_conffile {
 sub configure_8_1 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
 }
 
 sub configure_8_2 {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
 }
-
-sub configure_8_3 {
-    # 8.3 enables autovacuum by default
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
-}
-
-sub configure_8_4 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
-}
-
-sub configure_9_0 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
-}
-
-sub configure_9_1 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
-}
-
-sub configure_9_2 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'log_line_prefix', '%t ';
-}
+# >= 8.3 enables autovacuum by default
 
 # Set up the default pg_hba.conf file:
 # - Add a "local all" entry to pg_hba.conf for the db superuser before all
@@ -787,6 +765,7 @@ Other options to pass to B<initdb>.
 All other options listed are copied into the new cluster's postgresql.conf, e.g.:
 
     listen_addresses = '*'
+    log_line_prefix = '%%t '
 
 =back
 
