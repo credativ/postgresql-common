@@ -27,6 +27,15 @@ my @postgres_user = getpwnam 'postgres';
 my %defaultconf;
 my $explicit_auth_config = 0;
 
+# replace placeholders
+# Arguments: <string> <version> <cluster>
+sub replace_v_c ($$$) {
+    my ($str, $version, $cluster) = @_;
+    $str =~ s/%v/$version/g;
+    $str =~ s/%c/$cluster/g;
+    return $str;
+}
+
 # call initdb 
 # Arguments: <version> <data directory> <owner uid> <owner gid> <initdb options>
 sub init_db {
@@ -50,15 +59,11 @@ sub init_db {
     my @initdb = (get_program_path 'initdb', $version);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
     if (my $options = $defaultconf{'initdb_options'}) {
-	$options =~ s/%v/$version/g;
-	$options =~ s/%c/$cluster/g; # fixme: global var
-	push @initdb, split (/\s+/, $options);
+	push @initdb, split (/\s+/, replace_v_c ($options, $version, $cluster));
     }
     push @initdb, ('-D', $datadir);
     if (my $xlogdir = $defaultconf{'xlogdir'}) {
-	$xlogdir =~ s/%v/$version/g;
-	$xlogdir =~ s/%c/$cluster/g; # fixme: global var
-	push @initdb, ('--xlogdir', $xlogdir);
+	push @initdb, ('--xlogdir', replace_v_c ($xlogdir, $version, $cluster));
     }
     if ($explicit_auth_config) {
 	# do nothing
@@ -302,10 +307,8 @@ foreach my $argv (@ARGV) {
 }
 
 if (!defined $datadir) {
-    $datadir = $defaultconf{'data_directory'} || "/var/lib/postgresql/%v/%c";
+    $datadir = replace_v_c ($defaultconf{'data_directory'} || "/var/lib/postgresql/%v/%c", $version, $cluster);
     $datadir =~ s!/+$!!;
-    $datadir =~ s/%v/$version/g;
-    $datadir =~ s/%c/$cluster/g;
     my $pd = $datadir;
     $pd =~ s!/[^/]*$!!;
 
@@ -525,6 +528,13 @@ $cleanup_cruft = 0;
 # configure to create external PID file
 if ($socketdir eq '/var/run/postgresql') {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file', "/var/run/postgresql/$version-$cluster.pid";
+}
+
+# handle other createcluster.conf parameters
+foreach my $guc (sort keys %defaultconf) {
+    next if $guc =~ /^(create_main_cluster|start_conf|data_directory|xlogdir|initdb_options)$/;
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
+	$guc, replace_v_c ($defaultconf{$guc}, $version, $cluster);
 }
 
 # start it if requested
@@ -771,6 +781,12 @@ default, i.e. pg_xlog is remains in the data directory.
 =item B<initdb_options> (Default: unset)
 
 Other options to pass to B<initdb>.
+
+=item I<other options> (Default: none)
+
+All other options listed are copied into the new cluster's postgresql.conf, e.g.:
+
+    listen_addresses = '*'
 
 =back
 
