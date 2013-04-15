@@ -12,6 +12,8 @@ postgresql-common (142) UNRELEASED; urgency=low
   * pg_upgradecluster: Use a distinct name (pg_hba.conf.pg_upgradecluster) for
     the pg_hba.conf backup, and handle the case where this file already exists
     gracefully.
+  * pg_upgradecluster: On upgrades to 9.3, rename unix_socket_directory to
+    unix_socket_directories.
 
  -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:40:38 +0200
 

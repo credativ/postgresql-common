@@ -165,6 +165,10 @@ sub adapt_conffiles {
                 'ssl_ca_file', (readlink $root_crt);
         }
     }
+
+    if ($newversion >= '9.3') {
+        rename_ \%c, 'unix_socket_directory', 'unix_socket_directories';
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
