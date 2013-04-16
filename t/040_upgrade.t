@@ -121,6 +121,7 @@ if (!$psql) {
     dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
     exec 'psql', 'template1' or die "could not exec psql process: $!";
 }
+sleep 200_000; # 200ms
 
 like_program_out 0, "pg_upgradecluster $upgrade_options $MAJORS[0] upgr", 1, 
     qr/Error: Could not stop old cluster/,
