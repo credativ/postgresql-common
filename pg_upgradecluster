@@ -149,21 +149,20 @@ sub adapt_conffiles {
 
         # SSL certificate paths have an explicit option now, older versions use
         # a symlink
-        my $ssl_crt = $info{'pgdata'} . '/server.crt';
-        if (-l $ssl_crt) {
-	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-                'ssl_cert_file', (readlink $ssl_crt);
-        }
-        my $ssl_key = $info{'pgdata'} . '/server.key';
-        if (-l $ssl_key) {
-	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-                'ssl_key_file', (readlink $ssl_key);
-        }
-        my $root_crt = $info{'pgdata'} . '/root.crt';
-        if (-l $root_crt) {
-	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-                'ssl_ca_file', (readlink $root_crt);
-        }
+	for my $f (['server.crt', 'ssl_cert_file'],
+		   ['server.key', 'ssl_key_file'],
+		   ['root.crt', 'ssl_ca_file'],
+		   ['root.crl', 'ssl_crl_file']) {
+	    my $file = "$newinfo{'pgdata'}/$f->[0]";
+	    if (-l $file) { # migrate symlink to config entry with link target
+		PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+		    $f->[1], (readlink $file);
+		unlink $file;
+	    } elsif (-e $file) { # plain file in data dir, put in config
+		PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+		    $f->[1], $file;
+	    }
+	}
     }
 
     if ($newversion >= '9.3') {
@@ -613,6 +612,18 @@ if ( -e $info{'configdir'}.'/pg_ctl.conf') {
     print "Copying old pg_ctl.conf...\n";
     install_file $info{'configdir'}.'/pg_ctl.conf', $newinfo{'configdir'},
 	$newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+}
+# copy SSL files (overwriting any file that pg_createcluster put there)
+for my $file (qw/server.crt server.key root.crt/) {
+    if ( -e "$info{'pgdata'}/$file") {
+	print "Copying old $file...\n";
+	if (!fork) { # we don't use install_file because that converts symlinks to files
+	    change_ugid $info{'owneruid'}, $info{'ownergid'};
+	    system "cp -a $info{'pgdata'}/$file $newinfo{'pgdata'}";
+	    exit 0;
+	}
+	wait;
+    }
 }
 
 adapt_conffiles;

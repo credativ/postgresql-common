@@ -14,6 +14,8 @@ postgresql-common (142) UNRELEASED; urgency=low
     gracefully.
   * pg_upgradecluster: On upgrades to 9.3, rename unix_socket_directory to
     unix_socket_directories.
+  * pg_upgradecluster, t/043_upgrade_ssl_cert.t: Copy server.crt and friends
+    in the data directory on upgrade. (Closes: #698958)
 
  -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:40:38 +0200
 
