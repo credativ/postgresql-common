@@ -9,6 +9,8 @@ postgresql-common (142) UNRELEASED; urgency=low
   * pg_createcluster: Move setting of log_line_prefix to createcluster.conf.
   * debian/postgresql-common.postgresql.init: Do not die of one cluster fails
     to start. (Closes: #699911)
+  * pg_checksystem: Suppress error message for unavailable filesystems.
+    (Closes: #705219)
   * pg_upgradecluster: Use a distinct name (pg_hba.conf.pg_upgradecluster) for
     the pg_hba.conf backup, and handle the case where this file already exists
     gracefully.

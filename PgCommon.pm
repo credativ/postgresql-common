@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012 Christoph Berg <myon@debian.org
+# (C) 2012-2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 
 package PgCommon;
 use strict;
+use IPC::Open3;
 use Socket;
 use POSIX;
 
@@ -969,15 +970,17 @@ sub get_cluster_databases {
 sub get_file_device {
     my $dev = '';
     prepare_exec;
-    if (open DF, '-|', '/bin/df', $_[0]) {
-        while (<DF>) {
-            if (/^\/dev/) {
-                $dev = (split)[0];
-            }
-        }
+    my $pid = open3(\*CHLD_IN, \*CHLD_OUT, \*CHLD_ERR, '/bin/df', $_[0]);
+    waitpid $pid, 0; # we simply ignore exit code and stderr
+    while (<CHLD_OUT>) {
+	if (/^\/dev/) {
+	    $dev = (split)[0];
+	}
     }
     restore_exec;
-    close DF;
+    close CHLD_IN;
+    close CHLD_OUT;
+    close CHLD_ERR;
     return $dev;
 }
 
