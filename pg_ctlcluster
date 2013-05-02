@@ -6,6 +6,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2009 Cyril Bouthors <cyril@bouthors.org>
+# (C) 2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -134,8 +135,13 @@ sub start {
         error("Port conflict: another instance is already running on $sockdir with port $info{'port'}");
     }
 
-    # prepare environment
+    # prepare environment (empty except for content of 'environment', and LANG)
     %ENV = read_cluster_conf_file $version, $cluster, 'environment';
+    # set LANG so non-ascii chars in the server log are not replaced by '?' (affected are non-session contexts)
+    unless (exists $ENV{LANG}) {
+	my $lc_messages = PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'lc_messages';
+	$ENV{LANG} = $lc_messages if $lc_messages;
+    }
 
     my $postmaster_opts = '';
     my $usd = $version >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory';

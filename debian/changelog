@@ -18,8 +18,11 @@ postgresql-common (142) UNRELEASED; urgency=low
     unix_socket_directories.
   * pg_upgradecluster, t/043_upgrade_ssl_cert.t: Copy server.crt and friends
     in the data directory on upgrade. (Closes: #698958)
+  * pg_ctlcluster: Set LANG so non-ascii chars in the server log are not
+    replaced by '?'. Thanks to Adrian Vondendriesch for help debugging this.
+    (Closes: #671915)
 
- -- Christoph Berg <myon@debian.org>  Thu, 11 Apr 2013 16:40:38 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 02 May 2013 15:41:06 +0200
 
 postgresql-common (141) experimental; urgency=low
 
