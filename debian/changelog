@@ -27,6 +27,8 @@ postgresql-common (142) UNRELEASED; urgency=low
   * debian/supported-versions: Add 9.3 for testing/unstable.
   * debian/supported-versions: Add Ubuntu 13.10.
   * Bump Standards-Versio to 3.9.4 (no changes necessary).
+  * pg_upgradecluster: For upgrades to 9.3, migrate "replication_timeout" to
+    "wal_sender_timeout".
 
  -- Christoph Berg <myon@debian.org>  Thu, 02 May 2013 15:41:06 +0200
 

@@ -167,6 +167,7 @@ sub adapt_conffiles {
 
     if ($newversion >= '9.3') {
         rename_ \%c, 'unix_socket_directory', 'unix_socket_directories';
+        rename_ \%c, 'replication_timeout', 'wal_sender_timeout';
     }
 }
 
