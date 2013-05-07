@@ -29,6 +29,8 @@ postgresql-common (142) UNRELEASED; urgency=low
   * Bump Standards-Versio to 3.9.4 (no changes necessary).
   * pg_upgradecluster: For upgrades to 9.3, migrate "replication_timeout" to
     "wal_sender_timeout".
+  * t/060_obsolete_confparams.t: Add full 9.2 configuration, to test 9.2 → 9.3
+    upgrades.
 
  -- Christoph Berg <myon@debian.org>  Thu, 02 May 2013 15:41:06 +0200
 
