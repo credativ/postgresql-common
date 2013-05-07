@@ -1,4 +1,4 @@
-postgresql-common (142) UNRELEASED; urgency=low
+postgresql-common (142) unstable; urgency=low
 
   [ Christoph Berg ]
   * Make all scripts honor PGSYSCONFDIR (defaulting to
@@ -32,7 +32,7 @@ postgresql-common (142) UNRELEASED; urgency=low
   * t/060_obsolete_confparams.t: Add full 9.2 configuration, to test 9.2 → 9.3
     upgrades.
 
- -- Christoph Berg <myon@debian.org>  Thu, 02 May 2013 15:41:06 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 07 May 2013 11:11:58 +0200
 
 postgresql-common (141) experimental; urgency=low
 
