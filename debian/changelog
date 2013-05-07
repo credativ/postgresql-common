@@ -25,6 +25,7 @@ postgresql-common (142) UNRELEASED; urgency=low
 
   [ Martin Pitt ]
   * debian/supported-versions: Add 9.3 for testing/unstable.
+  * Bump Standards-Versio to 3.9.4 (no changes necessary).
 
  -- Christoph Berg <myon@debian.org>  Thu, 02 May 2013 15:41:06 +0200
 
