@@ -98,7 +98,7 @@ debian() {
             /bin/echo -e "9.1"
             ;;
         testing | unstable)
-            /bin/echo -e "9.1\n9.3"
+            /bin/echo -e "9.1"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
