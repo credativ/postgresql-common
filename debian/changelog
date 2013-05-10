@@ -1,4 +1,4 @@
-postgresql-common (143) UNRELEASED; urgency=low
+postgresql-common (143) unstable; urgency=low
 
   * debian/supported-versions: Don't explicitly support 9.3 for
     testing/unstable yet, it is still in experimental. (Closes: #707675)
@@ -6,7 +6,7 @@ postgresql-common (143) UNRELEASED; urgency=low
     9.3+142really9.1-..., so that they are bigger than the previous botched
     versions. This needs to stay until 9.3 actually goes into unstable.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 10 May 2013 10:25:53 +0200
+ -- Martin Pitt <mpitt@debian.org>  Fri, 10 May 2013 17:53:49 +0200
 
 postgresql-common (142) unstable; urgency=low
 
