@@ -108,6 +108,7 @@ Bob|1
 ', 'check SELECT output');
 
 # create inaccessible cwd, to check for confusing error messages
+rmdir '/tmp/pgtest';
 mkdir '/tmp/pgtest/' or die "Could not create temporary test directory /tmp/pgtest: $!";
 chmod 0100, '/tmp/pgtest/';
 chdir '/tmp/pgtest';
@@ -217,7 +218,7 @@ SKIP: {
 	1, 'creating table in testro as superuser fails');
 }
 is ((exec_as 'nobody', 'psql testro -c "BEGIN READ WRITE; CREATE TABLE test(num int); COMMIT"'), 
-    0, 'creating table in test succeeds with RW transaction');
+    0, 'creating table in testro succeeds with RW transaction');
 
 # check DB parameter
 is_program_out 'postgres', 'psql -Atc "SHOW DateStyle" test', 0, 'ISO, YMD
