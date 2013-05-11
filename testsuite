@@ -34,15 +34,17 @@ help ()
 {
     echo "postgresql-common testsuite"
     echo "Syntax: $0 [options] [test ...]"
-    echo "    -u 'umask ...'  list of umasks to run testsuite with [default: 022 077]"
+    echo "    -u 'umask ...'   umasks to run testsuite with [default: 022 077]"
+    echo "    -v 'version ...' PostgreSQL versions to test [default: client versions installed]"
     exit ${1:-0}
 }
 
 # option parsing
-while getopts "hu:" opt ; do
+while getopts "hu:v:" opt ; do
     case $opt in
         h) help ;;
         u) PG_UMASKS="$OPTARG" ;;
+        v) export PG_VERSIONS="$OPTARG" ;; # used in t/TestLib.pm
         *) help 1 ;;
     esac
 done

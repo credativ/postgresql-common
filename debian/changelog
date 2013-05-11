@@ -1,3 +1,9 @@
+postgresql-common (144) UNRELEASED; urgency=low
+
+  * testsuite: Allow overriding the list of versions to test (-v).
+
+ -- Christoph Berg <myon@debian.org>  Fri, 10 May 2013 09:55:41 -0700
+
 postgresql-common (143) unstable; urgency=low
 
   * debian/supported-versions: Don't explicitly support 9.3 for

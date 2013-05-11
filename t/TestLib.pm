@@ -1,6 +1,7 @@
 # Common functionality for postgresql-common selftests
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2013 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@ our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
 
 use lib '/usr/share/postgresql-common';
 use PgCommon qw/get_versions change_ugid/;
-our @MAJORS = sort (get_versions());
+our @MAJORS = $ENV{PG_VERSIONS} ? split (/\s+/, $ENV{PG_VERSIONS}) : sort (get_versions());
 
 # called if a test fails; spawn a shell if the environment variable
 # FAILURE=shell is set
