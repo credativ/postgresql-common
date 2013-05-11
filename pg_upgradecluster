@@ -431,7 +431,7 @@ if (!fork) {
 	# dump schemas
 	print "Roles, databases, schemas, ACLs...\n";
 	open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'},
-	     '-s' or error 'Could not execute pg_dumpall for old cluster';
+	     '-s', '--quote-all-identifiers' or error 'Could not execute pg_dumpall for old cluster';
 	my $data = '';
 	while (read SOURCE, $buffer, 1048576) {
 	    $data .= $buffer;
@@ -440,7 +440,7 @@ if (!fork) {
 	($? == 0) or exit 1;
 
 	# remove creation of db superuser role to avoid error message
-	$data =~ s/^CREATE (ROLE|USER) $owner;\s*$//m;
+	$data =~ s/^CREATE (ROLE|USER) "\Q$owner\E";\s*$//m;
 
 	# create global objects in target cluster
 	open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
@@ -482,7 +482,7 @@ if (!fork) {
 
 	    print 'Upgrading database ', $db, "...\n";
 	    open SOURCE, '-|', $pg_dump, '-h', $oldsocket, '-p', $info{'port'},
-		 '-Fc', $db or 
+		 '-Fc', '--quote-all-identifiers', $db or 
 		error 'Could not execute pg_dump for old cluster';
 
 	    # start pg_restore and copy over everything

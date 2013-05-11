@@ -3,6 +3,10 @@ postgresql-common (144) UNRELEASED; urgency=low
   * testsuite: Allow overriding the list of versions to test (-v).
   * 040_upgrade: Add a test case for #688960 ("OLD used in query that is not
     in a rule").
+  * pg_upgradecluster: Add --quote-all-identifiers to the pg_dump(all)
+    invocations so pg_dump-style upgrades do not fail when keywords get
+    un-reserved. (Closes: #688960; the pg_upgrade part of this will be fixed
+    in PostgreSQL upstream.)
 
  -- Christoph Berg <myon@debian.org>  Fri, 10 May 2013 09:55:41 -0700
 
