@@ -12,7 +12,7 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 101 * 3;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 103 * 3;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -44,6 +44,12 @@ SKIP: {
     is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE test(num int)"'), 
 	1, 'creating table in testro fails');
 }
+
+# create a schema and a table with a name that was un-reserved between 8.4 and 9.1
+is ((exec_as 'nobody', 'psql test -c "CREATE SCHEMA \"old\""'),
+    0, 'create schema "old"');
+is ((exec_as 'nobody', 'psql test -c "CREATE TABLE \"old\".\"old\" (\"old\" text)"'),
+    0, 'create table "old.old"');
 
 # create a sequence
 is ((exec_as 'nobody', 'psql test -c "CREATE SEQUENCE odd10 INCREMENT BY 2 MINVALUE 1 MAXVALUE 10 CYCLE"'),

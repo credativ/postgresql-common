@@ -1,6 +1,8 @@
 postgresql-common (144) UNRELEASED; urgency=low
 
   * testsuite: Allow overriding the list of versions to test (-v).
+  * 040_upgrade: Add a test case for #688960 ("OLD used in query that is not
+    in a rule").
 
  -- Christoph Berg <myon@debian.org>  Fri, 10 May 2013 09:55:41 -0700
 
