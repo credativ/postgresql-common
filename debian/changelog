@@ -7,6 +7,7 @@ postgresql-common (144) UNRELEASED; urgency=low
     invocations so pg_dump-style upgrades do not fail when keywords get
     un-reserved. (Closes: #688960; the pg_upgrade part of this will be fixed
     in PostgreSQL upstream.)
+  * pg_ctlcluster: Add --immediate shutdown option.
 
  -- Christoph Berg <myon@debian.org>  Fri, 10 May 2013 09:55:41 -0700
 

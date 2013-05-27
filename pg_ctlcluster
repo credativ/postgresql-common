@@ -24,6 +24,8 @@ use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
+my ($force);
+
 # Check for known broken configurations of this cluster
 sub check_valid_config {
     my %postgresql_conf = read_cluster_conf_file $version, $cluster,
@@ -253,7 +255,9 @@ sub stop {
     stop_check_pid_file;
     my $result = 1;
 
-    if ($force) {
+    if ($force eq 'immediate') {
+	$result = system $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', @pg_ctl_opts_from_cli, 'stop';
+    } elsif ($force) {
         if (!fork()) {
             close STDOUT;
             exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'fast', @pg_ctl_opts_from_cli, 'stop';
@@ -316,7 +320,9 @@ sub promote {
 #
 
 exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
-    'f|force' => \$force);
+    'f|force' => \$force,
+    'immediate' => sub { $force = 'immediate'; }
+);
 
 if ($#ARGV < 2) {
     print "Usage: $0 <version> <cluster> <action>\n";
@@ -453,16 +459,7 @@ failure conditions.
 =item B<stop>
 
 Stops the L<postmaster(1)> server of the given cluster. By default, "smart"
-mode is used, which waits until all clients disconnected.
-
-With the B<--force> option the "fast" mode is used which rolls back all active
-transactions, disconnects clients immediately and thus shuts down cleanly. If
-that does not work, shutdown is attempted again in "immediate" mode, which can
-leave the cluster in an inconsistent state and thus will lead to a recovery run
-at the next start. If this still does not help, the B<postmaster> process is
-killed.  Exits with 0 on success, with 2 if the server is not running, and with
-1 on other failure conditions. This mode should only be used when the machine
-is about to be shut down.
+shutdown mode is used, which waits until all clients disconnected.
 
 =item B<restart>
 
@@ -484,7 +481,24 @@ operations.
 
 =over 4
 
-=item B<-o> I<option>
+=item B<-f>|B<--force>
+
+For B<stop> and B<restart>, the "fast" mode is used which rolls back all active
+transactions, disconnects clients immediately and thus shuts down cleanly. If
+that does not work, shutdown is attempted again in "immediate" mode, which can
+leave the cluster in an inconsistent state and thus will lead to a recovery run
+at the next start. If this still does not help, the B<postmaster> process is
+killed.  Exits with 0 on success, with 2 if the server is not running, and with
+1 on other failure conditions. This mode should only be used when the machine
+is about to be shut down.
+
+=item B<--immediate>
+
+For B<stop> and B<restart>, an "immediate" shutdown is performed. This mode
+should not be used in normal operation; the time saved by omitting a checkpoint
+on shutdown will lead to a possibly even longer recovery run at the next start.
+
+=item B<-o>|B<--options> I<option>
 
 Pass given I<option> as command line option to the C<postmaster> process. It is
 possible to specify B<-o> multiple times. See L<postmaster(1)> for a
