@@ -19,7 +19,10 @@
 
 set -eu
 
-if [ "$(id -u)" != 0 ]; then
+case ${LD_PRELOAD:-} in
+    *fakeroot*) NONROOT=1 ;;
+esac
+if [ -z "${NONROOT:-}" ] && [ "$(id -u)" != 0 ]; then
     NONROOT=1
 fi
 
@@ -70,7 +73,7 @@ shift $(($OPTIND - 1))
 if [ "${NONROOT:-}" ]; then
     WORKDIR=$(mktemp -d -t pg_virtualenv.XXXXXX)
     export PG_CLUSTER_CONF_ROOT="$WORKDIR/postgresql"
-    export PGUSER="${USER:-$LOGNAME}"
+    export PGUSER="${USER:-${LOGNAME:-$(id -un)}}"
     PGSYSCONFDIR="$WORKDIR/postgresql-common" # no export yet so pg_createcluster uses the original createcluster.conf
     mkdir "$PGSYSCONFDIR" "$WORKDIR/log"
     PWFILE="$PGSYSCONFDIR/pwfile"
@@ -151,7 +154,8 @@ for v in $PG_VERSIONS; do
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
 	    ${CREATE_OPTS:-} --start $v regress -- \
-	    --pwfile="$PWFILE" ${INITDB_OPTS:-}
+	    --username="$PGUSER" --pwfile="$PWFILE" ${INITDB_OPTS:-}
+	# in fakeroot, the username will likely default to "postgres" otherwise
     )
     port=$(perl -lne 'print $1 if /^port = (\d+)/' \
 	${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/postgresql.conf)

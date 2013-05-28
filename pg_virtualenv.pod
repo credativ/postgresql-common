@@ -68,6 +68,11 @@ Show program help.
 
   # pg_virtualenv make check
 
+=head1 NOTES
+
+When run with fakeroot(1), B<pg_virtualenv> will fall back to the non-root mode
+of operation. Running "fakeroot pg_virtualenv" as root will fail, though.
+
 =head1 SEE ALSO
 
 initdb(1), pg_createcluster(1), unshare(1).
