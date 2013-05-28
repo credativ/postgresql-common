@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Create a throw-away PostgreSQL environment for running regression tests. This
-# happens on unshared tmpfses, so does not interfere with installed clusters.
+# happens in a temp dir/on unshared tmpfses, so does not interfere with
+# existing clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
 # (C) 2012-2013 Christoph Berg <myon@debian.org>
@@ -16,15 +17,14 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-set -e
+set -eu
 
 if [ "$(id -u)" != 0 ]; then
-    echo "Error: pg_virtualenv needs to be run as root" >&2
-    exit 1
+    NONROOT=1
 fi
 
-# call ourselves through unshare in a way that keeps normal stdin
-if [ -z "$UNSHARED" ]; then
+# root operation: re-exec ourselves through unshare
+if [ -z "${NONROOT:-}" ] && [ -z "${UNSHARED:-}" ]; then
     UNSHARED=1 exec unshare -uimn -- "$0" "$@"
 fi
 # unshared program starts here
@@ -47,7 +47,7 @@ while getopts "ac:i:hsv:" opt ; do
     case $opt in
 	a) for d in /usr/lib/postgresql/*/bin/pg_ctl; do
 		# prepend version so latest ends up first (i.e. on port 5432)
-		PG_VERSIONS="$(basename ${d%%/bin/pg_ctl}) $PG_VERSIONS"
+		PG_VERSIONS="$(basename ${d%%/bin/pg_ctl}) ${PG_VERSIONS:-}"
 	   done ;;
 	c) CREATE_OPTS="$OPTARG" ;;
 	i) INITDB_OPTS="$OPTARG" ;;
@@ -64,56 +64,75 @@ if [ -z "$PG_VERSIONS" ]; then
 fi
 # shift away args
 shift $(($OPTIND - 1))
-[ "$1" ] || help 1
+[ "${1:-}" ] || help 1
 
-# let everything happen in overlay tmpfses to avoid interfering with already
-# existing clusters; this also speeds up testing
-created_dirs=""
-for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
-    if ! [ -d $d ]; then
-	created_dirs="$created_dirs $d"
-	mkdir -p $d
-    fi
-    mount -n -t tmpfs -o mode=755 tmpfs $d
-done
-: ${PGSYSCONFDIR:=/etc/postgresql-common}
-pg_service="$PGSYSCONFDIR/pg_service.conf"
-# clean up created clusters and directories after us
-cleanup () {
-    set +e
-    for v in $PG_VERSIONS; do
-	echo "Stopping cluster $v/regress..."
-	pg_ctlcluster $v regress stop --force
+# non-root operation: create a temp dir where we store everything
+if [ "${NONROOT:-}" ]; then
+    WORKDIR=$(mktemp -d -t pg_virtualenv.XXXXXX)
+    export PG_CLUSTER_CONF_ROOT="$WORKDIR/postgresql"
+    export PGUSER="${USER:-$LOGNAME}"
+    PGSYSCONFDIR="$WORKDIR/postgresql-common" # no export yet so pg_createcluster uses the original createcluster.conf
+    mkdir "$PGSYSCONFDIR" "$WORKDIR/log"
+    PWFILE="$PGSYSCONFDIR/pwfile"
+
+    cleanup () {
+	set +e
+	for v in $PG_VERSIONS; do
+	    echo "Stopping cluster $v/regress..."
+	    pg_ctlcluster --immediate $v regress stop
+	done
+	rm -rf $WORKDIR
+    }
+    trap cleanup 0 HUP INT QUIT ILL ABRT PIPE TERM
+
+# root operation: keep everything in the standard locations
+else
+    # let everything happen in overlay tmpfses to avoid interfering with already
+    # existing clusters; this also speeds up testing
+    created_dirs=""
+    for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
+	if ! [ -d $d ]; then
+	    created_dirs="$created_dirs $d"
+	    mkdir -p $d
+	fi
+	mount -n -t tmpfs -o mode=755 tmpfs $d
     done
-    if [ "$created_dirs" ]; then
-	umount $created_dirs
-	rmdir --ignore-fail-on-non-empty -p $created_dirs
+    : ${PGSYSCONFDIR:=/etc/postgresql-common}
+    pg_service="$PGSYSCONFDIR/pg_service.conf"
+
+    export PGUSER="postgres"
+    PWFILE=$(mktemp -t pgpassword.XXXXXX)
+    chown postgres:postgres "$PWFILE"
+
+    # clean up created clusters and directories after us
+    cleanup () {
+	set +e
+	for v in $PG_VERSIONS; do
+	    echo "Stopping cluster $v/regress..."
+	    pg_ctlcluster --immediate $v regress stop
+	done
+	if [ "$created_dirs" ]; then
+	    umount $created_dirs
+	    rmdir --ignore-fail-on-non-empty -p $created_dirs
+	fi
+	rm -f $PWFILE $pg_service
+	if [ -f $pg_service.pg_virtualenv-save ]; then
+	    mv -f $pg_service.pg_virtualenv-save $pg_service
+	fi
+    }
+    trap cleanup 0 HUP INT QUIT ILL ABRT PIPE TERM
+
+    chown root:postgres /var/log/postgresql
+    chmod 1775 /var/log/postgresql
+    chown postgres:postgres /var/run/postgresql
+    chmod 2775 /var/run/postgresql
+    if [ -f $pg_service ]; then
+	mv -f $pg_service $pg_service.pg_virtualenv-save
     fi
-    rm -f $pg_service
-    if [ -f $pg_service.pg_virtualenv-save ]; then
-	mv -f $pg_service.pg_virtualenv-save $pg_service
-    fi
-}
-trap cleanup 0 HUP INT QUIT ILL ABRT PIPE TERM
-chown root:postgres /var/log/postgresql
-chmod 1775 /var/log/postgresql
-chown postgres:postgres /var/run/postgresql
-chmod 2775 /var/run/postgresql
-if [ -f $pg_service ]; then
-    mv -f $pg_service $pg_service.pg_virtualenv-save
+
+    # start localhost interface
+    ifconfig lo up
 fi
-
-# reset core limit for pg_ctl tests
-ulimit -S -c 0
-
-# start localhost interface
-ifconfig lo up
-
-# set variables which cause taint check errors
-export IFS=' '
-export CDPATH=/usr
-export ENV=/nonexisting
-export BASH_ENV=/nonexisting
 
 # create postgres environments
 if [ -x /usr/bin/pwgen ]; then
@@ -121,17 +140,21 @@ if [ -x /usr/bin/pwgen ]; then
 else
     export PGPASSWORD=$(dd if=/dev/urandom bs=1k count=1 2>/dev/null | md5sum - | awk '{ print $1 }')
 fi
+echo "$PGPASSWORD" > "$PWFILE"
 
 for v in $PG_VERSIONS; do
     # create temporary cluster
     # we chdir to / so programs don't throw "could not change directory to ..."
     (
 	cd /
-	pg_createcluster ${CREATE_OPTS:-} --start $v regress -- ${INITDB_OPTS:-}
+	pg_createcluster \
+	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
+	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
+	    ${CREATE_OPTS:-} --start $v regress -- \
+	    --pwfile="$PWFILE" ${INITDB_OPTS:-}
     )
-    # set postgres password and retrieve port number
-    port=$(cd / && su -c "psql --cluster $v/regress -qtA \
-	-c \"ALTER USER postgres PASSWORD '$PGPASSWORD'; SHOW port\"" postgres)
+    port=$(perl -lne 'print $1 if /^port = (\d+)/' \
+	${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/postgresql.conf)
 
     # record cluster information in service file
     cat >> $PGSYSCONFDIR/pg_service.conf <<EOF
@@ -139,20 +162,23 @@ for v in $PG_VERSIONS; do
 host=localhost
 port=$port
 dbname=postgres
-user=postgres
+user=$PGUSER
 password=$PGPASSWORD
 
 EOF
 done
 
+export PGSYSCONFDIR
 export PGHOST="localhost"
 export PGDATABASE="postgres"
-export PGUSER="postgres"
-# we do not set PGPORT here because that breaks --cluster
-# (the first cluster created will use port 5432 anyway)
+case $PG_VERSIONS in
+    *\ *) ;; # multiple versions: do not set PGPORT because that breaks --cluster
+    *)
+	export PGPORT="$port" ;; # will always be 5432 in root mode, but could differ otherwise
+esac
 
 # run program
-if [ "$run_shell" ]; then
+if [ "${run_shell:-}" ]; then
     "$@" || {
 	echo "pg_virtualenv: command exited with status $?, dropping you into a shell"
 	$SHELL

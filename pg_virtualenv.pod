@@ -10,25 +10,29 @@ B<pg_virtualenv> [B<-ash> B<-v> 'I<version ...>'] I<command>
 
 B<pg_buildext> creates a virtual PostgreSQL server environment, and sets
 environment variables such that I<command> can access the PostgreSQL database
-server(s). The servers and I<command> are run in an unshared mount and network
-namespace; the servers are created on tmpfses, so actions caused by I<command>
-in the database do not affect the running system. The servers are destroyed
-when I<command> exits.
+server(s). The servers are destroyed when I<command> exits.
 
 The environment variables B<PGHOST>, B<PGDATABASE>, B<PGUSER>, and
 B<PGPASSWORD> will be set. Per default, a single new cluster is created on port
 B<5432>, using the newest PostgreSQL server version installed. When more
-clusters are created for other versions, they will use other port numbers. For
-ease of access, the clusters are registered in
-F</etc/postgresql-common/pg_service.conf>, with the version number as cluster
-name. Clusters can be accessed by passing the connection string
-"B<service=>I<version>", e.g. B<psql service=9.2>.
+clusters are created for other versions, they will use other port numbers.
 
 B<pg_createcluster> is used to create the database clusters. The clusters are
-named I<version>/regress.
+named I<version>/regress. To access a cluster, set
+B<PGCLUSTER=>I<version>B</regress>. For ease of access, the clusters are also
+registered in F</etc/postgresql-common/pg_service.conf>, with the version
+number as cluster name. Clusters can be accessed by passing the connection
+string "B<service=>I<version>", e.g. B<psql service=9.2>.
 
-B<pg_virtualenv> must be run as root. I<command> can drop privileges as needed,
-provided the environment variables are passed.
+When invoked as root user, the servers and I<command> are run in an unshared
+mount and network namespace; the servers are created on tmpfses, so actions
+caused by I<command> in the database do not affect the running system.
+I<command> can drop privileges as needed, provided the environment variables
+are passed.
+
+When invoked as non-root user, B<PG_CLUSTER_CONF_ROOT> and B<PGSYSCONFDIR> are
+set to a temporary directory where all files belonging to the clusters are
+created.
 
 =head1 OPTIONS
 
@@ -52,7 +56,7 @@ Extra initdb options to pass to B<pg_createcluster>.
 
 =item B<-s>
 
-Launch a shell inside the unshared environment when I<command> fails.
+Launch a shell inside the virtual environment when I<command> fails.
 
 =item B<-h>
 
@@ -62,7 +66,7 @@ Show program help.
 
 =head1 EXAMPLE
 
-  # pg_virtualenv make regress
+  # pg_virtualenv make check
 
 =head1 SEE ALSO
 
