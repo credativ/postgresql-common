@@ -24,8 +24,6 @@ use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
-my ($force);
-
 # Check for known broken configurations of this cluster
 sub check_valid_config {
     my %postgresql_conf = read_cluster_conf_file $version, $cluster,
