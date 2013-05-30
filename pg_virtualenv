@@ -82,7 +82,7 @@ if [ "${NONROOT:-}" ]; then
 	set +e
 	for v in $PG_VERSIONS; do
 	    echo "Stopping cluster $v/regress..."
-	    pg_ctlcluster --immediate $v regress stop
+	    pg_ctlcluster --mode immediate $v regress stop
 	done
 	rm -rf $WORKDIR
     }
@@ -112,7 +112,7 @@ else
 	set +e
 	for v in $PG_VERSIONS; do
 	    echo "Stopping cluster $v/regress..."
-	    pg_ctlcluster --immediate $v regress stop
+	    pg_ctlcluster --mode immediate $v regress stop
 	done
 	if [ "$created_dirs" ]; then
 	    umount $created_dirs

@@ -24,6 +24,8 @@ use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
+my $mode = 'smart'; # default shutdown mode
+
 # Check for known broken configurations of this cluster
 sub check_valid_config {
     my %postgresql_conf = read_cluster_conf_file $version, $cluster,
@@ -253,9 +255,7 @@ sub stop {
     stop_check_pid_file;
     my $result = 1;
 
-    if ($force eq 'immediate') {
-	$result = system $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'immediate', @pg_ctl_opts_from_cli, 'stop';
-    } elsif ($force) {
+    if ($force) {
         if (!fork()) {
             close STDOUT;
             exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', 'fast', @pg_ctl_opts_from_cli, 'stop';
@@ -280,7 +280,7 @@ sub stop {
     } else {
         if (!fork()) {
             close STDOUT;
-            exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', @pg_ctl_opts_from_cli, 'stop'; 
+            exec $pg_ctl, '-D', $info{'pgdata'}, '-s', '-w', '-m', $mode, @pg_ctl_opts_from_cli, 'stop';
         } else {
             wait;
 	    $result = $? >> 8;
@@ -319,8 +319,15 @@ sub promote {
 
 exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
     'f|force' => \$force,
-    'immediate' => sub { $force = 'immediate'; }
+    'm|mode=s' => \$mode,
 );
+
+if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
+    $mode = $1; # untaint
+} else {
+    print "Invalid -m mode, valid are: smart fast immediate\n";
+    exit 1;
+}
 
 if ($#ARGV < 2) {
     print "Usage: $0 <version> <cluster> <action>\n";
@@ -490,11 +497,10 @@ killed.  Exits with 0 on success, with 2 if the server is not running, and with
 1 on other failure conditions. This mode should only be used when the machine
 is about to be shut down.
 
-=item B<--immediate>
+=item B<-m>|B<--mode> [B<smart>|B<fast>|B<immediate>]
 
-For B<stop> and B<restart>, an "immediate" shutdown is performed. This mode
-should not be used in normal operation; the time saved by omitting a checkpoint
-on shutdown will lead to a possibly even longer recovery run at the next start.
+Shutdown mode to use for B<stop> and B<restart> actions, default is B<smart>.
+See pg_ctl(1) for documentation.
 
 =item B<-o>|B<--options> I<option>
 
