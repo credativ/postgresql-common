@@ -1,4 +1,4 @@
-postgresql-common (144) UNRELEASED; urgency=low
+postgresql-common (144) unstable; urgency=low
 
   * testsuite: Allow overriding the list of versions to test (-v).
   * 040_upgrade: Add a test case for #688960 ("OLD used in query that is not
@@ -10,7 +10,7 @@ postgresql-common (144) UNRELEASED; urgency=low
   * pg_ctlcluster: Add --mode shutdown option.
   * pg_virtualenv: Allow running as non-root user.
 
- -- Christoph Berg <myon@debian.org>  Fri, 10 May 2013 09:55:41 -0700
+ -- Christoph Berg <myon@debian.org>  Fri, 31 May 2013 21:37:47 -0700
 
 postgresql-common (143) unstable; urgency=low
 
