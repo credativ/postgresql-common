@@ -175,12 +175,6 @@ sub start {
         }
     }
 
-    if (! -d $info{'socketdir'}) {
-	print "Creating $info{'socketdir'} ...\n";
-	use File::Path qw(make_path);
-	make_path ($info{'socketdir'}, { owner => $info{'owneruid'}, group => $info{'ownergid'} });
-    }
-
     $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
     ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
 
@@ -390,6 +384,12 @@ if ($action ne 'stop' && $info{'logfile'} && ! -e $info{'logfile'}) {
     close L;
 }
 
+# recreate /var/run/postgresql
+if ($action ne 'stop' && ! -d $info{'socketdir'}) {
+    system 'install', '-d', '-m', 2775,
+	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{'socketdir'};
+}
+
 if ($> == 0) {
     # have the postmaster start with increased OOM killer protection; 9.1 and
     # later has builtin support for resetting the adjustment of child processes
@@ -408,6 +408,8 @@ if ($> == 0) {
     chdir ('/var/lib/postgresql');
     change_ugid $info{'owneruid'}, $info{'ownergid'};
 }
+
+# we are running as the cluster owner now
 
 if( $> != $info{'owneruid'} ) {
     error 'You must run this program as the cluster owner ('.

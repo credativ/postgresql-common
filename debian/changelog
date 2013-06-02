@@ -1,3 +1,10 @@
+postgresql-common (145) UNRELEASED; urgency=low
+
+  * pg_ctlcluster: Use "install" instead of File::Path to create
+    unix_socket_directory. (Introduced in 141, Closes: #710093)
+
+ -- Christoph Berg <myon@debian.org>  Sat, 01 Jun 2013 17:19:57 -0700
+
 postgresql-common (144) unstable; urgency=low
 
   * testsuite: Allow overriding the list of versions to test (-v).
