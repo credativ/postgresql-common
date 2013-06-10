@@ -36,7 +36,7 @@ set_system_locale() {
         val=`pam_getenv -l $v` || true
         [ -z "$val" ] || export $v="$val"
     done
-    . /etc/default/locale
+    [ -e /etc/default/locale ] && . /etc/default/locale || true
     export $loc_vars
 }
 
