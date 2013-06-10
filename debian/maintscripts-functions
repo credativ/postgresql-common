@@ -23,6 +23,23 @@ _remove_tsearch() {
    fi
 }
 
+# Determine and set system's default locale; we do not want to trust the
+# environment here, as ssh and sudo both propagate the user's locale from
+# potentially a remote host, and that might not even exist; also, we want to be
+# predictable.  /etc/default/locale overrides /etc/environment. Note that
+# /etc/environment is not a shell script, so we must be careful with parsing.
+set_system_locale() {
+    loc_vars="LC_COLLATE LC_CTYPE LC_MONETARY LC_MESSAGES LC_NUMERIC LC_TIME LC_ALL LANG LANGUAGE"
+    unset $loc_vars
+    for v in $loc_vars; do
+        unset val
+        val=`pam_getenv -l $v` || true
+        [ -z "$val" ] || export $v="$val"
+    done
+    . /etc/default/locale
+    export $loc_vars
+}
+
 # arguments: <major version> <most recently configured package version>
 configure_version() {
     VERSION="$1"
@@ -35,13 +52,15 @@ configure_version() {
         # skip creating the main cluster when this is not the first install, or
         # when explicitely disabled ($create is 1/0/"")
         create=$(perl -I/usr/share/postgresql-common -mPgCommon -e 'print PgCommon::config_bool(PgCommon::get_conf_value 0, 0, "createcluster.conf", "create_main_cluster")')
-        [ "$2" ] || [ "$create" = "0" ] || /usr/bin/pg_createcluster -u postgres $VERSION main || {
-	echo "Error: could not create default cluster. Please create it manually with
+        if [ -z "$2" ] && [ "$create" != "0" ]; then
+            set_system_locale
+            /usr/bin/pg_createcluster -u postgres $VERSION main || 
+                echo "Error: could not create default cluster. Please create it manually with
 
   pg_createcluster $VERSION main --start
 
 or a similar command (see 'man pg_createcluster')." >&2
-	}
+        fi
     fi
 
     _link_manpages "$VERSION" postmaster.1.gz "postgresql-$1" "postgresql-contrib-$1"

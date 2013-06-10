@@ -1,7 +1,16 @@
 postgresql-common (145) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * pg_ctlcluster: Use "install" instead of File::Path to create
     unix_socket_directory. (Introduced in 141, Closes: #710093)
+
+  [ Martin Pitt ]
+  * debian/maintscripts-functions, configure_cluster(): Do not trust the
+    locale from the environment, as programs like ssh and sudo propagate
+    remote and user locale by default. Instead, only use the locale settings
+    from /etc/environment and /etc/default/locale, to prevent trying to
+    configure the default cluster with a nonexisting or hard to predict
+    locale. (LP: #969462)
 
  -- Christoph Berg <myon@debian.org>  Sat, 01 Jun 2013 17:19:57 -0700
 
