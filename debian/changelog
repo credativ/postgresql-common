@@ -10,7 +10,7 @@ postgresql-common (145) UNRELEASED; urgency=low
     remote and user locale by default. Instead, only use the locale settings
     from /etc/environment and /etc/default/locale, to prevent trying to
     configure the default cluster with a nonexisting or hard to predict
-    locale. (LP: #969462)
+    locale. (LP: #969462, also see Debian #700271)
 
  -- Christoph Berg <myon@debian.org>  Sat, 01 Jun 2013 17:19:57 -0700
 
