@@ -1,4 +1,4 @@
-postgresql-common (145) UNRELEASED; urgency=low
+postgresql-common (145) unstable; urgency=low
 
   [ Christoph Berg ]
   * pg_ctlcluster: Use "install" instead of File::Path to create
@@ -12,7 +12,7 @@ postgresql-common (145) UNRELEASED; urgency=low
     configure the default cluster with a nonexisting or hard to predict
     locale. (LP: #969462, also see Debian #700271)
 
- -- Christoph Berg <myon@debian.org>  Sat, 01 Jun 2013 17:19:57 -0700
+ -- Christoph Berg <myon@debian.org>  Mon, 10 Jun 2013 17:01:01 +0200
 
 postgresql-common (144) unstable; urgency=low
 
