@@ -1,10 +1,12 @@
 postgresql-common (146) UNRELEASED; urgency=low
 
+  * debian/supported-versions: Use "7.*" to recognize wheezy; point releases
+    now increment the second version number component.
   * pg_virtualenv:
     + On error, show tail of server log file.
     + When no command is given, open a shell.
 
- -- Christoph Berg <myon@debian.org>  Mon, 17 Jun 2013 13:51:20 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 17 Jun 2013 17:25:25 +0200
 
 postgresql-common (145) unstable; urgency=low
 
