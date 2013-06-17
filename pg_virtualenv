@@ -35,7 +35,7 @@ fi
 help ()
 {
     echo "pg_virtualenv: Create throw-away PostgreSQL environment for regression tests"
-    echo "Syntax: $0 [options] command"
+    echo "Syntax: $0 [options] [command]"
     echo "    -a                use all installed server versions"
     echo "    -v 'version ...'  list of PostgreSQL versions to run [default: latest]"
     echo "    -c 'options'      extra options to pass to pg_createcluster"
@@ -67,7 +67,8 @@ if [ -z "$PG_VERSIONS" ]; then
 fi
 # shift away args
 shift $(($OPTIND - 1))
-[ "${1:-}" ] || help 1
+# if no command is given, open a shell
+[ "${1:-}" ] || set -- ${SHELL:-/bin/sh}
 
 # non-root operation: create a temp dir where we store everything
 if [ "${NONROOT:-}" ]; then

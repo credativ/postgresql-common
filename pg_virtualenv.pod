@@ -4,7 +4,7 @@ pg_virtualenv - Create a throw-away PostgreSQL environment for running regressio
 
 =head1 SYNOPSIS
 
-B<pg_virtualenv> [B<-ash> B<-v> 'I<version ...>'] I<command>
+B<pg_virtualenv> [B<-ash> B<-v> 'I<version ...>'] [I<command>]
 
 =head1 DESCRIPTION
 
