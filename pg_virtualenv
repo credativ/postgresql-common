@@ -77,6 +77,7 @@ if [ "${NONROOT:-}" ]; then
     PGSYSCONFDIR="$WORKDIR/postgresql-common" # no export yet so pg_createcluster uses the original createcluster.conf
     mkdir "$PGSYSCONFDIR" "$WORKDIR/log"
     PWFILE="$PGSYSCONFDIR/pwfile"
+    LOGDIR="$WORKDIR/log"
 
     cleanup () {
 	set +e
@@ -182,11 +183,17 @@ case $PG_VERSIONS in
 esac
 
 # run program
-if [ "${run_shell:-}" ]; then
-    "$@" || {
+"$@" || EXIT="$?"
+if [ ${EXIT:-0} -gt 0 ]; then
+    for log in ${LOGDIR:-/var/log/postgresql}/*.log; do
+	echo "$log:"
+	tail -100 $log
+    done
+
+    if [ "${run_shell:-}" ]; then
 	echo "pg_virtualenv: command exited with status $?, dropping you into a shell"
 	$SHELL
-    }
-else
-    "$@"
+    fi
 fi
+
+exit ${EXIT:-0}
