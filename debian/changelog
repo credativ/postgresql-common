@@ -1,3 +1,10 @@
+postgresql-common (134wheezy4) UNRELEASED; urgency=low
+
+  * debian/supported-versions: Use "7.*" to recognize wheezy; point releases
+    now increment the second version number component. (Closes: #712586)
+
+ -- Christoph Berg <myon@debian.org>  Sun, 23 Jun 2013 11:57:59 +0200
+
 postgresql-common (134wheezy3) unstable; urgency=low
 
   [ Christoph Berg ]
