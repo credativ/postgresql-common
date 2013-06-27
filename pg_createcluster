@@ -196,25 +196,27 @@ sub setup_pg_hba {
 # Execution starts here
 #
 
-# read defaults from /etc/postgresql-common/createcluster.conf
-%defaultconf = PgCommon::read_conf_file ("$PgCommon::common_confdir/createcluster.conf");
-
-# command line arguments
-
-my $startconf = $defaultconf{'start_conf'} || 'auto';
-
 # this flag gets set when we started creating the cluster, and thus we need to
 # clean up on errors
 my $cleanup_cruft = 0;
+
+# command line arguments
+
+my $startconf = 'auto';
+my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
     'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf,
+    'createclusterconf=s' => \$createclusterconf,
     'p|port=i' => \$port, 'locale=s' => \$locale,
     'lc-collate=s' => \$lc_collate, 'lc-ctype=s' => \$lc_ctype,
     'lc-messages=s' => \$lc_messages, 'lc-monetary=s' => \$lc_monetary,
     'lc-numeric=s' => \$lc_numeric, 'lc-time=s' => \$lc_time);
+
+# read defaults from /etc/postgresql-common/createcluster.conf
+%defaultconf = PgCommon::read_conf_file ($createclusterconf);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
@@ -242,11 +244,13 @@ Options:
   --start       start the cluster after creating it
   --start-conf auto|manual|disabled
                 Set automatic startup behaviour in start.conf (default: 'auto')
+  --createclusterconf=file alternative createcluster.conf to use
   <initdb options> other options to pass to initdb
 ";
     exit 1;
 }
 
+$startconf = $defaultconf{'start_conf'} if ($defaultconf{'start_conf'});
 error "Invalid --start-conf value: $startconf" if $startconf ne 'auto' &&
     $startconf ne 'manual' && $startconf ne 'disabled';
 
@@ -680,6 +684,12 @@ Set the initial value in the C<start.conf> configuration file. See B<STARTUP
 CONTROL> below. By default, B<auto> is used, which means that the cluster is
 handled by C</etc/init.d/postgresql>, i. e. starts and stops
 automatically on system boot.
+
+=item B<--createclusterconf=>I<file>
+
+Alternative B<createcluster.conf> file to use. Default is
+C</etc/postgresql-common/createcluster.conf> (or
+C<$PGSYSCONFDIR/createcluster.conf>).
 
 =item B<--> I<initdb options>
 
