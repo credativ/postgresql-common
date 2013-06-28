@@ -204,12 +204,14 @@ my $cleanup_cruft = 0;
 
 my $startconf = 'auto';
 my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
+my $environmentfile = "$PgCommon::common_confdir/environment";
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
     'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf,
     'createclusterconf=s' => \$createclusterconf,
+    'environment=s' => \$environmentfile,
     'p|port=i' => \$port, 'locale=s' => \$locale,
     'lc-collate=s' => \$lc_collate, 'lc-ctype=s' => \$lc_ctype,
     'lc-messages=s' => \$lc_messages, 'lc-monetary=s' => \$lc_monetary,
@@ -245,6 +247,7 @@ Options:
   --start-conf auto|manual|disabled
                 Set automatic startup behaviour in start.conf (default: 'auto')
   --createclusterconf=file alternative createcluster.conf to use
+  --environment=file alternative environment file to use
   <initdb options> other options to pass to initdb
 ";
     exit 1;
@@ -492,8 +495,7 @@ if ($newcluster && -e "$PgCommon::common_confdir/root.crl") {
 }
 
 # create default (empty) environment file
-open ENV, ">$confdir/environment" or error "could not create environment file";
-print ENV "# environment variables for postmaster process
+my $defaultenv = "# environment variables for postmaster process
 # This file has the same syntax as postgresql.conf:
 #  VARIABLE = simple_value
 #  VARIABLE2 = 'any value!'
@@ -501,6 +503,15 @@ print ENV "# environment variables for postmaster process
 # numbers, and '-', '_', '.' in single quotes. Shell commands are not
 # evaluated.
 ";
+if (-e $environmentfile) {
+    open ENV, '<', $environmentfile or error "could not read environment file $environmentfile";
+    local $/; # slurp mode
+    $defaultenv = <ENV>;
+    close ENV;
+}
+$defaultenv = replace_v_c ($defaultenv, $version, $cluster);
+open ENV, ">$confdir/environment" or error "could not create environment file $confdir/environment";
+print ENV $defaultenv;
 close ENV;
 chmod 0644, "$confdir/environment";
 chown $owneruid, $ownergid, "$confdir/environment";
@@ -690,6 +701,13 @@ automatically on system boot.
 Alternative B<createcluster.conf> file to use. Default is
 C</etc/postgresql-common/createcluster.conf> (or
 C<$PGSYSCONFDIR/createcluster.conf>).
+
+=item B<--environment=>I<file>
+
+Alternative default B<environment> file to use. Default is
+C</etc/postgresql-common/environment> (or C<$PGSYSCONFDIR/environment>).
+If the file is missing, a placeholder string is used.
+%v and %c are replaced; see DEFAULT VALUES below.
 
 =item B<--> I<initdb options>
 
