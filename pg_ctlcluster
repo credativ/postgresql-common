@@ -390,6 +390,12 @@ if ($action ne 'stop' && ! -d $info{'socketdir'}) {
 	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{'socketdir'};
 }
 
+# recreate stats_temp_directory
+if ($action ne 'stop' && $info{'statstempdir'} && ! -d $info{'statstempdir'}) {
+    system 'install', '-d', '-m', 750,
+	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{'statstempdir'};
+}
+
 if ($> == 0) {
     # have the postmaster start with increased OOM killer protection; 9.1 and
     # later has builtin support for resetting the adjustment of child processes
