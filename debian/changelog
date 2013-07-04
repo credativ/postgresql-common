@@ -7,8 +7,9 @@ postgresql-common (146) UNRELEASED; urgency=low
     + When no command is given, open a shell.
   * pg_createcluster: Add --createclusterconf and --environment options.
   * pg_ctlcluster: Create stats_temp_directory when missing.
+  * pg_ctlcluster: You must run this program as the cluster owner ... or root.
 
- -- Christoph Berg <myon@debian.org>  Mon, 01 Jul 2013 11:47:25 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 04 Jul 2013 14:01:29 +0200
 
 postgresql-common (145) unstable; urgency=low
 

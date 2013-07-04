@@ -419,7 +419,7 @@ if ($> == 0) {
 
 if( $> != $info{'owneruid'} ) {
     error 'You must run this program as the cluster owner ('.
-        (getpwuid $info{'owneruid'})[0].')';
+        (getpwuid $info{'owneruid'})[0].') or root';
 }
 
 $pg_ctl = get_program_path 'pg_ctl', $version;
