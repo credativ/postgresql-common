@@ -64,7 +64,7 @@ if (cluster_exists $version, $cluster) {
 }
 
 if ($info{'pgdata'} && -d $info{'pgdata'}) {
-    $result = system '/bin/rm', '-r', $info{'pgdata'}; 
+    $result = system 'rm', '-r', $info{'pgdata'}; 
     if ($result) {
         if (! -w ($info{'pgdata'} . '/..')) {
             error 'you might need to run this program with root privileges';

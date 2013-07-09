@@ -532,7 +532,7 @@ foreach my $guc (sort keys %defaultconf) {
 
 # start it if requested
 if ($start) {
-    system '/usr/bin/pg_ctlcluster', $version, $cluster, 'start';
+    system 'pg_ctlcluster', $version, $cluster, 'start';
 }
 
 END {

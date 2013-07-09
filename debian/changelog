@@ -1,5 +1,6 @@
 postgresql-common (146) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * debian/supported-versions: Use "7.*" to recognize wheezy; point releases
     now increment the second version number component. (Closes: #712586)
   * pg_virtualenv:
@@ -9,7 +10,11 @@ postgresql-common (146) UNRELEASED; urgency=low
   * pg_ctlcluster: Create stats_temp_directory when missing.
   * pg_ctlcluster: You must run this program as the cluster owner ... or root.
 
- -- Christoph Berg <myon@debian.org>  Thu, 04 Jul 2013 14:01:29 +0200
+  [ Peter Eisentraut ]
+  * PgCommon.pm, pg_createcluster, pg_dropcluster: Don't call external
+    programs with full path where not necessary.
+
+ -- Peter Eisentraut <petere@debian.org>  Mon, 08 Jul 2013 22:33:34 -0400
 
 postgresql-common (145) unstable; urgency=low
 

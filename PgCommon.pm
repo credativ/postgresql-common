@@ -802,7 +802,7 @@ sub user_cluster_map {
 sub install_file {
     my ($source, $dest, $uid, $gid, $perm) = @_;
     
-    if (system '/usr/bin/install', '-o', $uid, '-g', $gid, '-m', $perm, $source, $dest) {
+    if (system 'install', '-o', $uid, '-g', $gid, '-m', $perm, $source, $dest) {
 	error "install_file: could not install $source to $dest";
     }
 }
