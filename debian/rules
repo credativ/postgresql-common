@@ -35,12 +35,9 @@ override_dh_gencontrol:
 	dh_gencontrol -ppostgresql -ppostgresql-client -ppostgresql-doc -ppostgresql-contrib  -- \
 		-Vdefault-version="$(DEFAULT_VER)" -v'9.3+142really$(DEFAULT_VER)+$${source:Version}'
 
-	# ship different conffiles for logrotate pre- and post-3.8
 ifeq ($(LOGROTATE38),yes)
-	# logrotate >= 3.8: depend on new logrotate version
-	dh_gencontrol -ppostgresql-common -- -Vlogrotate:version="(>= 3.8)"
+	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (<< 3.8)"
 else
-	# logrotate < 3.8: depend on logrotate, and declare breaks new version
 	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"
 endif
 

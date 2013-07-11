@@ -9,12 +9,14 @@ postgresql-common (146) UNRELEASED; urgency=low
   * pg_createcluster: Add --createclusterconf and --environment options.
   * pg_ctlcluster: Create stats_temp_directory when missing.
   * pg_ctlcluster: You must run this program as the cluster owner ... or root.
+  * postgresql-common: Demote dependency on logrotate to recommends.
+    (Closes: #714982).
 
   [ Peter Eisentraut ]
   * PgCommon.pm, pg_createcluster, pg_dropcluster: Don't call external
     programs with full path where not necessary.
 
- -- Peter Eisentraut <petere@debian.org>  Mon, 08 Jul 2013 22:33:34 -0400
+ -- Christoph Berg <myon@debian.org>  Thu, 11 Jul 2013 09:55:42 +0200
 
 postgresql-common (145) unstable; urgency=low
 

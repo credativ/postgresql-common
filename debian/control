@@ -18,8 +18,8 @@ Depends: postgresql-client-common (>= ${source:Version}),
  debconf (>= 0.5.00) | debconf-2.0,
  lsb-base (>= 3.0-3),
  ssl-cert (>= 1.0.11),
- logrotate ${logrotate:version},
  ${misc:Depends}
+Recommends: logrotate
 Breaks: postgresql-9.1 (<< 9.1.1-3~),
  ${common-breaks}
 Description: PostgreSQL database-cluster manager
