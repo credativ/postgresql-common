@@ -1,4 +1,4 @@
-postgresql-common (146) UNRELEASED; urgency=low
+postgresql-common (146) unstable; urgency=low
 
   [ Christoph Berg ]
   * debian/supported-versions: Use "7.*" to recognize wheezy; point releases
@@ -16,7 +16,7 @@ postgresql-common (146) UNRELEASED; urgency=low
   * PgCommon.pm, pg_createcluster, pg_dropcluster: Don't call external
     programs with full path where not necessary.
 
- -- Christoph Berg <myon@debian.org>  Thu, 11 Jul 2013 09:55:42 +0200
+ -- Christoph Berg <myon@debian.org>  Tue, 16 Jul 2013 16:11:35 +0200
 
 postgresql-common (145) unstable; urgency=low
 
