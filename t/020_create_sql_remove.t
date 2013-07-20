@@ -14,8 +14,6 @@ use PgCommon;
 
 use Test::More tests => 123 * ($#MAJORS+1);
 
-my $delay = 200_000; # 200ms
-
 sub check_major {
     my $v = $_[0];
 

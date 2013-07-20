@@ -1,3 +1,9 @@
+postgresql-common (148) UNRELEASED; urgency=low
+
+  * t: Move $delay to TestLib.pm and increase to 500ms.
+
+ -- Christoph Berg <myon@debian.org>  Sat, 20 Jul 2013 15:03:02 +0200
+
 postgresql-common (147) unstable; urgency=low
 
   * Bump "really142" to "really146" to fix an error on apt.postgresql.org.

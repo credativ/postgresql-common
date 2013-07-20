@@ -13,8 +13,6 @@ use TestLib;
 
 use Test::More tests => 29;
 
-my $delay = 200_000; # 200ms
-
 my $tdir = tempdir (CLEANUP => 1);
 $PgCommon::confroot = $tdir;
 
