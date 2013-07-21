@@ -4,6 +4,9 @@ postgresql-common (148) UNRELEASED; urgency=low
     PG_SUPPORTED_VERSIONS=$FLAVOR for debian/supported-versions so we don't
     pick up configuration from the build environment.
   * debian/supported-versions: Wheezy uses "7" in /etc/os-release.
+  * pg_buildext: Support "X.Y+" and "all" in debian/pgversions so packages do
+    not need to hardcode the versions they support, as that's usually not
+    necessary.
   * t: Move $delay to TestLib.pm and increase to 500ms.
 
  -- Christoph Berg <myon@debian.org>  Sat, 20 Jul 2013 15:03:02 +0200
@@ -842,7 +845,7 @@ postgresql-common (110) unstable; urgency=low
 
   [ Dimitri Fontaine ]
   * Add new package postgresql-server-dev-all:
-    - "pb_buildext" tool for easy building of extension packages for multiple
+    - "pg_buildext" tool for easy building of extension packages for multiple
       server versions.
     - pgxs_debian_control.mk debian/rules include for generating
       debian/control.

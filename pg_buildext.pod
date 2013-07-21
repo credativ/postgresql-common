@@ -57,6 +57,36 @@ B<clean> does not take extra options.
 
 =back
 
+=head1 SUPPORTED VERSIONS
+
+B<pg_buildext> reads C<debian/pgversions> to decide which PostgreSQL to build
+modules/extensions for. This file contains one PostgreSQL version number per
+line, in the following formats:
+
+=over 4
+
+=item B<all>
+
+Support all versions. This is recommended unless there are known incompatibilities.
+
+=item I<X.Y>
+
+Support this version.
+
+=item I<X.Y>B<+>
+
+Support this and all greater versions.
+
+=item B<#>I<...>
+
+Comment.
+
+=back
+
+For a version to be used, it must also be listed in the output of
+C</usr/share/postgresql-common/supported-versions>. See this file for how to
+configure the list of supported versions on your system.
+
 =head1 USAGE
 
 As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>

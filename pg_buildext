@@ -1,9 +1,20 @@
 #!/bin/sh
 #
-# build a PostgreSQL module based on PGXS for give list of supported major
+# build a PostgreSQL module based on PGXS for given list of supported major
 # versions
 #
-# Author: Dimitri Fontaine <dfontaine@hi-media.com>
+# (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
+# (C) 2011-2013 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
 
 set -e
 
@@ -85,10 +96,23 @@ versions() {
     [ -e /usr/share/postgresql-common/supported-versions ] ||
 	die "/usr/share/postgresql-common/supported-versions not found"
     [ -e debian/pgversions ] || die "debian/pgversions not found"
-    for v in `/usr/share/postgresql-common/supported-versions`
-    do
-	if grep -q "^$v" debian/pgversions ; then echo $v ; fi
-    done
+    supported_versions=$(/usr/share/postgresql-common/supported-versions)
+    while read version; do
+	case $version in
+	    all) echo "$supported_versions" ;;
+	    [1-9]*+)
+		for sup_version in $supported_versions; do
+		    if expr $(echo "$version" | tr -d +) '<=' $sup_version > /dev/null; then echo "$sup_version"; fi
+		done ;;
+	    [1-9]*)
+		for sup_version in $supported_versions; do
+		    if [ "$version" = "$sup_version" ]; then echo "$sup_version"; fi
+		done ;;
+	    '#'*) ;;
+	    '') ;;
+	    *) echo "Syntax error in debian/pgversions: $version" >&2 ;;
+	esac
+    done < debian/pgversions
 }
 
 VERSIONS=`versions`
