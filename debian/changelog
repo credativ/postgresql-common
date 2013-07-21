@@ -3,6 +3,7 @@ postgresql-common (148) UNRELEASED; urgency=low
   * debian/rules: Set FLAVOR variable for the type of build we are doing. Set
     PG_SUPPORTED_VERSIONS=$FLAVOR for debian/supported-versions so we don't
     pick up configuration from the build environment.
+  * debian/supported-versions: Wheezy uses "7" in /etc/os-release.
   * t: Move $delay to TestLib.pm and increase to 500ms.
 
  -- Christoph Berg <myon@debian.org>  Sat, 20 Jul 2013 15:03:02 +0200
