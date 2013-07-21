@@ -4,13 +4,29 @@ POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
 POD1PROGS=pg_wrapper pg_lsclusters
 POD1PROGS_POD=pg_buildext pg_virtualenv
 POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
-DEFAULT_VER=$(shell debian/supported-versions | LC_ALL=C sort -nr | head -n 1)
-LOGROTATE_VER=$(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { print $$2 }')
-LOGROTATE38=$(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo yes)
-VERSION=$(shell dpkg-parsechangelog | awk '/^Version:/ { print $$2 }')
+
+VERSION := $(shell dpkg-parsechangelog | awk '/^Version:/ { print $$2 }')
+ifneq ($(findstring bpo,$(VERSION)),)
+	FLAVOR := debian-backports
+else ifneq ($(findstring pgdg,$(VERSION)),)
+	FLAVOR := pgdg
+else
+	FLAVOR := default
+endif
+SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions | LC_ALL=C sort -n) # make removes newlines here
+DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
+
+LOGROTATE_VER := $(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { print $$2 }')
+LOGROTATE38 := $(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo yes)
 
 %:
 	dh "$@"
+
+version_info:
+	@echo "### Building postgresql-common flavor $(FLAVOR)"
+	@echo "### Supported PostgreSQL versions:" $(SUPPORTED_VERSIONS) "(default version: $(DEFAULT_VER))"
+	@echo "### Logrotate version: $(LOGROTATE_VER), is >= 3.8: $(LOGROTATE38)"
+build build-arch build-indep: version_info
 
 override_dh_install:
 	dh_install
@@ -18,17 +34,15 @@ override_dh_install:
 	for p in $(POD1PROGS); do $(POD2MAN) --quotes=none --section 1 $$p > $$p.1 || exit 1; done
 	for p in $(POD1PROGS_POD); do $(POD2MAN) --quotes=none --section 1 $$p.pod > $$p.1 || exit 1; done
 	for p in $(POD8PROGS); do $(POD2MAN) --quotes=none --section 8 $$p > $$p.8 || exit 1; done
-	case $(VERSION) in \
-		*bpo*) /bin/echo -e "# See /usr/share/postgresql-common/supported-versions for documentation of this file\ndebian-backports" > debian/postgresql-client-common/etc/postgresql-common/supported_versions ;; \
-		*pgdg*) /bin/echo -e "# See /usr/share/postgresql-common/supported-versions for documentation of this file\npgdg" > debian/postgresql-client-common/etc/postgresql-common/supported_versions ;; \
-	esac
+ifneq ($(FLAVOR),default)
+	/bin/echo -e "# See /usr/share/postgresql-common/supported-versions for documentation of this file\n$(FLAVOR)" > debian/postgresql-client-common/etc/postgresql-common/supported_versions
+endif
 
 override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r
 
 override_dh_gencontrol:
-	debian/supported-versions
-	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(shell for v in `debian/supported-versions`; do echo "postgresql-server-dev-$$v,"; done)"
+	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(shell for v in $(SUPPORTED_VERSIONS); do echo "postgresql-server-dev-$$v,"; done)"
 
 	# the versionless metapackages need to have version numbers which match
 	# the server version, not the p-common version
@@ -41,7 +55,7 @@ else
 	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"
 endif
 
-ifneq (,$(findstring pgdg,$(VERSION)))
+ifeq ($(FLAVOR),pgdg)
 	# for apt.postgresql.org builds, pull in the repository key package
 	dh_gencontrol -ppostgresql-client-common -- -Vpgdg:Depends="pgdg-keyring"
 endif
