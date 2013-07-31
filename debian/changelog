@@ -8,6 +8,7 @@ postgresql-common (148) UNRELEASED; urgency=low
     not need to hardcode the versions they support, as that's usually not
     necessary.
   * t: Move $delay to TestLib.pm and increase to 500ms.
+  * t/005_PgCommon.t: Use twice the delay for waiting for the first nc child.
 
  -- Christoph Berg <myon@debian.org>  Sat, 20 Jul 2013 15:03:02 +0200
 

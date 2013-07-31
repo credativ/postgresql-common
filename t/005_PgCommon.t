@@ -266,7 +266,7 @@ my @pids;
 is (next_free_port, 5432, 'next_free_port is 5432');
 # open a localhost ipv4 socket
 push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 127.0.0.1 5432));
-usleep $delay;
+usleep 2*$delay;
 is (next_free_port, 5433, 'next_free_port detects localhost ipv4 socket');
 # open a wildcard ipv4 socket
 push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -q0 -l 5433));
