@@ -1,3 +1,20 @@
+postgresql-common (134wheezy3) unstable; urgency=low
+
+  [ Christoph Berg ]
+  * pg_wrapper: Document that PGHOST overrides PGCLUSTER. (Closes: #697291)
+  * pg_wrapper: Skip cluster selection if --host is given on the command line.
+    (Closes: #637017) While we are at it, improve --port parsing, too.
+  * t/010_defaultport_cluster.t: Add test cases for the above pg_wrapper
+    changes.
+  * postgresql-client-common: Add Depends: netbase for getprotobyname() in
+    PgCommon.pm. (Closes: #697377)
+
+  [ Martin Pitt ]
+  * debian/README.Debian: Update versions to 8.4/9.1, as current for Squeeze
+    and Wheezy. (Closes: #697239)
+
+ -- Christoph Berg <myon@debian.org>  Wed, 09 Jan 2013 17:12:54 +0100
+
 postgresql-common (134wheezy2~bpo60+1) squeeze-backports; urgency=low
 
   * Rebuild for squeeze-backports.
