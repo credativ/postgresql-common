@@ -7,6 +7,8 @@ postgresql-common (148) UNRELEASED; urgency=low
   * pg_buildext: Support "X.Y+" and "all" in debian/pgversions so packages do
     not need to hardcode the versions they support, as that's usually not
     necessary.
+  * pgxs_debian_control.mk: Drop the previously redundant grep check on
+    debian/pgversions which would now break "X.Y+".
   * t: Move $delay to TestLib.pm and increase to 500ms.
   * t/005_PgCommon.t: Use twice the delay for waiting for the first nc child.
 
