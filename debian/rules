@@ -24,7 +24,7 @@ LOGROTATE38 := $(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo y
 
 version_info:
 	@echo "### Building postgresql-common flavor $(FLAVOR)"
-	@echo "### Supported PostgreSQL versions:" $(SUPPORTED_VERSIONS) "(default version: $(DEFAULT_VER))"
+	@echo "### Supported PostgreSQL versions: $(SUPPORTED_VERSIONS) (default version: $(DEFAULT_VER))"
 	@echo "### Logrotate version: $(LOGROTATE_VER), is >= 3.8: $(LOGROTATE38)"
 build build-arch build-indep: version_info
 
