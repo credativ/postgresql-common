@@ -132,7 +132,7 @@ pgdg() {
     case "$1" in
         testing | unstable)
             # including beta versions
-            /bin/echo -e "8.4\n9.0\n9.1\n9.2"
+            /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.3"
             ;;
         *)
             # no beta versions here

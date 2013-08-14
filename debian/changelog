@@ -3,7 +3,9 @@ postgresql-common (148) UNRELEASED; urgency=low
   * debian/rules: Set FLAVOR variable for the type of build we are doing. Set
     PG_SUPPORTED_VERSIONS=$FLAVOR for debian/supported-versions so we don't
     pick up configuration from the build environment.
-  * debian/supported-versions: Wheezy uses "7" in /etc/os-release.
+  * debian/supported-versions:
+    + Wheezy uses "7" in /etc/os-release.
+    + Add 9.3 for testing/unstable on pgdg.
   * pg_buildext: Support "X.Y+" and "all" in debian/pgversions so packages do
     not need to hardcode the versions they support, as that's usually not
     necessary.
