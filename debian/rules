@@ -42,7 +42,7 @@ override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r
 
 override_dh_gencontrol:
-	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(shell for v in $(SUPPORTED_VERSIONS); do echo "postgresql-server-dev-$$v,"; done)"
+	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-server-dev-$v,)"
 
 	# the versionless metapackages need to have version numbers which match
 	# the server version, not the p-common version
