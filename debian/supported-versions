@@ -7,9 +7,16 @@
 #
 # /usr/share/postgresql-common/supported-versions decides which PostgreSQL
 # server versions are supported. This information is used
-# 1) for notifying users of obsolete versions, suggesting to upgrade, and
-# 2) by the pg_buildext tool to decide which server versions to build extension
-#    modules for.
+# 1) for notifying users of obsolete versions, suggesting to upgrade
+# 2) by postgresql-common itself (in debian/rules) to determine the
+#    dependencies of the postgresql meta packages (default version), and to
+#    generate the list of postgresql-server-dev-* packages
+#    postgresql-server-dev-all depends on
+# 3) by the pg_buildext tool to decide which server versions to build extension
+#    modules for
+#
+# The *last* version returned here will be considered the default version, the
+# remaining lines list other supported versions in an undefined order.
 #
 # The environment variable PG_SUPPORTED_VERSIONS, and the files
 # ~/.pg_supported_versions and /etc/postgresql-common/supported_versions (in
@@ -135,8 +142,8 @@ pgdg() {
             /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.3"
             ;;
         *)
-            # no beta versions here
-            /bin/echo -e "8.4\n9.0\n9.1\n9.2"
+            # usually no beta versions here
+            /bin/echo -e "8.4\n9.0\n9.1\n9.3\n9.2"
             ;;
     esac
 }

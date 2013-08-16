@@ -13,7 +13,7 @@ else ifneq ($(findstring pgdg,$(VERSION)),)
 else
 	FLAVOR := default
 endif
-SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions | LC_ALL=C sort -n) # make removes newlines here
+SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions)
 DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
 
 LOGROTATE_VER := $(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { print $$2 }')
