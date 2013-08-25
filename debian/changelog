@@ -1,5 +1,6 @@
 postgresql-common (148) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * debian/supported-versions:
     + Interface change: The *last* version returned here is the "default" one.
     + Wheezy uses "7" in /etc/os-release.
@@ -18,6 +19,10 @@ postgresql-common (148) UNRELEASED; urgency=low
     debian/pgversions which would now break "X.Y+".
   * t: Move $delay to TestLib.pm and increase to 500ms.
   * t/005_PgCommon.t: Use twice the delay for waiting for the first nc child.
+
+  [ Martin Pitt ]
+  * debian/postgresql-common.postinst: Don't restart servers in dict update
+    trigger. (Closes: #719282)
 
  -- Christoph Berg <myon@debian.org>  Sat, 20 Jul 2013 15:03:02 +0200
 
