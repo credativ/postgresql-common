@@ -1,4 +1,4 @@
-postgresql-common (148) UNRELEASED; urgency=low
+postgresql-common (148) unstable; urgency=low
 
   [ Christoph Berg ]
   * debian/supported-versions:
@@ -25,7 +25,7 @@ postgresql-common (148) UNRELEASED; urgency=low
     trigger. (Closes: #719282)
   * debian/README.Debian: Update examples for -9.1 and -9.3.
 
- -- Christoph Berg <myon@debian.org>  Sat, 20 Jul 2013 15:03:02 +0200
+ -- Martin Pitt <mpitt@debian.org>  Tue, 27 Aug 2013 11:07:48 +0200
 
 postgresql-common (147) unstable; urgency=low
 
