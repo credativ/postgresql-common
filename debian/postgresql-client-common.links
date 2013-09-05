@@ -8,7 +8,9 @@ usr/share/postgresql-common/pg_wrapper usr/bin/dropuser
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_dump
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_dumpall
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_basebackup
+usr/share/postgresql-common/pg_wrapper usr/bin/pg_isready
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_restore
+usr/share/postgresql-common/pg_wrapper usr/bin/pg_receivexlog
 usr/share/postgresql-common/pg_wrapper usr/bin/psql
 usr/share/postgresql-common/pg_wrapper usr/bin/reindexdb
 usr/share/postgresql-common/pg_wrapper usr/bin/vacuumdb
