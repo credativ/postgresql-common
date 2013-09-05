@@ -139,7 +139,7 @@ if ($cmdname eq 'psql') {
     }
 }
 
-error 'pg_wrapper: invalid command name' unless $cmd;
+error "pg_wrapper: $cmdname was not found in /usr/lib/postgresql/$version/bin" unless $cmd;
 unshift @ARGV, $cmd;
 exec @ARGV;
 
