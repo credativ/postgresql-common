@@ -39,7 +39,7 @@
 
 set -eu
 
-DEFAULT="9.1"
+DEFAULT="9.3"
 
 # functions
 
@@ -104,8 +104,11 @@ debian() {
         7|7.*) # Wheezy
             /bin/echo -e "9.1"
             ;;
+        8|8.*) # Jessie
+            /bin/echo -e "9.3"
+            ;;
         testing | unstable)
-            /bin/echo -e "9.1"
+            /bin/echo -e "9.3"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -123,10 +126,10 @@ debian_backports() {
             /bin/echo -e "8.4\n9.1"
             ;;
         7|7.*) # Wheezy
-            /bin/echo -e "9.1\n9.2"
+            /bin/echo -e "9.1"
             ;;
         testing | unstable)
-            /bin/echo -e "9.1"
+            /bin/echo -e "9.3"
             ;;
         *)
             echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
@@ -143,7 +146,7 @@ pgdg() {
             ;;
         *)
             # usually no beta versions here
-            /bin/echo -e "8.4\n9.0\n9.1\n9.3\n9.2"
+            /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.3"
             ;;
     esac
 }

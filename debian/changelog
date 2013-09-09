@@ -1,10 +1,12 @@
 postgresql-common (149) UNRELEASED; urgency=low
 
+  * debian/supported-versions: Set default version to 9.3. Drop 9.2 from
+    wheezy-backports.
   * pg_wrapper: Print a more informative error message when program to execute
     was not found in /usr/lib/postgresql.
   * debian/postgresql-client-common.links: Wrap pg_isready and pg_receivexlog.
 
- -- Christoph Berg <myon@debian.org>  Thu, 05 Sep 2013 17:12:14 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 09 Sep 2013 14:09:01 +0200
 
 postgresql-common (148) unstable; urgency=low
 
