@@ -4,7 +4,7 @@ postgresql-common (149) unstable; urgency=low
     wheezy-backports.
   * /etc/apt/apt.conf.d/01autoremove-postgresql: Mark ^postgresql- as
     NeverAutoRemove, so upgrading the "postgresql" meta package doesn't
-    automatically remove access to the old clusters.
+    automatically remove access to the old clusters. (Closes: #714725)
   * pg_wrapper: Print a more informative error message when program to execute
     was not found in /usr/lib/postgresql.
   * debian/postgresql-client-common.links: Wrap pg_isready and pg_receivexlog.
