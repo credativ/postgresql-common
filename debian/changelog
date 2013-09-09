@@ -1,12 +1,15 @@
-postgresql-common (149) UNRELEASED; urgency=low
+postgresql-common (149) unstable; urgency=low
 
   * debian/supported-versions: Set default version to 9.3. Drop 9.2 from
     wheezy-backports.
+  * /etc/apt/apt.conf.d/01autoremove-postgresql: Mark ^postgresql- as
+    NeverAutoRemove, so upgrading the "postgresql" meta package doesn't
+    automatically remove access to the old clusters.
   * pg_wrapper: Print a more informative error message when program to execute
     was not found in /usr/lib/postgresql.
   * debian/postgresql-client-common.links: Wrap pg_isready and pg_receivexlog.
 
- -- Christoph Berg <myon@debian.org>  Mon, 09 Sep 2013 14:09:01 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 09 Sep 2013 14:15:18 +0200
 
 postgresql-common (148) unstable; urgency=low
 
