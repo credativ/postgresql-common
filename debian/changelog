@@ -1,3 +1,10 @@
+postgresql-common (150) UNRELEASED; urgency=low
+
+  * Create the postgres group when missing, and add the postgres user to it.
+    Could happen when the postgres user was created manually.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 29 Sep 2013 13:23:50 +0200
+
 postgresql-common (149) unstable; urgency=low
 
   * debian/supported-versions: Set default version to 9.3. Drop 9.2 from
