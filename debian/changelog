@@ -1,7 +1,11 @@
 postgresql-common (150) UNRELEASED; urgency=low
 
+  [ Christoph Berg ]
   * Create the postgres group when missing, and add the postgres user to it.
     Could happen when the postgres user was created manually.
+
+  [ Martin Pitt ]
+  * debian/supported-versions: Welcome, Ubuntu 14.04! Support 9.3 there.
 
  -- Christoph Berg <myon@debian.org>  Sun, 29 Sep 2013 13:23:50 +0200
 
