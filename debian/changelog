@@ -1,4 +1,4 @@
-postgresql-common (150) UNRELEASED; urgency=low
+postgresql-common (150) unstable; urgency=low
 
   [ Christoph Berg ]
   * Create the postgres group when missing, and add the postgres user to it.
@@ -7,7 +7,7 @@ postgresql-common (150) UNRELEASED; urgency=low
   [ Martin Pitt ]
   * debian/supported-versions: Welcome, Ubuntu 14.04! Support 9.3 there.
 
- -- Christoph Berg <myon@debian.org>  Sun, 29 Sep 2013 13:23:50 +0200
+ -- Martin Pitt <mpitt@debian.org>  Mon, 21 Oct 2013 22:08:20 +0200
 
 postgresql-common (149) unstable; urgency=low
 
