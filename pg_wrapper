@@ -103,8 +103,8 @@ my $cmd;
 
 # for psql we always want the latest version, as this is backwards compatible
 # to every major version that that we support
-if ($cmdname eq 'psql') {
-    $cmd = get_program_path ('psql', get_newest_version);
+if ($cmdname =~ /^(psql|pg_isready)$/) {
+    $cmd = get_program_path ($cmdname, get_newest_version);
 } else {
     $cmd = get_program_path ($cmdname, $version);
 }
@@ -209,6 +209,9 @@ will be selected.
 =back
 
 If none of these rules match, B<pg_wrapper> aborts with an error.
+
+For B<psql> and B<pg_isready>, B<pg_wrapper> will always use the binary from
+the newest PostgreSQL version installed, as these are downwards compatible.
 
 =head1 OPTIONS
 

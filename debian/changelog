@@ -1,3 +1,12 @@
+postgresql-common (151) UNRELEASED; urgency=low
+
+  * pg_wrapper: Always use the latest available version of "pg_isready"
+    instead of the target cluster's. pg_isready appeared only in 9.3, but is
+    usable with older versions as well. Suggested by Peter Eisentraut.
+    (Closes: #728599)
+
+ -- Christoph Berg <myon@debian.org>  Sun, 03 Nov 2013 23:47:53 +0100
+
 postgresql-common (150) unstable; urgency=low
 
   [ Christoph Berg ]
