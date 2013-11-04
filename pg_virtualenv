@@ -180,7 +180,9 @@ export PGDATABASE="postgres"
 case $PG_VERSIONS in
     *\ *) ;; # multiple versions: do not set PGPORT because that breaks --cluster
     *)
-	export PGPORT="$port" ;; # will always be 5432 in root mode, but could differ otherwise
+	export PGPORT="$port" # will always be 5432 in root mode, but could differ otherwise
+	export PG_CONFIG="/usr/lib/postgresql/$PG_VERSIONS/bin/pg_config"
+	;;
 esac
 
 # run program
