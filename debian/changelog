@@ -1,5 +1,6 @@
 postgresql-common (151) UNRELEASED; urgency=low
 
+  * pg_createcluster: Create /var/run/postgresql when missing.
   * pg_virtualenv: Set PG_CONFIG in single version mode.
   * pg_wrapper: Always use the latest available version of "pg_isready"
     instead of the target cluster's. pg_isready appeared only in 9.3, but is

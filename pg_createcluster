@@ -381,9 +381,12 @@ PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory'
 setup_pg_hba $version if $newcluster and not $explicit_auth_config;
 
 # configure socket directory
+if (! $socketdir && ! -e '/var/run/postgresql') {
+    system 'install', '-d', '-o', $postgres_user[2], '-g', $postgres_user[3], '/var/run/postgresql';
+}
 if ($socketdir && ! -e $socketdir) {
     if (system 'install', '-d', '-m', '0755', '-o', $owneruid, '-g', $ownergid, $socketdir) {
-        error 'could not create socket directory';
+        error "could not create socket directory $socketdir";
     }
 }
 $orig_euid = $>;
