@@ -1,4 +1,4 @@
-postgresql-common (151) UNRELEASED; urgency=low
+postgresql-common (151) unstable; urgency=low
 
   * pg_createcluster: Create /var/run/postgresql when missing.
   * pg_virtualenv: Set PG_CONFIG in single version mode.
@@ -7,7 +7,7 @@ postgresql-common (151) UNRELEASED; urgency=low
     usable with older versions as well. Suggested by Peter Eisentraut.
     (Closes: #728599)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Mon, 04 Nov 2013 14:18:08 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 05 Dec 2013 16:32:51 +0100
 
 postgresql-common (150) unstable; urgency=low
 
