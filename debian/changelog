@@ -1,3 +1,10 @@
+postgresql-common (152) UNRELEASED; urgency=low
+
+  * debian/backport-ppa: Drop oneiric/quantal for -9.2, only keep
+    lucid/precise.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 06 Dec 2013 10:42:51 +0100
+
 postgresql-common (151) unstable; urgency=low
 
   * pg_createcluster: Create /var/run/postgresql when missing.
