@@ -1,9 +1,13 @@
 postgresql-common (152) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/backport-ppa: Drop oneiric/quantal for -9.2, only keep
     lucid/precise.
 
- -- Christoph Berg <myon@debian.org>  Fri, 06 Dec 2013 10:42:51 +0100
+  [ Christoph Berg ]
+  * pg_virtualenv: Fix program name in manpage.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 10 Dec 2013 17:37:46 +0100
 
 postgresql-common (151) unstable; urgency=low
 

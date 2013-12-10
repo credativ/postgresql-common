@@ -8,7 +8,7 @@ B<pg_virtualenv> [B<-ash> B<-v> 'I<version ...>'] [I<command>]
 
 =head1 DESCRIPTION
 
-B<pg_buildext> creates a virtual PostgreSQL server environment, and sets
+B<pg_virtualenv> creates a virtual PostgreSQL server environment, and sets
 environment variables such that I<command> can access the PostgreSQL database
 server(s). The servers are destroyed when I<command> exits.
 
