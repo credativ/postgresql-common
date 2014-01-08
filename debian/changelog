@@ -8,6 +8,8 @@ postgresql-common (152) UNRELEASED; urgency=low
 
   [ Christoph Berg ]
   * pg_virtualenv: Fix program name in manpage.
+  * pg_createcluster: --start-conf should override the value from
+    createcluster.conf.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Tue, 10 Dec 2013 17:37:46 +0100
 

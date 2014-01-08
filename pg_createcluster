@@ -202,7 +202,7 @@ my $cleanup_cruft = 0;
 
 # command line arguments
 
-my $startconf = 'auto';
+my $startconf = '';
 my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 my $environmentfile = "$PgCommon::common_confdir/environment";
 
@@ -253,7 +253,7 @@ Options:
     exit 1;
 }
 
-$startconf = $defaultconf{'start_conf'} if ($defaultconf{'start_conf'});
+$startconf ||= $defaultconf{'start_conf'} || 'auto';
 error "Invalid --start-conf value: $startconf" if $startconf ne 'auto' &&
     $startconf ne 'manual' && $startconf ne 'disabled';
 
