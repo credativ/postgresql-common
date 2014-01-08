@@ -3,6 +3,8 @@ postgresql-common (152) UNRELEASED; urgency=low
   [ Martin Pitt ]
   * debian/backport-ppa: Drop oneiric/quantal for -9.2, only keep
     lucid/precise.
+  * Drop support for obsolete oom_adj, all kernels in all supported
+    Debian/Ubuntu releases support oom_score_adj. (See #646245)
 
   [ Christoph Berg ]
   * pg_virtualenv: Fix program name in manpage.

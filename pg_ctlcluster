@@ -404,11 +404,7 @@ if ($> == 0) {
 	    open F, '>/proc/self/oom_score_adj';
 	    print F "-900\n";
 	    close F;
-	} elsif (-w '/proc/self/oom_adj') {
-	    open F, '>/proc/self/oom_adj';
-	    print F "-16\n";
-	    close F;
-	}
+	} 
     }
 
     chdir ('/var/lib/postgresql');

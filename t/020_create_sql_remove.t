@@ -276,17 +276,17 @@ Bob|1
     # OOM score adjustment under Linux: postmaster gets bigger shields for >=
     # 9.1, but client backends stay at default
     my $adj;
-    open F, "/proc/$master_pid/oom_adj";
+    open F, "/proc/$master_pid/oom_score_adj";
     $adj = <F>;
     chomp $adj;
     close F;
     if ($v >= '9.1') {
-	cmp_ok $adj, '<=', -5, 'postgres >= 9.1 master has OOM killer protection';
+	cmp_ok $adj, '<=', -500, 'postgres >= 9.1 master has OOM killer protection';
     } else {
 	is $adj, 0, 'postgres < 9.1 master has no OOM adjustment';
     }
 
-    open F, "/proc/$client_pid/oom_adj";
+    open F, "/proc/$client_pid/oom_score_adj";
     $adj = <F>;
     chomp $adj;
     close F;
