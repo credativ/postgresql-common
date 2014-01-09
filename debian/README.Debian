@@ -34,11 +34,11 @@ a database user and a database for the Unix user 'joe':
 2. Get a shell for the database superuser 'postgres'. If your system
    has an active root user, use su:
 
-   $ su -c "su -s /bin/sh postgres"
+   # su -s /bin/bash postgres
 
    If your system uses sudo to get administrative rights, use sudo instead:
 
-   joe$ sudo -u postgres sh
+   joe$ sudo -u postgres bash
 
 3. In this postgres shell, create a database user with the same name as your
    Unix login:

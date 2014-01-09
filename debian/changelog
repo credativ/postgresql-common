@@ -5,6 +5,7 @@ postgresql-common (152) UNRELEASED; urgency=low
     lucid/precise.
   * Drop support for obsolete oom_adj, all kernels in all supported
     Debian/Ubuntu releases support oom_score_adj. (See #646245)
+  * debian/README.Debian: Fix commands to get a postgres user shell.
 
   [ Christoph Berg ]
   * pg_virtualenv: Fix program name in manpage.
