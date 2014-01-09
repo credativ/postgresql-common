@@ -9,6 +9,7 @@ postgresql-common (152) UNRELEASED; urgency=low
   * Change all "su" invocations to system user to specify an explicit shell,
     to fix breakage after latest base-passwd 3.5.30 (which changed system
     users to have no shell).
+  * Bump Standards-Version to 3.9.5 (no changes necessary).
 
   [ Christoph Berg ]
   * pg_virtualenv: Fix program name in manpage.
