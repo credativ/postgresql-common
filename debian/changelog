@@ -1,4 +1,4 @@
-postgresql-common (152) UNRELEASED; urgency=low
+postgresql-common (152) unstable; urgency=low
 
   [ Martin Pitt ]
   * debian/backport-ppa: Drop oneiric/quantal for -9.2, only keep
@@ -17,7 +17,7 @@ postgresql-common (152) UNRELEASED; urgency=low
     createcluster.conf.
   * testsuite: Also mount a tmpfs on /etc/postgresql-common.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 10:47:02 +0100
+ -- Martin Pitt <mpitt@debian.org>  Thu, 09 Jan 2014 10:56:12 +0100
 
 postgresql-common (151) unstable; urgency=low
 
