@@ -262,6 +262,7 @@ Bob|1
 	exec 'psql', 'nobodydb' or die "could not exec psql process: $!";
     }
     close RH;
+    select WH; $| = 1; # make unbuffered
 
     my $master_pid = `ps --user postgres hu | grep 'bin/postgres.*-D' | grep -v grep | awk '{print \$2}'`;
     chomp $master_pid;
