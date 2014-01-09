@@ -14,8 +14,9 @@ postgresql-common (152) UNRELEASED; urgency=low
   * pg_virtualenv: Fix program name in manpage.
   * pg_createcluster: --start-conf should override the value from
     createcluster.conf.
+  * testsuite: Also mount a tmpfs on /etc/postgresql-common.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Tue, 10 Dec 2013 17:37:46 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 10:47:02 +0100
 
 postgresql-common (151) unstable; urgency=low
 

@@ -84,7 +84,7 @@ fi
 # let everything happen in overlay tmpfses to avoid interfering with already
 # existing clusters; this also speeds up testing
 created_dirs=""
-for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
+for d in /etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
     if ! [ -d $d ]; then
         created_dirs="$created_dirs $d"
         mkdir -p $d
