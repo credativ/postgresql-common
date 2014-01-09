@@ -14,7 +14,7 @@ use PgCommon;
 
 my $shellaction = '#!/bin/sh
 S=`basename $0`
-su postgres <<EOF
+su -s /bin/sh postgres <<EOF
 psql --cluster "$1/$2" db1 -c "INSERT INTO log VALUES (\'$S $1 $2 $3\')"
 EOF
 ';

@@ -13,7 +13,7 @@ use PgCommon;
 my $v = $MAJORS[-1];
 
 # prepare nobody-owned work dir
-my $workdir=`su -c 'mktemp -d' nobody`;
+my $workdir=`su -s /bin/sh -c 'mktemp -d' nobody`;
 chomp $workdir;
 chdir $workdir or die "could not chdir to $workdir: $!";
 
