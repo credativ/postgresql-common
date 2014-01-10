@@ -1,5 +1,6 @@
 debian/01autoremove-postgresql etc/apt/apt.conf.d
 debian/init.d-functions usr/share/postgresql-common
+debian/logrotate.template usr/share/postgresql-common
 pg_lsclusters usr/bin
 pg_createcluster usr/bin
 pg_dropcluster usr/bin

@@ -2,9 +2,26 @@
 
 set -e
 . /usr/share/debconf/confmodule
-db_stop
 
 SSL_ROOT=/etc/postgresql-common/root.crt
+
+setup_logrotate ()
+{
+    LRVERSION=$(dpkg-query -f '${Version}' --show logrotate 2> /dev/null) || return
+    [ "$LRVERSION" ] || return 0
+    LRTEMPLATE="/usr/share/postgresql-common/logrotate.template"
+    LRCONFIG="/etc/logrotate.d/postgresql-common"
+    if dpkg --compare-versions "$LRVERSION" ge 3.8; then
+	LRCONFSRC=$LRTEMPLATE
+    else
+	LRCONFSRC=`mktemp --tmpdir postgresql-common.XXXXXX`
+	trap "rm -f $LRCONFSRC" 0 2 3 15
+	sed -e '/ su /d' $LRTEMPLATE > $LRCONFSRC
+	chmod 644 $LRCONFSRC
+    fi
+    ucf --debconf-ok $LRCONFSRC $LRCONFIG
+    ucfr postgresql-common $LRCONFIG
+}
 
 if [ "$1" = configure ]; then
     # Make sure the administrative user exists
@@ -83,15 +100,22 @@ EOF
 
     /usr/share/postgresql-common/pg_checksystem || true
 
+    # Create logrotate config
+    setup_logrotate
+
     if dpkg --compare-versions "$2" lt 94; then
         pg_updatedicts || true
     fi
 fi
 
 if [ "$1" = triggered ]; then
+    setup_logrotate
     pg_updatedicts || true
+    db_stop
     exit 0  # skip daemon restart below
 fi
+
+db_stop
 
 #DEBHELPER#
 

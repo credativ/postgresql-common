@@ -1,5 +1,10 @@
 postgresql-common (153) UNRELEASED; urgency=medium
 
+  * Replace the static logrotate configuration by generating the file
+    dynamically using ucf, triggered by watching /usr/sbin/logrotate.
+    This eases dist-upgrades that upgrade logrotate to >= 3.8 from an older
+    version (squeeze->wheezy, precise->trusty).
+  * postgresql-common.postinst: Stop debconf later so ucf can use it.
   * t/020_create_sql_remove.t: Make pipe writes unbuffered.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 12:49:19 +0100

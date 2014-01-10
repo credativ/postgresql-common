@@ -16,16 +16,12 @@ endif
 SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions)
 DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
 
-LOGROTATE_VER := $(shell LC_ALL=C apt-cache policy logrotate | awk '/Candidate:/ { print $$2 }')
-LOGROTATE38 := $(shell dpkg --compare-versions $(LOGROTATE_VER) ge 3.8 && echo yes)
-
 %:
 	dh "$@"
 
 version_info:
 	@echo "### Building postgresql-common flavor $(FLAVOR)"
 	@echo "### Supported PostgreSQL versions: $(SUPPORTED_VERSIONS) (default version: $(DEFAULT_VER))"
-	@echo "### Logrotate version: $(LOGROTATE_VER), is >= 3.8: $(LOGROTATE38)"
 build build-arch build-indep: version_info
 
 override_dh_install:
@@ -49,27 +45,12 @@ override_dh_gencontrol:
 	dh_gencontrol -ppostgresql -ppostgresql-client -ppostgresql-doc -ppostgresql-contrib  -- \
 		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
 
-ifeq ($(LOGROTATE38),yes)
-	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (<< 3.8)"
-else
-	dh_gencontrol -ppostgresql-common -- -Vcommon-breaks="logrotate (>= 3.8)"
-endif
-
 ifeq ($(FLAVOR),pgdg)
 	# for apt.postgresql.org builds, pull in the repository key package
 	dh_gencontrol -ppostgresql-client-common -- -Vpgdg:Depends="pgdg-keyring"
 endif
 
 	dh_gencontrol --remaining-packages
-
-override_dh_installlogrotate:
-	dh_installlogrotate
-ifeq ($(LOGROTATE38),yes)
-	# logrotate >= 3.8 requires an additional "su" command which is not
-	# backportable, see #640493
-	echo "Fixing logrotate configuration for logrotate >= 3.8..."
-	sed -i '/^}/ i\       su root root' debian/postgresql-common/etc/logrotate.d/*
-endif
 
 override_dh_clean:
 	dh_clean

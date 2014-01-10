@@ -16,6 +16,15 @@ if [ "$1" = purge ]; then
     [ -d /etc/postgresql-common ] && rmdir --ignore-fail-on-non-empty /etc/postgresql-common || true
 
     rm -rf /var/cache/postgresql
+
+    LRCONFIG="/etc/logrotate.d/postgresql-common"
+    if which ucf >/dev/null; then
+	ucf --purge $LRCONFIG
+    fi
+    if which ucfr >/dev/null; then
+	ucfr --purge postgresql-common $LRCONFIG
+    fi
+    rm -f $LRCONFIG $LRCONFIG.ucf-*
 fi
 
 #DEBHELPER#
