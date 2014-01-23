@@ -136,7 +136,7 @@ else
     fi
 
     # start localhost interface
-    ifconfig lo up
+    ifconfig lo up || true
 fi
 
 # create postgres environments

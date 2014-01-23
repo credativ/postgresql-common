@@ -104,7 +104,7 @@ chmod 2775 /var/run/postgresql
 ulimit -S -c 0
 
 # start localhost interface
-ifconfig lo up
+ifconfig lo up || true
 
 # set environment
 unset TMPDIR
