@@ -57,6 +57,12 @@ should be used if the package does not support VPATH builds. As it also invokes
 B<make install>, it should be placed were installation happens in debian/rules,
 rather than where build would normally be called.
 
+=item B<installcheck> [I<build-dir>]
+
+Use B<pg_virtualenv make installcheck> to run the extension regression tests.
+This is meant to be run from C<debian/tests/control> using B<autopkgtest>. If
+I<build-dir> is omitted, the top source directory is used.
+
 =back
 
 =head1 SUPPORTED VERSIONS
@@ -97,18 +103,43 @@ with B<+> so the sub-makes can talk with the make jobserver.
 
 =head1 EXAMPLE
 
-  build-stamp:
-	  +pg_buildext configure $(CURDIR) build-%v "--libdir=/usr/lib/postgresql/%v/lib --datadir=/usr/share/postgresql-%v-plsh"
-	  +pg_buildext build $(CURDIR) build-%v
+  override_dh_auto_configure:
+	  +pg_buildext configure build-%v "--libdir=/usr/lib/postgresql/%v/lib --datadir=/usr/share/postgresql-%v-plsh"
 
-  install: build
-	  +pg_buildext install $(CURDIR) build-%v postgresql-%v-plsh
+  override_dh_auto_build:
+	  +pg_buildext build build-%v
 
-  clean:
-	  +pg_buildext clean $(CURDIR) build-%v
+  override_dh_auto_test:
+	  # nothing to do here, see debian/tests/* instead
 
+  override_dh_auto_install:
+	  +pg_buildext install build-%v postgresql-%v-plsh
 
-=head1 AUTHOR
+  override_dh_installdocs:
+	  dh_installdocs --all README.*
+
+  override_dh_auto_clean:
+	  +pg_buildext clean build-%v
+
+=head1 COMPATIBILITY
+
+Earlier B<pg_buildext> versions required a "source dir" argument after the
+action. This is now deprecated, but still accepted (and ignored).
+
+B<pg_buildext loop> was introduced in postgresql-server-dev-all (>= 141~).
+
+The usage of "all" or "X.Y+" in debian/pgversions was introduced in
+postgresql-server-dev-all (>= 148~).
+
+B<pg_buildext installcheck> was introduced in postgresql-server-dev-all (>=
+153~).
+
+=head1 SEE ALSO
+
+C</usr/share/postgresql-common/supported-versions>, autopkgtest(1),
+pg_virtualenv(1).
+
+=head1 AUTHORS
 
 Dimitri Fontaine L<E<lt>dim@tapoueh.orgE<gt>>, with extensions by
 Christoph Berg L<E<lt>myon@debian.orgE<gt>>.

@@ -10,6 +10,7 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * t/003_package_checks.t: Add test case for logrotate.
   * t/020_create_sql_remove.t: Make pipe writes unbuffered.
   * pg_buildext: Document the loop action (present since version 141).
+  * pg_buildext: Add "installcheck" action for use with autopkgtest.
 
   [ Martin Pitt ]
   * testsuite, pg_virtualenv: Don't fail if ifconfig is not installed. We

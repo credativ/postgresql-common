@@ -92,6 +92,33 @@ loop() {
     echo "### done $1 ###"
 }
 
+installcheck() {
+    prepare_env $1
+
+    if [ "$target" ]; then # if target is given, use it, else stay in the top source dir
+	# if a Makefile was created by configure, use it, else the top level Makefile
+	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
+	if ! pg_virtualenv -v $1 \
+	    make -C $vtarget $makefile installcheck \
+		PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1; then
+	    if [ -r $vtarget/regression.diffs ]; then
+		echo "**** $vtarget/regression.diffs ****"
+		cat $vtarget/regression.diffs
+	    fi
+	    exit 1
+	fi
+    else
+	if ! pg_virtualenv -v $1 \
+	    make installcheck PG_CONFIG="$pgc" srcdir="$srcdir" USE_PGXS=1; then
+	    if [ -r regression.diffs ]; then
+		echo "**** regression.diffs ****"
+		cat regression.diffs
+	    fi
+	    exit 1
+	fi
+    fi
+}
+
 versions() {
     [ -e /usr/share/postgresql-common/supported-versions ] ||
 	die "/usr/share/postgresql-common/supported-versions not found"
@@ -126,12 +153,17 @@ do
 
 	configure|build|install|clean|loop)
 	    [ "$target" ] || die "syntax: pg_buildext $action [...]"
-	    # be verbose?
+	    echo "### $action $v ###"
+	    $action $v
+	    ;;
+
+	installcheck)
+	    echo "### $action $v ###"
 	    $action $v
 	    ;;
 
 	*)
-	    die "unsupported $action."
+	    die "unsupported $action"
 	    ;;
     esac
 done
