@@ -4,7 +4,7 @@
 # versions
 #
 # (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
-# (C) 2011-2013 Christoph Berg <myon@debian.org>
+# (C) 2011-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ do
 	    ;;
 
 	configure|build|install|clean|loop)
-	    [ "$target" ] || die "syntax: pg_buildext $action <srcdir> <target> ..."
+	    [ "$target" ] || die "syntax: pg_buildext $action [...]"
 	    # be verbose?
 	    $action $v
 	    ;;
