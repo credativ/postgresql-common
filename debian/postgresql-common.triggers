@@ -1,3 +1,4 @@
 interest /usr/share/myspell/dicts
 interest /usr/share/hunspell
+interest /usr/share/postgresql
 interest /usr/sbin/logrotate

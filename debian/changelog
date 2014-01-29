@@ -18,6 +18,9 @@ postgresql-common (153) UNRELEASED; urgency=medium
     minimal environments.
   * t/150_tsearch_stemming.t: Add tests for stemming/searching with non-ASCII
     characters. (See #689997)
+  * debian/postgresql-common.triggers: Also trigger on
+    /usr/share/postgresql/, so that installation of new server versions builds
+    the corresponding dictionaries.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 12:49:19 +0100
 
