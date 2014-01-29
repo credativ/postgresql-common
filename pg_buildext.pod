@@ -15,6 +15,29 @@ C<debian/pgversions> (versions supported by the package) and in
 C</usr/share/postgresql-common/supported-versions> (versions supported in this
 release).
 
+=head1 USAGE
+
+Packages using B<pg_buildext> should be prepared to build binaries for
+PostgreSQL versions that are not present in Debian unstable, e.g. for older
+releases when building backports for Debian (old)stable (possibly including
+backports of newer PostgreSQL releases), or for all PostgreSQL releases when
+the package is built for B<apt.postgresql.org>.
+
+As the set of binary packages depends on the target PostgreSQL versions,
+C<debian/control> is auto-generated. Include
+C</usr/share/postgresql-common/pgxs_debian_control.mk> in C<debian/rules> to
+regenerate the control file from C<debian/control.in> at "clean" time.
+Occurrences of B<PGVERSION> in package sections are replaced by the target
+PostgreSQL version.
+
+As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>
+actions, invocations from C<debian/rules> (which is a makefile) should be prefixed
+with B<+> so the sub-makes can talk with the make jobserver.
+
+Many extensions support B<make installcheck> testing using B<pg_regress>. As
+this needs the package to be installed, it cannot be run at build time.
+Instead, the tests should be run using B<autopkgtest> from C<debian/tests/*>.
+
 =head1 ACTIONS
 
 Most actions expect a directory name where to build the sources. It will get
@@ -95,16 +118,30 @@ For a version to be used, it must also be listed in the output of
 C</usr/share/postgresql-common/supported-versions>. See this file for how to
 configure the list of supported versions on your system.
 
-=head1 USAGE
-
-As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>
-actions, invocations from C<debian/rules> (which is a makefile) should be prefixed
-with B<+> so the sub-makes can talk with the make jobserver.
-
 =head1 EXAMPLE
 
+=over 4
+
+=item B<debian/control.in:>
+
+  Source: postgresql-foobar
+  Build-Depends: debhelper, postgresql-server-dev-all (>= 153~)
+  XS-Testsuite: autopkgtest
+
+  Package: postgresql-PGVERSION-foobar
+  Depends: ${misc:Depends}, ${shlibs:Depends}, postgresql-PGVERSION
+
+=item B<debian/pgversions:>
+
+  all
+
+=item B<debian/rules:>
+
+  include /usr/share/postgresql-common/pgxs_debian_control.mk
+
+  # omit this if the package does not use autoconf
   override_dh_auto_configure:
-	  +pg_buildext configure build-%v "--libdir=/usr/lib/postgresql/%v/lib --datadir=/usr/share/postgresql-%v-plsh"
+	  +pg_buildext configure build-%v "--libdir=/usr/lib/postgresql/%v/lib --datadir=/usr/share/postgresql-%v-foobar"
 
   override_dh_auto_build:
 	  +pg_buildext build build-%v
@@ -113,13 +150,30 @@ with B<+> so the sub-makes can talk with the make jobserver.
 	  # nothing to do here, see debian/tests/* instead
 
   override_dh_auto_install:
-	  +pg_buildext install build-%v postgresql-%v-plsh
+	  +pg_buildext install build-%v postgresql-%v-foobar
 
   override_dh_installdocs:
 	  dh_installdocs --all README.*
 
   override_dh_auto_clean:
 	  +pg_buildext clean build-%v
+
+  %:
+	  dh $@
+
+=item B<debian/tests/control:>
+
+  Depends: @, postgresql-server-dev-all
+  Tests: installcheck
+  Restrictions: allow-stderr
+
+=item B<debian/tests/installcheck:>
+
+  #!/bin/sh
+  pg_buildext installcheck
+  # alternatively: pg_buildext installcheck build-%v
+
+=back
 
 =head1 COMPATIBILITY
 
