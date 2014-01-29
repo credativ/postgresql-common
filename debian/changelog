@@ -16,6 +16,7 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * postgresql-server-dev-all: Add "make" to depends because pg_buildext is
     mostly useless without it; extensions using autopkgtest would otherwise
     need to include it in their debian/tests/control files.
+  * pgxs_debian_control.mk: Add "clean: debian/control" and ".PHONY: clean".
 
   [ Martin Pitt ]
   * testsuite, pg_virtualenv: Don't fail if ifconfig is not installed. We
