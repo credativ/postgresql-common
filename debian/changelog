@@ -16,6 +16,8 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * testsuite, pg_virtualenv: Don't fail if ifconfig is not installed. We
     don't require it as a dependency, and this breaks e. g. autopkgtests in
     minimal environments.
+  * t/150_tsearch_stemming.t: Add tests for stemming/searching with non-ASCII
+    characters. (See #689997)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 12:49:19 +0100
 

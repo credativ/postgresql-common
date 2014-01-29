@@ -1,13 +1,13 @@
 # Check tsearch, and stemming with dynamic creation of .affix/.dict files
 
-use strict; 
+use strict;
 
 use lib 't';
 use TestLib;
 
 my $version = $MAJORS[-1];
 
-use Test::More tests => 33;
+use Test::More tests => 39;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -18,7 +18,7 @@ unlink '/var/cache/postgresql/dicts/en_us.dict';
 unlink "/usr/share/postgresql/$version/tsearch_data/en_us.affix";
 unlink "/usr/share/postgresql/$version/tsearch_data/en_us.dict";
 is ((exec_as 0, 'pg_updatedicts'), 0, 'pg_updatedicts succeeded');
-ok -f '/var/cache/postgresql/dicts/en_us.affix', 
+ok -f '/var/cache/postgresql/dicts/en_us.affix',
     'pg_updatedicts created en_us.affix';
 ok -f '/var/cache/postgresql/dicts/en_us.dict',
     'pg_updatedicts created en_us.dict';
@@ -56,6 +56,7 @@ is ((exec_as 'postgres', 'psql -qd fts -c "
   INSERT INTO stuff (text) VALUES (\'PostgreSQL rocks\');
   INSERT INTO stuff (text) VALUES (\'Linux rocks\');
   INSERT INTO stuff (text) VALUES (\'I am your father\'\'s nephew\'\'s former roommate\');
+  INSERT INTO stuff (text) VALUES (\'3 Ångströms\');
   "'), 0, 'creating data table and search index');
 
 # test stemming
@@ -70,22 +71,39 @@ is_program_out 'postgres', 'psql -Atd fts -c "
     "', 0, "english_stem|{duffl}\n", 'stem search of unknown word';
 
 # test searching
-is_program_out 'postgres', 'psql -Atd fts -c "SELECT text 
-    FROM stuff, to_tsquery(\'rocks\') query 
-    WHERE query @@ to_tsvector(text)"', 0, 
-    "PostgreSQL rocks\nLinux rocks\n", 
+is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
+    FROM stuff, to_tsquery(\'rocks\') query
+    WHERE query @@ to_tsvector(text)"', 0,
+    "PostgreSQL rocks\nLinux rocks\n",
     'full text search, exact word';
 
-is_program_out 'postgres', 'psql -Atd fts -c "SELECT text 
-    FROM stuff, to_tsquery(\'rock\') query 
-    WHERE query @@ to_tsvector(text)"', 0, 
-    "PostgreSQL rocks\nLinux rocks\n", 
+is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
+    FROM stuff, to_tsquery(\'rock\') query
+    WHERE query @@ to_tsvector(text)"', 0,
+    "PostgreSQL rocks\nLinux rocks\n",
     'full text search for word stem';
 
-is_program_out 'postgres', 'psql -Atd fts -c "SELECT text 
-    FROM stuff, to_tsquery(\'roc\') query 
+is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
+    FROM stuff, to_tsquery(\'roc\') query
     WHERE query @@ to_tsvector(text)"', 0, '',
     'full text search for word substring fails';
+
+is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
+    FROM stuff, to_tsquery(\'Ångströms\') query
+    WHERE query @@ to_tsvector(text)"', 0,
+    "3 Ångströms\n",
+    'full text search, exact unicode word';
+
+is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
+    FROM stuff, to_tsquery(\'Ångström\') query
+    WHERE query @@ to_tsvector(text)"', 0,
+    "3 Ångströms\n",
+    'full text search for unicode word stem';
+
+is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
+    FROM stuff, to_tsquery(\'Ångströ\') query
+    WHERE query @@ to_tsvector(text)"', 0, '',
+    'full text search for unicode word substring fails';
 
 # clean up
 is ((system "pg_dropcluster $version main --stop"), 0);
