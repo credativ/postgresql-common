@@ -63,6 +63,7 @@ Depends: ${misc:Depends},
  postgresql-common (>= 117~),
  lsb-release,
  dctrl-tools,
+ make,
  ${server-dev-all-depends}
 Description: extension build tool for multiple PostgreSQL versions
  The postgresql-server-dev-all package provides the pg_buildext script for
