@@ -16,4 +16,4 @@ debian/control: debian/control.in debian/pgversions
 
 # Rebuild debian/control when clean is invoked
 clean: debian/control
-.PHONY: control
+.PHONY: debian/control
