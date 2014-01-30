@@ -444,10 +444,12 @@ $conf_fn =~tr/./_/;
 &$conf_fn if defined &$conf_fn and $newcluster;
 
 # Check whether we can access the SSL private key as the cluster owner
+my $key_file = '/etc/ssl/private/ssl-cert-snakeoil.key';
+my $pem_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem';
 my $ssl_key_access;
 my ($uid, $euid, $gid, $egid) = ($<, $>, $(, $));
 change_ugid $owneruid, $ownergid;
-$ssl_key_access = -r '/etc/ssl/private/ssl-cert-snakeoil.key';
+$ssl_key_access = -r $key_file;
 $> = $euid;
 $< = $uid; 
 $( = $gid;
@@ -456,16 +458,15 @@ die "changing euid back: $!" if $> != $euid;
 die "changing egid back: $!" if $) != $egid;
 
 # enable SSL if we have the snakeoil default certificate
-if ($newcluster && -e '/etc/ssl/certs/ssl-cert-snakeoil.pem' && 
-    $ssl_key_access) {
+if ($newcluster && -e $pem_file && $ssl_key_access) {
     if ($version >= '9.2') {
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-            'ssl_cert_file', '/etc/ssl/certs/ssl-cert-snakeoil.pem';
+            'ssl_cert_file', $pem_file;
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-            'ssl_key_file', '/etc/ssl/private/ssl-cert-snakeoil.key';
+            'ssl_key_file', $key_file;
     } else {
-        symlink '/etc/ssl/certs/ssl-cert-snakeoil.pem', $datadir.'/server.crt';
-        symlink '/etc/ssl/private/ssl-cert-snakeoil.key', $datadir.'/server.key';
+        symlink $pem_file, "$datadir/server.crt";
+        symlink $key_file, "$datadir/server.key";
     }
 
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';

@@ -6,7 +6,7 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => 9 + ($#MAJORS+1)*7;
+use Test::More tests => 12 + ($#MAJORS+1)*7;
 
 print "Info: PostgreSQL versions installed: @MAJORS\n";
 
@@ -36,7 +36,12 @@ ok ((setlocale(LC_MESSAGES, '') =~ /utf8|UTF-8/), 'system has a default UTF-8 lo
 ok (setlocale (LC_ALL, "ru_RU"), 'locale ru_RU exists');
 ok (setlocale (LC_ALL, "ru_RU.UTF-8"), 'locale ru_RU.UTF-8 exists');
 
+my $key_file = '/etc/ssl/private/ssl-cert-snakeoil.key';
+my $pem_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem';
 ok ((getgrnam('ssl-cert'))[3] =~ /postgres/, 
     'user postgres in the UNIX group ssl-cert');
+ok (-e $key_file, "$key_file exists");
+is (exec_as ('postgres', "cat $key_file > /dev/null"), 0, "$key_file is readable for postgres");
+ok (-e $pem_file, "$pem_file exists");
 
 # vim: filetype=perl
