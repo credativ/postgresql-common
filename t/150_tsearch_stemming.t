@@ -56,7 +56,7 @@ is ((exec_as 'postgres', 'psql -qd fts -c "
   INSERT INTO stuff (text) VALUES (\'PostgreSQL rocks\');
   INSERT INTO stuff (text) VALUES (\'Linux rocks\');
   INSERT INTO stuff (text) VALUES (\'I am your father\'\'s nephew\'\'s former roommate\');
-  INSERT INTO stuff (text) VALUES (\'3 Ångströms\');
+  INSERT INTO stuff (text) VALUES (\'3 cafés\');
   "'), 0, 'creating data table and search index');
 
 # test stemming
@@ -89,19 +89,19 @@ is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
     'full text search for word substring fails';
 
 is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
-    FROM stuff, to_tsquery(\'Ångströms\') query
+    FROM stuff, to_tsquery(\'cafés\') query
     WHERE query @@ to_tsvector(text)"', 0,
-    "3 Ångströms\n",
+    "3 cafés\n",
     'full text search, exact unicode word';
 
 is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
-    FROM stuff, to_tsquery(\'Ångström\') query
+    FROM stuff, to_tsquery(\'café\') query
     WHERE query @@ to_tsvector(text)"', 0,
-    "3 Ångströms\n",
+    "3 cafés\n",
     'full text search for unicode word stem';
 
 is_program_out 'postgres', 'psql -Atd fts -c "SELECT text
-    FROM stuff, to_tsquery(\'Ångströ\') query
+    FROM stuff, to_tsquery(\'afé\') query
     WHERE query @@ to_tsvector(text)"', 0, '',
     'full text search for unicode word substring fails';
 
