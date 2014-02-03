@@ -21,6 +21,7 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * pgxs_debian_control.mk: Add "clean: debian/control" and
     ".PHONY: debian/control".
   * pg_virtualenv: Fix exit code shown with -s.
+  * pg_createcluster, pg_virtualenv: -o will set postgresql.conf parameters.
 
   [ Martin Pitt ]
   * testsuite, pg_virtualenv: Don't fail if ifconfig is not installed. We

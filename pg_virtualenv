@@ -5,7 +5,7 @@
 # existing clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2013 Christoph Berg <myon@debian.org>
+# (C) 2012-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,13 +40,15 @@ help ()
     echo "    -v 'version ...'  list of PostgreSQL versions to run [default: latest]"
     echo "    -c 'options'      extra options to pass to pg_createcluster"
     echo "    -i 'initdb opts'  extra initdb options to pass to pg_createcluster"
+    echo "    -o 'guc=value'    postgresql.conf options to pass to pg_createcluster"
     echo "    -s                open a shell when command fails"
     exit ${1:-0}
 }
 
 # option parsing
 PG_VERSIONS=""
-while getopts "ac:i:hsv:" opt ; do
+PGCONF_OPTS=""
+while getopts "ac:i:ho:sv:" opt ; do
     case $opt in
 	a) for d in /usr/lib/postgresql/*/bin/pg_ctl; do
 		# prepend version so latest ends up first (i.e. on port 5432)
@@ -55,6 +57,7 @@ while getopts "ac:i:hsv:" opt ; do
 	c) CREATE_OPTS="$OPTARG" ;;
 	i) INITDB_OPTS="$OPTARG" ;;
 	h) help ;;
+	o) PGCONF_OPTS="$PGCONF_OPTS --pgoption $OPTARG" ;;
 	s) run_shell=1 ;;
 	v) PG_VERSIONS="$OPTARG" ;;
 	*) help 1 ;;
@@ -155,7 +158,7 @@ for v in $PG_VERSIONS; do
 	pg_createcluster \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
-	    ${CREATE_OPTS:-} --start $v regress -- \
+	    ${CREATE_OPTS:-} ${PGCONF_OPTS:-} --start $v regress -- \
 	    --username="$PGUSER" --pwfile="$PWFILE" ${INITDB_OPTS:-}
 	# in fakeroot, the username will likely default to "postgres" otherwise
     )

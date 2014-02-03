@@ -54,6 +54,11 @@ Extra options to pass to B<pg_createcluster>.
 
 Extra initdb options to pass to B<pg_createcluster>.
 
+=item B<-o> I<guc>B<=>I<value>
+
+Configuration option to set in the C<postgresql.conf> file, passed to
+B<pg_createcluster>.
+
 =item B<-s>
 
 Launch a shell inside the virtual environment when I<command> fails.

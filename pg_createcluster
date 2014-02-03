@@ -4,7 +4,7 @@
 # the postgresql-common infrastructure.
 #
 # (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2013 Christoph Berg <myon@debian.org>
+# (C) 2012-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -203,6 +203,7 @@ my $cleanup_cruft = 0;
 # command line arguments
 
 my $startconf = '';
+my $pgoptions = [];
 my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 my $environmentfile = "$PgCommon::common_confdir/environment";
 
@@ -210,6 +211,9 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
     'start' => \$start, 'e|encoding=s' => \$encoding, 
     'l|logfile=s' => \$custom_logfile, 'start-conf=s' => \$startconf,
+    'o|pgoption=s' => sub { $_[1] =~ /(.*?)=(.*)/ or error ("No '=' in pgoption '$_[1]'");
+	push @pgoptions, [$1, $2];
+    },
     'createclusterconf=s' => \$createclusterconf,
     'environment=s' => \$environmentfile,
     'p|port=i' => \$port, 'locale=s' => \$locale,
@@ -276,9 +280,9 @@ if ($ownergid) {
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 
 ($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
-error 'invalid version' unless defined $version;
+error "invalid version '$ARGV[0]'" unless defined $version;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
-error 'invalid cluster name' unless defined $cluster;
+error "invalid cluster name '$ARGV[1]'" unless defined $cluster;
 splice @ARGV, 0, 2;
 
 # initdb options passed after --
@@ -534,6 +538,11 @@ foreach my $guc (sort keys %defaultconf) {
 	$guc, replace_v_c ($defaultconf{$guc}, $version, $cluster);
 }
 
+# process --pgoption parameters
+foreach my $guc (@pgoptions) {
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $guc->[0], $guc->[1];
+}
+
 # start it if requested
 if ($start) {
     system 'pg_ctlcluster', $version, $cluster, 'start';
@@ -699,6 +708,10 @@ Set the initial value in the C<start.conf> configuration file. See B<STARTUP
 CONTROL> below. By default, B<auto> is used, which means that the cluster is
 handled by C</etc/init.d/postgresql>, i. e. starts and stops
 automatically on system boot.
+
+=item B<-o> I<guc>B<=>I<value>, B<--pgoption> I<guc>B<=>I<value>
+
+Configuration option to set in the new C<postgresql.conf> file.
 
 =item B<--createclusterconf=>I<file>
 
