@@ -20,6 +20,7 @@ postgresql-common (153) UNRELEASED; urgency=medium
     need to include it in their debian/tests/control files.
   * pgxs_debian_control.mk: Add "clean: debian/control" and
     ".PHONY: debian/control".
+  * pg_virtualenv: Fix exit code shown with -s.
 
   [ Martin Pitt ]
   * testsuite, pg_virtualenv: Don't fail if ifconfig is not installed. We
