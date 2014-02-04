@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Create a throw-away PostgreSQL environment for running regression tests. This
 # happens in a temp dir/on unshared tmpfses, so does not interfere with
@@ -17,7 +17,7 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-set -eu
+set -e # no -u here as that breaks PGCONF_OPTS[@]
 
 case ${LD_PRELOAD:-} in
     *fakeroot*) NONROOT=1 ;;
@@ -47,7 +47,7 @@ help ()
 
 # option parsing
 PG_VERSIONS=""
-PGCONF_OPTS=""
+PGCONF_OPTS=()
 while getopts "ac:i:ho:sv:" opt ; do
     case $opt in
 	a) for d in /usr/lib/postgresql/*/bin/pg_ctl; do
@@ -57,7 +57,7 @@ while getopts "ac:i:ho:sv:" opt ; do
 	c) CREATE_OPTS="$OPTARG" ;;
 	i) INITDB_OPTS="$OPTARG" ;;
 	h) help ;;
-	o) PGCONF_OPTS="$PGCONF_OPTS --pgoption $OPTARG" ;;
+	o) PGCONF_OPTS+=("--pgoption" "$OPTARG") ;;
 	s) run_shell=1 ;;
 	v) PG_VERSIONS="$OPTARG" ;;
 	*) help 1 ;;
@@ -158,7 +158,7 @@ for v in $PG_VERSIONS; do
 	pg_createcluster \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
-	    ${CREATE_OPTS:-} ${PGCONF_OPTS:-} --start $v regress -- \
+	    ${CREATE_OPTS:-} "${PGCONF_OPTS[@]}" --start $v regress -- \
 	    --username="$PGUSER" --pwfile="$PWFILE" ${INITDB_OPTS:-}
 	# in fakeroot, the username will likely default to "postgres" otherwise
     )
