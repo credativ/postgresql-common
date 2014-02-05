@@ -32,6 +32,8 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * debian/postgresql-common.triggers: Also trigger on
     /usr/share/postgresql/, so that installation of new server versions builds
     the corresponding dictionaries.
+  * init.d-functions, start(): Update SELinux label of /run/postgresql if
+    restorecon is installed. Thanks Martin Lang! (Closes: #737661)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 12:49:19 +0100
 
