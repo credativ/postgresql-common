@@ -1,4 +1,4 @@
-postgresql-common (153) UNRELEASED; urgency=medium
+postgresql-common (153) unstable; urgency=medium
 
   [ Christoph Berg ]
   * Replace the static logrotate configuration by generating the file
@@ -37,7 +37,7 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * init.d-functions, start(): Update SELinux label of /run/postgresql if
     restorecon is installed. Thanks Martin Lang! (Closes: #737661)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Jan 2014 12:49:19 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 06 Feb 2014 15:21:00 +0100
 
 postgresql-common (152) unstable; urgency=low
 
