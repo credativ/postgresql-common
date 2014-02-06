@@ -88,6 +88,11 @@ I<build-dir> is omitted, the top source directory is used.
 
 =back
 
+Sometimes it is desirable to run extra code per version before invoking the
+action, in that case the loop over supported versions needs to be in the
+calling script. To facilitate this mode, actions can also be called as
+I<action>B<->I<version>. See the installcheck example below.
+
 =head1 SUPPORTED VERSIONS
 
 B<pg_buildext> reads C<debian/pgversions> to decide which PostgreSQL to build
@@ -172,6 +177,14 @@ configure the list of supported versions on your system.
   #!/bin/sh
   pg_buildext installcheck
   # alternatively: pg_buildext installcheck build-%v
+
+  # Running extra code before invoking the actual action:
+  set -e
+  for v in $(pg_buildext supported-versions); do
+	  test -L build-$v/sql || ln -s ../sql build-$v/
+	  test -L build-$v/expected || ln -s ../expected build-$v/
+	  pg_buildext installcheck-$v build-$v
+  done
 
 =back
 

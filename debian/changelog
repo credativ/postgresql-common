@@ -13,8 +13,8 @@ postgresql-common (153) UNRELEASED; urgency=medium
   * t/020_create_sql_remove.t: Make pipe writes unbuffered.
   * pg_buildext: Document the loop action (present since version 141).
   * pg_buildext: Add "installcheck" action for use with autopkgtest.
-  * postgresql-common: In /usr/share/postgresql-common/pgdg/,
-    install apt.postgresql.org.sh to enable activating the pgdg repository.
+  * pg_buildext: Support $action-$version when the loop is contained in the
+    calling script. (Mostly useful for installcheck-x.y.)
   * postgresql-server-dev-all: Add "make" to depends because pg_buildext is
     mostly useless without it; extensions using autopkgtest would otherwise
     need to include it in their debian/tests/control files.
@@ -22,6 +22,8 @@ postgresql-common (153) UNRELEASED; urgency=medium
     ".PHONY: debian/control".
   * pg_virtualenv: Fix exit code shown with -s.
   * pg_createcluster, pg_virtualenv: -o will set postgresql.conf parameters.
+  * postgresql-common: In /usr/share/postgresql-common/pgdg/,
+    install apt.postgresql.org.sh to enable activating the pgdg repository.
 
   [ Martin Pitt ]
   * testsuite, pg_virtualenv: Don't fail if ifconfig is not installed. We

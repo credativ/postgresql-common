@@ -19,7 +19,7 @@
 set -e
 
 action="$1"
-if [ -d "$2" ]; then # compat mode: $2 is source directory
+if [ -d "$2" ] && [ "$3" ]; then # compat mode: $2 is source directory
     srcdir="$2"
     shift
 else
@@ -141,6 +141,22 @@ versions() {
 	esac
     done < debian/pgversions
 }
+
+# when a version is included in the action, just act on this one (this is
+# useful if some extra work needs to be done per version, so the loop over
+# supported-versions needs to be in the script calling pg_buildext)
+
+case $action in
+    configure-*|build-*|install-*|clean-*|installcheck-*)
+	a=${action%%-*}
+	v=${action##$a-}
+	echo "### $a $v ###"
+	$a $v
+	exit
+	;;
+esac
+
+# loop over versions
 
 VERSIONS=`versions`
 
