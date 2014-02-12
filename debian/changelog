@@ -1,3 +1,9 @@
+postgresql-common (154) UNRELEASED; urgency=medium
+
+  * debian/postgresql-common.preinst: Drop obsolete upgrade migration.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 12 Feb 2014 12:46:34 +0100
+
 postgresql-common (153) unstable; urgency=medium
 
   [ Christoph Berg ]

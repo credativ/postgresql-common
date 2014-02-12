@@ -2,58 +2,8 @@
 
 set -e
 
-# remove a no-longer used conffile
-rm_conffile()
-{
-    PKGNAME="$1"
-    CONFFILE="$2"
-
-    if [ -e "$CONFFILE" ]; then
-        md5sum="`md5sum \"$CONFFILE\" | sed -e \"s/ .*//\"`"
-        old_md5sum="`dpkg-query -W -f='${Conffiles}' $PKGNAME | sed -n -e \"\\\\' $CONFFILE'{s/ obsolete$//;s/.* //p}\"`"
-        if [ "$md5sum" != "$old_md5sum" ]; then
-            echo "Obsolete conffile $CONFFILE has been modified by you."
-            echo "Saving as $CONFFILE.dpkg-bak ..."
-            mv -f "$CONFFILE" "$CONFFILE".dpkg-bak
-        else
-            echo "Removing obsolete conffile $CONFFILE ..." 
-            rm -f "$CONFFILE"
-        fi
-    fi
-}
-
 case "$1" in
     install|upgrade)
-        # Upgrade from previous versions
-        if dpkg --compare-versions "$2" lt-nl "96"; then
-            rm_conffile postgresql-common /etc/postgresql-common/autovacuum.conf
-            rm_conffile postgresql-common /etc/cron.d/postgresql-common
-        fi
-
-	if dpkg --compare-versions "$2" lt-nl "111~"; then
-	    # versions 109 and 110 installed common init script with wrong
-	    # priority
-	    for l in 2 3 4 5; do
-		if [ -L /etc/rc${l}.d/S20postgresql -a ! -L /etc/rc${l}.d/S19postgresql ]; then
-		    echo "Fixing init script priority of /etc/rc${l}.d/S20postgresql to S19..." >&2
-		    mv /etc/rc${l}.d/S20postgresql /etc/rc${l}.d/S19postgresql
-		fi
-	    done
-	    for l in 0 1 6; do
-		if [ -L /etc/rc${l}.d/K20postgresql -a ! -L /etc/rc${l}.d/K21postgresql ]; then
-		    echo "Fixing init script priority of /etc/rc${l}.d/K20postgresql to K21..." >&2
-		    mv /etc/rc${l}.d/K20postgresql /etc/rc${l}.d/K21postgresql
-		fi
-	    done
-	fi
-	# Remove obsolete init script from postgresql-8.3. It provides
-	# "postgresql" which is also provided by our common init script, and
-	# insserv chokes on this. Note that there is no reason to stop/restart
-	# postgresql-8.3, the new init script will just take over.
-	if dpkg --compare-versions "$2" lt-nl "112~"; then
-	    rm_conffile postgresql-8.3 /etc/init.d/postgresql-8.3
-	fi
-
 	dpkg-divert --package postgresql-common --rename --divert /usr/bin/pg_config.libpq-dev --add /usr/bin/pg_config
         ;;
 
