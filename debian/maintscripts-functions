@@ -7,6 +7,17 @@ _link_manpages() {
     [ -n "$MANS" ] || return 0
 
     SLAVES=$(for i in $MANS; do TARGET=$(echo $i | sed "s/postgresql\/$1\///"); echo -n " --slave $TARGET $(basename $i) $i"; done)
+    # pg_basebackup once moved from server to client; upgrades are still
+    # affected by this for quite a while, so remove this alternative before
+    # reinstalling it to avoid failure. This needs to be kept until we stop
+    # supporting upgrades from -9.1.
+    if [ "$2" = "psql.1.gz" ]; then
+	OUT=$(update-alternatives --display postmaster.1.gz) || true
+	if [ "${OUT#*auto mode}" != "$OUT" ] && [ "${OUT#*pg_basebackup.1.gz}" != "$OUT" ]; then
+            echo "Adjusting postmaster.1.gz alternatives for pg_basebackup move..."
+	    update-alternatives --remove postmaster.1.gz /usr/share/postgresql/9.1/man/man1/postmaster.1.gz
+	fi
+    fi
     update-alternatives --install /usr/share/man/man1/$2 \
 	$2 /usr/share/postgresql/$1/man/man1/$2 \
 	$(echo "$1" | tr -cd 0-9) $SLAVES
