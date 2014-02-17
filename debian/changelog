@@ -5,6 +5,7 @@ postgresql-common (154) UNRELEASED; urgency=medium
     from server to client still affects upgrades from -9.1 to -9.3. Place the
     upgrade fix here instead of postgresql-9.1.preinst (which does not exist
     any more now). (LP: #1270597)
+  * Update Vcs-Bzr:, bzr.d.o. does not work any more.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 12 Feb 2014 12:46:34 +0100
 
