@@ -34,6 +34,7 @@ like $$outref, qr/No space left on device/i,
     'pg_createcluster fails due to insufficient disk space';
 like $$outref, qr/\nls><ls\n/, 'does not leave files behind';
 
+check_clean;
 
 # check disk full conditions on startup
 my $cmd = <<EOF;
@@ -53,6 +54,8 @@ echo '-- end full lib --'
 echo '-- full lib log --'
 cat /var/log/postgresql/postgresql-$MAJORS[-1]-test.log
 echo '-- end full lib log --'
+rm /var/lib/postgresql/cruft
+pg_dropcluster $MAJORS[-1] test --stop
 EOF
 
 $result = exec_as 'root', "echo '$cmd' | unshare -m sh", $outref;
