@@ -4,7 +4,7 @@
 # tmpfses, so does not interfere with installed clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2013 Christoph Berg <myon@debian.org>
+# (C) 2012-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -83,8 +83,9 @@ fi
 
 # let everything happen in overlay tmpfses to avoid interfering with already
 # existing clusters; this also speeds up testing
+dirs="/etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
 created_dirs=""
-for d in /etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
+for d in $dirs; do
     if ! [ -d $d ]; then
         created_dirs="$created_dirs $d"
         mkdir -p $d
@@ -92,9 +93,14 @@ for d in /etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/pos
     mount -n -t tmpfs -o mode=755 tmpfs $d
 done
 # clean up created directories after us
-if [ -n "$created_dirs" ]; then
-    trap "umount $created_dirs; rmdir --ignore-fail-on-non-empty -p $created_dirs" 0 HUP INT QUIT ILL ABRT PIPE TERM
-fi
+echo "created_dirs is $created_dirs"
+cleanup () {
+    umount $dirs
+    if [ "$created_dirs" ]; then
+        rmdir --ignore-fail-on-non-empty -p $created_dirs
+    fi
+}
+trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
 chown root:postgres /var/log/postgresql
 chmod 1775 /var/log/postgresql
 chown postgres:postgres /var/run/postgresql

@@ -10,6 +10,7 @@ postgresql-common (154) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
   * t/031_errors_disk_full.t: Drop cluster after tests.
+  * testsuite: Always umount the tmpfs overlays.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 19 Feb 2014 15:46:05 +0100
 
