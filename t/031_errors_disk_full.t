@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 16;
+use Test::More tests => 26;
 
 my $outref;
 
