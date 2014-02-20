@@ -93,7 +93,6 @@ for d in $dirs; do
     mount -n -t tmpfs -o mode=755 tmpfs $d
 done
 # clean up created directories after us
-echo "created_dirs is $created_dirs"
 cleanup () {
     umount $dirs
     if [ "$created_dirs" ]; then

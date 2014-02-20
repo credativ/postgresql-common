@@ -16,6 +16,7 @@ my $cmd = <<EOF;
 exec 2>&1
 set -e
 mkdir -p /var/lib/postgresql
+trap "umount /var/lib/postgresql" 0 HUP INT QUIT ILL ABRT PIPE TERM
 mount -t tmpfs -o size=10000000 none /var/lib/postgresql
 # this is supposed to fail
 LC_MESSAGES=C pg_createcluster $MAJORS[-1] test && exit 1 || true
@@ -40,7 +41,9 @@ check_clean;
 my $cmd = <<EOF;
 set -e
 export LC_MESSAGES=C
-mkdir -p /etc/postgresql /var/lib/postgresql /var/log/postgresql
+dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql"
+mkdir -p \$dirs
+trap "umount \$dirs" 0 HUP INT QUIT ILL ABRT PIPE TERM
 mount -t tmpfs -o size=1000000 none /etc/postgresql
 mount -t tmpfs -o size=50000000 none /var/lib/postgresql
 mount -t tmpfs -o size=1000000 none /var/log/postgresql
