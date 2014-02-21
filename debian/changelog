@@ -1,4 +1,4 @@
-postgresql-common (154) UNRELEASED; urgency=medium
+postgresql-common (154) unstable; urgency=medium
 
   [ Martin Pitt ]
   * debian/postgresql-common.preinst: Drop obsolete upgrade migration.
@@ -12,7 +12,7 @@ postgresql-common (154) UNRELEASED; urgency=medium
   * t/031_errors_disk_full.t: Drop cluster after tests.
   * testsuite: Always umount the tmpfs overlays.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Wed, 19 Feb 2014 15:46:05 +0100
+ -- Christoph Berg <myon@debian.org>  Fri, 21 Feb 2014 08:18:46 +0100
 
 postgresql-common (153) unstable; urgency=medium
 
