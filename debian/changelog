@@ -1,3 +1,9 @@
+postgresql-common (155) UNRELEASED; urgency=medium
+
+  * pg_ctlcluster: Add status action.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 27 Feb 2014 19:06:34 +0100
+
 postgresql-common (154) unstable; urgency=medium
 
   [ Martin Pitt ]

@@ -6,7 +6,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2009 Cyril Bouthors <cyril@bouthors.org>
-# (C) 2013 Christoph Berg <myon@debian.org>
+# (C) 2013-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -303,6 +303,10 @@ sub reload {
     exec $pg_ctl, '-D', $info{'pgdata'}, '-s', @pg_ctl_opts_from_cli, 'reload';
 }
 
+sub status {
+    exec $pg_ctl, '-D', $info{'pgdata'}, 'status';
+}
+
 sub promote {
     exec $pg_ctl, '-D', $info{'pgdata'}, '-s', @pg_ctl_opts_from_cli, 'promote';
 }
@@ -420,14 +424,10 @@ if( $> != $info{'owneruid'} ) {
 
 $pg_ctl = get_program_path 'pg_ctl', $version;
 
-%actions = ('start' => \&start, 'stop' => \&stop, 'reload' => \&reload,
-            'restart' => \&restart, 'promote' => \&promote);
-
-if ($actions{$action}) {
-    exit $actions{$action}->();
+if ($action =~ /^(start|stop|restart|reload|status|promote)$/) {
+    &$action;
 } else {
-    error 'Error: invalid action (must be one of: '.
-        (join ', ', sort keys %actions) . ')';
+    error 'Invalid action (must be one of: start stop restart reload status promote)';
 }
 
 __END__
