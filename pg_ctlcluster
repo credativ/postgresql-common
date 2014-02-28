@@ -335,6 +335,7 @@ if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
     exit 1;
 }
 
+# accept both "version cluster action" and "version[-/]cluster action"
 if (@ARGV < 2 or (@ARGV < 3 and $ARGV[0] !~ m![-/]!)) {
     print "Usage: $0 <version> <cluster> <action>\n";
     exit 1;
@@ -463,6 +464,9 @@ configuration parameters and paths.
 
 You have to start this program as the user who owns the database cluster or as
 root.
+
+To ease integration with B<systemd> operation, the alternative syntax
+"B<pg_ctlcluster> I<version>B<->I<cluster> I<action>" is also supported.
 
 =head1 ACTIONS
 
