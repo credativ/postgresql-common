@@ -3,6 +3,7 @@ postgresql-common (155) UNRELEASED; urgency=medium
   * Use "mount --make-rprivate /" inside our "unshare -m" calls.
     (See #739593.)
   * pg_ctlcluster: Add status action, add --foreground option.
+  * Add systemd unit files (WIP, not yet installed).
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 24 Feb 2014 15:52:12 +0100
 

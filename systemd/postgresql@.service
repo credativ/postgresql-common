@@ -1,0 +1,14 @@
+[Unit]
+Description=PostgreSQL Cluster %i
+ConditionPathExists=/etc/postgresql/%I/postgresql.conf
+
+[Service]
+ExecStart=@/usr/bin/pg_ctlcluster postgresql@%i --foreground %i start
+ExecStop=/usr/bin/pg_ctlcluster -m fast %i stop
+ExecReload=/usr/bin/pg_ctlcluster %i reload
+PIDFile=/var/run/postgresql/%i.pid
+Restart=on-failure
+SyslogIdentifier=postgresql@%i
+
+[Install]
+WantedBy=multi-user.target
