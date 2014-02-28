@@ -1,7 +1,7 @@
 #!/usr/bin/perl -wT
 
 # multiversion/cluster aware pg_ctl wrapper; this also supplies the correct
-# configuration parameters to 'start', and makes sure that a postmaster really
+# configuration parameters to 'start', and makes sure that postgres really
 # stops on 'stop'.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
@@ -60,7 +60,7 @@ sub get_running_pid {
 }
 
 # If a pid file is already present, delete it if it is stale/invalid, or exit
-# with a notice if it belongs to an already running postmaster.
+# with a notice if it belongs to an already running postgres.
 sub start_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     if (PgCommon::check_pidfile_running $pidfile) {
@@ -226,7 +226,7 @@ sub start {
             last;
         }
 
-        # if the postmaster wrote something, but the process does not exist any
+        # if postgres wrote something, but the process does not exist any
         # more, there must be a problem and we can stop immediately
         last if ($currlogsize > $logsize && !PgCommon::check_pidfile_running $pidfile);
     }
@@ -288,7 +288,7 @@ sub stop {
         }
     }
 
-    # external_pid_file files are currently not removed by postmaster itself
+    # external_pid_file files are currently not removed by postgres itself
     if ($result == 0) {
 	unlink "/var/run/postgresql/$version-$cluster.pid";
     }
@@ -413,7 +413,7 @@ if ($action ne 'stop' && $info{'statstempdir'} && ! -d $info{'statstempdir'}) {
 }
 
 if ($> == 0) {
-    # have the postmaster start with increased OOM killer protection; 9.1 and
+    # have postgres start with increased OOM killer protection; 9.1 and
     # later has builtin support for resetting the adjustment of child processes
     if ($action eq 'start' && $version >= '9.1') {
         if (-w '/proc/self/oom_score_adj') {
@@ -452,11 +452,11 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action> B<--> [I<pg_ctl options>]
 
-where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<promote>
+where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<status>|B<promote>
 
 =head1 DESCRIPTION
 
-This program controls the B<postmaster> server for a particular cluster. It
+This program controls the B<postgres> server for a particular cluster. It
 essentially wraps the L<pg_ctl(1)> command. It determines the cluster version
 and data path and calls the right version of B<pg_ctl> with appropriate
 configuration parameters and paths.
@@ -473,13 +473,13 @@ root.
 A log file for this specific cluster is created if it does not exist yet (by
 default,
 C</var/log/postgresql/postgresql->I<cluster-version>C<->I<cluster-name>C<.log>),
-and a PostreSQL server process (L<postmaster(1)>) is started on it. Exits with
+and a PostreSQL server process (L<postgres(1)>) is started on it. Exits with
 0 on success, with 2 if the server is already running, and with 1 on other
 failure conditions.
 
 =item B<stop>
 
-Stops the L<postmaster(1)> server of the given cluster. By default, "smart"
+Stops the L<postgres(1)> server of the given cluster. By default, "smart"
 shutdown mode is used, which waits until all clients disconnected.
 
 =item B<restart>
@@ -490,6 +490,11 @@ Stops the server if it is running and starts it (again).
 
 Causes the configuration files to be re-read without a full shutdown of the
 server.
+
+=item B<status>
+
+Checks whether a server is running. If it is, the PID and the command line
+options that were used to invoke it are displayed.
 
 =item B<promote>
 
@@ -508,7 +513,7 @@ For B<stop> and B<restart>, the "fast" mode is used which rolls back all active
 transactions, disconnects clients immediately and thus shuts down cleanly. If
 that does not work, shutdown is attempted again in "immediate" mode, which can
 leave the cluster in an inconsistent state and thus will lead to a recovery run
-at the next start. If this still does not help, the B<postmaster> process is
+at the next start. If this still does not help, the B<postgres> process is
 killed.  Exits with 0 on success, with 2 if the server is not running, and with
 1 on other failure conditions. This mode should only be used when the machine
 is about to be shut down.
@@ -524,13 +529,13 @@ Start B<postgres> in foreground, without daemonizing via B<pg_ctl>.
 
 =item B<-o>|B<--options> I<option>
 
-Pass given I<option> as command line option to the C<postmaster> process. It is
-possible to specify B<-o> multiple times. See L<postmaster(1)> for a
+Pass given I<option> as command line option to the C<postgres> process. It is
+possible to specify B<-o> multiple times. See L<postgres(1)> for a
 description of valid options.
 
 =item I<pg_ctl options>
 
-Pass given I<pg_ctl options> as command line options to pg_ctl. See L<pg_ctl(1)>
+Pass given I<pg_ctl options> as command line options to B<pg_ctl>. See L<pg_ctl(1)>
 for a description of valid options.
 
 =back
@@ -554,7 +559,7 @@ section "STARTUP CONTROL" in L<pg_createcluster(8)> for details.
 =head1 SEE ALSO
 
 L<pg_createcluster(8)>, L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>,
-L<postmaster(1)>
+L<postgres(1)>
 
 =head1 AUTHOR
 
