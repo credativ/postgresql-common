@@ -25,6 +25,7 @@ use PgCommon;
 use Fcntl 'SEEK_SET';
 
 my $mode = 'smart'; # default shutdown mode
+my $foreground = 0; # don't daemonize, use postgres instead of pg_ctl
 
 # Check for known broken configurations of this cluster
 sub check_valid_config {
@@ -178,6 +179,12 @@ sub start {
     $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
     ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
 
+    if ($foreground) {
+        my $postgres = get_program_path 'postgres', $version;
+        exec '/bin/sh', '-c', "exec $postgres $postmaster_opts" or
+            error "Executing $postgres failed: $!"
+    }
+
     # only supply or default logfile path when none is given explicitly in
     # postgresql.conf
     @options = ($pg_ctl, 'start', '-D', $info{'pgdata'});
@@ -318,6 +325,7 @@ sub promote {
 exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
     'f|force' => \$force,
     'm|mode=s' => \$mode,
+    'foreground' => \$foreground,
 );
 
 if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
@@ -327,13 +335,17 @@ if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
     exit 1;
 }
 
-if ($#ARGV < 2) {
+if (@ARGV < 2 or (@ARGV < 3 and $ARGV[0] !~ m![-/]!)) {
     print "Usage: $0 <version> <cluster> <action>\n";
     exit 1;
 }
 
 $version = shift @ARGV;
-$cluster = shift @ARGV;
+if ($version =~ m!^(\d+\.\d)[-/](.+)!) {
+    ($version, $cluster) = ($1, $2);
+} else {
+    $cluster = shift @ARGV;
+}
 $action = shift @ARGV;
 
 @pg_ctl_opts_from_cli=();
@@ -505,6 +517,10 @@ is about to be shut down.
 
 Shutdown mode to use for B<stop> and B<restart> actions, default is B<smart>.
 See pg_ctl(1) for documentation.
+
+=item B<--foreground>
+
+Start B<postgres> in foreground, without daemonizing via B<pg_ctl>.
 
 =item B<-o>|B<--options> I<option>
 
