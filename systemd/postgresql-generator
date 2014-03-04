@@ -1,9 +1,13 @@
 #!/bin/sh
 
+# This systemd generator creates dependency symlinks that make all PostgreSQL
+# clusters with "auto" in their start.conf file be started/stopped/reloaded
+# when postgresql.service is started/stopped/reloaded.
+
 set -eu
 
 gendir="$1"
-wantdir="$1/postgresql.target.wants"
+wantdir="$1/postgresql.service.wants"
 pgservice="/lib/systemd/system/postgresql@.service"
 
 mkdir -p "$wantdir"
