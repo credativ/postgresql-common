@@ -15,7 +15,7 @@ my $outref;
 my $cmd = <<EOF;
 exec 2>&1
 set -e
-mount --make-rprivate /
+mount --make-rprivate / || :
 mkdir -p /var/lib/postgresql
 trap "umount /var/lib/postgresql" 0 HUP INT QUIT ILL ABRT PIPE TERM
 mount -t tmpfs -o size=10000000 none /var/lib/postgresql
@@ -41,7 +41,7 @@ check_clean;
 # check disk full conditions on startup
 my $cmd = <<EOF;
 set -e
-mount --make-rprivate /
+mount --make-rprivate / || :
 export LC_MESSAGES=C
 dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql"
 mkdir -p \$dirs
