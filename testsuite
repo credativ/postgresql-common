@@ -83,7 +83,7 @@ fi
 
 # let everything happen in overlay tmpfses to avoid interfering with already
 # existing clusters; this also speeds up testing
-mount --make-rprivate / || : # reset / to private mounts (systemd changes this to shared)
+mount --make-rprivate / 2> /dev/null || : # reset / to private mounts (systemd changes this to shared)
 dirs="/etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
 created_dirs=""
 for d in $dirs; do

@@ -97,7 +97,7 @@ if [ "${NONROOT:-}" ]; then
 else
     # let everything happen in overlay tmpfses to avoid interfering with already
     # existing clusters; this also speeds up testing
-    mount --make-rprivate / || : # reset / to private mounts (systemd changes this to shared)
+    mount --make-rprivate / 2> /dev/null || : # reset / to private mounts (systemd changes this to shared)
     created_dirs=""
     for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
 	if ! [ -d $d ]; then
