@@ -41,7 +41,7 @@ sub check_cluster {
 
     # create a table and stuff some ISO-8859-5 characters into it (для)
     is ((exec_as 'postgres', "createdb test", $outref), 0, 'creating test database');
-    is_program_out 'postgres', "printf '\324\333\357' | psql -c \"set client_encoding='iso-8859-5'; 
+    is_program_out 'postgres', "printf '\324\333\357' | psql -qc \"set client_encoding='iso-8859-5'; 
 	create table t (x varchar); copy t from stdin\" test", 0, '',
 	'creating table with ISO-8859-5 characters';
     is_program_out 'postgres', "echo \"set client_encoding='utf8'; select * from t\" | psql -Atq test", 0,
