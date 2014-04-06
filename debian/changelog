@@ -7,6 +7,7 @@ postgresql-common (155) UNRELEASED; urgency=medium
   * Add systemd unit files (WIP, not yet installed).
   * postgresql-client: Wrap pg_recvlogical, introduced in 9.4.
   * t/050_encodings.t: 9.4 emits COPY command tags, suppress with psql -q.
+  * postgresql: Add Suggests: postgresql-doc. (Closes: #743755)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 24 Mar 2014 10:34:08 +0100
 

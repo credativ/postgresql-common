@@ -80,6 +80,7 @@ Description: extension build tool for multiple PostgreSQL versions
 Package: postgresql
 Architecture: all
 Depends: postgresql-${default-version}, ${misc:Depends}
+Suggests: postgresql-doc
 Description: object-relational SQL database (supported version)
  This metapackage always depends on the currently supported PostgreSQL
  database server version.
