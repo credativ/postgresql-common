@@ -29,9 +29,9 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales
     get_cluster_databases read_cluster_conf_file read_pg_hba/;
-our @EXPORT_OK = qw/$confroot read_conf_file get_conf_value set_conf_value
-    disable_conf_value replace_conf_value cluster_data_directory
-    get_file_device read_pidfile check_pidfile_running/;
+our @EXPORT_OK = qw/$confroot quote_conf_value read_conf_file get_conf_value
+    set_conf_value set_conffile_value disable_conf_value replace_conf_value
+    cluster_data_directory get_file_device read_pidfile check_pidfile_running/;
 
 # Print an error message to stderr and exit with status 1
 sub error {
@@ -92,6 +92,16 @@ sub config_bool {
     return undef;
 }
 
+# Quotes a value with single quotes
+# Arguments: <value>
+# Returns: quoted string
+sub quote_conf_value ($) {
+    my $value = shift;
+    return $value if ($value =~ /^-?[\w.]+$/);
+    $value =~ s/'/''/g;
+    return "'$value'";
+}
+
 # Read a 'var = value' style configuration file and return a hash with the
 # values. Error out if the file cannot be read.
 # If the file name ends with '.conf', the keys will be normalized to lower case
@@ -124,12 +134,13 @@ sub read_conf_file {
 		    $conf{$k} = $v;
 		}
 
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*'((?:[^']|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
+            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*'((?:[^']|''|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
                 # string value
                 my $v = $2;
                 my $k = $1;
 		$k = lc $k if $_[0] =~ /\.conf$/;
                 $v =~ s/\\(.)/$1/g;
+                $v =~ s/''/'/g;
                 $conf{$k} = $v;
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
                 # simple value
@@ -138,6 +149,7 @@ sub read_conf_file {
 		$k = lc $k if $_[0] =~ /\.conf$/;
                 $conf{$k} = $v;
             } else {
+                chomp;
                 error "Invalid line $. in $_[0]: »$_«";
             }
         }
@@ -169,17 +181,10 @@ sub get_conf_value {
 }
 
 # Set parameter of a PostgreSQL configuration file.
-# Arguments: <version> <cluster> <config file name> <parameter name> <value>
-sub set_conf_value {
-    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
-    my $value;
+# Arguments: <file name> <parameter name> <value>
+sub set_conffile_value {
+    my ($fname, $key, $value) = ($_[0], $_[1], quote_conf_value($_[2]));
     my @lines;
-
-    if ($_[4] =~ /^-?[\w.]+$/) {
-	$value = $_[4];
-    } else {
-	$value = "'$_[4]'";
-    }
 
     # read configuration file lines
     open (F, $fname) or die "Error: could not open $fname for reading";
@@ -189,8 +194,8 @@ sub set_conf_value {
     my $found = 0;
     # first, search for an uncommented setting
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*($_[3])(\s*(?:=|\s)\s*)\w+\b((?:\s*#.*)?)/i or
-	    $lines[$i] =~ /^\s*($_[3])(\s*(?:=|\s)\s*)'[^']*'((?:\s*#.*)?)/i) {
+	if ($lines[$i] =~ /^\s*($key)(\s*(?:=|\s)\s*)\w+\b((?:\s*#.*)?)/i or
+	    $lines[$i] =~ /^\s*($key)(\s*(?:=|\s)\s*)'[^']*'((?:\s*#.*)?)/i) {
 	    $lines[$i] = "$1$2$value$3\n";
 	    $found = 1;
 	    last;
@@ -201,8 +206,8 @@ sub set_conf_value {
     # of appending
     if (!$found) {
 	for (my $i=0; $i <= $#lines; ++$i) {
-	    if ($lines[$i] =~ /^\s*#\s*($_[3])(\s*(?:=|\s)\s*)\w+\b((?:\s*#.*)?)/i or
-		$lines[$i] =~ /^\s*#\s*($_[3])(\s*(?:=|\s)\s*)'[^']*'((?:\s*#.*)?)/i) {
+	    if ($lines[$i] =~ /^\s*#\s*($key)(\s*(?:=|\s)\s*)\w+\b((?:\s*#.*)?)/i or
+		$lines[$i] =~ /^\s*#\s*($key)(\s*(?:=|\s)\s*)'[^']*'((?:\s*#.*)?)/i) {
 		$lines[$i] = "$1$2$value$3\n";
 		$found = 1;
 		last;
@@ -211,7 +216,7 @@ sub set_conf_value {
     }
 
     # not found anywhere, append it
-    push (@lines, "$_[3] = $value\n") unless $found;
+    push (@lines, "$key = $value\n") unless $found;
 
     # write configuration file lines
     open (F, ">$fname.new") or die "Error: could not open $fname.new for writing";
@@ -223,9 +228,15 @@ sub set_conf_value {
     # copy permissions
     my @st = stat $fname or die "stat: $!";
     chown $st[4], $st[5], "$fname.new"; # might fail as non-root
-    chmod $st[2], "$fname.new" or die "chmod: $1";
+    chmod $st[2], "$fname.new" or die "chmod: $!";
 
-    rename "$fname.new", "$fname";
+    rename "$fname.new", "$fname" or die "rename $fname.new $fname: $!";
+}
+
+# Set parameter of a PostgreSQL cluster configuration file.
+# Arguments: <version> <cluster> <config file name> <parameter name> <value>
+sub set_conf_value {
+    return set_conffile_value "$confroot/$_[0]/$_[1]/$_[2]", $_[3], $_[4];
 }
 
 # Disable a parameter in a PostgreSQL configuration file by prepending it with

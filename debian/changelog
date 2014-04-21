@@ -8,6 +8,8 @@ postgresql-common (155) UNRELEASED; urgency=medium
   * postgresql-client: Wrap pg_recvlogical, introduced in 9.4.
   * t/050_encodings.t: 9.4 emits COPY command tags, suppress with psql -q.
   * postgresql: Add Suggests: postgresql-doc. (Closes: #743755)
+  * pg_conftool: New script to read and edit PostgreSQL configuration files,
+    based on the existing read/edit functions in PgCommon.pm.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 24 Mar 2014 10:34:08 +0100
 

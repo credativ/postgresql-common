@@ -1,0 +1,150 @@
+#!/usr/bin/perl
+# Read and edit PostgreSQL config files
+# vim:sw=4:et:
+#
+# (C) 2014 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+use strict;
+use warnings;
+use Getopt::Long;
+use lib '/usr/share/postgresql-common';
+use PgCommon qw(quote_conf_value user_cluster_map read_cluster_conf_file
+    read_conf_file set_conffile_value set_conf_value);
+
+## option parsing
+
+sub help ($;$)
+{
+    my ($exit, $error) = @_;
+    print STDERR "Error: $error\n" if ($error);
+    print "Usage:
+$0 [options] [<version> <cluster name>] [<configfile>] show <parameter>|all
+$0 [options] [<version> <cluster name>] [<configfile>] set <parameter> <value>
+
+Options:
+  -v --verbose  Verbose output
+  --help        This help
+";
+    exit $exit;
+}
+
+my $verbose = 0;
+
+help(1) unless GetOptions (
+    'help' => sub { help(0); },
+    'v|verbose' => \$verbose,
+);
+
+# find command in argument array
+my $cmdidx;
+for (my $i = 0; $i < @ARGV; $i++) {
+    if ($ARGV[$i] =~ /^(show|get|set)$/) { # accept "get" as alternative
+        $cmdidx = $i;
+        last;
+    }
+}
+help(1, 'No command given') unless (defined $cmdidx);
+
+my ($version, $cluster, $conffile);
+if ($cmdidx == 0) {
+    ($version, $cluster) = user_cluster_map();
+    $conffile = 'postgresql.conf';
+} elsif ($cmdidx == 1) {
+    ($version, $cluster) = user_cluster_map();
+    $conffile = $ARGV[0];
+} elsif ($cmdidx == 2) {
+    ($version, $cluster, $conffile) = ($ARGV[0], $ARGV[1], 'postgresql.conf');
+} elsif ($cmdidx == 3) {
+    ($version, $cluster, $conffile) = ($ARGV[0], $ARGV[1], $ARGV[2]);
+} else {
+    help(1, 'Too many arguments before command');
+}
+splice @ARGV, 0, $cmdidx; # remove everything before the command
+
+my ($cmd, $key, $value);
+if ($ARGV[0] =~ /^(show|get)$/) {
+    help(1, 'show needs exactly one argument') unless (@ARGV == 2);
+    ($cmd, $key) = ('show', $ARGV[1]);
+} else {
+    help(1, 'set needs exactly two arguments') unless (@ARGV == 3);
+    ($cmd, $key, $value) = ('set', $ARGV[1], $ARGV[2]);
+}
+#print "$version $cluster $conffile $cmd $key $value\n";
+
+## main
+
+if ($cmd eq 'show') {
+    my %conf;
+    if ($conffile =~ m!/!) {
+        %conf = read_conf_file ($conffile);
+    } else {
+        %conf = read_cluster_conf_file ($version, $cluster, $conffile);
+    }
+    if ($key eq 'all') {
+        foreach my $k (sort keys %conf) {
+            printf "%s = %s\n", $k, quote_conf_value($conf{$k});
+        }
+    } elsif (exists $conf{$key}) {
+        printf "%s = %s\n", $key, quote_conf_value($conf{$key});
+    } else {
+        print "# $key not found in $conffile\n" if ($verbose);
+        exit 1;
+    }
+
+} else { # set
+    if ($conffile =~ m!/!) {
+        set_conffile_value ($conffile, $key, $value);
+    } else {
+        set_conf_value ($version, $cluster, $conffile, $key, $value);
+    }
+}
+
+__END__
+
+=head1 NAME
+
+pg_conftool - read and edit PostgreSQL cluster configuration files
+
+=head1 SYNOPSIS
+
+B<pg_conftool> [I<options>] [I<version> I<cluster>] [I<configfile>] B<show> I<parameter>|B<all>
+
+B<pg_conftool> [I<options>] [I<version> I<cluster>] [I<configfile>] B<set> I<parameter> I<value>
+
+=head1 DESCRIPTION
+
+B<pg_conftool> allows to show and set parameters in PostgreSQL configuration
+files.
+
+If I<version> I<cluster> is omitted, it defaults to the default cluster (see
+user_clusters(5) and postgresqlrc(5)). If I<configfile> is omitted, it defaults
+to B<postgresql.conf>. I<configfile> can also be a path, in which case
+I<version> I<cluster> is ignored.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-v>, B<--verbose>
+
+Verbose output.
+
+=back
+
+=head1 SEE ALSO
+
+user_clusters(5), postgresqlrc(5)
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>

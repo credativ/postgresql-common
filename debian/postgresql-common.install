@@ -8,6 +8,7 @@ pg_ctlcluster usr/bin
 pg_upgradecluster usr/bin
 pg_updatedicts usr/sbin
 pg_config usr/bin
+pg_conftool usr/bin
 pg_virtualenv usr/bin
 upgrade-scripts/* usr/share/postgresql-common/upgrade-scripts
 run-upgrade-scripts usr/share/postgresql-common
