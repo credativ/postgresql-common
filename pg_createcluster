@@ -451,12 +451,13 @@ $conf_fn =~tr/./_/;
 my $want_ssl = PgCommon::config_bool($defaultconf{ssl} || 'true');
 
 # Check whether we can access the SSL private key as the cluster owner
-my $key_file = '/etc/ssl/private/ssl-cert-snakeoil.key';
-my $pem_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem';
+my $ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key';
+my $ssl_cert_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem';
+my $ssl_ca_file = "$PgCommon::common_confdir/root.crt";
 my $ssl_key_access;
 my ($uid, $euid, $gid, $egid) = ($<, $>, $(, $));
 change_ugid $owneruid, $ownergid;
-$ssl_key_access = -r $key_file;
+$ssl_key_access = -r $ssl_key_file;
 $> = $euid;
 $< = $uid; 
 $( = $gid;
@@ -465,32 +466,32 @@ die "changing euid back: $!" if $> != $euid;
 die "changing egid back: $!" if $) != $egid;
 
 # enable SSL if we have the snakeoil default certificate
-if ($want_ssl && $newcluster && -e $pem_file && $ssl_key_access) {
+if ($want_ssl && $newcluster && -e $ssl_cert_file && $ssl_key_access) {
     if ($version >= '9.2') {
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-            'ssl_cert_file', $pem_file;
+            'ssl_cert_file', $ssl_cert_file;
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-            'ssl_key_file', $key_file;
+            'ssl_key_file', $ssl_key_file;
     } else {
-        symlink $pem_file, "$datadir/server.crt";
-        symlink $key_file, "$datadir/server.key";
+        symlink $ssl_cert_file, "$datadir/server.crt";
+        symlink $ssl_key_file, "$datadir/server.key";
     }
 
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';
 }
 
 # SSL client certificate CA
-if ($want_ssl && $newcluster && -e "$PgCommon::common_confdir/root.crt") {
+if ($want_ssl && $newcluster && -e $ssl_ca_file) {
     # check if we have a cert in there or just the boilerplate installed by our postinst
-    open F, "$PgCommon::common_confdir/root.crt";
+    open F, $ssl_ca_file;
     my $val;
     read F, $val, 4096;
     if ($val =~ /^-----BEGIN CERTIFICATE-----/m) {
         if ($version >= '9.2') {
             PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
-                'ssl_ca_file', "$PgCommon::common_confdir/root.crt";
+                'ssl_ca_file', $ssl_ca_file;
         } else {
-            symlink "$PgCommon::common_confdir/root.crt", $datadir.'/root.crt';
+            symlink $ssl_ca_file, $datadir.'/root.crt';
         }
     }
 }
