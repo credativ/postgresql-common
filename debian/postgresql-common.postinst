@@ -5,6 +5,23 @@ set -e
 
 SSL_ROOT=/etc/postgresql-common/root.crt
 
+setup_createclusterconf ()
+{
+    SSL="true"
+    db_get postgresql-common/ssl
+    [ "$RET" ] && SSL="$RET"
+
+    CCTEMPLATE="/usr/share/postgresql-common/createcluster.conf"
+    CCTMP=`mktemp --tmpdir postgresql-common.XXXXXX`
+    trap "rm -f $CCTMP" 0 2 3 15
+    sed -e "s/__SSL__/$SSL/" $CCTEMPLATE > $CCTMP
+    chmod 644 $CCTMP
+    CCCONFIG="/etc/postgresql-common/createcluster.conf"
+    ucf --debconf-ok $CCTMP $CCCONFIG
+    ucfr postgresql-common $CCCONFIG
+    rm -f $CCTMP
+}
+
 setup_logrotate ()
 {
     LRVERSION=$(dpkg-query -f '${Version}' --show logrotate 2> /dev/null) || return
@@ -21,6 +38,9 @@ setup_logrotate ()
     fi
     ucf --debconf-ok $LRCONFSRC $LRCONFIG
     ucfr postgresql-common $LRCONFIG
+    if [ $LRCONFSRC != $LRTEMPLATE ]; then
+        rm -f $LRCONFSRC
+    fi
 }
 
 if [ "$1" = configure ]; then
@@ -99,6 +119,9 @@ EOF
     fi
 
     /usr/share/postgresql-common/pg_checksystem || true
+
+    # Create createcluster.conf from debconf
+    setup_createclusterconf
 
     # Create logrotate config
     setup_logrotate

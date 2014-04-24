@@ -16,4 +16,4 @@ pg_checksystem usr/share/postgresql-common
 pgdg usr/share/postgresql-common
 testsuite usr/share/postgresql-common
 t/* usr/share/postgresql-common/t
-createcluster.conf etc/postgresql-common
+createcluster.conf usr/share/postgresql-common

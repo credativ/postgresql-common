@@ -1,5 +1,8 @@
 postgresql-common (155) UNRELEASED; urgency=medium
 
+  * postgresql-common: Maintain createcluster.conf using ucf, and add a
+    debconf question about the default use of ssl (default true, priority
+    medium). (Closes: #743918)
   * Use "mount --make-rprivate /" inside our "unshare -m" calls.
     (See #739593.)
   * pg_ctlcluster: Add status action, add --foreground option, accept dash

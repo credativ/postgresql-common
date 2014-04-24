@@ -26,3 +26,18 @@ _Description: Obsolete major version ${old}
  postgresql-client-${old} packages should be removed.
  .
  Please see /usr/share/doc/postgresql-common/README.Debian.gz for details.
+
+Template: postgresql-common/ssl
+Type: boolean
+Default: true
+_Description: Enable SSL by default in new PostgreSQL clusters?
+ PostgreSQL supports SSL-encrypted connections. This is usually a good thing.
+ However, if the database is solely accessed using TCP connections on
+ localhost, SSL can be turned off without introducing security issues.
+ .
+ UNIX domain socket connections (called "local" in pg_hba.conf) are not
+ affected by this setting. This setting concerns new PostgreSQL clusters
+ created during package install, or by using the pg_createcluster command. It
+ does not reconfigure existing clusters.
+ .
+ If unsure, enable SSL.
