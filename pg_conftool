@@ -19,7 +19,8 @@ use warnings;
 use Getopt::Long;
 use lib '/usr/share/postgresql-common';
 use PgCommon qw(quote_conf_value user_cluster_map read_cluster_conf_file
-    read_conf_file set_conffile_value set_conf_value);
+    read_conf_file set_conffile_value set_conf_value disable_conffile_value
+    disable_conf_value);
 
 ## option parsing
 
@@ -28,12 +29,16 @@ sub help ($;$)
     my ($exit, $error) = @_;
     print STDERR "Error: $error\n" if ($error);
     print "Usage:
-$0 [options] [<version> <cluster name>] [<configfile>] show <parameter>|all
-$0 [options] [<version> <cluster name>] [<configfile>] set <parameter> <value>
+  $0 [options] [<version> <cluster name>] [<configfile>] <command>
 
 Options:
   -v --verbose  Verbose output
   --help        This help
+
+Commands:
+  show <parameter>|all
+  set <parameter> <value>
+  remove <parameter>
 ";
     exit $exit;
 }
@@ -48,7 +53,7 @@ help(1) unless GetOptions (
 # find command in argument array
 my $cmdidx;
 for (my $i = 0; $i < @ARGV; $i++) {
-    if ($ARGV[$i] =~ /^(show|get|set)$/) { # accept "get" as alternative
+    if ($ARGV[$i] =~ /^(show|get|set|remove|delete|disable)$/) {
         $cmdidx = $i;
         last;
     }
@@ -70,14 +75,16 @@ if ($cmdidx == 0) {
     help(1, 'Too many arguments before command');
 }
 splice @ARGV, 0, $cmdidx; # remove everything before the command
+$ARGV[0] = 'show' if ($ARGV[0] eq 'get'); # accept alternative variants of some commands
+$ARGV[0] = 'remove' if ($ARGV[0] =~ /delete|disable/);
 
 my ($cmd, $key, $value);
-if ($ARGV[0] =~ /^(show|get)$/) {
-    help(1, 'show needs exactly one argument') unless (@ARGV == 2);
-    ($cmd, $key) = ('show', $ARGV[1]);
+if ($ARGV[0] =~ /^(show|disable)$/) {
+    help(1, "$ARGV[0] needs exactly one argument") unless (@ARGV == 2);
+    ($cmd, $key) = @ARGV;
 } else {
-    help(1, 'set needs exactly two arguments') unless (@ARGV == 3);
-    ($cmd, $key, $value) = ('set', $ARGV[1], $ARGV[2]);
+    help(1, "$ARGV[0] needs exactly two arguments") unless (@ARGV == 3);
+    ($cmd, $key, $value) = @ARGV;
 }
 #print "$version $cluster $conffile $cmd $key $value\n";
 
@@ -101,11 +108,18 @@ if ($cmd eq 'show') {
         exit 1;
     }
 
-} else { # set
+} elsif ($cmd eq 'set') {
     if ($conffile =~ m!/!) {
         set_conffile_value ($conffile, $key, $value);
     } else {
         set_conf_value ($version, $cluster, $conffile, $key, $value);
+    }
+
+} elsif ($cmd eq 'remove') {
+    if ($conffile =~ m!/!) {
+        disable_conffile_value ($conffile, $key);
+    } else {
+        disable_conf_value ($version, $cluster, $conffile, $key);
     }
 }
 
@@ -117,9 +131,7 @@ pg_conftool - read and edit PostgreSQL cluster configuration files
 
 =head1 SYNOPSIS
 
-B<pg_conftool> [I<options>] [I<version> I<cluster>] [I<configfile>] B<show> I<parameter>|B<all>
-
-B<pg_conftool> [I<options>] [I<version> I<cluster>] [I<configfile>] B<set> I<parameter> I<value>
+B<pg_conftool> [I<options>] [I<version> I<cluster>] [I<configfile>] B<command>
 
 =head1 DESCRIPTION
 
@@ -138,6 +150,24 @@ I<version> I<cluster> is ignored.
 =item B<-v>, B<--verbose>
 
 Verbose output.
+
+=back
+
+=head1 COMMANDS
+
+=over 4
+
+=item B<show> I<parameter>|B<all>
+
+Show a parameter, or all present in this config file.
+
+=item B<set> I<parameter> I<value>
+
+Set or update a parameter.
+
+=item B<remove> I<parameter>
+
+Remove (comment out) a parameter from a config file.
 
 =back
 

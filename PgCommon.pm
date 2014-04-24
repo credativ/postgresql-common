@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2013 Christoph Berg <myon@debian.org>
+# (C) 2012-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,9 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales
     get_cluster_databases read_cluster_conf_file read_pg_hba/;
 our @EXPORT_OK = qw/$confroot quote_conf_value read_conf_file get_conf_value
-    set_conf_value set_conffile_value disable_conf_value replace_conf_value
-    cluster_data_directory get_file_device read_pidfile check_pidfile_running/;
+    set_conf_value set_conffile_value disable_conffile_value disable_conf_value
+    replace_conf_value cluster_data_directory get_file_device read_pidfile
+    check_pidfile_running/;
 
 # Print an error message to stderr and exit with status 1
 sub error {
@@ -181,7 +182,7 @@ sub get_conf_value {
 }
 
 # Set parameter of a PostgreSQL configuration file.
-# Arguments: <file name> <parameter name> <value>
+# Arguments: <config file name> <parameter name> <value>
 sub set_conffile_value {
     my ($fname, $key, $value) = ($_[0], $_[1], quote_conf_value($_[2]));
     my @lines;
@@ -241,10 +242,9 @@ sub set_conf_value {
 
 # Disable a parameter in a PostgreSQL configuration file by prepending it with
 # a '#'. Appends an optional explanatory comment <reason> if given.
-# Arguments: <version> <cluster> <config file name> <parameter name> <reason>
-sub disable_conf_value {
-    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
-    my $value;
+# Arguments: <config file name> <parameter name> <reason>
+sub disable_conffile_value {
+    my ($fname, $key, $reason) = @_;
     my @lines;
 
     # read configuration file lines
@@ -254,10 +254,9 @@ sub disable_conf_value {
 
     my $changed = 0;
     for (my $i=0; $i <= $#lines; ++$i) {
-	if ($lines[$i] =~ /^\s*$_[3]\s*(?:=|\s)/i) {
-	    $lines[$i] = '#'.$lines[$i];
-	    chomp $lines[$i];
-            $lines[$i] .= ' #'.$_[4]."\n" if $_[4];
+	if ($lines[$i] =~ /^\s*$key\s*(?:=|\s)/i) {
+            $lines[$i] =~ s/^/#/;
+            $lines[$i] =~ s/$/ #$reason/ if $reason;
             $changed = 1;
 	    last;
 	}
@@ -278,6 +277,13 @@ sub disable_conf_value {
 
 	rename "$fname.new", "$fname";
     }
+}
+
+# Disable a parameter in a PostgreSQL cluster configuration file by prepending
+# it with a '#'. Appends an optional explanatory comment <reason> if given.
+# Arguments: <version> <cluster> <config file name> <parameter name> <reason>
+sub disable_conf_value {
+    return disable_conffile_value "$confroot/$_[0]/$_[1]/$_[2]", $_[3], $_[4];
 }
 
 # Replace a parameter in a PostgreSQL configuration file. The old parameter is
