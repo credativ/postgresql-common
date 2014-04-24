@@ -447,6 +447,9 @@ $conf_fn = "configure_$version";
 $conf_fn =~tr/./_/;
 &$conf_fn if defined &$conf_fn and $newcluster;
 
+# SSL configuration
+my $want_ssl = PgCommon::config_bool($defaultconf{ssl} || 'true');
+
 # Check whether we can access the SSL private key as the cluster owner
 my $key_file = '/etc/ssl/private/ssl-cert-snakeoil.key';
 my $pem_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem';
@@ -462,7 +465,7 @@ die "changing euid back: $!" if $> != $euid;
 die "changing egid back: $!" if $) != $egid;
 
 # enable SSL if we have the snakeoil default certificate
-if ($newcluster && -e $pem_file && $ssl_key_access) {
+if ($want_ssl && $newcluster && -e $pem_file && $ssl_key_access) {
     if ($version >= '9.2') {
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
             'ssl_cert_file', $pem_file;
@@ -477,7 +480,7 @@ if ($newcluster && -e $pem_file && $ssl_key_access) {
 }
 
 # SSL client certificate CA
-if ($newcluster && -e "$PgCommon::common_confdir/root.crt") {
+if ($want_ssl && $newcluster && -e "$PgCommon::common_confdir/root.crt") {
     # check if we have a cert in there or just the boilerplate installed by our postinst
     open F, "$PgCommon::common_confdir/root.crt";
     my $val;
@@ -493,7 +496,7 @@ if ($newcluster && -e "$PgCommon::common_confdir/root.crt") {
 }
 
 # SSL client certificate revocation list
-if ($newcluster && -e "$PgCommon::common_confdir/root.crl") {
+if ($want_ssl && $newcluster && -e "$PgCommon::common_confdir/root.crl") {
     if ($version >= '9.2') {
         PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
             'ssl_crl_file', "$PgCommon::common_confdir/root.crl";
@@ -533,7 +536,7 @@ if ($socketdir eq '/var/run/postgresql') {
 
 # handle other createcluster.conf parameters
 foreach my $guc (sort keys %defaultconf) {
-    next if $guc =~ /^(create_main_cluster|start_conf|data_directory|xlogdir|initdb_options)$/;
+    next if $guc =~ /^(create_main_cluster|start_conf|data_directory|xlogdir|initdb_options|ssl)$/;
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
 	$guc, replace_v_c ($defaultconf{$guc}, $version, $cluster);
 }
