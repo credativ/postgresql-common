@@ -32,6 +32,7 @@ sub help ($;$)
   $0 [options] [<version> <cluster name>] [<configfile>] <command>
 
 Options:
+  -s --short    Print only value
   -v --verbose  Verbose output
   --help        This help
 
@@ -43,10 +44,12 @@ Commands:
     exit $exit;
 }
 
+my $short = 0;
 my $verbose = 0;
 
 help(1) unless GetOptions (
     'help' => sub { help(0); },
+    's|short' => \$short,
     'v|verbose' => \$verbose,
 );
 
@@ -102,7 +105,11 @@ if ($cmd eq 'show') {
             printf "%s = %s\n", $k, quote_conf_value($conf{$k});
         }
     } elsif (exists $conf{$key}) {
-        printf "%s = %s\n", $key, quote_conf_value($conf{$key});
+        if ($short) {
+            printf "%s\n", quote_conf_value($conf{$key});
+        } else {
+            printf "%s = %s\n", $key, quote_conf_value($conf{$key});
+        }
     } else {
         print "# $key not found in $conffile\n" if ($verbose);
         exit 1;
@@ -147,9 +154,17 @@ I<version> I<cluster> is ignored.
 
 =over 4
 
+=item B<-s>, B<--short>
+
+Show only the value (instead of key = value pair).
+
 =item B<-v>, B<--verbose>
 
 Verbose output.
+
+=item B<--help>
+
+Print help.
 
 =back
 
