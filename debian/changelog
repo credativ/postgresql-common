@@ -13,6 +13,8 @@ postgresql-common (155) UNRELEASED; urgency=medium
   * postgresql: Add Suggests: postgresql-doc. (Closes: #743755)
   * pg_conftool: New script to read and edit PostgreSQL configuration files,
     based on the existing read/edit functions in PgCommon.pm.
+  * pg_upgradecluster: Don't abort the upgrade if the config file symlinks are
+    already there.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 24 Mar 2014 10:34:08 +0100
 

@@ -556,8 +556,12 @@ if (!fork) {
 	# man page), but we want to support some earlier versions as
 	# well for a while.)
 	foreach my $file ('postgresql.conf', 'pg_hba.conf', 'pg_ident.conf') {
-	    symlink($info{'configdir'}."/$file", $info{'pgdata'}."/$file") or error 'could not symlink configuration file';
-	    symlink($newinfo{'configdir'}."/$file", $newinfo{'pgdata'}."/$file") or error 'could not symlink configuration files';
+	    -l "$info{pgdata}/$file" or
+		symlink("$info{configdir}/$file", "$info{pgdata}/$file") or
+		error "could not create symlink $info{pgdata}/$file";
+	    -l "$newinfo{pgdata}/$file" or
+		symlink("$newinfo{configdir}/$file", "$newinfo{pgdata}/$file") or
+		error "could not create symlink $newinfo{pgdata}/$file";
 	}
 	# Run pg_upgrade.
 	my $status = system @argv;
