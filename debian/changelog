@@ -1,5 +1,6 @@
 postgresql-common (155) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * postgresql-common: Maintain createcluster.conf using ucf, and add a
     debconf question about the default use of ssl (default true, priority
     medium). (Closes: #743918)
@@ -15,6 +16,9 @@ postgresql-common (155) UNRELEASED; urgency=medium
     based on the existing read/edit functions in PgCommon.pm.
   * pg_upgradecluster: Don't abort the upgrade if the config file symlinks are
     already there.
+
+  [ Martin Pitt ]
+  * supported-versions: Welcome, Ubuntu 14.10!
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 24 Mar 2014 10:34:08 +0100
 
