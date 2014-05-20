@@ -81,7 +81,7 @@ if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade test';
     pass '...';
 } else {
-    like_program_out 0, "pg_upgradecluster $v main", 0, qr/Success/;
+    like_program_out 0, "pg_upgradecluster -v $MAJORS[-1] $v main", 0, qr/Success/;
 }
 
 # check start.conf of old and upgraded cluster

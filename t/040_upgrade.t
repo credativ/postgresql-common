@@ -131,7 +131,7 @@ if (!$psql) {
 }
 usleep $delay;
 
-like_program_out 0, "pg_upgradecluster $upgrade_options $MAJORS[0] upgr", 1, 
+like_program_out 0, "pg_upgradecluster -v $MAJORS[-1] $upgrade_options $MAJORS[0] upgr", 1, 
     qr/Error: Could not stop old cluster/,
     'pg_upgradecluster fails on busy cluster';
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
@@ -150,7 +150,7 @@ is ((system "pg_ctlcluster $MAJORS[0] upgr start"), 0, 'Starting upgr cluster');
 
 # Upgrade to latest version
 my $outref;
-is ((exec_as 0, "(pg_upgradecluster $upgrade_options $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
+is ((exec_as 0, "(pg_upgradecluster -v $MAJORS[-1] $upgrade_options $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 my @err = grep (!/^STDOUT: /, split (/\n/, $$outref));

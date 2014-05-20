@@ -20,7 +20,7 @@ ok ((system "pg_createcluster --datadir /tmp/postgresql-test -l /tmp/postgresql-
 
 # Upgrade to latest version
 my $outref;
-is ((exec_as 0, "pg_upgradecluster $MAJORS[0] upgr", $outref, 0), 0, 'pg_upgradecluster succeeds');
+is ((exec_as 0, "pg_upgradecluster -v $MAJORS[-1] $MAJORS[0] upgr", $outref, 0), 0, 'pg_upgradecluster succeeds');
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
@@ -39,7 +39,7 @@ is_program_out 'nobody', 'pg_lsclusters -h', 0,
 
 # Do another upgrade with using a custom defined data directory
 my $outref;
-is ((exec_as 0, "pg_upgradecluster $MAJORS[0] upgr /tmp/psql-common-testsuite", $outref, 0), 0, 'pg_upgradecluster succeeds');
+is ((exec_as 0, "pg_upgradecluster -v $MAJORS[-1] $MAJORS[0] upgr /tmp/psql-common-testsuite", $outref, 0), 0, 'pg_upgradecluster succeeds');
 unlike $$outref, qr/^pg_restore: /m, 'no pg_restore error messages during upgrade';
 unlike $$outref, qr/^[A-Z]+:  /m, 'no server error messages during upgrade';
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';

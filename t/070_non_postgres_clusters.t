@@ -53,7 +53,7 @@ if ($#MAJORS > 0) {
     my $newv = $MAJORS[-1];
 
     my $outref;
-    is ((exec_as 0, "(pg_upgradecluster $v main | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 
+    is ((exec_as 0, "(pg_upgradecluster -v $newv $v main | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 
 	'pg_upgradecluster succeeds');
     like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
     like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';

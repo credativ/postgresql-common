@@ -16,6 +16,8 @@ postgresql-common (155) UNRELEASED; urgency=medium
     based on the existing read/edit functions in PgCommon.pm.
   * pg_upgradecluster: Don't abort the upgrade if the config file symlinks are
     already there.
+  * testsuite: Make upgrade tests work for upgrading to the non-latest version
+    when -v is used.
 
   [ Martin Pitt ]
   * supported-versions: Welcome, Ubuntu 14.10!
