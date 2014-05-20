@@ -17,6 +17,7 @@ postgresql-common (155) UNRELEASED; urgency=medium
   * pg_upgradecluster: Don't abort the upgrade if the config file symlinks are
     already there.
   * testsuite: Fix testsuite where -v does not include the latest version.
+  * testsuite -v -i will install packages needed for these versions.
 
   [ Martin Pitt ]
   * supported-versions: Welcome, Ubuntu 14.10!
