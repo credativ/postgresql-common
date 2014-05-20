@@ -63,7 +63,7 @@ sub check_major {
         'pg_wrapper selects version number of cluster';
 
     # we always want to use the latest version of "psql", though.
-    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $MAJORS[-1]/,
+    like_program_out 'postgres', 'psql --version', 0, qr/^psql \(PostgreSQL\) $ALL_MAJORS[-1]/,
         'pg_wrapper selects version number of cluster';
 
     my $default_log = "/var/log/postgresql/postgresql-$v-main.log";

@@ -29,7 +29,7 @@ foreach $version (@MAJORS) {
 }
 
 # check client-side output (should behave like latest server-side one)
-$version = $MAJORS[-1];
+$version = $ALL_MAJORS[-1];
 is_program_out 'postgres', "pg_config --pgxs", 0, 
     "/usr/lib/postgresql/$version/lib/pgxs/src/makefiles/pgxs.mk\n";
 is_program_out 'postgres', "pg_config --libdir", 0, 
