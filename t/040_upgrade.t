@@ -108,10 +108,10 @@ like_program_out 'nobody', 'pg_lsclusters -h', 0,
 
 # Check SELECT in original cluster
 my $select_old;
-is ((exec_as 'nobody', 'psql -tAc "SELECT * FROM phone ORDER BY name" test', $select_old), 0, 'SELECT succeeds');
+is ((exec_as 'nobody', 'psql -tAc "SELECT * FROM phone ORDER BY name" test', $select_old), 0, 'SELECT in original cluster succeeds');
 is ($$select_old, 'Alice|2
 Bob|1
-', 'check SELECT output');
+', 'check SELECT output in original cluster');
 
 # create inaccessible cwd, to check for confusing error messages
 rmdir '/tmp/pgtest';
@@ -124,10 +124,10 @@ my $psql = fork;
 if (!$psql) {
     my @pw = getpwnam 'nobody';
     change_ugid $pw[2], $pw[3];
-    dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
     # suppress 'could not change directory to "/tmp/pgtest"'
-    dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
-    exec 'psql', 'template1' or die "could not exec psql process: $!";
+    chdir '/tmp';
+    # pg_upgradecluster below will timeout after 5s
+    exec 'psql', '-c', 'select pg_sleep(15)', 'postgres' or die "could not exec psql process: $!";
 }
 usleep $delay;
 
