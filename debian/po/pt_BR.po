@@ -5,16 +5,19 @@
 # Eder L. Marques (frolic) <frolic@debian-ce.org>, 2007, 2008.
 #
 msgid ""
-msgstr "pt_BR utf-8\n"
+msgstr ""
 "Project-Id-Version: postgresql-common 88+nmu1\n"
-"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2008-02-03 13:01+0100\n"
+"Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2014-05-20 11:16+0200\n"
 "PO-Revision-Date: 2008-07-17 11:44-0300\n"
 "Last-Translator: Eder L. Marques (frolic) <frolic@debian-ce.org>\n"
-"Language-Team: Brazilian Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
+"Language-Team: Brazilian Portuguese <debian-l10n-portuguese@lists.debian."
+"org>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"pt_BR utf-8\n"
 
 #. Type: error
 #. Description
@@ -67,7 +70,39 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
 "Por favor, veja  /usr/share/doc/postgresql-common/README.Debian.gz para "
 "detalhes."
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "Enable SSL by default in new PostgreSQL clusters?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
+"However, if the database is solely accessed using TCP connections on "
+"localhost, SSL can be turned off without introducing security issues."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
+"affected by this setting. This setting concerns new PostgreSQL clusters "
+"created during package install, or by using the pg_createcluster command. It "
+"does not reconfigure existing clusters."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "If unsure, enable SSL."
+msgstr ""

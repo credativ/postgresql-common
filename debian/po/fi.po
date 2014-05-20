@@ -1,11 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgres-common\n"
-"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2008-02-03 13:01+0100\n"
+"Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2014-05-20 11:16+0200\n"
 "PO-Revision-Date: 2008-02-29 15:05+0200\n"
 "Last-Translator: Esko Arajärvi <edu@iki.fi>\n"
 "Language-Team: Finnish <debian-l10n-finnish@lists.debian.org>\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,24 +22,80 @@ msgstr "Vanhentunut pääversio ${old}"
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "The PostgreSQL version ${old} is obsolete, but the server or client packages are still installed. Please install the latest packages (postgresql-${latest} and postgresql-client-${latest}) and upgrade the existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr "Ohjelman PostgreSQL versio ${old} on vanhentunut, mutta palvelin- tai asiakaspaketteja on vielä asennettuna. Asenna uusimmat paketit (postgresql-${latest} ja postgresql-client-${latest}) ja päivitä olemassa olevat version ${oldversion} klusterit ohjelmalla pg_upgradecluster (katso man-ohjesivu)."
+msgid ""
+"The PostgreSQL version ${old} is obsolete, but the server or client packages "
+"are still installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade the existing "
+"${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr ""
+"Ohjelman PostgreSQL versio ${old} on vanhentunut, mutta palvelin- tai "
+"asiakaspaketteja on vielä asennettuna. Asenna uusimmat paketit (postgresql-"
+"${latest} ja postgresql-client-${latest}) ja päivitä olemassa olevat version "
+"${oldversion} klusterit ohjelmalla pg_upgradecluster (katso man-ohjesivu)."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please be aware that the installation of postgresql-${latest} will automatically create a default cluster ${latest}/main. If you want to upgrade the ${old}/main cluster, you need to remove the already existing ${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for details)."
-msgstr "Version postgresql-${latest} asennus luo automaattisesti oletusklusterin ${latest}/main. Jos haluat päivittää klusterin ${old}/main, sinun tulee poistaa jo olemassa oleva klusteri ${latest} (komennolla pg_dropcluster --stop ${latest} main, lisätietoja man-ohjesivulta)."
+msgid ""
+"Please be aware that the installation of postgresql-${latest} will "
+"automatically create a default cluster ${latest}/main. If you want to "
+"upgrade the ${old}/main cluster, you need to remove the already existing "
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
+msgstr ""
+"Version postgresql-${latest} asennus luo automaattisesti oletusklusterin "
+"${latest}/main. Jos haluat päivittää klusterin ${old}/main, sinun tulee "
+"poistaa jo olemassa oleva klusteri ${latest} (komennolla pg_dropcluster --"
+"stop ${latest} main, lisätietoja man-ohjesivulta)."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "The old server and client packages are no longer supported. After the existing clusters are upgraded, the postgresql-${old} and postgresql-client-${old} packages should be removed."
-msgstr "Vanhoja palvelin- ja asiakaspaketteja ei enää tueta. Kun olemassa olevat klusterit on päivitetty, paketit postgresql-${old} ja postgresql-client-${old} tulisi poistaa."
+msgid ""
+"The old server and client packages are no longer supported. After the "
+"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
+"${old} packages should be removed."
+msgstr ""
+"Vanhoja palvelin- ja asiakaspaketteja ei enää tueta. Kun olemassa olevat "
+"klusterit on päivitetty, paketit postgresql-${old} ja postgresql-client-"
+"${old} tulisi poistaa."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr "Tiedostosta /usr/share/doc/postgresql-common/README.Debian.gz löytyy lisätietoja (englanniksi)."
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""
+"Tiedostosta /usr/share/doc/postgresql-common/README.Debian.gz löytyy "
+"lisätietoja (englanniksi)."
 
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "Enable SSL by default in new PostgreSQL clusters?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
+"However, if the database is solely accessed using TCP connections on "
+"localhost, SSL can be turned off without introducing security issues."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
+"affected by this setting. This setting concerns new PostgreSQL clusters "
+"created during package install, or by using the pg_createcluster command. It "
+"does not reconfigure existing clusters."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "If unsure, enable SSL."
+msgstr ""

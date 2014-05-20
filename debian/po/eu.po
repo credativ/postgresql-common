@@ -7,11 +7,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2008-02-03 13:01+0100\n"
+"Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2014-05-20 11:16+0200\n"
 "PO-Revision-Date: 2008-05-27 23:31+0200\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara <debian-l10n-basque@lists.debian.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -68,6 +69,38 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr "Begiratu /usr/share/doc/postgresql-common/README.Debian.gz xehetasunetarako."
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""
+"Begiratu /usr/share/doc/postgresql-common/README.Debian.gz xehetasunetarako."
 
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "Enable SSL by default in new PostgreSQL clusters?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
+"However, if the database is solely accessed using TCP connections on "
+"localhost, SSL can be turned off without introducing security issues."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
+"affected by this setting. This setting concerns new PostgreSQL clusters "
+"created during package install, or by using the pg_createcluster command. It "
+"does not reconfigure existing clusters."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "If unsure, enable SSL."
+msgstr ""

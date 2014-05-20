@@ -6,16 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: templates\n"
-"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2008-02-03 13:01+0100\n"
+"Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2014-05-20 11:16+0200\n"
 "PO-Revision-Date: 2008-07-21 10:32+0300\n"
 "Last-Translator: Igor Stirbu <igor.stirbu@gmail.com>\n"
 "Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
+"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
 
 #. Type: error
 #. Description
@@ -23,16 +25,20 @@ msgstr ""
 msgid "Obsolete major version ${old}"
 msgstr "Versiunea majoră învechită ${old}"
 
+# cluster, manpage
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-# cluster, manpage
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but the server or client packages "
 "are still installed. Please install the latest packages (postgresql-"
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr "Versiunea PostgreSQL ${old} este învechită, dar pachetele pentru server sau client sunt încă instalate. Instalați cele mai recente pachete (postgresql-${latest} și postgresql-client-${latest}) și actualizați clusterele ${oldversion} existente cu pg_upgradecluster (a se vedea pagina de manual)."
+msgstr ""
+"Versiunea PostgreSQL ${old} este învechită, dar pachetele pentru server sau "
+"client sunt încă instalate. Instalați cele mai recente pachete (postgresql-"
+"${latest} și postgresql-client-${latest}) și actualizați clusterele "
+"${oldversion} existente cu pg_upgradecluster (a se vedea pagina de manual)."
 
 #. Type: error
 #. Description
@@ -43,7 +49,12 @@ msgid ""
 "upgrade the ${old}/main cluster, you need to remove the already existing "
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
-msgstr "Se atrage atenția că instalarea postgresql-${latest} va crea în mod automat un cluster implicit ${latest}/main. Dacă doriți să actualizați clusterul ${old}/main, este necesar să eliminați clusterul ${latest} care deja există (pg_dropcluster --stop ${latest} main, a se vedea pagina de manual pentru detalii)."
+msgstr ""
+"Se atrage atenția că instalarea postgresql-${latest} va crea în mod automat "
+"un cluster implicit ${latest}/main. Dacă doriți să actualizați clusterul "
+"${old}/main, este necesar să eliminați clusterul ${latest} care deja există "
+"(pg_dropcluster --stop ${latest} main, a se vedea pagina de manual pentru "
+"detalii)."
 
 #. Type: error
 #. Description
@@ -52,11 +63,46 @@ msgid ""
 "The old server and client packages are no longer supported. After the "
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
 "${old} packages should be removed."
-msgstr "Pachetele vechi pentru server și client nu mai sunt întreținute. După actualizarea clusterelor existente pachetele postgresql-${old} și postgresql-client-${old} ar trebui dezinstalate."
+msgstr ""
+"Pachetele vechi pentru server și client nu mai sunt întreținute. După "
+"actualizarea clusterelor existente pachetele postgresql-${old} și postgresql-"
+"client-${old} ar trebui dezinstalate."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr "A se vedea /usr/share/doc/postgresql-common/README.Debian.gz pentru detalii."
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""
+"A se vedea /usr/share/doc/postgresql-common/README.Debian.gz pentru detalii."
 
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "Enable SSL by default in new PostgreSQL clusters?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
+"However, if the database is solely accessed using TCP connections on "
+"localhost, SSL can be turned off without introducing security issues."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
+"affected by this setting. This setting concerns new PostgreSQL clusters "
+"created during package install, or by using the pg_createcluster command. It "
+"does not reconfigure existing clusters."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "If unsure, enable SSL."
+msgstr ""

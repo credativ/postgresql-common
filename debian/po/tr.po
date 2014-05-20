@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2008-02-03 13:01+0100\n"
+"Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2014-05-20 11:16+0200\n"
 "PO-Revision-Date: 2008-07-16 01:00+0200\n"
 "Last-Translator: Mert Dirik <mertdirik@gmail.com>\n"
 "Language-Team: Debian L10n Turkish <debian-l10n-turkish@lists.debian.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,24 +27,82 @@ msgstr "Eskimiş ana sürüm ${old}"
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "The PostgreSQL version ${old} is obsolete, but the server or client packages are still installed. Please install the latest packages (postgresql-${latest} and postgresql-client-${latest}) and upgrade the existing ${oldversion} clusters with pg_upgradecluster (see manpage)."
-msgstr "PostgreSQL'in ${old}. sürümü artık eskimiş ve kullanılmayan bir sürümdür, ama sisteminizde hâlâ bu sürümdeki istemci ya da sunucu paketleri kurulu. Lütfen en yeni paketleri (postgresql-${latest} ve postgresql-client-${latest}) kurun ve mevcut ${oldversion}. sürüm kümelerini pg_upgradecluster ile yükseltin (ayrıntılar için kılavuz sayfasına bakın)."
+msgid ""
+"The PostgreSQL version ${old} is obsolete, but the server or client packages "
+"are still installed. Please install the latest packages (postgresql-"
+"${latest} and postgresql-client-${latest}) and upgrade the existing "
+"${oldversion} clusters with pg_upgradecluster (see manpage)."
+msgstr ""
+"PostgreSQL'in ${old}. sürümü artık eskimiş ve kullanılmayan bir sürümdür, "
+"ama sisteminizde hâlâ bu sürümdeki istemci ya da sunucu paketleri kurulu. "
+"Lütfen en yeni paketleri (postgresql-${latest} ve postgresql-client-"
+"${latest}) kurun ve mevcut ${oldversion}. sürüm kümelerini pg_upgradecluster "
+"ile yükseltin (ayrıntılar için kılavuz sayfasına bakın)."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please be aware that the installation of postgresql-${latest} will automatically create a default cluster ${latest}/main. If you want to upgrade the ${old}/main cluster, you need to remove the already existing ${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for details)."
-msgstr "postgresql-${latest} paketinin kurulumunun öntanımlı ${latest}/main kümesini oluşturacağını unutmayın. Eğer ${old}/main kümesini yükseltmek istiyorsanız mevcut ${latest}. sürüm kümesini kaldırmalısınız. Bu işi pg_dropcluster --stop ${latest} main komutuyla yapabilirsiniz, ayrıntılar için kılavuz sayfasına bakın."
+msgid ""
+"Please be aware that the installation of postgresql-${latest} will "
+"automatically create a default cluster ${latest}/main. If you want to "
+"upgrade the ${old}/main cluster, you need to remove the already existing "
+"${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
+"details)."
+msgstr ""
+"postgresql-${latest} paketinin kurulumunun öntanımlı ${latest}/main kümesini "
+"oluşturacağını unutmayın. Eğer ${old}/main kümesini yükseltmek istiyorsanız "
+"mevcut ${latest}. sürüm kümesini kaldırmalısınız. Bu işi pg_dropcluster --"
+"stop ${latest} main komutuyla yapabilirsiniz, ayrıntılar için kılavuz "
+"sayfasına bakın."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "The old server and client packages are no longer supported. After the existing clusters are upgraded, the postgresql-${old} and postgresql-client-${old} packages should be removed."
-msgstr "Eski sunucu ve istemci paketleri artık desteklenmiyor. Var olan kümeler yükseltildikten sonra postgresql-${old} ve postgresql-client-${old} paketlerinin kaldırılması tavsiye edilir."
+msgid ""
+"The old server and client packages are no longer supported. After the "
+"existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
+"${old} packages should be removed."
+msgstr ""
+"Eski sunucu ve istemci paketleri artık desteklenmiyor. Var olan kümeler "
+"yükseltildikten sonra postgresql-${old} ve postgresql-client-${old} "
+"paketlerinin kaldırılması tavsiye edilir."
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
-msgid "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
-msgstr "Ayrıntılar için lütfen /usr/share/doc/postgresql-common/README.Debian.gz belgesine bakın."
+msgid ""
+"Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
+msgstr ""
+"Ayrıntılar için lütfen /usr/share/doc/postgresql-common/README.Debian.gz "
+"belgesine bakın."
 
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "Enable SSL by default in new PostgreSQL clusters?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
+"However, if the database is solely accessed using TCP connections on "
+"localhost, SSL can be turned off without introducing security issues."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
+"affected by this setting. This setting concerns new PostgreSQL clusters "
+"created during package install, or by using the pg_createcluster command. It "
+"does not reconfigure existing clusters."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "If unsure, enable SSL."
+msgstr ""

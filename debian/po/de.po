@@ -1,16 +1,17 @@
 # postgresql-common debconf templates.
 # Copyright (C) 2005 Martin Pitt <mpitt@debian.org>
+# Copyright (C) 2014 Christoph Berg <myon@debian.org>
 # This file is distributed under the same license as the postgresql-common package.
-# Martin Pitt <mpitt@debian.org>, 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
-"Report-Msgid-Bugs-To: Source: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2008-02-03 13:01+0100\n"
-"PO-Revision-Date: 2005-11-06 23:21:34-0500\n"
+"Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
+"POT-Creation-Date: 2014-05-20 11:16+0200\n"
+"PO-Revision-Date: 2014-05-20 11:22+0200\n"
 "Last-Translator: Martin Pitt <mpitt@debian.org>\n"
 "Language-Team: German <de@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -69,5 +70,43 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
-"Bitte lesen Sie /usr/share/doc/postgresql-common/README.Debian.gz "
-"für Details."
+"Bitte lesen Sie /usr/share/doc/postgresql-common/README.Debian.gz für "
+"Details."
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "Enable SSL by default in new PostgreSQL clusters?"
+msgstr "SSL standardmäßig in neuen PostgreSQL-Clustern aktivieren?"
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
+"However, if the database is solely accessed using TCP connections on "
+"localhost, SSL can be turned off without introducing security issues."
+msgstr ""
+"PostgreSQL unterstützt SSL-verschlüsselte Verbindungen, was normalerweise benutzt werden sollte ."
+"Wenn die Datenbank jedoch ausschließlich über TCP-Verbindungen über localhost benutzt wird, "
+"kann SSL abgeschaltet werden, ohne die Sicherheit zu beeinträchtigen."
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
+"affected by this setting. This setting concerns new PostgreSQL clusters "
+"created during package install, or by using the pg_createcluster command. It "
+"does not reconfigure existing clusters."
+msgstr ""
+"Verbindungen über UNIX-Sockets (in der pg_hba.conf \"local\" genannt) sind nicht von dieser Einstellung betroffen. "
+"Diese Einstellung betrifft nur neue PostgreSQL-Cluster, die während der "
+"Paket-Installation oder durch pg_createcluster angelegt werden. "
+"Es konfiguriert bestehende Cluster nicht um."
+
+#. Type: boolean
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "If unsure, enable SSL."
+msgstr "Aktivieren Sie SSL im Zweifelsfall."
