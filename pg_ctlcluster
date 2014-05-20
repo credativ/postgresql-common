@@ -438,7 +438,7 @@ if( $> != $info{'owneruid'} ) {
 $pg_ctl = get_program_path 'pg_ctl', $version;
 
 if ($action =~ /^(start|stop|restart|reload|status|promote)$/) {
-    &$action;
+    exit &$action;
 } else {
     error 'Invalid action (must be one of: start stop restart reload status promote)';
 }
