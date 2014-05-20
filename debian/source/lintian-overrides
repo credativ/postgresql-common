@@ -1,0 +1,3 @@
+# don't bother us about NMUs when uploading using the company address:
+postgresql-common source: changelog-should-mention-nmu
+postgresql-common source: source-nmu-has-incorrect-version-number
