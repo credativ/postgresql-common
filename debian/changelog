@@ -8,7 +8,7 @@ postgresql-common (155) UNRELEASED; urgency=medium
     (See #739593.)
   * pg_ctlcluster: Add status action, add --foreground option, accept dash
     (and slash) between version and cluster.
-  * Add systemd unit files (WIP, not yet installed).
+  * Add systemd unit files as examples (testers welcome!).
   * postgresql-client: Wrap pg_recvlogical, introduced in 9.4.
   * t/050_encodings.t: 9.4 emits COPY command tags, suppress with psql -q.
   * postgresql: Add Suggests: postgresql-doc. (Closes: #743755)
@@ -20,7 +20,7 @@ postgresql-common (155) UNRELEASED; urgency=medium
   [ Martin Pitt ]
   * supported-versions: Welcome, Ubuntu 14.10!
 
- -- Christoph Berg <christoph.berg@credativ.de>  Mon, 24 Mar 2014 10:34:08 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 20 May 2014 11:07:42 +0200
 
 postgresql-common (154) unstable; urgency=medium
 
