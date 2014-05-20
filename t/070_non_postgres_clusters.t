@@ -87,7 +87,7 @@ if ($#MAJORS > 0) {
 # Check proper cleanup
 is ((system "pg_dropcluster $v main --stop"), 0, 'pg_dropcluster');
 is_program_out $owner, 'pg_lsclusters -h', 0, '', 'No clusters left';
-is ((ps 'postmaster'), '', 'No postmaster processes left');
+is ((ps $master_process), '', "No $master_process processes left");
 
 check_clean;
 
