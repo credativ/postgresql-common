@@ -1,4 +1,4 @@
-postgresql-common (155) UNRELEASED; urgency=medium
+postgresql-common (155) unstable; urgency=medium
 
   [ Christoph Berg ]
   * postgresql-common: Maintain createcluster.conf using ucf, and add a
@@ -22,7 +22,7 @@ postgresql-common (155) UNRELEASED; urgency=medium
   [ Martin Pitt ]
   * supported-versions: Welcome, Ubuntu 14.10!
 
- -- Christoph Berg <christoph.berg@credativ.de>  Tue, 20 May 2014 11:07:42 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 21 May 2014 17:34:09 +0200
 
 postgresql-common (154) unstable; urgency=medium
 
