@@ -390,11 +390,14 @@ if (!fork) {
 
     if ($method eq 'dump') {
 	# check for tablespaces (not supported)
-	open F, '-|', $oldpsql, '-h', $oldsocket, '-d', 'template1', '-Atc', 
+	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-d', 'template1', '-Atc', 
 		"SELECT count(*) FROM pg_tablespace WHERE spcname <> 'pg_default' AND spcname <> 'pg_global'"
 	    or die "Calling $psql: $!";
 	$buffer = <F>;
 	close F;
+	if (not defined $buffer) {
+	    error 'Could not query number of tablespace in old cluster';
+	}
 	if ($buffer ne "0\n") {
 	    error 'automatic upgrade of tablespaces is not supported';
 	}
