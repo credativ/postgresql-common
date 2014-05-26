@@ -4,7 +4,7 @@
 # /etc/postgresql-common/user_clusters.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013 Christoph Berg <myon@debian.org>
+# (C) 2013-2014 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ my $cmd;
 
 # for psql we always want the latest version, as this is backwards compatible
 # to every major version that that we support
-if ($cmdname =~ /^(psql|pg_isready)$/) {
+if ($cmdname =~ /^(psql|pg_archivecleanup|pg_isready)$/) {
     $cmd = get_program_path ($cmdname, get_newest_version);
 } else {
     $cmd = get_program_path ($cmdname, $version);
@@ -210,7 +210,7 @@ will be selected.
 
 If none of these rules match, B<pg_wrapper> aborts with an error.
 
-For B<psql> and B<pg_isready>, B<pg_wrapper> will always use the binary from
+For B<psql>, B<pg_archivecleanup>, and B<pg_isready>, B<pg_wrapper> will always use the binary from
 the newest PostgreSQL version installed, as these are downwards compatible.
 
 =head1 OPTIONS
