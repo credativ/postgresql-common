@@ -8,7 +8,7 @@ use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
 use Test::More tests => 12 + ($#MAJORS+1)*7;
 
-print "Info: PostgreSQL versions installed: @MAJORS\n";
+note "PostgreSQL versions installed: @MAJORS\n";
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
