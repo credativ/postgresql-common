@@ -1,8 +1,12 @@
 postgresql-common (156) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * pg_upgradecluster: Add missing psql -p argument when determining the
     number of tablespaces in the old cluster.
   * Link pg_archivecleanup from /usr/bin. (Closes: #740593)
+
+  [ Martin Pitt ]
+  * Fix typo in German debconf translations. Thanks Rhonda for pointing out!
 
  -- Christoph Berg <myon@debian.org>  Fri, 23 May 2014 20:47:47 +0200
 
