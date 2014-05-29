@@ -87,7 +87,7 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
-"PostgreSQL unterstützt SSL-verschlüsselte Verbindungen, was normalerweise benutzt werden sollte ."
+"PostgreSQL unterstützt SSL-verschlüsselte Verbindungen, was normalerweise benutzt werden sollte. "
 "Wenn die Datenbank jedoch ausschließlich über TCP-Verbindungen über localhost benutzt wird, "
 "kann SSL abgeschaltet werden, ohne die Sicherheit zu beeinträchtigen."
 
