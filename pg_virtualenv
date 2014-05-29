@@ -159,9 +159,10 @@ for v in $PG_VERSIONS; do
 	pg_createcluster \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
-	    ${CREATE_OPTS:-} "${PGCONF_OPTS[@]}" --start $v regress -- \
-	    --username="$PGUSER" --pwfile="$PWFILE" ${INITDB_OPTS:-}
+	    ${CREATE_OPTS:-} "${PGCONF_OPTS[@]}" $v regress -- \
+	    --username="$PGUSER" --pwfile="$PWFILE" --nosync ${INITDB_OPTS:-}
 	# in fakeroot, the username will likely default to "postgres" otherwise
+	pg_ctlcluster -o '-F' $v regress start
     )
     port=$(perl -lne 'print $1 if /^port = (\d+)/' \
 	${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/postgresql.conf)
