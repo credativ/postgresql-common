@@ -1,4 +1,4 @@
-postgresql-common (156) UNRELEASED; urgency=medium
+postgresql-common (156) unstable; urgency=medium
 
   [ Christoph Berg ]
   * pg_upgradecluster: Add missing psql -p argument when determining the
@@ -7,11 +7,12 @@ postgresql-common (156) UNRELEASED; urgency=medium
   * pg_virtualenv: Use fsync = off for speed.
   * pg_buildext: Pass -cios options to pg_virtualenv.
   * t/140_pg_config.t: Versions >= 9.3 have multiarch-enabled libpq et al.
+  * Bump to dh 9.
 
   [ Martin Pitt ]
   * Fix typo in German debconf translations. Thanks Rhonda for pointing out!
 
- -- Christoph Berg <myon@debian.org>  Fri, 23 May 2014 20:47:47 +0200
+ -- Christoph Berg <myon@debian.org>  Fri, 30 May 2014 00:00:44 +0200
 
 postgresql-common (155) unstable; urgency=medium
 
