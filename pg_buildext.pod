@@ -4,7 +4,7 @@ pg_buildext - Build and install a PostgreSQL extension
 
 =head1 SYNOPSIS
 
-B<pg_buildext> I<action> [I<options>]
+B<pg_buildext> [I<options>] I<action> [I<options>]
 
 =head1 DESCRIPTION
 
@@ -37,6 +37,18 @@ with B<+> so the sub-makes can talk with the make jobserver.
 Many extensions support B<make installcheck> testing using B<pg_regress>. As
 this needs the package to be installed, it cannot be run at build time.
 Instead, the tests should be run using B<autopkgtest> from C<debian/tests/*>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-cio> I<arg>
+
+=item B<-s>
+
+Passed to B<pg_virtualenv> when running B<installcheck>.
+
+=back
 
 =head1 ACTIONS
 

@@ -18,6 +18,17 @@
 
 set -e
 
+VENVARGS=""
+while getopts "c:i:o:s" opt ; do
+    case $opt in
+	c|i|o) VENVARGS="$VENVARGS -$opt $OPTARG" ;;
+	s) VENVARGS="$VENVARGS -$opt" ;;
+	*) exit 1 ;;
+    esac
+done
+# shift away args
+shift $(($OPTIND - 1))
+
 action="$1"
 if [ -d "$2" ] && [ "$3" ]; then # compat mode: $2 is source directory
     srcdir="$2"
@@ -98,7 +109,7 @@ installcheck() {
     if [ "$target" ]; then # if target is given, use it, else stay in the top source dir
 	# if a Makefile was created by configure, use it, else the top level Makefile
 	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-	if ! pg_virtualenv -v $1 \
+	if ! pg_virtualenv $VENVARGS -v $1 \
 	    make -C $vtarget $makefile installcheck \
 		PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1; then
 	    if [ -r $vtarget/regression.diffs ]; then
@@ -108,7 +119,7 @@ installcheck() {
 	    exit 1
 	fi
     else
-	if ! pg_virtualenv -v $1 \
+	if ! pg_virtualenv $VENVARGS -v $1 \
 	    make installcheck PG_CONFIG="$pgc" srcdir="$srcdir" USE_PGXS=1; then
 	    if [ -r regression.diffs ]; then
 		echo "**** regression.diffs ****"

@@ -4,6 +4,7 @@ postgresql-common (156) UNRELEASED; urgency=medium
     number of tablespaces in the old cluster.
   * Link pg_archivecleanup from /usr/bin. (Closes: #740593)
   * pg_virtualenv: Use fsync = off for speed.
+  * pg_buildext: Pass -cios options to pg_virtualenv.
 
  -- Christoph Berg <myon@debian.org>  Fri, 23 May 2014 20:47:47 +0200
 
