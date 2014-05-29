@@ -24,7 +24,7 @@ foreach $version (@MAJORS) {
     }
     is_program_out 'postgres', "/usr/lib/postgresql/$version/bin/pg_config --pgxs", 0, 
         "/usr/lib/postgresql/$version/lib/pgxs/src/makefiles/pgxs.mk\n";
-    my $libdir = "/usr/lib" . ($version >= 9.4 and $multiarch ? "/$multiarch" : "") . "\n";
+    my $libdir = "/usr/lib" . ($version >= 9.3 and $multiarch ? "/$multiarch" : "") . "\n";
     is_program_out 'postgres', "/usr/lib/postgresql/$version/bin/pg_config --libdir", 0, 
         $libdir;
     is_program_out 'postgres', "/usr/lib/postgresql/$version/bin/pg_config --pkglibdir", 0, 
@@ -37,7 +37,7 @@ foreach $version (@MAJORS) {
 $version = $ALL_MAJORS[-1];
 is_program_out 'postgres', "pg_config --pgxs", 0, 
     "/usr/lib/postgresql/$version/lib/pgxs/src/makefiles/pgxs.mk\n";
-my $libdir = "/usr/lib" . ($version >= 9.4 and $multiarch ? "/$multiarch" : "") . "\n";
+my $libdir = "/usr/lib" . ($version >= 9.3 and $multiarch ? "/$multiarch" : "") . "\n";
 is_program_out 'postgres', "pg_config --libdir", 0, 
     $libdir;
 is_program_out 'postgres', "pg_config --pkglibdir", 0, 

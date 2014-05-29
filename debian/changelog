@@ -6,6 +6,7 @@ postgresql-common (156) UNRELEASED; urgency=medium
   * Link pg_archivecleanup from /usr/bin. (Closes: #740593)
   * pg_virtualenv: Use fsync = off for speed.
   * pg_buildext: Pass -cios options to pg_virtualenv.
+  * t/140_pg_config.t: Versions >= 9.3 have multiarch-enabled libpq et al.
 
   [ Martin Pitt ]
   * Fix typo in German debconf translations. Thanks Rhonda for pointing out!
