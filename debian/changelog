@@ -1,3 +1,9 @@
+postgresql-common (157) UNRELEASED; urgency=medium
+
+  * Remove createcluster.conf on purge.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 30 May 2014 21:08:00 +0200
+
 postgresql-common (156) unstable; urgency=medium
 
   [ Christoph Berg ]
