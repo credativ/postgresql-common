@@ -18,13 +18,10 @@
 
 set -e
 
-# call ourselves through unshare in a way that keeps normal stdin
-if [ -z "$UNSHARED" ]; then
-    UNSHARED=1 exec unshare -uimn -- "$0" "$@"
+if [ "$(id -u)" != 0 ]; then
+    echo "Error: this test suite needs to be run as root" >&2
+    exit 1
 fi
-
-# unshared program starts here
-set -e
 
 # default config
 TESTSDIR="$(dirname $0)/t"
@@ -50,16 +47,10 @@ while getopts "hiu:v:" opt ; do
         *) help 1 ;;
     esac
 done
-# shift away args
-shift $(($OPTIND - 1))
-
-if [ "$(id -u)" != 0 ]; then
-    echo "Error: this test suite needs to be run as root" >&2
-    exit 1
-fi
 
 # install packages for versions specified by -v
-if [ "${INSTALL:-}" ]; then
+# needs network for apt, so run before unshare
+if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
     for v in $PG_VERSIONS; do
         apt-get install -y postgresql-contrib-$v \
             postgresql-plperl-$v \
@@ -75,6 +66,14 @@ if [ "${INSTALL:-}" ]; then
         netcat-openbsd \
         hunspell-en-us
 fi
+
+# re-exec ourselves through unshare
+if [ -z "$UNSHARED" ]; then
+    UNSHARED=1 exec unshare -uimn -- "$0" "$@"
+fi
+
+# shift away args
+shift $(($OPTIND - 1))
 
 # install locales; this happens differently on Debian and Ubuntu
 if [ -e /etc/locale.gen ]; then
