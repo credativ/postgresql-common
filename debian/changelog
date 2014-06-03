@@ -1,3 +1,10 @@
+postgresql-common (158) UNRELEASED; urgency=medium
+
+  * Put stats_temp_directory aka pg_stat_tmp into /var/run/postgresql by
+    default. (Closes: #739276)
+
+ -- Christoph Berg <myon@debian.org>  Tue, 03 Jun 2014 21:30:05 +0200
+
 postgresql-common (157) unstable; urgency=medium
 
   * Remove createcluster.conf on purge.
