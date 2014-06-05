@@ -2,6 +2,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
 
   * Put stats_temp_directory aka pg_stat_tmp into /var/run/postgresql by
     default. (Closes: #739276)
+  * Move pg_{create,ctl,upgrade,drop}cluster.8 to section 1, they are in
+    /usr/bin anyway.
 
  -- Christoph Berg <myon@debian.org>  Tue, 03 Jun 2014 21:30:05 +0200
 

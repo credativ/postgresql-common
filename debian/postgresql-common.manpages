@@ -1,4 +1,8 @@
 pg_conftool.1
+pg_createcluster.1
+pg_ctlcluster.1
+pg_dropcluster.1
 pg_lsclusters.1
+pg_updatedicts.8
+pg_upgradecluster.1
 pg_virtualenv.1
-*.8

@@ -1,13 +1,27 @@
 POD2MAN=pod2man --center "Debian PostgreSQL infrastructure" -r "Debian"
-POD1PROGS=pg_conftool pg_wrapper pg_lsclusters
-POD1PROGS_POD=pg_buildext pg_virtualenv
-POD8PROGS=pg_ctlcluster pg_createcluster pg_dropcluster pg_upgradecluster pg_updatedicts
+POD1PROGS = pg_conftool.1 \
+	    pg_createcluster.1 \
+	    pg_ctlcluster.1 \
+	    pg_dropcluster.1 \
+	    pg_lsclusters.1 \
+	    pg_upgradecluster.1 \
+	    pg_wrapper.1
+POD1PROGS_POD = pg_buildext.1 \
+		pg_virtualenv.1
+POD8PROGS = pg_updatedicts.8
 
-all:
-	for p in $(POD1PROGS); do $(POD2MAN) --quotes=none --section 1 $$p > $$p.1 || exit 1; done
-	for p in $(POD1PROGS_POD); do $(POD2MAN) --quotes=none --section 1 $$p.pod > $$p.1 || exit 1; done
-	for p in $(POD8PROGS); do $(POD2MAN) --quotes=none --section 8 $$p > $$p.8 || exit 1; done
+all: man
+
+man: $(POD1PROGS) $(POD1PROGS_POD) $(POD8PROGS)
+
+%.1: %.pod
+	$(POD2MAN) --quotes=none --section 1 $< $@
+
+%.1: %
+	$(POD2MAN) --quotes=none --section 1 $< $@
+
+%.8: %
+	$(POD2MAN) --quotes=none --section 8 $< $@
 
 clean:
-	for p in $(POD1PROGS) $(POD1PROGS_POD); do rm -f $$p.1 || exit 1; done
-	for p in $(POD8PROGS); do rm -f $$p.8 || exit 1; done
+	rm -f *.1 *.8
