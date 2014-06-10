@@ -265,7 +265,7 @@ if ($owneruid) {
     $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
 } elsif ($> == 0) {
     $owneruid = getpwnam 'postgres';
-    error 'User postgresql does not exist' unless $owneruid;
+    error 'User postgres does not exist' unless $owneruid;
 } else
 {
     $owneruid = $>;
