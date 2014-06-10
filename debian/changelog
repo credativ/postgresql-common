@@ -4,6 +4,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
     default. (Closes: #739276)
   * Move pg_{create,ctl,upgrade,drop}cluster.8 to section 1, they are in
     /usr/bin anyway.
+  * Debconf translation updates, thanks!
+    + fr by Julien Patriarca. (Closes: #751101)
 
  -- Christoph Berg <myon@debian.org>  Tue, 03 Jun 2014 21:30:05 +0200
 

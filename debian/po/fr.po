@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2014-05-20 11:16+0200\n"
-"PO-Revision-Date: 2008-02-13 22:32+0100\n"
-"Last-Translator: Guilhelm Panaget <guilhelm.panaget@free.fr>\n"
+"PO-Revision-Date: 2014-06-02 08:41+0100\n"
+"Last-Translator: Julien Patriarca <leatherface@debian.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -80,6 +80,8 @@ msgstr ""
 #: ../postgresql-common.templates:3001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
 msgstr ""
+"Faut-il activer le protocole SSL par défaut pour les nouvelles grappes "
+"PostgreSQL ?"
 
 #. Type: boolean
 #. Description
@@ -89,6 +91,10 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL supporte les connexions chiffrées avec SSL. C'est généralement "
+"une bonne chose. Cependant, si la base de données est accédée "
+"exclusivement au travers de connexions TCP locales, SSL peut être "
+"désactivé sans pour autant introduire des failles de sécurité."
 
 #. Type: boolean
 #. Description
@@ -99,9 +105,14 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"Les connexions sur le socket de domaine UNIX (nommées « local » dans pg_hba."
+"conf) ne sont pas affectées par ce réglage. Ce paramètre concerne les "
+"nouvelles grappes PostgreSQL créées lors de l'installation du paquet, ou en "
+"utilisant la commande pg_createcluster. Cela ne reconfigure pas les grappes "
+"existantes."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "Si vous n'êtes pas sûr, activez SSL."
