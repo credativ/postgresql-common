@@ -105,7 +105,7 @@ fi
 # let everything happen in overlay tmpfses to avoid interfering with already
 # existing clusters; this also speeds up testing
 mount --make-rprivate / 2> /dev/null || : # reset / to private mounts (systemd changes this to shared)
-dirs="/etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
+dirs="/etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql /dev/shm"
 created_dirs=""
 for d in $dirs; do
     if ! [ -d $d ]; then
@@ -126,6 +126,7 @@ chown root:postgres /var/log/postgresql
 chmod 1775 /var/log/postgresql
 chown postgres:postgres /var/run/postgresql
 chmod 2775 /var/run/postgresql
+chmod 1777 /dev/shm
 
 # reset core limit for pg_ctl tests
 ulimit -S -c 0

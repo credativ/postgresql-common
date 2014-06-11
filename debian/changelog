@@ -5,6 +5,7 @@ postgresql-common (158) UNRELEASED; urgency=medium
   * Move pg_{create,ctl,upgrade,drop}cluster.8 to section 1, they are in
     /usr/bin anyway.
   * pg_upgradecluster: Deprecate krb_srvname in 9.4.
+  * testsuite: Also mount /dev/shm; with -s, open shell on failure.
   * Debconf translation updates, thanks!
     + fr by Julien Patriarca. (Closes: #751101)
     + ja by victory. (Closes: #751131)
