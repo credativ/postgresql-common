@@ -202,7 +202,7 @@ if [ ${EXIT:-0} -gt 0 ]; then
 
     if [ "${run_shell:-}" ]; then
 	echo "pg_virtualenv: command exited with status $EXIT, dropping you into a shell"
-	$SHELL
+	${SHELL:-/bin/sh}
     fi
 fi
 

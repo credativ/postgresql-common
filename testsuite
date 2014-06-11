@@ -32,16 +32,18 @@ help ()
     echo "postgresql-common testsuite"
     echo "Syntax: $0 [options] [test ...]"
     echo "    -i               install packages for versions specified by -v"
+    echo "    -s               start a shell in the testbed on failure"
     echo "    -u 'umask ...'   umasks to run testsuite with [default: 022 077]"
     echo "    -v 'version ...' PostgreSQL versions to test [default: client versions installed]"
     exit ${1:-0}
 }
 
 # option parsing
-while getopts "hiu:v:" opt ; do
+while getopts "hisu:v:" opt ; do
     case $opt in
         i) INSTALL=1 ;;
         h) help ;;
+        s) RUN_SHELL=1 ;;
         u) PG_UMASKS="$OPTARG" ;;
         v) export PG_VERSIONS="$OPTARG" ;; # used in t/TestLib.pm
         *) help 1 ;;
@@ -157,6 +159,13 @@ for U in $PG_UMASKS; do
     umask $U
     for T; do
         echo "=== Running test `basename $T`... ==="
-        perl $T
+        perl $T || {
+            EXIT=$?
+            if [ "${RUN_SHELL:-}" ]; then
+                echo "*** $T failed with status $EXIT, dropping you into a shell in the testbed ***"
+                ${SHELL:-/bin/sh}
+            fi
+            exit $EXIT
+        }
     done
 done
