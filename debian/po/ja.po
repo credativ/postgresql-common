@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 85\n"
+"Project-Id-Version: postgresql-common 155\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2014-05-20 11:16+0200\n"
-"PO-Revision-Date: 2008-02-09 06:07+0900\n"
+"PO-Revision-Date: 2014-05-20 18:16+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "Language: ja\n"
@@ -75,7 +75,7 @@ msgstr ""
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
-msgstr ""
+msgstr "新しい PostgreSQL クラスタでSSLをデフォルトで有効にしますか?"
 
 #. Type: boolean
 #. Description
@@ -85,6 +85,9 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL はSSLで暗号化された接続をサポートしています。暗号化は通常良いことで"
+"す。しかし、データベースへのアクセスがローカルホスト上でのTCP接続を使ったもの"
+"だけであればSSLを利用しなくてもセキュリティ問題は発生しません。"
 
 #. Type: boolean
 #. Description
@@ -95,9 +98,13 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"UNIX ドメインソケット接続 (pg_hba.conf では「local」と呼ばれています) にはこの"
+"設定は影響しません。この設定の影響を受けるのはパッケージのインストール時や "
+"pg_createcluster コマンドで作成される新しい PostgreSQL クラスタです。既存のク"
+"ラスタに対する再設定は行いません。"
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "よくわからない場合はSSLを有効にしてください。"

@@ -6,6 +6,7 @@ postgresql-common (158) UNRELEASED; urgency=medium
     /usr/bin anyway.
   * Debconf translation updates, thanks!
     + fr by Julien Patriarca. (Closes: #751101)
+    + ja by victory. (Closes: #751131)
 
  -- Christoph Berg <myon@debian.org>  Tue, 03 Jun 2014 21:30:05 +0200
 
