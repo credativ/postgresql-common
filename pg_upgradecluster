@@ -169,6 +169,10 @@ sub adapt_conffiles {
         rename_ \%c, 'unix_socket_directory', 'unix_socket_directories';
         rename_ \%c, 'replication_timeout', 'wal_sender_timeout';
     }
+
+    if ($newversion >= '9.4') {
+        deprecate \%c, 'krb_srvname', 'native krb5 authentication deprecated in favor of GSSAPI';
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
