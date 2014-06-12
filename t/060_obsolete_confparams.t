@@ -1320,10 +1320,10 @@ timezone = 'CET'
 timezone_abbreviations = 'Default'
 extra_float_digits = 0
 client_encoding = sql_ascii
-lc_messages = 'de_DE.utf8'
-lc_monetary = 'de_DE.utf8'
-lc_numeric = 'de_DE.utf8'
-lc_time = 'de_DE.utf8'
+lc_messages = 'C'
+lc_monetary = 'C'
+lc_numeric = 'C'
+lc_time = 'C'
 default_text_search_config = 'pg_catalog.german'
 dynamic_library_path = '\$libdir'
 local_preload_libraries = ''
@@ -1350,6 +1350,8 @@ include_if_exists = 'exists.conf'
 # %fullconf generated using
 # sed -e 's/^#//' -e 's/[ \t]*#.*//g' /etc/postgresql/9.3/foo/postgresql.conf | grep '^[a-z]'
 # ... plus quoting of " and $
+# remove/comment data_directory, hba_file, ident_file, external_pid_file
+# lc_* should be 'C'
 
 # Test one particular upgrade (old version, new version)
 sub do_upgrade {
