@@ -5,6 +5,7 @@ postgresql-common (158) UNRELEASED; urgency=medium
   * Move pg_{create,ctl,upgrade,drop}cluster.8 to section 1, they are in
     /usr/bin anyway.
   * pg_upgradecluster: Deprecate krb_srvname in 9.4.
+  * pg_wrapper: Also accept --cluster=ver/name in a single argument.
   * testsuite: Also mount /dev/shm; with -s, open shell on failure.
   * Start porting the postgresql-common framework to RedHat, backed by the
     PGDG PostgreSQL rpm packages.
