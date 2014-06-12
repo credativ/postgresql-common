@@ -97,13 +97,15 @@ unless ($version) {
     }
 }
 
-error 'Invalid PostgreSQL cluster version' unless -d "/usr/lib/postgresql/$version";
+error 'Invalid PostgreSQL cluster version' unless -d "$PgCommon::binroot$version";
 my $cmdname = (split '/', $0)[-1];
 my $cmd;
 
 # for psql we always want the latest version, as this is backwards compatible
 # to every major version that that we support
-if ($cmdname =~ /^(psql|pg_archivecleanup|pg_isready)$/) {
+if ($cmdname eq 'pg_wrapper') {
+    error "pg_wrapper should not be called directly, but through a symlink";
+} elsif ($cmdname =~ /^(psql|pg_archivecleanup|pg_isready)$/) {
     $cmd = get_program_path ($cmdname, get_newest_version);
 } else {
     $cmd = get_program_path ($cmdname, $version);
@@ -139,7 +141,7 @@ if ($cmdname eq 'psql') {
     }
 }
 
-error "pg_wrapper: $cmdname was not found in /usr/lib/postgresql/$version/bin" unless $cmd;
+error "pg_wrapper: $cmdname was not found in $PgCommon::binroot$version/bin" unless $cmd;
 unshift @ARGV, $cmd;
 exec @ARGV;
 

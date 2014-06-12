@@ -29,7 +29,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales
     get_cluster_databases read_cluster_conf_file read_pg_hba/;
-our @EXPORT_OK = qw/$confroot quote_conf_value read_conf_file get_conf_value
+our @EXPORT_OK = qw/$confroot $binroot quote_conf_value read_conf_file get_conf_value
     set_conf_value set_conffile_value disable_conffile_value disable_conf_value
     replace_conf_value cluster_data_directory get_file_device read_pidfile
     check_pidfile_running/;
@@ -50,7 +50,8 @@ if ($ENV{'PGSYSCONFDIR'}) {
     ($common_confdir) = $ENV{'PGSYSCONFDIR'} =~ /(.*)/; # untaint
 }
 my $mapfile = "$common_confdir/user_clusters";
-my $binroot = "/usr/lib/postgresql";
+our $binroot = "/usr/lib/postgresql/";
+#redhat# $binroot = "/usr/pgsql-";
 my $defaultport = 5432;
 
 {
@@ -379,6 +380,7 @@ sub get_cluster_socketdir {
     $socketdir =~ s/\s*,.*// if ($socketdir); # ignore additional directories for now
     return $socketdir if $socketdir;
 
+    #redhat# return '/tmp'; # RedHat PGDG packages default to /tmp
     # try to determine whether this is a postgres owned cluster and we default
     # to /var/run/postgresql
     $socketdir = '/var/run/postgresql';
@@ -414,7 +416,7 @@ sub set_cluster_socketdir {
 # Arguments: <program name> <version>
 sub get_program_path {
     return '' unless defined($_[0]) && defined($_[1]);
-    my $path = "$binroot/$_[1]/bin/$_[0]";
+    my $path = "$binroot$_[1]/bin/$_[0]";
     ($path) = $path =~ /(.*)/; #untaint
     return $path if -x $path;
     return '';
@@ -633,11 +635,15 @@ sub cluster_info {
 # Return an array of all available PostgreSQL versions
 sub get_versions {
     my @versions = ();
-    if (opendir (D, $binroot)) {
+    my $dir = $binroot;
+    #redhat# $dir = '/usr';
+    if (opendir (D, $dir)) {
 	my $entry;
         while (defined ($entry = readdir D)) {
             next if $entry eq '.' || $entry eq '..';
-	    ($entry) = $entry =~ /^(\d+\.\d+)$/; # untaint
+            my $pfx = '';
+            #redhat# $pfx = "pgsql-";
+            ($entry) = $entry =~ /^$pfx(\d+\.\d+)$/; # untaint
             push @versions, $entry if get_program_path ('psql', $entry);
         }
         closedir D;

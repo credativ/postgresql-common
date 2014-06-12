@@ -6,6 +6,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
     /usr/bin anyway.
   * pg_upgradecluster: Deprecate krb_srvname in 9.4.
   * testsuite: Also mount /dev/shm; with -s, open shell on failure.
+  * Start porting the postgresql-common framework to RedHat, backed by the
+    PGDG PostgreSQL rpm packages.
   * Debconf translation updates, thanks!
     + fr by Julien Patriarca. (Closes: #751101)
     + ja by victory. (Closes: #751131)
