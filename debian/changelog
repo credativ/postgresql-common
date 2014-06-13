@@ -4,6 +4,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
     default. (Closes: #739276)
   * Move pg_{create,ctl,upgrade,drop}cluster.8 to section 1, they are in
     /usr/bin anyway.
+  * maintscripts-functions: Configure manpage alternatives in -doc packages
+    using SPI_connect.3.gz as master.
   * pg_upgradecluster: Deprecate krb_srvname in 9.4.
   * pg_wrapper: Also accept --cluster=ver/name in a single argument.
   * testsuite: Also mount /dev/shm; with -s, open shell on failure.
