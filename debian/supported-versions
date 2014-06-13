@@ -162,7 +162,7 @@ installed() {
 # main
 
 if [ "${PG_SUPPORTED_VERSIONS:-}" ] ; then
-    SUPPORTED_VERSIONS="$PG_SUPPORTED_VERSIONS"
+    SUPPORTED_VERSIONS=$(echo "$PG_SUPPORTED_VERSIONS" | xargs -n1)
 elif [ -f ${HOME:-}/.pg_supported_versions ] ; then
     SUPPORTED_VERSIONS="$(cat ${HOME:-}/.pg_supported_versions)"
 elif [ -f ${PGSYSCONFDIR:-/etc/postgresql-common}/supported_versions ] ; then
