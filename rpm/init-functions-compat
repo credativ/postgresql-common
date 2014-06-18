@@ -1,0 +1,9 @@
+# Functions missing in older /lib/lsb/init-functions scripts
+
+function_exists () {
+    type $1 >/dev/null 2>&1
+}
+
+function_exists log_daemon_msg   || log_daemon_msg () { echo -n "$1:${2:+ $2}"; }
+function_exists log_progress_msg || log_progress_msg () { echo -n " $1"; }
+function_exists log_end_msg      || log_end_msg () { if [ $1 -eq 0 ]; then echo "."; else echo "failed!"; fi; }

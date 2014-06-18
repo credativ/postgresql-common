@@ -71,11 +71,17 @@ while read dest link; do
 done < debian/postgresql-client-common.links
 sed -i -e 's/^[[:space:]]*#redhat# *//' \
     %{buildroot}/usr/share/postgresql-common/PgCommon.pm \
+    %{buildroot}/usr/share/postgresql-common/init.d-functions \
     %{buildroot}/usr/share/postgresql-common/testsuite
+mkdir -p %{buildroot}/etc/init.d
+cp debian/postgresql-common.postgresql.init %{buildroot}/etc/init.d/postgresql
 #cp debian/postgresql-common.postinst %{buildroot}/usr/share/postgresql-common
+cp rpm/init-functions-compat %{buildroot}/usr/share/postgresql-common
 
 %files -n postgresql-common -f files-postgresql-common
-%attr(0755, root, root) /usr/share/postgresql-common/postgresql-common.postinst
+%attr(0755, root, root) /etc/init.d/postgresql
+#%attr(0755, root, root) /usr/share/postgresql-common/postgresql-common.postinst
+/usr/share/postgresql-common/init-functions-compat
 %files -n postgresql-client-common -f files-postgresql-client-common
 %files -n postgresql-server-dev-all -f files-postgresql-server-dev-all
 
