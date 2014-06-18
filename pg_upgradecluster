@@ -542,9 +542,10 @@ if (!fork) {
 	use File::Temp qw(tempdir);
 
 	my $pg_upgrade = get_program_path 'pg_upgrade', $newversion;
+        $pg_upgrade or error "pg_upgrade $newversion not found";
 	my @argv = ($pg_upgrade,
-		 '-b', "/usr/lib/postgresql/$version/bin",
-		 '-B', "/usr/lib/postgresql/$newversion/bin",
+		 '-b', "$PgCommon::binroot$version/bin",
+		 '-B', "$PgCommon::binroot$newversion/bin",
 		 '-d', $info{'pgdata'},
 		 '-D', $newinfo{'pgdata'},
 		 '-p', $info{'port'},
@@ -580,7 +581,8 @@ if (!fork) {
 	# pg_ctlcluster, but not by pg_upgrade).
 	unlink "/var/run/postgresql/$version-$cluster.pid";
 
-	$status == 0 or error 'pg_upgrade run failed';
+	$status == 0 or error "pg_upgrade run failed. Logfiles are in $logdir";
+        print "pg_upgrade output scripts are in $logdir\n";
     }
 
     exit 0;
