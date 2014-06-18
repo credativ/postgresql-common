@@ -1,12 +1,13 @@
 #!/bin/sh
 
 set -e
-. /usr/share/debconf/confmodule
+[ "$DPKG_MAINTSCRIPT_PACKAGE" ] && . /usr/share/debconf/confmodule
 
 SSL_ROOT=/etc/postgresql-common/root.crt
 
 setup_createclusterconf ()
 {
+    [ "$DPKG_MAINTSCRIPT_PACKAGE" ] || return 0
     SSL="true"
     db_get postgresql-common/ssl
     [ "$RET" ] && SSL="$RET"
@@ -24,6 +25,7 @@ setup_createclusterconf ()
 
 setup_logrotate ()
 {
+    [ "$DPKG_MAINTSCRIPT_PACKAGE" ] || return 0
     LRVERSION=$(dpkg-query -f '${Version}' --show logrotate 2> /dev/null) || return
     [ "$LRVERSION" ] || return 0
     LRTEMPLATE="/usr/share/postgresql-common/logrotate.template"
@@ -44,18 +46,19 @@ setup_logrotate ()
 }
 
 if [ "$1" = configure ]; then
+    [ "$DPKG_MAINTSCRIPT_PACKAGE" ] && quiet="--quiet" # RedHat doesn't have this
     # Make sure the administrative user exists
     if ! getent passwd postgres > /dev/null; then
-        adduser --system --quiet --home /var/lib/postgresql --no-create-home \
+        adduser --system $quiet --home /var/lib/postgresql --no-create-home \
             --shell /bin/bash --group --gecos "PostgreSQL administrator" postgres
     fi
     # if the user was created manually, make sure the group is there as well
     if ! getent group postgres > /dev/null; then
-        addgroup --system --quiet postgres
+        addgroup --system $quiet postgres
     fi
     # make sure postgres is in the postgres group
     if ! id -Gn postgres | grep -qw postgres; then
-        adduser --quiet postgres postgres
+        adduser $quiet postgres postgres
     fi
 
     # check validity of postgres user and group
@@ -105,7 +108,7 @@ EOF
     # Add postgres user to the ssl-cert group on fresh installs
     if [ -z "$2" ]; then
 	if getent group ssl-cert >/dev/null; then
-	    adduser --quiet postgres ssl-cert
+	    adduser $quiet postgres ssl-cert
 	fi
     fi
 
@@ -138,7 +141,8 @@ if [ "$1" = triggered ]; then
     exit 0  # skip daemon restart below
 fi
 
-db_stop
+[ "$DPKG_MAINTSCRIPT_PACKAGE" ] && db_stop
 
 #DEBHELPER#
 
+exit 0
