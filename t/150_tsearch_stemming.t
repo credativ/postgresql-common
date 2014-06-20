@@ -28,7 +28,7 @@ ok -l "/usr/share/postgresql/$version/tsearch_data/en_us.dict",
     "pg_updatedicts created $version en_us.dict symlink";
 
 # create cluster
-is ((system "pg_createcluster $version main --start >/dev/null"), 0, "pg_createcluster $_ main");
+is ((system "pg_createcluster $version main --start >/dev/null"), 0, "pg_createcluster $version main");
 
 # create DB with en_US text search configuration
 is_program_out 'postgres', 'createdb fts', 0, '';
