@@ -51,6 +51,7 @@ for inst in debian/*.install; do
         echo "/$dir/${file##*/}" >> files-$pkg
     done < $inst
 done
+# install manpages
 for manpages in debian/*.manpages; do
     pkg=$(basename $manpages .manpages)
     echo "### Reading $pkg manpages list from $manpages ###"
@@ -64,27 +65,35 @@ for manpages in debian/*.manpages; do
         done
     done < $manpages
 done
+# install pg_wrapper symlinks by augmenting the existing pgdg.rpm alternatives
 while read dest link; do
     name="pgsql-$(basename $link)"
     echo "update-alternatives --install /$link $name /$dest 9999" >> postgresql-client-common.post
     echo "update-alternatives --remove $name /$dest" >> postgresql-client-common.preun
 done < debian/postgresql-client-common.links
-sed -i -e 's/^[[:space:]]*#redhat# *//' \
+# activate rpm-specific tweaks
+sed -i -e 's/#redhat# //' \
     %{buildroot}/usr/bin/pg_config \
     %{buildroot}/usr/bin/pg_virtualenv \
     %{buildroot}/usr/share/postgresql-common/PgCommon.pm \
     %{buildroot}/usr/share/postgresql-common/init.d-functions \
     %{buildroot}/usr/share/postgresql-common/testsuite
+# install init script
 mkdir -p %{buildroot}/etc/init.d
 cp debian/postgresql-common.postgresql.init %{buildroot}/etc/init.d/postgresql
 #cp debian/postgresql-common.postinst %{buildroot}/usr/share/postgresql-common
 cp rpm/init-functions-compat %{buildroot}/usr/share/postgresql-common
+# ssl defaults to 'off' here because we don't have pregenerated snakeoil certs
+sed -e 's/__SSL__/off/' createcluster.conf > %{buildroot}/etc/postgresql-common/createcluster.conf
 
 %files -n postgresql-common -f files-postgresql-common
-%attr(0755, root, root) /etc/init.d/postgresql
+%attr(0755, root, root) %config /etc/init.d/postgresql
 #%attr(0755, root, root) /usr/share/postgresql-common/postgresql-common.postinst
 /usr/share/postgresql-common/init-functions-compat
+%config /etc/postgresql-common/createcluster.conf
+
 %files -n postgresql-client-common -f files-postgresql-client-common
+
 %files -n postgresql-server-dev-all -f files-postgresql-server-dev-all
 
 #%post
@@ -96,6 +105,7 @@ cp rpm/init-functions-compat %{buildroot}/usr/share/postgresql-common
 #sh -x /usr/share/postgresql-common/postgresql-common.postinst "configure"
 
 %post -n postgresql-client-common -f postgresql-client-common.post
+
 %preun -n postgresql-client-common -f postgresql-client-common.preun
 
 %changelog
