@@ -16,8 +16,9 @@
 #  GNU General Public License for more details.
 
 set -e
-
-LATEST_SERVER_DEV=`ls /usr/lib/postgresql/*/bin/pg_config 2>/dev/null|tail -n1`
+PGBINROOT="/usr/lib/postgresql/"
+#redhat# PGBINROOT="/usr/pgsql-"
+LATEST_SERVER_DEV=`ls $PGBINROOT*/bin/pg_config 2>/dev/null|tail -n1`
 
 if [ -n "$LATEST_SERVER_DEV" ]; then
     exec "$LATEST_SERVER_DEV" "$@"

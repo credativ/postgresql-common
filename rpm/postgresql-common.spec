@@ -70,6 +70,8 @@ while read dest link; do
     echo "update-alternatives --remove $name /$dest" >> postgresql-client-common.preun
 done < debian/postgresql-client-common.links
 sed -i -e 's/^[[:space:]]*#redhat# *//' \
+    %{buildroot}/usr/bin/pg_config \
+    %{buildroot}/usr/bin/pg_virtualenv \
     %{buildroot}/usr/share/postgresql-common/PgCommon.pm \
     %{buildroot}/usr/share/postgresql-common/init.d-functions \
     %{buildroot}/usr/share/postgresql-common/testsuite

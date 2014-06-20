@@ -46,13 +46,16 @@ help ()
 }
 
 # option parsing
+PGBINROOT="/usr/lib/postgresql/"
+#redhat# PGBINROOT="/usr/pgsql-"
 PG_VERSIONS=""
 PGCONF_OPTS=()
 while getopts "ac:i:ho:sv:" opt ; do
     case $opt in
-	a) for d in /usr/lib/postgresql/*/bin/pg_ctl; do
+	a) for d in $PGBINROOT*/bin/pg_ctl; do
 		# prepend version so latest ends up first (i.e. on port 5432)
-		PG_VERSIONS="$(basename ${d%%/bin/pg_ctl}) ${PG_VERSIONS:-}"
+                dir=${d%%/bin/pg_ctl}
+		PG_VERSIONS="${dir#$PGBINROOT} ${PG_VERSIONS:-}"
 	   done ;;
 	c) CREATE_OPTS="$OPTARG" ;;
 	i) INITDB_OPTS="$OPTARG" ;;
@@ -65,8 +68,9 @@ while getopts "ac:i:ho:sv:" opt ; do
 done
 if [ -z "$PG_VERSIONS" ]; then
     # use latest version
-    d=$(ls /usr/lib/postgresql/*/bin/pg_ctl | tail -1)
-    PG_VERSIONS="$(basename ${d%%/bin/pg_ctl})"
+    d=$(ls $PGBINROOT*/bin/pg_ctl | tail -1)
+    dir=${d%%/bin/pg_ctl}
+    PG_VERSIONS="${dir#$PGBINROOT}"
 fi
 # shift away args
 shift $(($OPTIND - 1))
@@ -156,8 +160,10 @@ for v in $PG_VERSIONS; do
     # we chdir to / so programs don't throw "could not change directory to ..."
     (
 	cd /
-	NOSYNC=""
-	dpkg --compare-versions $v ge 9.3 && NOSYNC="--nosync"
+        case $v in
+            8*|9.0|9.1|9.2) : ;;
+            *) NOSYNC="--nosync" ;;
+        esac
 	pg_createcluster \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
@@ -188,7 +194,7 @@ case $PG_VERSIONS in
     *\ *) ;; # multiple versions: do not set PGPORT because that breaks --cluster
     *)
 	export PGPORT="$port" # will always be 5432 in root mode, but could differ otherwise
-	export PG_CONFIG="/usr/lib/postgresql/$PG_VERSIONS/bin/pg_config"
+	export PG_CONFIG="$PGBINROOT$PG_VERSIONS/bin/pg_config"
 	;;
 esac
 
