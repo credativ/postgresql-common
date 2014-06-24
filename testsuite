@@ -140,7 +140,6 @@ ifconfig lo up || true
 unset TMPDIR
 unset LC_ALL
 export LANG=en_US.utf8
-#redhat# export PG_READLINE=1
 
 # set variables which cause taint check errors
 export IFS=' '

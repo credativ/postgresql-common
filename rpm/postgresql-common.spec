@@ -76,33 +76,43 @@ sed -i -e 's/#redhat# //' \
     %{buildroot}/usr/bin/pg_config \
     %{buildroot}/usr/bin/pg_virtualenv \
     %{buildroot}/usr/share/postgresql-common/PgCommon.pm \
-    %{buildroot}/usr/share/postgresql-common/init.d-functions \
-    %{buildroot}/usr/share/postgresql-common/testsuite
+    %{buildroot}/usr/share/postgresql-common/init.d-functions
 # install init script
-mkdir -p %{buildroot}/etc/init.d
+mkdir -p %{buildroot}/etc/init.d %{buildroot}/etc/logrotate.d
 cp debian/postgresql-common.postgresql.init %{buildroot}/etc/init.d/postgresql
 #cp debian/postgresql-common.postinst %{buildroot}/usr/share/postgresql-common
 cp rpm/init-functions-compat %{buildroot}/usr/share/postgresql-common
 # ssl defaults to 'off' here because we don't have pregenerated snakeoil certs
 sed -e 's/__SSL__/off/' createcluster.conf > %{buildroot}/etc/postgresql-common/createcluster.conf
+cp debian/logrotate.template %{buildroot}/etc/logrotate.d/postgresql-common
 
 %files -n postgresql-common -f files-postgresql-common
 %attr(0755, root, root) %config /etc/init.d/postgresql
 #%attr(0755, root, root) /usr/share/postgresql-common/postgresql-common.postinst
 /usr/share/postgresql-common/init-functions-compat
 %config /etc/postgresql-common/createcluster.conf
+%config /etc/logrotate.d/postgresql-common
 
 %files -n postgresql-client-common -f files-postgresql-client-common
 
 %files -n postgresql-server-dev-all -f files-postgresql-server-dev-all
 
-#%post
+%post
 ## RedHat's adduser is different, create the user here
 #if ! getent passwd postgres > /dev/null; then
 #    adduser --system --home /var/lib/postgresql --no-create-home \
 #            --shell /bin/bash --comment "PostgreSQL administrator" postgres
 #fi
 #sh -x /usr/share/postgresql-common/postgresql-common.postinst "configure"
+version_lt () {
+    newest=$( ( echo $1; echo $2 ) | sort -V | tail -n1)
+    [ "$1" != "$newest" ]
+}
+lrversion=$(rpm --queryformat '%{VERSION}' -q logrotate)
+if version_lt $lrversion 3.8; then
+    echo "Adjusting /etc/logrotate.d/postgresql-common for logrotate version $lrversion"
+    sed -i -e '/ su /d' /etc/logrotate.d/postgresql-common || :
+fi
 
 %post -n postgresql-client-common -f postgresql-client-common.post
 

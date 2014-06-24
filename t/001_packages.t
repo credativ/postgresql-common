@@ -6,9 +6,25 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => 12 + ($#MAJORS+1)*7;
+use Test::More tests => $PgCommon::rpm ? (7*@MAJORS) : (12 + 7*@MAJORS);
 
 note "PostgreSQL versions installed: @MAJORS\n";
+
+if ($PgCommon::rpm) {
+    foreach my $v (@MAJORS) {
+        my $vv = $v;
+        $vv =~ s/\.//;
+
+        ok ((rpm_installed "postgresql$vv"),          "postgresql$vv installed");
+        ok ((rpm_installed "postgresql$vv-libs"),     "postgresql$vv-libs installed");
+        ok ((rpm_installed "postgresql$vv-server"),   "postgresql$vv-server installed");
+        ok ((rpm_installed "postgresql$vv-contrib"),  "postgresql$vv-contrib installed");
+        ok ((rpm_installed "postgresql$vv-plperl"),   "postgresql$vv-plperl installed");
+        ok ((rpm_installed "postgresql$vv-plpython"), "postgresql$vv-plpython installed");
+        ok ((rpm_installed "postgresql$vv-pltcl"),    "postgresql$vv-pltcl installed");
+    }
+    exit;
+}
 
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
