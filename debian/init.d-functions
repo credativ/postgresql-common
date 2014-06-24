@@ -92,12 +92,17 @@ status() {
 # return all installed versions which do not have their own init script
 get_versions() {
     versions=''
-    local v dir
+    local v dir skipinit
+
+    skipinit=continue
+    #redhat# skipinit=true # RedHat systems will have /etc/init.d/postgresql-* provided by the yum.pg.o package
     dir=$PGBINROOT
     #redhat# dir="-d /usr/pgsql-*"
+
     for v in `ls $dir 2>/dev/null`; do
         #redhat# v=${v#*-}
-	if [ -x $PGBINROOT$v/bin/pg_ctl ] && [ ! -x /etc/init.d/postgresql-$v ]; then
+        [ -x /etc/init.d/postgresql-$v ] && $skipinit
+        if [ -x $PGBINROOT$v/bin/pg_ctl ]; then
 	    versions="$versions $v"
 	fi
     done
