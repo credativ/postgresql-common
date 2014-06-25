@@ -105,7 +105,7 @@ cp debian/logrotate.template %{buildroot}/etc/logrotate.d/postgresql-common
 #fi
 #sh -x /usr/share/postgresql-common/postgresql-common.postinst "configure"
 version_lt () {
-    newest=$( ( echo $1; echo $2 ) | sort -V | tail -n1)
+    newest=$( ( echo "$1"; echo "$2" ) | sort -V | tail -n1)
     [ "$1" != "$newest" ]
 }
 lrversion=$(rpm --queryformat '%{VERSION}' -q logrotate)
