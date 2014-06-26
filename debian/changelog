@@ -3,6 +3,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
   * Set default log_line_prefix = '%t [%p-%l] %q%u@%d '.
   * Put stats_temp_directory aka pg_stat_tmp into /var/run/postgresql by
     default. (Closes: #739276)
+  * pg_lsclusters: Print logfile from postgresql.conf when logging_collector
+    in use instead of "custom".
   * Move pg_{create,ctl,upgrade,drop}cluster.8 to section 1, they are in
     /usr/bin anyway.
   * maintscripts-functions: Configure manpage alternatives in -doc packages

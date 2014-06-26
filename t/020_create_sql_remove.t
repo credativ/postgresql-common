@@ -127,9 +127,11 @@ sub check_major {
     my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/pg_log/$v#main.log*");
     is $#l, 0, 'exactly one log file';
     ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
-    like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*custom\n$/;
+    like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$v#main.log\n$/;
 
     # clean up
+    PgCommon::disable_conf_value ($v, 'main', 'postgresql.conf', 
+        ($v >= '8.3' ? 'logging_collector' : 'redirect_stderr'), '');
     PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'log_filename', '';
     unlink "/etc/postgresql/$v/main/log";
 

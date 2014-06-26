@@ -616,16 +616,18 @@ sub cluster_info {
     $result{'start'} = get_cluster_start_conf $_[0], $_[1];
 
     # default log file (only if not expliticly configured in postgresql.conf)
-    unless (exists $postgresql_conf{'log_filename'} || 
-	exists $postgresql_conf{'log_directory'} ||
-	(defined $postgresql_conf{'log_destination'} &&
-	    $postgresql_conf{'log_destination'} eq 'syslog')) {
+    unless (config_bool ($postgresql_conf{logging_collector}) or
+        ($postgresql_conf{'log_destination'} || '') =~ /syslog/) {
         my $log_symlink = $result{'configdir'} . "/log";
         if (-l $log_symlink) {
             ($result{'logfile'}) = readlink ($log_symlink) =~ /(.*)/; # untaint
         } else {
             $result{'logfile'} = "/var/log/postgresql/postgresql-$_[0]-$_[1].log";
         }
+    } else {
+        $result{log_destination} = $postgresql_conf{log_destination};
+        $result{log_directory} = $postgresql_conf{log_directory};
+        $result{log_filename} = $postgresql_conf{log_filename};
     }
 
     # autovacuum defaults to on since 8.3
