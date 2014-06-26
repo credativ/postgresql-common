@@ -1,0 +1,16 @@
+postgresql-common (158) UNRELEASED; urgency=medium
+
+  This postgresql-common release introduces several changes in the defaults
+  used for newly created database clusters, all configurable in
+  /etc/postgresql-common/createcluster.conf:
+
+  * The default log_line_prefix is now '%t [%p-%l] %q%u@%d ' instead of '%t '.
+  * stats_temp_directory aka pg_stat_tmp is set to a subdirectory of
+    /var/run/postgresql by default.
+  * The use of SSL by default is (pre-)configurable via debconf and
+    createcluster.conf.
+
+  If the logging_collector or syslog is being used, pg_lsclusters will show
+  the filename (or "syslog") instead of just "custom" in the Log file column.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 26 Jun 2014 13:23:52 +0200
