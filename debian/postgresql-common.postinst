@@ -8,14 +8,17 @@ SSL_ROOT=/etc/postgresql-common/root.crt
 setup_createclusterconf ()
 {
     [ "$DPKG_MAINTSCRIPT_PACKAGE" ] || return 0
-    SSL="true"
     db_get postgresql-common/ssl
-    [ "$RET" ] && SSL="$RET"
+    case $RET in
+        true) SSL=on ;;
+        false) SSL=off ;;
+        *) return ;;
+    esac
 
     CCTEMPLATE="/usr/share/postgresql-common/createcluster.conf"
     CCTMP=`mktemp --tmpdir postgresql-common.XXXXXX`
     trap "rm -f $CCTMP" 0 2 3 15
-    sed -e "s/__SSL__/$SSL/" $CCTEMPLATE > $CCTMP
+    sed -e "s/^ssl =.*/ssl = $SSL/" $CCTEMPLATE > $CCTMP
     chmod 644 $CCTMP
     CCCONFIG="/etc/postgresql-common/createcluster.conf"
     ucf --debconf-ok $CCTMP $CCCONFIG
