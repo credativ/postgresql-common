@@ -98,12 +98,10 @@ cp debian/logrotate.template %{buildroot}/etc/logrotate.d/postgresql-common
 %files -n postgresql-server-dev-all -f files-postgresql-server-dev-all
 
 %post
-## RedHat's adduser is different, create the user here
-#if ! getent passwd postgres > /dev/null; then
-#    adduser --system --home /var/lib/postgresql --no-create-home \
-#            --shell /bin/bash --comment "PostgreSQL administrator" postgres
-#fi
-#sh -x /usr/share/postgresql-common/postgresql-common.postinst "configure"
+groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
+useradd -M -n -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
+    -c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
+
 version_lt () {
     newest=$( ( echo "$1"; echo "$2" ) | sort -V | tail -n1)
     [ "$1" != "$newest" ]

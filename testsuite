@@ -130,6 +130,10 @@ chown postgres:postgres /var/run/postgresql
 chmod 2775 /var/run/postgresql
 chmod 1777 /dev/shm
 
+# the RPM packages enable the logging_collector by default, which the testsuite
+# doesn't like. We disable it unconditionally here.
+echo "logging_collector = off" >> /etc/postgresql-common/createcluster.conf
+
 # reset core limit for pg_ctl tests
 ulimit -S -c 0
 

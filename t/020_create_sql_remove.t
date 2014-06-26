@@ -142,7 +142,11 @@ sub check_major {
     # verify that SSL is enabled (which should work for user postgres in a
     # default installation)
     my $ssl = config_bool (PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'ssl');
-    is $ssl, 1, 'SSL is enabled';
+    if ($PgCommon::rpm) {
+        is $ssl, undef, 'SSL is disabled';
+    } else {
+        is $ssl, 1, 'SSL is enabled';
+    }
 
     # Create user nobody, a database 'nobodydb' for him, check the database list
     my $outref;
@@ -196,7 +200,7 @@ Bob|1
 	0, "Foo2\n", 'calling PL/Python function';
 
     # Check PL/Python3 (untrusted)
-    if ($v >= '9.1') {
+    if ($v >= '9.1' and not $PgCommon::rpm) {
 	is_program_out 'postgres', 'createlang plpython3u nobodydb', 0, '', 'createlang plpython3u succeeds for user postgres';
 	is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize3(text) RETURNS text AS \'import sys; return args[0].capitalize() + sys.version[0]\' LANGUAGE plpython3u;"',
 	    0, '', 'creating PL/Python3 function as user postgres succeeds';
@@ -283,10 +287,10 @@ Bob|1
     $adj = <F>;
     chomp $adj;
     close F;
-    if ($v >= '9.1') {
-	cmp_ok $adj, '<=', -500, 'postgres >= 9.1 master has OOM killer protection';
+    if ($v >= '9.1' and not $PgCommon::rpm) {
+        cmp_ok $adj, '<=', -500, 'postgres master has OOM killer protection';
     } else {
-	is $adj, 0, 'postgres < 9.1 master has no OOM adjustment';
+        is $adj, 0, 'postgres master has no OOM adjustment';
     }
 
     open F, "/proc/$client_pid/oom_score_adj";

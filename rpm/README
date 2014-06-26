@@ -1,0 +1,46 @@
+postgresql-common for RedHat
+============================
+
+The postgresql-common framework was written for Debian/Ubuntu, but most parts
+of it work as well on other operating systems. The RPM port changes little in
+the original code, and even uses many files from the debian/ directory for
+building the packages.
+
+No separate PostgreSQL client/server packages are provided; the port is backed
+by the PGDG RPM packages from yum.postgresql.org.
+
+The filesystem layout is unchanged, /etc/postgresql, /etc/postgresql-common,
+/var/lib/postgresql, and /var/run/postgresql are used as before.
+
+Differences between the Debian and RedHat operating modes are:
+
+* The postgres system user home is /var/lib/pgsql.
+
+* The binroot is changed from /usr/lib/postgresql/ to /usr/pgsql-. (Note the
+  missing trailing slash, the idea is that the version number can just be
+  appended to the path, e.g. /usr/lib/postgresql/9.4/bin becomes
+  /usr/pgsql-9.4/bin.)
+
+* The various symlinks for frontend programs in /usr/bin like psql are not
+  direct symlinks to pg_wrapper, but are added as high-priority alternatives to
+  the alternatives symlinks set up by the PostgreSQL RPM packages.
+
+* SSL is disabled by default because there is no easily available snakeoil
+  certificate. Proper certificates can be configured in createcluster.conf.
+
+* No attempt is made to setup OOM killer protection for the postmaster process.
+
+* On Debian, the /etc/init.d/postgresql init script skips versions that have
+  their own /etc/init.d/postgresql-x.y init script, mostly for compatibility
+  with legacy packages before the advent of the postgresql-common framework.
+  The RPM packages provide /etc/init.d/postgresql-x.y scripts, which are
+  ignored by /etc/init.d/postgresql. The postgresql-x.y scripts will not do
+  anything as long as the user does not use them to create clusters in
+  /var/lib/pgsql. (In which case they continue to work as if postgresql-common
+  was not present.)
+
+* Debian's pre/postinst/rm maintainer scripts are not used. Mostly this means
+  there is no automatic integration of tsearch with system-provided
+  dictionaries.
+
+ -- Christoph Berg <christoph.berg@credativ.de> Thu, 26 Jun 2014 16:59:47 +0200
