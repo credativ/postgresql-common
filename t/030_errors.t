@@ -62,10 +62,11 @@ like_program_out 0, "pg_createcluster $version test -p 5432", 1,
     'pg_createcluster -p checks that port is already used';
 
 # chown cluster to an invalid user to test error
-(system "chown -R 99 /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
+my $badid = 98;
+(system "chown -R $badid /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
 is ((system "pg_ctlcluster $version main start 2>/dev/null"), 256,
     'pg_ctlcluster fails on invalid cluster owner uid');
-(system "chown -R postgres:99 /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
+(system "chown -R postgres:$badid /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
 is ((system "pg_ctlcluster $version main start 2>/dev/null"), 256,
     'pg_ctlcluster as root fails on invalid cluster owner gid');
 is ((exec_as 'postgres', "pg_ctlcluster $version main start"), 1,
