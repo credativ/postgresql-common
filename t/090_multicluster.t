@@ -245,15 +245,15 @@ port=5440
 ";
 close F;
 chmod 0644, '/etc/postgresql-common/pg_service.conf';
+
 $ENV{'PGSERVICE'} = 'old_t1';
-# TODO: sysconfdir is only fixed in 8.3 for now
-is_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 0,
+is_program_out 'postgres', "psql -Atc 'select current_database()'", 0,
     "template1\n", 'pg_service conf selection 1';
 $ENV{'PGSERVICE'} = 'new1_test';
-is_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 0,
+is_program_out 'postgres', "psql -Atc 'select current_database()'", 0,
     "test\n", 'pg_service conf selection 2';
 $ENV{'PGSERVICE'} = 'new2_test';
-like_program_out 'postgres', "/usr/lib/postgresql/$MAJORS[-1]/bin/psql -Atc 'select current_database()'", 2,
+like_program_out 'postgres', "psql -Atc 'select current_database()'", 2,
     qr/FATAL.*test/, 'pg_service conf selection 3';
 delete $ENV{'PGSERVICE'};
 unlink '/etc/postgresql-common/pg_service.conf';
