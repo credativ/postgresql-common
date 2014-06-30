@@ -81,7 +81,7 @@ ok_dir $socketdir, ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], "Socket is in $socke
 
 # stop cluster, check sockets
 ok ((system "pg_ctlcluster $version main stop") == 0,
-    'cluster stops after removing unix_socket_dir');
+    'cluster stops with custom unix_socket_dir');
 ok_dir $socketdir, [], "No sockets in $socketdir after stopping cluster";
 
 # remove default socket dir and check that the socket defaults to
@@ -97,8 +97,12 @@ close F;
 
 ok ((system "pg_ctlcluster $version main start") == 0,
     'cluster starts after removing unix_socket_dir');
-ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid"], 
-    'Socket is in default dir /var/run/postgresql';
+if ($PgCommon::rpm) {
+    ok ((grep { $_ eq '.s.PGSQL.5432' } @{TestLib::dircontent('/tmp')}) == 1, 'Socket is in /tmp');
+} else {
+    ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid"], 
+        'Socket is in default dir /var/run/postgresql';
+}
 ok_dir $socketdir, [], "No sockets in $socketdir";
 
 # server should not stop with corrupt file
