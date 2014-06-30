@@ -10,9 +10,12 @@ No separate PostgreSQL client/server packages are provided; the port is backed
 by the PGDG RPM packages from yum.postgresql.org.
 
 The filesystem layout is unchanged, /etc/postgresql, /etc/postgresql-common,
-/var/lib/postgresql, and /var/run/postgresql are used as before.
+and /var/lib/postgresql are used as before.
 
 Differences between the Debian and RedHat operating modes are:
+
+* /var/run/postgresql/ is still used for external pid files, but the default
+  unix socket directory is /tmp, to match the RPM packages' default.
 
 * The postgres system user home is /var/lib/pgsql.
 

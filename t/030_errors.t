@@ -262,7 +262,7 @@ is ((exec_as 'postgres', "pg_ctlcluster $version main start"), 0,
     'pg_ctlcluster: main cluster on conflicting port starts');
 
 # clusters can run side by side on different socket directories
-set_cluster_socketdir $version, 'other', '/tmp';
+set_cluster_socketdir $version, 'other', $socketdir;
 PgCommon::set_conf_value $version, 'other', 'postgresql.conf',
     'listen_addresses', ''; # otherwise they will conflict on TCP socket
 is ((exec_as 'postgres', "pg_ctlcluster $version other start"), 0,
@@ -270,7 +270,7 @@ is ((exec_as 'postgres', "pg_ctlcluster $version other start"), 0,
 is ((exec_as 'postgres', "pg_ctlcluster $version other stop"), 0);
 
 # ... but will give an error when running on the same port
-set_cluster_socketdir $version, 'other', '/var/run/postgresql';
+set_cluster_socketdir $version, 'other', $PgCommon::rpm ? '/tmp' : '/var/run/postgresql';
 like_program_out 'postgres', "pg_ctlcluster $version other start", 1,
     qr/Port conflict:.*port 5432/,
     'pg_ctlcluster other cluster fails on conflicting port and same socket dir';

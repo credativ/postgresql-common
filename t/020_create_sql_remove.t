@@ -22,8 +22,12 @@ sub check_major {
 	"pg_createcluster $v main");
 
     # check that a /var/run/postgresql/ pid file is created
-    ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid"], 
-        'Socket and pid file are in /var/run/postgresql/';
+    unless ($PgCommon::rpm) {
+        ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid"], 
+            'Socket and pid file are in /var/run/postgresql/';
+    } else {
+        ok_dir '/var/run/postgresql/', ["$v-main.pid"], 'Pid File is in /tmp';
+    }
 
     # verify that exactly one postmaster is running
     my @pm_pids = pidof (($v >= '8.2') ? 'postgres' : 'postmaster');
@@ -55,8 +59,12 @@ sub check_major {
 
     # Now there should not be an external PID file any more, since we set it
     # explicitly
-    ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
-	'Socket, but not PID file in /var/run/postgresql/';
+    unless ($PgCommon::rpm) {
+        ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
+            'Socket, but not PID file in /var/run/postgresql/';
+    } else {
+        ok_dir '/var/run/postgresql', [], '/var/run/postgresql/ is empty';
+    }
 
     # verify that the correct client version is selected
     like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $v/,

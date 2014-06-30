@@ -398,7 +398,9 @@ $orig_egid = $);
 $) = $ownergid;
 $> = $owneruid;
 unless ($socketdir) {
-    if (-w '/var/run/postgresql') {
+    if ($PgCommon::rpm) {
+        $socketdir = '/tmp'; # RedHat defaults to /tmp in libpq et al.
+    } elsif (-w '/var/run/postgresql') {
 	$socketdir = '/var/run/postgresql';
     } else {
         $socketdir='/tmp';
