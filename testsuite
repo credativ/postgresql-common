@@ -18,11 +18,6 @@
 
 set -e
 
-if [ "$(id -u)" != 0 ]; then
-    echo "Error: this test suite needs to be run as root" >&2
-    exit 1
-fi
-
 # default config
 TESTSDIR="$(dirname $0)/t"
 : ${PG_UMASKS="022 077"}
@@ -31,6 +26,7 @@ help ()
 {
     echo "postgresql-common testsuite"
     echo "Syntax: $0 [options] [test ...]"
+    echo "    -f number        run tests starting at this number"
     echo "    -i               install packages for versions specified by -v"
     echo "    -s               start a shell in the testbed on failure"
     echo "    -u 'umask ...'   umasks to run testsuite with [default: 022 077]"
@@ -39,8 +35,9 @@ help ()
 }
 
 # option parsing
-while getopts "hisu:v:" opt ; do
+while getopts "hf:isu:v:" opt ; do
     case $opt in
+        f) FROM="$OPTARG" ;;
         i) INSTALL=1 ;;
         h) help ;;
         s) RUN_SHELL=1 ;;
@@ -49,6 +46,11 @@ while getopts "hisu:v:" opt ; do
         *) help 1 ;;
     esac
 done
+
+if [ "$(id -u)" != 0 ]; then
+    echo "Error: this test suite needs to be run as root" >&2
+    exit 1
+fi
 
 # install packages for versions specified by -v
 # needs network for apt, so run before unshare
@@ -165,11 +167,13 @@ for U in $PG_UMASKS; do
     echo "====== Running all tests with $TYPE umask $U ======="
     umask $U
     for T; do
-        echo "=== Running test `basename $T`... ==="
+        TBASE=${T##*/}
+        [ "$FROM" ] && [ "${TBASE%%_*}" -lt "$FROM" ] && continue
+        echo "=== Running test $TBASE ... ==="
         perl $T || {
             EXIT=$?
             if [ "${RUN_SHELL:-}" ]; then
-                echo "*** $T failed with status $EXIT, dropping you into a shell in the testbed ***"
+                echo "*** $TBASE failed with status $EXIT, dropping you into a shell in the testbed ***"
                 ${SHELL:-/bin/sh}
             fi
             exit $EXIT

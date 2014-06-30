@@ -11,7 +11,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
     using SPI_connect.3.gz as master.
   * pg_upgradecluster: Deprecate krb_srvname in 9.4.
   * pg_wrapper: Also accept --cluster=ver/name in a single argument.
-  * testsuite: Also mount /dev/shm; with -s, open shell on failure.
+  * testsuite: Also mount /dev/shm; with -s, open shell on failure; -f nnn
+    starts tests at this sequence number.
   * Start porting the postgresql-common framework to RedHat, backed by the
     PGDG PostgreSQL rpm packages.
   * Debconf translation updates, thanks!
