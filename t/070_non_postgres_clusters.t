@@ -47,7 +47,10 @@ for my $f (readdir D) {
 @st = stat "/var/log/postgresql/postgresql-$v-main.log";
 is $st[2], 0100640, 'log file has 0640 permissions';
 is $st[4], $owneruid, 'log file is owned by user';
-is $st[5], $ownergid, 'log file is owned by user\'s primary group';
+# the log file gid setting works on RedHat, but nobody has gid 99 there (and
+# there's not good alternative for testing)
+my $loggid = $PgCommon::rpm ? (getgrnam 'adm')[2] : $ownergid;
+is $st[5], $loggid, 'log file is owned by user\'s primary group';
 
 if ($#MAJORS > 0) {
     my $newv = $MAJORS[-1];
