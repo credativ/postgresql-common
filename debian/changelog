@@ -13,6 +13,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
   * pg_wrapper: Also accept --cluster=ver/name in a single argument.
   * testsuite: Also mount /dev/shm; with -s, open shell on failure; -f nnn
     starts tests at this sequence number.
+  * run-upgrade-scripts, t/100_upgrade_scripts.t: Fork and set uid for running
+    the upgrade scripts; use su -c for testing.
   * Start porting the postgresql-common framework to RedHat, backed by the
     PGDG PostgreSQL rpm packages.
   * Debconf translation updates, thanks!

@@ -40,10 +40,16 @@ sub dbs_from_scope {
 
 # Arguments: <script> <scope> <version> <cluster> <database>
 sub call_sql {
+    if (my $child = fork) { # parent
+        waitpid $child, 0;
+        return;
+    }
+
+    # child code
     my ($script, $scope, $version, $cluster, $db) = @_;
     $cluster =~ s/'/''/g; # escape ' in cluster name
     my $orig_euid = $>;
-    $> = (stat (PgCommon::cluster_data_directory $version, $cluster))[4];
+    $< = $> = (stat (PgCommon::cluster_data_directory $version, $cluster))[4];
 
     # temporarily enable connections
     my $conallow = `/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc "select datallowconn from pg_database where datname='$db'"`;
@@ -58,8 +64,9 @@ sub call_sql {
     if ($conallow eq 'f') {
         system "/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc \"update pg_database set datallowconn = 'f' where datname='$db'\"";
     }
-    $> = $orig_euid;
     print "[FAIL]\n$out" if $?;
+
+    exit 0;
 }
 
 # Arguments: <script> <scope> <version> <cluster> <database>
