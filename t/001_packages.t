@@ -6,7 +6,7 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => $PgCommon::rpm ? (7*@MAJORS) : (12 + 7*@MAJORS);
+use Test::More tests => $PgCommon::rpm ? (8*@MAJORS) : (12 + 7*@MAJORS);
 
 note "PostgreSQL versions installed: @MAJORS\n";
 
@@ -22,6 +22,7 @@ if ($PgCommon::rpm) {
         ok ((rpm_installed "postgresql$vv-plperl"),   "postgresql$vv-plperl installed");
         ok ((rpm_installed "postgresql$vv-plpython"), "postgresql$vv-plpython installed");
         ok ((rpm_installed "postgresql$vv-pltcl"),    "postgresql$vv-pltcl installed");
+        ok ((rpm_installed "postgresql$vv-devel"),    "postgresql$vv-devel installed");
     }
     exit;
 }

@@ -39,7 +39,7 @@ chmod 0644, 'test.pgc';
 
 is_program_out 'nobody', 'ecpg test.pgc', 0, '', 'ecpg processing';
 
-is_program_out 'nobody', 'cc -I /usr/include/postgresql/ -o test test.c -lecpg', 
+is_program_out 'nobody', 'cc -I$(pg_config --includedir) -L$(pg_config --libdir) -o test test.c -lecpg',
     0, '', 'compiling ecpg output';
 chdir '/' or die "could not chdir to /: $!";
 

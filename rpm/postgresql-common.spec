@@ -113,8 +113,10 @@ if version_lt $lrversion 3.8; then
 fi
 
 %post -n postgresql-client-common -f postgresql-client-common.post
+update-alternatives --install /usr/bin/ecpg pgsql-ecpg /usr/share/postgresql-common/pg_wrapper 9999
 
 %preun -n postgresql-client-common -f postgresql-client-common.preun
+update-alternatives --remove pgsql-ecpg /usr/share/postgresql-common/pg_wrapper
 
 %changelog
 * Thu Jun  5 2014 Christoph Berg <christoph.berg@credativ.de> 158-1
