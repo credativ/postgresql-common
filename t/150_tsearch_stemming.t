@@ -7,10 +7,14 @@ use TestLib;
 
 my $version = $MAJORS[-1];
 
-use Test::More tests => 39;
-
 use lib '/usr/share/postgresql-common';
 use PgCommon;
+
+use Test::More tests => $PgCommon::rpm ? 1 : 39;
+if ($PgCommon::rpm) {
+    pass 'tsearch dictionaries not handled by postgresql-common on RedHat';
+    exit;
+}
 
 # test pg_updatedicts
 unlink '/var/cache/postgresql/dicts/en_us.affix';

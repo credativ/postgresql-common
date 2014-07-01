@@ -26,7 +26,7 @@ for my $o ('postgres', 'nobody') {
     mkdir $cdir;
     my $oid = getpwnam $o;
     chown $oid, 0, $cdir or die "Could not chown $cdir to $oid: $!";
-    like_program_out $o, "/usr/lib/postgresql/$version/bin/initdb $cdir/$o", 
+    like_program_out $o, "$PgCommon::binroot$version/bin/initdb $cdir/$o", 
 	0, qr/Success/, "creating raw initdb cluster for user $o";
     like_program_out 0, "pg_createcluster $version $o -d $cdir/$o", 0, 
 	qr/Configuring already existing cluster/i, "integrating $o cluster";
