@@ -145,6 +145,11 @@ sub start {
 	my $lc_messages = PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'lc_messages';
 	$ENV{LANG} = $lc_messages if $lc_messages;
     }
+    # 9.5 configures OOM killer using env vars
+    if ($version >= 9.5) {
+        $ENV{PG_OOM_ADJUST_FILE} = "/proc/self/oom_score_adj" unless (exists $ENV{PG_OOM_ADJUST_FILE});
+        # PG_OOM_ADJUST_VALUE defaults to 0, but can be overridden here
+    }
 
     my $postmaster_opts = '';
     my $usd = $version >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory';
