@@ -70,7 +70,7 @@ is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc2(integer) RETURNS in
     0, "CREATE FUNCTION\n", 'CREATE FUNCTION inc2';
 SKIP: {
     skip 'hardcoded library paths not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
-    is_program_out 'postgres', "psql -c \"UPDATE pg_proc SET probin = '/usr/lib/postgresql/$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",
+    is_program_out 'postgres', "psql -c \"UPDATE pg_proc SET probin = '$PgCommon::binroot$MAJORS[0]/lib/plpgsql.so' where proname = 'plpgsql_call_handler';\" test",
 	0, "UPDATE 1\n", 'hardcoding plpgsql lib path';
 }
 is_program_out 'nobody', 'psql test -c "CREATE FUNCTION inc3(integer) RETURNS integer LANGUAGE plpgsql AS \'BEGIN RETURN \$1 + 3; END;\';"',
