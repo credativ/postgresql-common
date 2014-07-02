@@ -34,7 +34,7 @@ sub check_major {
     is $#pm_pids, 0, 'Exactly one postmaster process running';
 
     # check environment
-    my %safe_env = qw/LC_ALL 1 LC_CTYPE 1 LANG 1 PWD 1 PGLOCALEDIR 1 PGSYSCONFDIR 1 PG_GRANDPARENT_PID 1 SHLVL 1 PGDATA 1 _ 1/;
+    my %safe_env = qw/LC_ALL 1 LC_CTYPE 1 LANG 1 PWD 1 PGLOCALEDIR 1 PGSYSCONFDIR 1 PG_GRANDPARENT_PID 1 PG_OOM_ADJUST_FILE 1 PG_OOM_ADJUST_VALUE 1 SHLVL 1 PGDATA 1 _ 1/;
     my %env = pid_env $pm_pids[0];
     foreach (keys %env) {
         fail "postmaster has unsafe environment variable $_" unless exists $safe_env{$_};
