@@ -35,6 +35,12 @@ versions of the product.
 # unpack tarball, ignoring the name of the top level directory inside
 %setup -c
 mv */* .
+# Remove Requires: perl(Test::More) so postgresql-common only depends on perl
+echo "#!/bin/sh" > %{_builddir}/find-requires
+echo "/usr/lib/rpm/find-requires | sed -e 's/perl(Test::More)//'" >> %{_builddir}/find-requires
+chmod +x %{_builddir}/find-requires
+%define _use_internal_dependency_generator 0
+%define __find_requires %{_builddir}/find-requires
 
 %build
 make
