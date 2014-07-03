@@ -71,7 +71,7 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
         hunspell-en-us
 fi
 # requirements on RedHat:
-# perl-Time-HiRes
+# perl-Test-Simple perl-Time-HiRes
 
 # re-exec ourselves through unshare
 if [ -z "$UNSHARED" ]; then

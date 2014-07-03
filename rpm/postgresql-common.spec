@@ -104,10 +104,13 @@ cp debian/logrotate.template %{buildroot}/etc/logrotate.d/postgresql-common
 %files -n postgresql-server-dev-all -f files-postgresql-server-dev-all
 
 %post
+# create postgres user
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
 useradd -M -n -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
     -c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
-
+# create directories so postgres can create clusters without root
+install -d -o postgres -g postgres /etc/postgresql /var/lib/postgresql /var/lib/pgsql /var/log/postgresql /var/run/postgresql
+# install logrotate config
 version_lt () {
     newest=$( ( echo "$1"; echo "$2" ) | sort -V | tail -n1)
     [ "$1" != "$newest" ]

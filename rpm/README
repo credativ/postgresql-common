@@ -46,4 +46,7 @@ Differences between the Debian and RedHat operating modes are:
   there is no automatic integration of tsearch with system-provided
   dictionaries.
 
+The postgresql-common testsuite is supported if perl-Test-Simple and
+perl-Time-HiRes are installed.
+
  -- Christoph Berg <christoph.berg@credativ.de> Thu, 26 Jun 2014 16:59:47 +0200

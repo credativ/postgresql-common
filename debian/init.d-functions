@@ -2,8 +2,9 @@
 # package init.d scripts. It is usually included by
 # /etc/init.d/postgresql
 
-. /lib/lsb/init-functions
-#redhat# . /usr/share/postgresql-common/init-functions-compat
+init_functions=/lib/lsb/init-functions
+#redhat# init_functions=/usr/share/postgresql-common/init-functions-compat
+. $init_functions
 
 PGBINROOT="/usr/lib/postgresql/"
 #redhat# PGBINROOT="/usr/pgsql-"
