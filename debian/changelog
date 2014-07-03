@@ -9,7 +9,8 @@ postgresql-common (158) UNRELEASED; urgency=medium
     /usr/bin anyway.
   * maintscripts-functions: Configure manpage alternatives in -doc packages
     using SPI_connect.3.gz as master.
-  * pg_upgradecluster: Deprecate krb_srvname in 9.4.
+  * pg_upgradecluster: Deprecate krb_srvname in 9.4. Failing upgrade hook
+    scripts will fail the upgrade.
   * pg_ctlcluster: Configure OOM killer using PG_OOM_ADJUST_FILE in 9.5.
   * pg_wrapper: Also accept --cluster=ver/name in a single argument.
   * testsuite: Also mount /dev/shm; with -s, open shell on failure; -f nnn

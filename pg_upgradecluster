@@ -377,9 +377,9 @@ if ($upgrade_scripts) {
 	    '-a', $newversion, '-a', 'init',
 	    "$PgCommon::common_confdir/pg_upgradecluster.d");
 	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
-	exit 0;
     }
     wait;
+    exit $? >> 8 if ($?);
 }
 
 # dump cluster; drop to cluster owner privileges
@@ -684,9 +684,9 @@ if ($upgrade_scripts) {
 	    '-a', $newversion, '-a', 'finish',
 	    "$PgCommon::common_confdir/pg_upgradecluster.d");
 	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
-	exit 0;
     }
     wait;
+    exit $? >> 8 if ($?);
 }
 
 print "Success. Please check that the upgraded cluster works. If it does,
@@ -786,7 +786,7 @@ particular, dots (i. e. file extensions) are not allowed.
 
 Scripts in that directory will be called with the following arguments:
 
-<old version> <cluster name> <new version> <phase> 
+<old version> <cluster name> <new version> <phase>
 
 Phases:
 
@@ -797,16 +797,20 @@ Phases:
 A virgin cluster of version I<new version> has been created, i. e.  this new
 cluster will already have B<template1>, but no user databases. Please note that
 you should not create tables in this phase, since they will be overwritten by
-the dump/restore operation.
+the dump/restore or B<pg_upgrade> operation.
 
 =item B<finish>
 
 All data from the old version cluster has been dumped/reloaded into the new
-one. The old cluster still exists.
+one. The old cluster still exists, but is not running.
 
 =back
 
+Failing scripts will abort the upgrade.
 The scripts are called as the user who owns the database.
+
+When B<--mode=dump> and upgrade hook scripts are used, pg_restore is invoked
+with B<--no-data-for-failed-tables>.
 
 =head1 SEE ALSO
 
