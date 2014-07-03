@@ -77,7 +77,7 @@ if ($#MAJORS > 0) {
     is $st[5], $ownergid, 'upgraded postgresql.conf dir is owned by user\'s primary group';
     @st = stat "/var/log/postgresql/postgresql-$v-main.log";
     is $st[4], $owneruid, 'upgraded log file is owned by user';
-    is $st[5], $ownergid, 'upgraded log file is owned by user\'s primary group';
+    is $st[5], $loggid, 'upgraded log file is owned by user\'s primary group';
 
     is ((system "pg_dropcluster $newv main --stop"), 0, 'pg_dropcluster');
 } else {

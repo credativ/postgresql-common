@@ -221,6 +221,18 @@ sub get_encoding {
     }
 }
 
+# RedHat's run-parts doesn't support any options, supply a minimalistic implementation here
+# BUG: we don't care about validating the filenames yet
+# Arguments: <directory> <argv to pass to scripts>
+sub run_parts {
+    my ($dir, @argv) = @_;
+    for my $script (<$dir/*>) {
+        my ($s) = $script =~ /(.*)/; # untaint
+        system ($s, @argv);
+        error "$s failed: $?" if ($?);
+    }
+}
+
 
 #
 # Execution starts here
@@ -359,7 +371,8 @@ my $pg_restore = get_program_path 'pg_restore', $newversion;
 # check whether upgrade scripts exist; if so, verify that pg_restore supports
 # -X no-data-for-failed-tables.
 my $upgrade_scripts = (-d "$PgCommon::common_confdir/pg_upgradecluster.d" &&
-     `run-parts --test $PgCommon::common_confdir/pg_upgradecluster.d`);
+     $PgCommon::rpm ? `ls $PgCommon::common_confdir/pg_upgradecluster.d` :
+         `run-parts --test $PgCommon::common_confdir/pg_upgradecluster.d`);
 
 if ($upgrade_scripts) {
     if (`$pg_restore --help` !~ qr/no-data-for-failed-tables/) {
@@ -369,17 +382,28 @@ if ($upgrade_scripts) {
 
 # Run upgrade scripts in init phase
 if ($upgrade_scripts) {
-    print "Running <init> phase upgrade helper scripts...\n";
+    print "Running <init> phase upgrade hook scripts...\n";
     if (!fork) {
 	change_ugid $info{'owneruid'}, $info{'ownergid'};
+
+        if ($PgCommon::rpm) {
+            run_parts ("$PgCommon::common_confdir/pg_upgradecluster.d",
+                $version, $cluster, $newversion, 'init');
+            exit;
+        }
 
 	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
 	    '-a', $newversion, '-a', 'init',
 	    "$PgCommon::common_confdir/pg_upgradecluster.d");
 	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
+        exit 0;
     }
     wait;
-    exit $? >> 8 if ($?);
+    if ($?) {
+        print STDERR "Error during running upgrade hooks, removing new cluster\n";
+        system 'pg_dropcluster', '--stop', $newversion, $cluster;
+        exit 1;
+    }
 }
 
 # dump cluster; drop to cluster owner privileges
@@ -676,14 +700,21 @@ error "Could not start target cluster; please check configuration and log files"
 
 # Run upgrade scripts in finish phase
 if ($upgrade_scripts) {
-    print "Running <finish> phase upgrade helper scripts...\n";
+    print "Running <finish> phase upgrade hook scripts...\n";
     if (!fork) {
 	change_ugid $info{'owneruid'}, $info{'ownergid'};
+
+        if ($PgCommon::rpm) {
+            run_parts ("$PgCommon::common_confdir/pg_upgradecluster.d",
+                $version, $cluster, $newversion, 'finish');
+            exit;
+        }
 
 	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
 	    '-a', $newversion, '-a', 'finish',
 	    "$PgCommon::common_confdir/pg_upgradecluster.d");
 	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
+        exit 0;
     }
     wait;
     exit $? >> 8 if ($?);

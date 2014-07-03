@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 33;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 35;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -40,7 +40,7 @@ if (-d '/etc/postgresql-common/pg_upgradecluster.d') {
     pass '/etc/postgresql-common/pg_upgradecluster.d does not exist';
 }
 
-# create test script
+# create test scripts
 mkdir '/etc/postgresql-common/pg_upgradecluster.d' or die "mkdir: $!";
 chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d' or die "chmod: $!";
 open F, '>/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "open: $!";
@@ -66,11 +66,22 @@ EOF
 fi
 
 EOS
-chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "chmod: $!";
 close F;
+chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "chmod: $!";
+
+open F, '>/etc/postgresql-common/pg_upgradecluster.d/badscript' or die "open: $!";
+print F <<EOS;
+#!/bin/false
+EOS
+close F;
+chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d/badscript' or die "chmod: $!";
 
 # upgrade cluster
 my $outref;
+is ((exec_as 0, "pg_upgradecluster -v $MAJORS[-1] $MAJORS[0] main", $outref, 1), 1, 'pg_upgradecluster fails with bad script');
+like $$outref, qr/error|fail/i, 'server error messages during upgrade';
+unlink '/etc/postgresql-common/pg_upgradecluster.d/badscript';
+
 is ((exec_as 0, "pg_upgradecluster -v $MAJORS[-1] $MAJORS[0] main", $outref, 0), 0, 'pg_upgradecluster succeeds');
 unlike $$outref, qr/error|fail/i, 'no server error messages during upgrade';
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
