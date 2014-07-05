@@ -1,1 +1,3 @@
+# the manpages for those are in the PostgreSQL packages
+postgresql-common: binary-without-manpage usr/bin/pg_archivecleanup
 postgresql-common: binary-without-manpage usr/bin/pg_config
