@@ -1,5 +1,7 @@
-postgresql-common (158) UNRELEASED; urgency=medium
+postgresql-common (158) experimental; urgency=medium
 
+  * supported-versions: Add 9.4 on unstable for Debian and pgapt (9.3 is still
+    default).
   * Set default log_line_prefix = '%t [%p-%l] %q%u@%d '.
   * Put stats_temp_directory aka pg_stat_tmp into /var/run/postgresql by
     default. (Closes: #739276)
@@ -24,7 +26,7 @@ postgresql-common (158) UNRELEASED; urgency=medium
     + ja by victory. (Closes: #751131)
   * debian/copyright: Update copyright holders.
 
- -- Christoph Berg <myon@debian.org>  Tue, 03 Jun 2014 21:30:05 +0200
+ -- Christoph Berg <myon@debian.org>  Sat, 05 Jul 2014 16:40:16 +0200
 
 postgresql-common (157) unstable; urgency=medium
 

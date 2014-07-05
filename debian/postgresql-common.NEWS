@@ -1,4 +1,4 @@
-postgresql-common (158) UNRELEASED; urgency=medium
+postgresql-common (158) experimental; urgency=medium
 
   This postgresql-common release introduces several changes in the defaults
   used for newly created database clusters, all configurable in
@@ -13,4 +13,4 @@ postgresql-common (158) UNRELEASED; urgency=medium
   If the logging_collector or syslog is being used, pg_lsclusters will show
   the filename (or "syslog") instead of just "custom" in the Log file column.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Thu, 26 Jun 2014 13:23:52 +0200
+ -- Christoph Berg <myon@debian.org>  Sat, 05 Jul 2014 16:40:16 +0200
