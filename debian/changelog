@@ -1,6 +1,6 @@
 postgresql-common (158) experimental; urgency=medium
 
-  * supported-versions: Add 9.4 on unstable for Debian and pgapt (9.3 is still
+  * supported-versions: Add 9.4 on Debian/unstable and pgapt (9.3 is still
     default).
   * Set default log_line_prefix = '%t [%p-%l] %q%u@%d '.
   * Put stats_temp_directory aka pg_stat_tmp into /var/run/postgresql by

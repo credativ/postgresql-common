@@ -142,16 +142,8 @@ debian_backports() {
 }
 
 pgdg() {
-    case "$1" in
-        testing | unstable)
-            # including beta versions
-            /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.4\n9.3"
-            ;;
-        *)
-            # usually no beta versions here
-            /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.3"
-            ;;
-    esac
+    # including beta versions
+    /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.4\n9.3"
 }
 
 installed() {
