@@ -1,3 +1,10 @@
+postgresql-common (159) UNRELEASED; urgency=medium
+
+  * Debconf translation updates, thanks!
+    + da by Joe Dalton. (Closes: #753952)
+
+ -- Christoph Berg <myon@debian.org>  Sun, 06 Jul 2014 18:44:21 +0200
+
 postgresql-common (158) experimental; urgency=medium
 
   * supported-versions: Add 9.4 on Debian/unstable and pgapt (9.3 is still
