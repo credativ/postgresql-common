@@ -45,12 +45,14 @@ sub check_valid_config {
 
 # Return the PID from an existing PID file or undef if it does not exist.
 # Arguments: <pid file path>
+# TODO: Replace with read_pidfile
 sub get_running_pid {
     return undef unless -e $_[0];
 
     if (open PIDFILE, $_[0]) {
 	my $pid = <PIDFILE>;
 	close PIDFILE;
+        return undef unless ($pid);
         chomp $pid;
         ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
 	return $pid;

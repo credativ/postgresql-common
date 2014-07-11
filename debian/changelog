@@ -1,5 +1,6 @@
 postgresql-common (159) UNRELEASED; urgency=medium
 
+  * pg_ctlcluster, PgCommon.pm: Fix warning on corrupt empty pid files.
   * Debconf translation updates, thanks!
     + da by Joe Dalton. (Closes: #753952)
 

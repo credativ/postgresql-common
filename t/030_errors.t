@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 155;
+use Test::More tests => 158;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon;
@@ -158,6 +158,12 @@ create_pidfile '99998';
 is_program_out 'postgres', "pg_ctlcluster --force $version main stop", 2,
     "Removed stale pid file.\nCluster is not running.\n", 
     'pg_ctlcluster --force stop succeeds with stale PID file';
+ok (! -e $pf, 'pid file was cleaned up');
+
+create_pidfile '';
+is_program_out 'postgres', "pg_ctlcluster --force $version main stop", 2,
+    "Removed stale pid file.\nCluster is not running.\n", 
+    'pg_ctlcluster stop succeeds with empty PID file';
 ok (! -e $pf, 'pid file was cleaned up');
 
 # corrupt PID file while server is down

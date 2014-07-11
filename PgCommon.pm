@@ -541,6 +541,7 @@ sub read_pidfile {
     if (open PIDFILE, $_[0]) {
 	my $pid = <PIDFILE>;
 	close PIDFILE;
+        return undef unless ($pid);
         chomp $pid;
         ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
 	return $pid;
