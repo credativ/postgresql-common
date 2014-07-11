@@ -28,10 +28,10 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales
-    get_cluster_databases read_cluster_conf_file read_pg_hba/;
+    get_cluster_databases read_cluster_conf_file read_pg_hba read_pidfile/;
 our @EXPORT_OK = qw/$confroot $binroot $rpm quote_conf_value read_conf_file get_conf_value
     set_conf_value set_conffile_value disable_conffile_value disable_conf_value
-    replace_conf_value cluster_data_directory get_file_device read_pidfile
+    replace_conf_value cluster_data_directory get_file_device
     check_pidfile_running/;
 
 # Print an error message to stderr and exit with status 1

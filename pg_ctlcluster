@@ -18,12 +18,17 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
+use strict;
+use warnings;
 use lib '/usr/share/postgresql-common';
 use Getopt::Long;
 use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl 'SEEK_SET';
 
+my ($version, $cluster, $pg_ctl, $force);
+my (@postmaster_auxoptions, @pg_ctl_opts_from_cli);
+my (%postgresql_conf, %info);
 my $mode = 'smart'; # default shutdown mode
 my $foreground = 0; # don't daemonize, use postgres instead of pg_ctl
 
@@ -39,25 +44,7 @@ sub check_valid_config {
     # statement and other statistics are mutually exclusive
     if ($log_statement_stats && ($log_parser_stats || $log_planner_stats ||
 	$log_executor_stats)) {
-	error 'invalid postgresql.conf: log_statement_stats and the other log_*_stats options are mutually exclusive';
-    }
-}
-
-# Return the PID from an existing PID file or undef if it does not exist.
-# Arguments: <pid file path>
-# TODO: Replace with read_pidfile
-sub get_running_pid {
-    return undef unless -e $_[0];
-
-    if (open PIDFILE, $_[0]) {
-	my $pid = <PIDFILE>;
-	close PIDFILE;
-        return undef unless ($pid);
-        chomp $pid;
-        ($pid) = $pid =~ /^(\d+)\s*$/; # untaint
-	return $pid;
-    } else {
-	return undef;
+	error ('invalid postgresql.conf: log_statement_stats and the other log_*_stats options are mutually exclusive');
     }
 }
 
@@ -80,7 +67,7 @@ sub start_check_pid_file {
 # Check if a pid file is not present or it is invalid. If so, clean up/abort.
 sub stop_check_pid_file {
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
-    my $pid = get_running_pid $pidfile;
+    my $pid = read_pidfile $pidfile;
     return if (defined $pid && PgCommon::check_pidfile_running $pidfile); 
     if ($info{'running'}) {
 	error 'pid file is invalid, please manually kill the stale server process.';
@@ -194,8 +181,8 @@ sub start {
 
     # only supply or default logfile path when none is given explicitly in
     # postgresql.conf
-    @options = ($pg_ctl, 'start', '-D', $info{'pgdata'});
-    $logsize = 0;
+    my @options = ($pg_ctl, 'start', '-D', $info{'pgdata'});
+    my $logsize = 0;
     if ($info{'logfile'}) {
         push @options, ('-l', $info{'logfile'});
         # remember current size of the log
@@ -222,8 +209,8 @@ sub start {
     }
 
     # wait a bit until the socket exists
-    $success = 0;
-    $currlogsize = 0;
+    my $success = 0;
+    my $currlogsize = 0;
     my $pidfile = $info{'pgdata'}.'/postmaster.pid';
     for (my $attempt = 0; $attempt < 60; $attempt++) {
         select (undef, undef, undef, 0.5);
@@ -281,7 +268,7 @@ sub stop {
         # if that still not helps, use the big hammer
         if (-f $info{'pgdata'}.'/postmaster.pid') {
             print "(does not shutdown, killing the process)";
-            $pid = get_running_pid $info{'pgdata'}.'/postmaster.pid';
+            my $pid = read_pidfile ($info{'pgdata'}.'/postmaster.pid');
             kill (9, $pid) if $pid;
 	    $result = 0;
         }
@@ -354,7 +341,7 @@ if ($version =~ m!^(\d+\.\d)[-/](.+)!) {
 } else {
     $cluster = shift @ARGV;
 }
-$action = shift @ARGV;
+my $action = shift @ARGV;
 
 @pg_ctl_opts_from_cli=();
 foreach my $argv (@ARGV) {
@@ -445,6 +432,7 @@ if( $> != $info{'owneruid'} ) {
 $pg_ctl = get_program_path 'pg_ctl', $version;
 
 if ($action =~ /^(start|stop|restart|reload|status|promote)$/) {
+    no strict 'refs';
     exit &$action;
 } else {
     error 'Invalid action (must be one of: start stop restart reload status promote)';
