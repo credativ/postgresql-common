@@ -1,5 +1,6 @@
 user_clusters etc/postgresql-common
 debian/supported-versions usr/share/postgresql-common
 debian/maintscripts-functions usr/share/postgresql-common
+pgcommon.sh usr/share/postgresql-common
 PgCommon.pm usr/share/postgresql-common
 pg_wrapper usr/share/postgresql-common

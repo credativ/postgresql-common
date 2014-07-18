@@ -34,30 +34,22 @@
 #            postgresql-server-dev-X.Y packages)
 # X.Y: consider this version supported
 #
-# (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2013 Christoph Berg <myon@debian.org>
+# (C) 2005-2014 Martin Pitt <mpitt@debian.org>
+# (C) 2012-2014 Christoph Berg <myon@debian.org>
 
 set -eu
+
+# at build time, use our pgcommon.sh, not the system one (this assumes
+# debian/supported-versions is one directory deeper than ./pgcommon.sh)
+if [ -e "${0%/supported-versions}/../pgcommon.sh" ]; then
+    . "${0%/supported-versions}/../pgcommon.sh"
+else
+    . /usr/share/postgresql-common/pgcommon.sh
+fi
 
 DEFAULT="9.3"
 
 # functions
-
-get_release() {
-    # If we have /etc/os-release, use it
-    if [ -r /etc/os-release ]; then
-        . /etc/os-release
-        DISTRO="${ID:-unknown}" # "unknown" will throw an error in default()
-        RELEASE="${VERSION_ID:-unstable}" # this field is not necessarily always there, assume testing/unstable
-    # fall back to lsb_release
-    elif type lsb_release >/dev/null 2>/dev/null; then
-        DISTRO="`lsb_release -is`"
-        RELEASE="`lsb_release -rs`"
-    else
-        echo "supported_versions: WARNING: /etc/os-release and lsb_release not present, unknown distribution" >&2
-        /bin/echo -e "$DEFAULT"
-    fi
-}
 
 default() {
     case "$DISTRO" in
@@ -68,7 +60,7 @@ default() {
             debian "$RELEASE"
             ;;
         *)
-            echo "supported_versions: WARNING! Unknown distribution: $DISTRO" >&2
+            echo "supported-versions: WARNING! Unknown distribution: $DISTRO" >&2
             echo "Please submit this as a bug report to your distribution." >&2
             /bin/echo -e "$DEFAULT"
             ;;
@@ -90,7 +82,7 @@ ubuntu() {
             /bin/echo -e "9.3"
             ;;
         *)
-            echo "supported_versions: WARNING: Unknown Ubuntu release: $1" >&2
+            echo "supported-versions: WARNING: Unknown Ubuntu release: $1" >&2
             /bin/echo -e "$DEFAULT"
             ;;
     esac
@@ -114,7 +106,7 @@ debian() {
             /bin/echo -e "9.4\n9.3"
             ;;
         *)
-            echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
+            echo "supported-versions: WARNING: Unknown Debian release: $1" >&2
             /bin/echo -e "$DEFAULT"
             ;;
     esac
@@ -135,7 +127,7 @@ debian_backports() {
             /bin/echo -e "9.3"
             ;;
         *)
-            echo "supported_versions: WARNING: Unknown Debian release: $1" >&2
+            echo "supported-versions: WARNING: Unknown Debian release: $1" >&2
             /bin/echo -e "$DEFAULT"
             ;;
     esac

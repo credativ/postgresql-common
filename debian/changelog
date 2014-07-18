@@ -1,5 +1,8 @@
 postgresql-common (159) UNRELEASED; urgency=medium
 
+  * pgcommon.sh: New shell function module containing get_release and
+    locale_gen. Used by supported-versions and testsuite; also usable by other
+    packages.
   * pg_ctlcluster, PgCommon.pm: Fix warning on corrupt empty pid files.
   * pg_ctlcluster: use strict.
   * Debconf translation updates, thanks!
