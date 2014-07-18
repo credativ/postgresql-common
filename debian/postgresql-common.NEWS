@@ -1,3 +1,21 @@
+postgresql-common (159) unstable; urgency=low
+
+  PostgreSQL clusters managed by postgresql-common are now systemd enabled. For
+  each cluster, a service "postgresql@<version>-<name>" is created that can be
+  started/stopped/restarted/reloaded.  A parent service "postgresql" acts on
+  all installed (start.conf has "auto") clusters in parallel like the init.d
+  script used to do.  /etc/init.d/postgresql can still be used, though the mode
+  of starting individual versions ("/e/i/p start 9.3") no longer works.
+
+  pg_ctlcluster can be used to control clusters, but for start and restart the
+  operation via systemd (using systemctl or the init.d script) is preferred, or
+  else the clusters will not run in cgroups.  (Unfortunately this requires
+  root.)
+
+  If the system is not running systemd, nothing changes.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 18 Jul 2014 23:52:09 +0300
+
 postgresql-common (158) experimental; urgency=medium
 
   This postgresql-common release introduces several changes in the defaults

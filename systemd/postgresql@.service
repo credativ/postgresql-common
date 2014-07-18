@@ -10,12 +10,19 @@ PartOf=postgresql.service
 ReloadPropagatedFrom=postgresql.service
 
 [Service]
-ExecStart=@/usr/bin/pg_ctlcluster postgresql@%i --foreground %i start
+# @: use "postgresql@%i" as process name
+ExecStart=@/usr/bin/pg_ctlcluster postgresql@%i --foreground --stdlog %i start
 ExecStop=/usr/bin/pg_ctlcluster -m fast %i stop
 ExecReload=/usr/bin/pg_ctlcluster %i reload
 PIDFile=/var/run/postgresql/%i.pid
-#Restart=on-failure
 SyslogIdentifier=postgresql@%i
+# restarting automatically will prevent "pg_ctlcluster ... stop" from working,
+# so we disable it here. Also, the postmaster will restart by itself on most
+# problems anyway, so it is questionable if one wants to enable external
+# automatic restarts.
+#Restart=on-failure
+# (This should make pg_ctlcluster stop work, but doesn't:)
+#RestartPreventExitStatus=SIGINT SIGTERM
 
 [Install]
 WantedBy=multi-user.target

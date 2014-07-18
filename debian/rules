@@ -14,10 +14,9 @@ DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
 %:
 	dh "$@"
 
-version_info:
+override_dh_auto_configure:
 	@echo "### Building postgresql-common flavor $(FLAVOR)"
 	@echo "### Supported PostgreSQL versions: $(SUPPORTED_VERSIONS) (default version: $(DEFAULT_VER))"
-build build-arch build-indep: version_info
 
 override_dh_install:
 	dh_install
@@ -28,6 +27,7 @@ endif
 
 override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r
+	$(MAKE) -C systemd install DESTDIR=$(CURDIR)/debian/postgresql-common
 
 override_dh_gencontrol:
 	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-server-dev-$v,)"

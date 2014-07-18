@@ -31,6 +31,7 @@ my (@postmaster_auxoptions, @pg_ctl_opts_from_cli);
 my (%postgresql_conf, %info);
 my $mode = 'smart'; # default shutdown mode
 my $foreground = 0; # don't daemonize, use postgres instead of pg_ctl
+my $stdlog = 0; # when run in foreground, still log to the default logfile
 
 # Check for known broken configurations of this cluster
 sub check_valid_config {
@@ -174,6 +175,10 @@ sub start {
     ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
 
     if ($foreground) {
+        if ($stdlog and $info{'logfile'}) {
+            dup2(POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND), 1);
+            dup2(POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND), 2);
+        }
         my $postgres = get_program_path 'postgres', $version;
         exec '/bin/sh', '-c', "exec $postgres $postmaster_opts" or
             error "Executing $postgres failed: $!"
@@ -320,6 +325,7 @@ exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
     'f|force' => \$force,
     'm|mode=s' => \$mode,
     'foreground' => \$foreground,
+    'stdlog' => \$stdlog,
 );
 
 if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
@@ -525,6 +531,11 @@ See pg_ctl(1) for documentation.
 =item B<--foreground>
 
 Start B<postgres> in foreground, without daemonizing via B<pg_ctl>.
+
+=item B<--stdlog>
+
+When B<--foreground> is in use, redirect stderr to the standard logfile in
+C</var/log/postgresql/>.  (Default when not run in foreground.)
 
 =item B<-o>|B<--options> I<option>
 
