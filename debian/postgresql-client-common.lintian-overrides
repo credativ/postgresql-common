@@ -1,1 +1,20 @@
-postgresql-client-common: binary-without-manpage
+# the manpages for those are in the PostgreSQL packages
+postgresql-client-common: binary-without-manpage usr/bin/clusterdb
+postgresql-client-common: binary-without-manpage usr/bin/createdb
+postgresql-client-common: binary-without-manpage usr/bin/createlang
+postgresql-client-common: binary-without-manpage usr/bin/createuser
+postgresql-client-common: binary-without-manpage usr/bin/dropdb
+postgresql-client-common: binary-without-manpage usr/bin/droplang
+postgresql-client-common: binary-without-manpage usr/bin/dropuser
+postgresql-client-common: binary-without-manpage usr/bin/pg_basebackup
+postgresql-client-common: binary-without-manpage usr/bin/pg_dump
+postgresql-client-common: binary-without-manpage usr/bin/pg_dumpall
+postgresql-client-common: binary-without-manpage usr/bin/pg_isready
+postgresql-client-common: binary-without-manpage usr/bin/pg_receivexlog
+postgresql-client-common: binary-without-manpage usr/bin/pg_recvlogical
+postgresql-client-common: binary-without-manpage usr/bin/pg_restore
+postgresql-client-common: binary-without-manpage usr/bin/pgbench
+postgresql-client-common: binary-without-manpage usr/bin/psql
+postgresql-client-common: binary-without-manpage usr/bin/reindexdb
+postgresql-client-common: binary-without-manpage usr/bin/vacuumdb
+postgresql-client-common: binary-without-manpage usr/bin/vacuumlo

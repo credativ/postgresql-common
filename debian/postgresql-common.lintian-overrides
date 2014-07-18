@@ -1,3 +1,5 @@
 # the manpages for those are in the PostgreSQL packages
 postgresql-common: binary-without-manpage usr/bin/pg_archivecleanup
 postgresql-common: binary-without-manpage usr/bin/pg_config
+# the init-functions are sourced via /usr/share/postgresql-common/init.d-functions
+postgresql-common: init.d-script-does-not-source-init-functions etc/init.d/postgresql
