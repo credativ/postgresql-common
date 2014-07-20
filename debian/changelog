@@ -1,6 +1,7 @@
 postgresql-common (159) UNRELEASED; urgency=low
 
   * systemd unit files are now installed to their proper locations.
+  * Install /usr/lib/tmpfiles.d/postgresql.conf.
   * pgcommon.sh: New shell function module containing get_release and
     locale_gen. Used by supported-versions and testsuite; also usable by other
     packages.
