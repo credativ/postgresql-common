@@ -191,7 +191,7 @@ sub start {
     if ($info{'logfile'}) {
         push @options, ('-l', $info{'logfile'});
         # remember current size of the log
-        $logsize = (stat $info{'logfile'})[7];
+        $logsize = (stat $info{'logfile'})[7] || 0; # ignore stat errors
     }
 
     push @options, @pg_ctl_opts_from_cli if @pg_ctl_opts_from_cli;
@@ -565,6 +565,11 @@ This configuration file controls the start/stop behavior of the cluster. See
 section "STARTUP CONTROL" in L<pg_createcluster(8)> for details.
 
 =back
+
+=head1 BUGS
+
+Changing the port number on startup using B<-o -p> will not work as it breaks
+the checks for running clusters.
 
 =head1 SEE ALSO
 
