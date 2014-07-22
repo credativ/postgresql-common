@@ -58,7 +58,8 @@ locale_gen ()
             # unconditionally for all here
             local locales
             while [ "${2:-}" ]; do
-                locales="${locales:-} $2"
+                locales="${locales:-} $1"
+                shift 2
             done
             locale-gen $locales
             ;;
