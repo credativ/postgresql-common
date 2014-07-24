@@ -100,10 +100,10 @@ debian() {
             /bin/echo -e "9.1"
             ;;
         8|8.*) # Jessie
-            /bin/echo -e "9.3"
+            /bin/echo -e "9.4"
             ;;
         testing | unstable)
-            /bin/echo -e "9.4\n9.3"
+            /bin/echo -e "9.4"
             ;;
         *)
             echo "supported-versions: WARNING: Unknown Debian release: $1" >&2
@@ -134,8 +134,14 @@ debian_backports() {
 }
 
 pgdg() {
-    # including beta versions
-    /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.4\n9.3"
+    case $1 in
+        testing | unstable)
+            /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.3\n9.4" # 9.4 default
+            ;;
+        *)
+            /bin/echo -e "8.4\n9.0\n9.1\n9.2\n9.4\n9.3" # 9.3 default
+            ;;
+    esac
 }
 
 installed() {

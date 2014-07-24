@@ -1,5 +1,6 @@
-postgresql-common (159) UNRELEASED; urgency=low
+postgresql-common (159) unstable; urgency=low
 
+  * supported-versions: Set 9.4 as default for jessie and unstable.
   * systemd unit files are now installed to their proper locations.
   * Install /usr/lib/tmpfiles.d/postgresql.conf.
   * pgcommon.sh: New shell function module containing get_release and
@@ -13,7 +14,7 @@ postgresql-common (159) UNRELEASED; urgency=low
   * Debconf translation updates, thanks!
     + da by Joe Dalton. (Closes: #753952)
 
- -- Christoph Berg <myon@debian.org>  Sun, 06 Jul 2014 18:44:21 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 24 Jul 2014 11:52:57 +0200
 
 postgresql-common (158) experimental; urgency=medium
 
