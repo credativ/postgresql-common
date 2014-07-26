@@ -78,8 +78,11 @@ ubuntu() {
         11.10|12.04|12.10|13.04|13.10)
             /bin/echo -e "9.1"
             ;;
-        14.04|14.10)
+        14.04)
             /bin/echo -e "9.3"
+            ;;
+        14.10)
+            /bin/echo -e "9.4"
             ;;
         *)
             echo "supported-versions: WARNING: Unknown Ubuntu release: $1" >&2
