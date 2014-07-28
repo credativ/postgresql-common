@@ -1,6 +1,10 @@
 postgresql-common (160) UNRELEASED; urgency=medium
 
+  [ Martin Pitt ]
   * supported-versions: Set 9.4 as default for Ubuntu 14.10.
+
+  [ Christoph Berg ]
+  * Update examples in README.Debian for 9.4. (Closes: #756007)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 26 Jul 2014 18:48:39 +0200
 
