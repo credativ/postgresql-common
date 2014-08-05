@@ -262,7 +262,7 @@ error "Invalid --start-conf value: $startconf" if $startconf ne 'auto' &&
     $startconf ne 'manual' && $startconf ne 'disabled';
 
 if ($owneruid) {
-    $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /\d+/;
+    $owneruid = (getpwnam $owneruid)[2] unless $owneruid =~ /^\d+$/;
 } elsif ($> == 0) {
     $owneruid = getpwnam 'postgres';
     error 'User postgres does not exist' unless $owneruid;
@@ -272,7 +272,7 @@ if ($owneruid) {
 }
 
 if ($ownergid) {
-    $ownergid = (getgrnam $ownergid)[2] unless $ownergid =~ /\d+/;
+    $ownergid = (getgrnam $ownergid)[2] unless $ownergid =~ /^\d+$/;
 } else {
     $ownergid = (getpwuid $owneruid)[3];
 }
