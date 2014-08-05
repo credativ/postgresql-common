@@ -1,6 +1,8 @@
 postgresql-common (160) UNRELEASED; urgency=medium
 
   * supported-versions: Set 9.4 as default for Ubuntu 14.10.
+  * debian/maintscripts-functions: Call update-alternatives under C locale to
+    fix parsing for non-English locales. (LP: #1293596)
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 26 Jul 2014 18:48:39 +0200
 
