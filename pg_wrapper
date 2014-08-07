@@ -120,7 +120,7 @@ if ($cmdname eq 'pg_wrapper') {
 }
 
 # libreadline is a lot better than libedit, so prefer that
-if ($cmdname eq 'psql') {
+if ($cmdname eq 'psql' and not $PgCommon::rpm) {
     my @readlines;
     # non-multiarch path
     @readlines = sort(</lib/libreadline.so.?>);

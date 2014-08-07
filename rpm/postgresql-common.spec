@@ -1,5 +1,5 @@
 Name:           postgresql-common
-Version:        158
+Version:        160
 Release:        1%{?dist}
 BuildArch:      noarch
 Summary:        PostgreSQL database-cluster manager
@@ -128,5 +128,7 @@ update-alternatives --install /usr/bin/ecpg pgsql-ecpg /usr/share/postgresql-com
 update-alternatives --remove pgsql-ecpg /usr/share/postgresql-common/pg_wrapper
 
 %changelog
+* Thu Aug  7 2014 Christoph Berg <christoph.berg@credativ.de> 160-1
+- Omit the LD_PRELOAD logic in pg_wrapper
 * Thu Jun  5 2014 Christoph Berg <christoph.berg@credativ.de> 158-1
 - Initial specfile version
