@@ -9,6 +9,7 @@ postgresql-common (160) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
   * Update examples in README.Debian for 9.4. (Closes: #756007)
+  * Install README.systemd.
 
  -- Martin Pitt <mpitt@debian.org>  Sat, 26 Jul 2014 18:48:39 +0200
 
