@@ -12,7 +12,7 @@ _link_manpages() {
     # reinstalling it to avoid failure. This needs to be kept until we stop
     # supporting upgrades from -9.1.
     if [ "$2" = "psql.1.gz" ]; then
-	OUT=$(update-alternatives --display postmaster.1.gz 2> /dev/null) || true
+	OUT=$(LC_ALL=C update-alternatives --display postmaster.1.gz 2> /dev/null) || true
 	if [ "${OUT#*auto mode}" != "$OUT" ] && [ "${OUT#*pg_basebackup.1.gz}" != "$OUT" ]; then
             echo "Adjusting postmaster.1.gz alternatives for pg_basebackup move..."
 	    update-alternatives --remove postmaster.1.gz /usr/share/postgresql/9.1/man/man1/postmaster.1.gz
