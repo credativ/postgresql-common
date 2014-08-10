@@ -11,6 +11,7 @@ Build-Depends: debhelper (>= 9),
 
 Package: postgresql-common
 Architecture: all
+Multi-Arch: foreign
 Conflicts: postgresql-7.4, postgresql-8.0
 Depends: postgresql-client-common (>= ${source:Version}), 
  procps, 
@@ -39,6 +40,7 @@ Description: PostgreSQL database-cluster manager
 
 Package: postgresql-client-common
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends}, ${pgdg:Depends},
  netbase
 Recommends: lsb-release, libreadline6
@@ -95,6 +97,7 @@ Description: object-relational SQL database (supported version)
 
 Package: postgresql-client
 Architecture: all
+Multi-Arch: foreign
 Depends: postgresql-client-${default-version}, ${misc:Depends}
 Description: front-end programs for PostgreSQL (supported version)
  This metapackage always depends on the currently supported database
@@ -110,6 +113,7 @@ Description: front-end programs for PostgreSQL (supported version)
 
 Package: postgresql-doc
 Architecture: all
+Multi-Arch: foreign
 Section: doc
 Depends: postgresql-doc-${default-version}, ${misc:Depends}
 Description: documentation for the PostgreSQL database management system

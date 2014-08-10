@@ -8,6 +8,9 @@ postgresql-common (160) UNRELEASED; urgency=medium
     Sven Berkvens-Matthijsse! (LP: #1329227)
 
   [ Christoph Berg ]
+  * Set Multi-Arch: foreign in postgresql-common, postgresql-client-common,
+    postgresql-client, and postgresql-doc, and document this in
+    doc/dependencies.{dia,png}. (Closes: #757520)
   * Update examples in README.Debian for 9.4. (Closes: #756007)
   * Install README.systemd.
 
