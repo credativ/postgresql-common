@@ -1,4 +1,4 @@
-postgresql-common (160) UNRELEASED; urgency=medium
+postgresql-common (160) unstable; urgency=medium
 
   [ Martin Pitt ]
   * supported-versions: Set 9.4 as default for Ubuntu 14.10.
@@ -15,7 +15,7 @@ postgresql-common (160) UNRELEASED; urgency=medium
   * Update examples in README.Debian for 9.4. (Closes: #756007)
   * Install README.systemd.
 
- -- Martin Pitt <mpitt@debian.org>  Sat, 26 Jul 2014 18:48:39 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Mon, 11 Aug 2014 15:39:39 +0200
 
 postgresql-common (159) unstable; urgency=low
 
