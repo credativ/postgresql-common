@@ -7,6 +7,7 @@ Standards-Version: 3.9.5
 Vcs-Bzr: http://anonscm.debian.org/bzr/pkg-postgresql/postgresql-common/trunk/
 Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-postgresql/postgresql-common/trunk
 Build-Depends: debhelper (>= 9),
+ dh-systemd (>= 1.19) | sysvinit (<< 2.88dsf-42),
  lsb-release
 
 Package: postgresql-common

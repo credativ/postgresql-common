@@ -11,8 +11,13 @@ endif
 SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions)
 DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
 
+# use dh_systemd_* only on recent dists that have dh-systemd (>= 1.19)
+ifneq ($(wildcard /usr/bin/dh_systemd_start),)
+WITH_SYSTEMD=--with systemd
+endif
+
 %:
-	dh "$@"
+	dh $@ $(WITH_SYSTEMD)
 
 override_dh_auto_configure:
 	@echo "### Building postgresql-common flavor $(FLAVOR)"
@@ -20,6 +25,7 @@ override_dh_auto_configure:
 
 override_dh_install:
 	dh_install
+	$(MAKE) -C systemd install DESTDIR=$(CURDIR)/debian/postgresql-common
 	install -m 644 -D debian/postgresql-common.sysctl debian/postgresql-common/etc/sysctl.d/30-postgresql-shm.conf
 ifneq ($(FLAVOR),default)
 	/bin/echo -e "# See /usr/share/postgresql-common/supported-versions for documentation of this file\n$(FLAVOR)" > debian/postgresql-client-common/etc/postgresql-common/supported_versions
@@ -27,7 +33,6 @@ endif
 
 override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r
-	$(MAKE) -C systemd install DESTDIR=$(CURDIR)/debian/postgresql-common
 
 override_dh_gencontrol:
 	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-server-dev-$v,)"

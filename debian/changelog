@@ -8,6 +8,7 @@ postgresql-common (160) UNRELEASED; urgency=medium
     Sven Berkvens-Matthijsse! (LP: #1329227)
 
   [ Christoph Berg ]
+  * Use dh-systemd to enable postgresql.service on install. (Closes: #757612)
   * Set Multi-Arch: foreign in postgresql-common, postgresql-client-common,
     postgresql-client, and postgresql-doc, and document this in
     doc/dependencies.{dia,png}. (Closes: #757520)
