@@ -1,3 +1,9 @@
+postgresql-common (161) UNRELEASED; urgency=medium
+
+  * pg_virtualenv: Use "ip" to start lo when available.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 15 Aug 2014 10:13:51 +0200
+
 postgresql-common (160) unstable; urgency=medium
 
   [ Martin Pitt ]

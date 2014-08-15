@@ -144,7 +144,11 @@ else
     fi
 
     # start localhost interface
-    ifconfig lo up || true
+    if [ -x /bin/ip ]; then
+        ip link set dev lo up || true
+    else
+        ifconfig lo up || true
+    fi
 fi
 
 # create postgres environments
