@@ -650,7 +650,7 @@ certificate by default. For versions up to 9.1, symlinks in the data directory
 will be created (C<server.crt> and C<server.key>); for 9.2 and later, the
 appropriate C<postgresql.conf> options will be set (C<ssl_cert_file> and
 C<ssl_key_file>). Of course you can replace this with a cluster specific
-certificate. Similary for C</etc/postgresql-common/root.crt> and
+certificate. Similarly for C</etc/postgresql-common/root.crt> and
 C</etc/postgresql-common/root.crl>, these files will be configured as client
 certificate CA and revocation list, when present. (C<root.crt> is initially a
 placeholder that will only be used if real certificates are added to the file.)
