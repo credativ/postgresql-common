@@ -176,8 +176,7 @@ for v in $PG_VERSIONS; do
 	# in fakeroot, the username will likely default to "postgres" otherwise
 	pg_ctlcluster -o '-F' $v regress start
     )
-    port=$(perl -lne 'print $1 if /^port = (\d+)/' \
-	${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/postgresql.conf)
+    port=$(pg_conftool -s $v regress show port)
 
     # record cluster information in service file
     cat >> $PGSYSCONFDIR/pg_service.conf <<EOF
