@@ -1,5 +1,11 @@
 postgresql-common (161) UNRELEASED; urgency=medium
 
+  * Stop automatically updating debian/control from debian/control.in in
+    pgxs_debian_control.mk. Instead, implement "checkcontrol" and
+    "updatecontrol" actions in pg_buildext. checkcontrol is run from
+    pgxs_debian_control.mk and will warn if an update is required.
+    Backport and pgdg builds will still automatically update.
+    (Closes: #758570)
   * pg_virtualenv: Use "ip" to start lo when available.
 
  -- Christoph Berg <myon@debian.org>  Fri, 15 Aug 2014 10:13:51 +0200

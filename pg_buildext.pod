@@ -24,11 +24,11 @@ backports of newer PostgreSQL releases), or for all PostgreSQL releases when
 the package is built for B<apt.postgresql.org>.
 
 As the set of binary packages depends on the target PostgreSQL versions,
-C<debian/control> is auto-generated. Include
+C<debian/control> is generated from a template in C<debian/control.in> when
+B<pg_buildext updatecontrol> is run. Occurrences of B<PGVERSION> in package
+sections are replaced by the target PostgreSQL version. Include
 C</usr/share/postgresql-common/pgxs_debian_control.mk> in C<debian/rules> to
-regenerate the control file from C<debian/control.in> at "clean" time.
-Occurrences of B<PGVERSION> in package sections are replaced by the target
-PostgreSQL version.
+run a check at build time if updating debian/control is required.
 
 As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>
 actions, invocations from C<debian/rules> (which is a makefile) should be prefixed
@@ -63,6 +63,18 @@ against. (Usually this parameter is C<build-%v>.)
 
 Print effective list of supported versions, i.e. the intersection of the sets
 of versions supported by the system and the package.
+
+=item B<checkcontrol>
+
+Check if C<debian/control> needs updating from C<debian/control.in>. This is
+invoked from C</usr/share/postgresql-common/pgxs_debian_control.mk>. When
+building for a B<backports> or B<pgdg> suite as determined by
+C<debian/changelog>, this action also updates the control file. Otherwise,
+B<updatecontrol> needs to be run manually.
+
+=item B<updatecontrol>
+
+Update C<debian/control> from C<debian/control.in>.
 
 =item B<configure> I<build-dir> [I<extra-configure-options>]
 

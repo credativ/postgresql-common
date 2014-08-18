@@ -153,6 +153,15 @@ versions() {
     done < debian/pgversions
 }
 
+gencontrol() {
+    tmpcontrol=$(mktemp debian/control.XXXXXX)
+    trap "rm -f $tmpcontrol" 0 2 3 15
+    grep-dctrl -vP PGVERSION debian/control.in > $tmpcontrol
+    for v in $(versions); do
+        grep-dctrl -P PGVERSION debian/control.in | sed -e "s:PGVERSION:$v:" >> $tmpcontrol
+    done
+}
+
 # when a version is included in the action, just act on this one (this is
 # useful if some extra work needs to be done per version, so the loop over
 # supported-versions needs to be in the script calling pg_buildext)
@@ -165,13 +174,32 @@ case $action in
 	$a $v
 	exit
 	;;
+
+    checkcontrol)
+        gencontrol
+        if ! diff -u debian/control $tmpcontrol; then
+            if [ "${PG_UPDATECONTROL:-no}" != "no" ] || head -1 debian/changelog | egrep -q -- '-backports|-pgdg|-pgapt'; then
+                echo "Notice: Updating debian/control from debian/control.in."
+                mv $tmpcontrol debian/control
+                exit
+            fi
+            echo "Error: debian/control needs updating from debian/control.in. Run 'pg_buildext updatecontrol'."
+            echo "If you are seeing this message in a buildd log, a sourceful upload is required."
+            exit 1
+        fi
+        exit
+        ;;
+
+    updatecontrol)
+        gencontrol
+        mv $tmpcontrol debian/control
+        exit
+        ;;
 esac
 
 # loop over versions
 
-VERSIONS=`versions`
-
-for v in $VERSIONS
+for v in $(versions)
 do
     case "$action" in
 	"supported-versions")
