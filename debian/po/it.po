@@ -1,14 +1,13 @@
 # Italian (it) translation of debconf templates for postgresql-common
-# Copyright (C) 2006 Software in the Public Interest
 # This file is distributed under the same license as the postgresql-common package.
-# Luca Monducci <luca.mo@tiscali.it>, 2006 - 2008.
+# Luca Monducci <luca.mo@tiscali.it>, 2006-2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 88 italian debconf templates\n"
+"Project-Id-Version: postgresql-common 160 italian debconf templates\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2014-05-20 11:16+0200\n"
-"PO-Revision-Date: 2008-05-03 20:23+0200\n"
+"PO-Revision-Date: 2014-08-30 10:23+0200\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
 "Language: it\n"
@@ -34,7 +33,7 @@ msgstr ""
 "La versione ${old} di PostgreSQL è obsoleta, ma alcuni dei pacchetti server "
 "o client sono ancora installati. Installare i pacchetti più recenti "
 "(postgresql-${latest} e postgresql-client-${latest}) e aggiornare i cluster "
-"${oldversion} esistenti con pg_upgradecluster (si veda la pagina man)."
+"${oldversion} esistenti con pg_upgradecluster (consultare la pagina man)."
 
 #. Type: error
 #. Description
@@ -47,9 +46,9 @@ msgid ""
 "details)."
 msgstr ""
 "Attenzione: l'installazione di postgresql-${latest} crea automaticamente il "
-"cluster predefinito ${latest}/main. Se si vuole aggiornare il cluster ${old}/"
-"main è necessario rimuovere cluster ${latest} dopo la sua creazione "
-"(pg_dropcluster --stop ${latest} main, si veda la pagina man per i dettagli)."
+"cluster predefinito ${latest}/main. Per aggiornare il cluster ${old}/main è "
+"necessario rimuovere cluster ${latest} dopo la sua creazione (pg_dropcluster "
+"--stop ${latest} main, consultare la pagina man per i dettagli)."
 
 #. Type: error
 #. Description
@@ -69,13 +68,13 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
-"Si veda /usr/share/doc/postgresql-common/README.Debian.gz per i dettagli."
+"Consultare /usr/share/doc/postgresql-common/README.Debian.gz per i dettagli."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
-msgstr ""
+msgstr "Attivare in modo predefinito SSL nei nuovi cluster PostgreSQL?"
 
 #. Type: boolean
 #. Description
@@ -85,6 +84,10 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL supporta connessioni cifrate con SSL e questa è una cosa buona, "
+"tuttavia, se l'accesso al database avviene solo con connessioni TCP da "
+"localhost allora è possibile disabilitare SSL senza il rischio di esporsi "
+"a problemi di sicurezza."
 
 #. Type: boolean
 #. Description
@@ -95,9 +98,15 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"Le connessioni tramite socket di dominio locale UNIX (chiamate \"local\" in "
+"pg_hba.conf) non sono influenzate da questa impostazione. Questa "
+"impostazione riguarda solo i nuovi cluster PostgreSQL creati durante "
+"l'installazione del pacchetto oppure utilizzando il comando "
+"pg_createcluster e non modifica la configurazione di nessuno dei cluster "
+"esistenti."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "Se non si è sicuri, attivare SSL."

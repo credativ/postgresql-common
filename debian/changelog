@@ -7,6 +7,8 @@ postgresql-common (161) UNRELEASED; urgency=medium
     Backport and pgdg builds will still automatically update.
     (Closes: #758570)
   * pg_virtualenv: Use "ip" to start lo when available.
+  * Debconf translation updates, thanks!
+    + it by Luca Monducci. (Closes: #759808)
 
  -- Christoph Berg <myon@debian.org>  Fri, 15 Aug 2014 10:13:51 +0200
 
