@@ -1,5 +1,7 @@
 postgresql-common (161) UNRELEASED; urgency=medium
 
+  * pg_ctlcluster: Refuse operation when config owner does not match data
+    owner, and config owner is not root.
   * Stop automatically updating debian/control from debian/control.in in
     pgxs_debian_control.mk. Instead, implement "checkcontrol" and
     "updatecontrol" actions in pg_buildext. checkcontrol is run from

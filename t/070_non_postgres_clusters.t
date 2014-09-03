@@ -6,14 +6,22 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 49;
+use Test::More tests => 52;
 
 my $owner = 'nobody';
 my $v = $MAJORS[0];
 
 # create cluster
-is ((system "pg_createcluster -u $owner $v main --start >/dev/null"), 0,
+is ((system "pg_createcluster -u $owner $v main >/dev/null"), 0,
     "pg_createcluster $v main for owner $owner");
+
+# check if start is refused when config and data owner do not match
+my $pgconf = "/etc/postgresql/$v/main/postgresql.conf";
+my ($origuid, $origgid) = (stat $pgconf)[4,5];
+chown 1, 1, $pgconf;
+like_program_out 0, "pg_ctlcluster $v main start", 1, qr/do not match/, "start refused when config and data owners mismatch";
+chown $origuid, $origgid, $pgconf;
+is ((system "pg_ctlcluster $v main start >/dev/null"), 0, "pg_ctlcluster succeeds with owner $owner");
 
 # Check cluster
 like_program_out $owner, 'pg_lsclusters -h', 0, 

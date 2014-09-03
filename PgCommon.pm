@@ -581,20 +581,24 @@ sub check_pidfile_running {
     return undef;
 }
 
-# Return a hash with information about a specific cluster.
+# Return a hash with information about a specific cluster (which needs to exist).
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile [unless it
 #          has a custom one], configdir, owneruid, ownergid, socketdir,
 #          statstempdir)
 sub cluster_info {
-    error 'cluster_info must be called with <version> <cluster> arguments' unless $_[0] && $_[1];
+    my ($v, $c) = @_;
+    error 'cluster_info must be called with <version> <cluster> arguments' unless ($v and $c);
 
     my %result;
-    $result{'configdir'} = "$confroot/$_[0]/$_[1]";
-    my %postgresql_conf = read_cluster_conf_file $_[0], $_[1], 'postgresql.conf';
-    $result{'pgdata'} = cluster_data_directory $_[0], $_[1], \%postgresql_conf;
+    $result{'configdir'} = "$confroot/$v/$c";
+    error 'cluster_info called on non-existing cluster $v $c' unless (-e "$result{configdir}/postgresql.conf");
+    $result{'configuid'} = (stat "$result{configdir}/postgresql.conf")[4];
+
+    my %postgresql_conf = read_cluster_conf_file $v, $c, 'postgresql.conf';
+    $result{'pgdata'} = cluster_data_directory $v, $c, \%postgresql_conf;
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
-    $result{'socketdir'} = get_cluster_socketdir  $_[0], $_[1];
+    $result{'socketdir'} = get_cluster_socketdir  $v, $c;
     $result{'statstempdir'} = $postgresql_conf{'stats_temp_directory'};
 
     # if we can determine the running status with the pid file, prefer that
@@ -606,7 +610,7 @@ sub cluster_info {
     # otherwise fall back to probing the port; this is unreliable if the port
     # was changed in the configuration file in the meantime
     if (!defined ($result{'running'})) {
-	$result{'running'} = cluster_port_running ($_[0], $_[1], $result{'port'});
+	$result{'running'} = cluster_port_running ($v, $c, $result{'port'});
     }
 
     if ($result{'pgdata'}) {
@@ -614,16 +618,16 @@ sub cluster_info {
             (stat $result{'pgdata'})[4,5];
         $result{'recovery'} = -e "$result{'pgdata'}/recovery.conf";
     }
-    $result{'start'} = get_cluster_start_conf $_[0], $_[1];
+    $result{'start'} = get_cluster_start_conf $v, $c;
 
-    # default log file (only if not expliticly configured in postgresql.conf)
+    # default log file (only if not explicitly configured in postgresql.conf)
     unless (config_bool ($postgresql_conf{logging_collector}) or
         ($postgresql_conf{'log_destination'} || '') =~ /syslog/) {
         my $log_symlink = $result{'configdir'} . "/log";
         if (-l $log_symlink) {
             ($result{'logfile'}) = readlink ($log_symlink) =~ /(.*)/; # untaint
         } else {
-            $result{'logfile'} = "/var/log/postgresql/postgresql-$_[0]-$_[1].log";
+            $result{'logfile'} = "/var/log/postgresql/postgresql-$v-$c.log";
         }
     } else {
         $result{log_destination} = $postgresql_conf{log_destination};
@@ -632,8 +636,8 @@ sub cluster_info {
     }
 
     # autovacuum defaults to on since 8.3
-    $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($_[0] >= '8.3');
-    
+    $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($v >= '8.3');
+
     return %result;
 }
 
