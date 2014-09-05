@@ -1,3 +1,16 @@
+postgresql-common (161) unstable; urgency=medium
+
+  pg_ctlcluster is now enforcing stricter file ownership on the cluster config
+  when invoked as root, including operation via the init.d script or the
+  systemd unit:
+
+  The postgresql.conf owner needs match the data directory owner, or the
+  postgresql.conf file needs to be owned by root.
+
+  Default setups are not affected by this change.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 05 Sep 2014 15:48:13 +0200
+
 postgresql-common (159) unstable; urgency=low
 
   PostgreSQL clusters managed by postgresql-common are now systemd enabled. For

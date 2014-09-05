@@ -380,7 +380,8 @@ unless (getgrgid $info{'ownergid'}) {
     error 'The cluster is owned by group id '.$info{'ownergid'}.' which does not exist'
 }
 # owneruid and configuid need to match, unless configuid is root
-if ($info{'configuid'} != 0 and $info{'configuid'} != $info{'owneruid'}) {
+if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
+        $info{'configuid'} != $info{'owneruid'}) {
     my $configowner = (getpwuid $info{'configuid'})[0] || "(unknown)";
     my $dataowner = (getpwuid $info{'owneruid'})[0];
     error "Config owner ($configowner:$info{configuid}) and data owner ($dataowner:$info{owneruid}) do not match, and config owner is not root";
