@@ -129,7 +129,11 @@ echo "logging_collector = off" >> /etc/postgresql-common/createcluster.conf
 ulimit -S -c 0
 
 # start localhost interface
-ifconfig lo up || true
+if [ -x /bin/ip ]; then
+    ip link set dev lo up || true
+else
+    ifconfig lo up || true
+fi
 
 # set environment
 unset TMPDIR

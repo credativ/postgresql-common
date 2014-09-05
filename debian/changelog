@@ -8,7 +8,8 @@ postgresql-common (161) UNRELEASED; urgency=medium
     pgxs_debian_control.mk and will warn if an update is required.
     Backport and pgdg builds will still automatically update.
     (Closes: #758570)
-  * pg_virtualenv: Use "ip" to start lo when available.
+  * pg_virtualenv, testsuite: Use "ip" to start lo when available.
+  * Add iproute2 | net-tools to postgresql-server-dev-all dependencies.
   * Debconf translation updates, thanks!
     + it by Luca Monducci. (Closes: #759808)
 

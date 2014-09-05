@@ -62,8 +62,9 @@ Description: manager for multiple PostgreSQL client versions
 
 Package: postgresql-server-dev-all
 Architecture: all
-Depends: ${misc:Depends}, 
+Depends: ${misc:Depends},
  postgresql-common (>= 117~),
+ iproute2 | net-tools,
  lsb-release,
  dctrl-tools,
  make,
