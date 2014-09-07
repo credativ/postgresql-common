@@ -12,10 +12,11 @@ use TestLib;
 use lib '/usr/share/postgresql-common';
 use PgCommon;
 
-use Test::More tests => 123 * ($#MAJORS+1);
+use Test::More tests => 127 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
+    note "Running tests for $v";
 
     # create cluster
     ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
@@ -179,7 +180,16 @@ template1|postgres|UTF8
     is_program_out 'nobody', 'psql -tAc "select * from phone order by name" nobodydb', 0,
         'Alice|2
 Bob|1
-', 'SQL command output: select';
+', 'SQL command output: select -tA';
+    is_program_out 'nobody', 'psql -txc "select * from phone where name = \'Alice\'" nobodydb', 0,
+        'name | Alice
+tel  | 2
+
+', 'SQL command output: select -tx';
+    is_program_out 'nobody', 'psql -tAxc "select * from phone where name = \'Alice\'" nobodydb', 0,
+        'name|Alice
+tel|2
+', 'SQL command output: select -tAx';
 
     # Check PL/Perl untrusted
     my $fn_cmd = 'CREATE FUNCTION read_file() RETURNS text AS \'open F, \\"/etc/passwd\\"; \\$buf = <F>; close F; return \\$buf;\' LANGUAGE plperl';

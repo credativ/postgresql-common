@@ -1,3 +1,10 @@
+postgresql-common (162) UNRELEASED; urgency=medium
+
+  * t/020_create_sql_remove.t: Test psql -tx alignment to catch a bug in
+    9.4beta2.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 07 Sep 2014 13:42:56 +0200
+
 postgresql-common (161) unstable; urgency=medium
 
   * pg_ctlcluster: Refuse root operation when config owner does not match
