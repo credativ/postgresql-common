@@ -61,8 +61,16 @@ default() {
             ;;
         *)
             echo "supported-versions: WARNING! Unknown distribution: $DISTRO" >&2
-            echo "Please submit this as a bug report to your distribution." >&2
-            /bin/echo -e "$DEFAULT"
+            if  echo $ID_LIKE | egrep  '(^| )ubuntu($| )' > /dev/null; then
+                echo "ubuntu found in ID_LIKE, treating as Ubuntu" >&2
+                ubuntu "$RELEASE"
+            elif echo $ID_LIKE | egrep  '(^| )debian($| )' > /dev/null; then
+                echo "debian found in ID_LIKE, treating as Debian" >&2
+                debian "$RELEASE"
+            else
+                echo "Please submit this as a bug report to your distribution." >&2
+                /bin/echo -e "$DEFAULT"
+            fi
             ;;
     esac
 }

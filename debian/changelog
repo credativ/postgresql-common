@@ -1,7 +1,12 @@
 postgresql-common (162) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * t/020_create_sql_remove.t: Test psql -tx alignment to catch a bug in
     9.4beta2.
+
+  [ Peter Michael Green ]
+  * Use ID_LIKE to identify deriviatives of Debian and Ubuntu.
+    (Closes: #761020)
 
  -- Christoph Berg <myon@debian.org>  Sun, 07 Sep 2014 13:42:56 +0200
 
