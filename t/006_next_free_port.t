@@ -2,7 +2,6 @@
 
 use strict; 
 
-use lib '/usr/share/postgresql-common';
 use lib '.';
 use PgCommon;
 

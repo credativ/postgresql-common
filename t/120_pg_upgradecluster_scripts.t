@@ -5,7 +5,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-
+use PgCommon;
 use Test::More tests => ($#MAJORS == 0) ? 1 : 35;
 
 if ($#MAJORS == 0) {
@@ -13,8 +13,6 @@ if ($#MAJORS == 0) {
     exit 0;
 }
 
-use lib '/usr/share/postgresql-common';
-use PgCommon;
 
 # create old cluster
 is ((system "pg_createcluster $MAJORS[0] main --start >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");

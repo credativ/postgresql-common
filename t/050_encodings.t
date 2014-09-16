@@ -4,10 +4,7 @@ use strict;
 
 use lib 't';
 use TestLib;
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
-
 use Test::More tests => ($#MAJORS+1) * 52 + 10;
 
 # create a test cluster with given locale, check the locale/encoding, and

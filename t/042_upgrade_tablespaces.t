@@ -1,16 +1,11 @@
 # Check upgrading of tablespaces; right now this is not supported, so we just
 # check that no damage is done.
 
-use strict; 
-
+use strict;
 use File::Temp qw/tempdir/;
-
 use lib 't';
 use TestLib;
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
-
 use Test::More tests => ($#MAJORS == 0) ? 1 : 14;
 
 if ($#MAJORS == 0) {

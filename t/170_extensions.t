@@ -4,11 +4,8 @@ use strict;
 
 use lib 't';
 use TestLib;
-
-use Test::More 0.87; # needs libtest-simple-perl backport on lenny
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
+use Test::More 0.87; # needs libtest-simple-perl backport on lenny
 
 my $v = $MAJORS[-1];
 

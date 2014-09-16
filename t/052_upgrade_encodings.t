@@ -4,11 +4,8 @@ use strict;
 
 use lib 't';
 use TestLib;
-
-use Test::More tests => ($#MAJORS == 0) ? 1 : 45;
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 45;
 
 if ($#MAJORS == 0) {
         pass 'only one major version installed, skipping upgrade tests';

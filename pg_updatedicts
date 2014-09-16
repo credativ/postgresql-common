@@ -19,7 +19,6 @@ my @srcdirs = ('/usr/share/hunspell', '/usr/share/myspell/dicts');
 my $cachedir = '/var/cache/postgresql/dicts';
 my $pgsharedir = '/usr/share/postgresql/';
 
-use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 # determine encoding of an .aff file

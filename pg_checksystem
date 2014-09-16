@@ -16,7 +16,6 @@
 
 use strict;
 
-use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 # Check write cache setting for given drive.

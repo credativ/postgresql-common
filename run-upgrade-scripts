@@ -14,7 +14,6 @@
 #  GNU General Public License for more details.
 
 use strict;
-use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 error "Usage: $0 <version upgraded from>" if $#ARGV != 0;

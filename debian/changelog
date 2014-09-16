@@ -1,6 +1,7 @@
 postgresql-common (162) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
+  * Move PgCommon.pm to /usr/share/perl5.
   * t/020_create_sql_remove.t: Test psql -tx alignment to catch a bug in
     9.4beta2.
 

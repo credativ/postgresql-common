@@ -1,12 +1,10 @@
 # Test cluster upgrade with a custom ssl certificate
 
-use strict; 
-
+use strict;
 use File::Temp qw/tempdir/;
-
 use lib 't';
 use TestLib;
-
+use PgCommon;
 use Test::More tests => ($#MAJORS == 0 or $PgCommon::rpm) ? 1 : 24;
 
 if ($#MAJORS == 0) {
@@ -18,8 +16,6 @@ if ($PgCommon::rpm) {
     exit 0;
 }
 
-use lib '/usr/share/postgresql-common';
-use PgCommon;
 
 ok ((system "pg_createcluster $MAJORS[0] upgr >/dev/null") == 0);
 

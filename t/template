@@ -4,13 +4,10 @@ use strict;
 
 use lib 't';
 use TestLib;
-
-my @versions = ($MAJORS[-1]);
-
+use PgCommon;
 use Test::More tests => 14;
 
-use lib '/usr/share/postgresql-common';
-use PgCommon;
+my @versions = ($MAJORS[-1]);
 
 # create clusters
 foreach (@versions) {

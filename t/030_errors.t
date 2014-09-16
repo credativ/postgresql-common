@@ -7,8 +7,6 @@ require File::Temp;
 use lib 't';
 use TestLib;
 use Test::More tests => 158;
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 my $version = $MAJORS[-1];

@@ -4,11 +4,8 @@ use strict;
 
 use lib 't';
 use TestLib;
-
-use Test::More tests => 8 * ($#MAJORS+2);
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
+use Test::More tests => 8 * ($#MAJORS+2);
 
 my $multiarch = '';
 unless ($PgCommon::rpm) {

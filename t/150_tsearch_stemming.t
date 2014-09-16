@@ -4,11 +4,9 @@ use strict;
 
 use lib 't';
 use TestLib;
+use PgCommon;
 
 my $version = $MAJORS[-1];
-
-use lib '/usr/share/postgresql-common';
-use PgCommon;
 
 use Test::More tests => $PgCommon::rpm ? 1 : 39;
 if ($PgCommon::rpm) {

@@ -15,7 +15,6 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-use lib '/usr/share/postgresql-common';
 use Getopt::Long;
 use PgCommon;
 

@@ -4,17 +4,13 @@ use strict;
 
 use lib 't';
 use TestLib;
-
+use PgCommon;
 use Test::More tests => ($#MAJORS == 0) ? 1 : 30;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
     exit 0;
 }
-
-use lib '/usr/share/postgresql-common';
-use PgCommon;
-
 
 ok ((system "pg_createcluster --datadir /tmp/postgresql-test -l /tmp/postgresql-test.log $MAJORS[0] upgr >/dev/null") == 0);
 

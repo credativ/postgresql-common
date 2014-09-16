@@ -17,7 +17,6 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use lib '/usr/share/postgresql-common';
 use PgCommon qw(quote_conf_value user_cluster_map read_cluster_conf_file
     read_conf_file set_conffile_value set_conf_value disable_conffile_value
     disable_conf_value);

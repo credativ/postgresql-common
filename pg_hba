@@ -14,11 +14,10 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-use lib '/usr/share/postgresql-common';
+use strict;
 use PgCommon;
 use Getopt::Long;
 use Net::CIDR;
-use strict;
 
 my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
 

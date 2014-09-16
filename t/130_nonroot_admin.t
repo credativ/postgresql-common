@@ -10,8 +10,6 @@ my $ownver = $MAJORS[-1];
 my $grpver = $MAJORS[0];
 
 use Test::More tests => 36;
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 my $testuser = 'postgres';

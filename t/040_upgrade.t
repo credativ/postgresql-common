@@ -8,8 +8,6 @@ use Time::HiRes qw/usleep/;
 
 use lib 't';
 use TestLib;
-
-use lib '/usr/share/postgresql-common';
 use PgCommon;
 
 use Test::More tests => ($#MAJORS == 0) ? 1 : 103 * 3;
