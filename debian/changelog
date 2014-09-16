@@ -8,6 +8,10 @@ postgresql-common (162) UNRELEASED; urgency=medium
   * Use ID_LIKE to identify deriviatives of Debian and Ubuntu.
     (Closes: #761020)
 
+  [ Richard Hughes ]
+  * Use Type=forking in postgresql@.service and start before postgresql.
+    (Closes: #759725)
+
  -- Christoph Berg <myon@debian.org>  Sun, 07 Sep 2014 13:42:56 +0200
 
 postgresql-common (161) unstable; urgency=medium
