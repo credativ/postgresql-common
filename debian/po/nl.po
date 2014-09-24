@@ -1,21 +1,24 @@
 # Dutch postgresql-common po-debconf translation,
 # Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the postgresql-common package.
+#
 # Vincent Zweije <zweije@xs4all.nl>, 2006.
 # Vincent Zweije <vincent@zweije.nl>, 2011.
-#
+# Frans Spiesschaert <Frans.Spiesschaert@yucom.be>, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 115\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2014-05-20 11:16+0200\n"
-"PO-Revision-Date: 2011-05-13 10:55+0000\n"
-"Last-Translator: Vincent Zweije <vincent@zweiej.nl>\n"
-"Language-Team: Debian-Dutch <debian-l10n-dutch@lists.debian.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2014-09-19 20:03+0200\n"
+"Last-Translator: Frans Spiesschaert <Frans.Spiesschaert@yucom.be>\n"
+"Language-Team: Debian l10n Dutch <debian-l10n-dutch@lists.debian.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.4\n"
 
 #. Type: error
 #. Description
@@ -76,7 +79,7 @@ msgstr "Zie /usr/share/doc/postgresql-common/README.Debian.gz voor details."
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
-msgstr ""
+msgstr "Standaard SSL activeren voor nieuwe PostgreSQL clusters (groepen)?"
 
 #. Type: boolean
 #. Description
@@ -86,6 +89,10 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL ondersteunt verbindingen met SSL-encryptie. Meestal is dit een "
+"goede zaak. Maar als de database enkel op de lokale computer via een "
+"TCP-verbinding benaderd wordt, kan men SSL uitzetten zonder verhoogd "
+"veiligheidsrisico."
 
 #. Type: boolean
 #. Description
@@ -96,9 +103,15 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"'UNIX domain socket' communicatieverbindingen (aangeduid met \"local\" in "
+"pg_hba.conf) worden door deze instelling niet beïnvloed. Deze instelling "
+"heeft betrekking op de nieuwe clusters van PostgreSQL die tijdens de "
+"installatie van het pakket of via het commando pg_createcluster aangemaakt "
+"worden. Bestaande clusters worden niet opnieuw geconfigureerd."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "Activeer SSL in geval van twijfel."
+

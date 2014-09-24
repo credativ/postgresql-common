@@ -4,6 +4,8 @@ postgresql-common (162) UNRELEASED; urgency=medium
   * Move PgCommon.pm to /usr/share/perl5.
   * t/020_create_sql_remove.t: Test psql -tx alignment to catch a bug in
     9.4beta2.
+  * Debconf translation updates, thanks!
+    + nl by Frans Spiesschaert. (Closes: #762632)
 
   [ Peter Michael Green ]
   * Use ID_LIKE to identify deriviatives of Debian and Ubuntu.
