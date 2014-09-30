@@ -4,6 +4,7 @@ postgresql-common (162) UNRELEASED; urgency=medium
   * Move PgCommon.pm to /usr/share/perl5.
   * t/020_create_sql_remove.t: Test psql -tx alignment to catch a bug in
     9.4beta2.
+  * supported-versions: Set 9.4 as pgdg default on Ubuntu 14.10.
   * Debconf translation updates, thanks!
     + nl by Frans Spiesschaert. (Closes: #762632)
 
