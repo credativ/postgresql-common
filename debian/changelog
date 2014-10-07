@@ -1,4 +1,4 @@
-postgresql-common (162) UNRELEASED; urgency=medium
+postgresql-common (162) unstable; urgency=medium
 
   [ Christoph Berg ]
   * Move PgCommon.pm to /usr/share/perl5.
@@ -16,7 +16,7 @@ postgresql-common (162) UNRELEASED; urgency=medium
   * Use Type=forking in postgresql@.service and start before postgresql.
     (Closes: #759725)
 
- -- Christoph Berg <myon@debian.org>  Sun, 07 Sep 2014 13:42:56 +0200
+ -- Christoph Berg <myon@debian.org>  Tue, 07 Oct 2014 21:25:25 +0200
 
 postgresql-common (161) unstable; urgency=medium
 
