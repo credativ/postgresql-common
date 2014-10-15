@@ -1,3 +1,11 @@
+postgresql-common (163) UNRELEASED; urgency=medium
+
+  * pg_createcluster: Disable copy-on-write semantics for data dirrectory on
+    btrfs and similar file systems. It eats a lot of performance and isn't
+    necessary for data integrity.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 15 Oct 2014 15:15:23 +0200
+
 postgresql-common (162) unstable; urgency=medium
 
   [ Christoph Berg ]
