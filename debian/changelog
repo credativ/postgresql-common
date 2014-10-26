@@ -4,6 +4,7 @@ postgresql-common (163) UNRELEASED; urgency=medium
   * pg_createcluster: Disable copy-on-write semantics for data directory on
     btrfs and similar file systems. It eats a lot of performance and isn't
     necessary for data integrity.
+  * debian/supported-versions: Welcome Ubuntu 15.04!
 
   [ Christoph Berg ]
   * Update VCS URLs.
