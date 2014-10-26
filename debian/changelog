@@ -1,4 +1,4 @@
-postgresql-common (163) UNRELEASED; urgency=medium
+postgresql-common (163) unstable; urgency=medium
 
   [ Martin Pitt ]
   * pg_createcluster: Disable copy-on-write semantics for data directory on
@@ -9,7 +9,7 @@ postgresql-common (163) UNRELEASED; urgency=medium
   [ Christoph Berg ]
   * Update VCS URLs.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Wed, 22 Oct 2014 14:39:25 +0200
+ -- Martin Pitt <mpitt@debian.org>  Sun, 26 Oct 2014 07:04:48 -0400
 
 postgresql-common (162) unstable; urgency=medium
 
