@@ -1,3 +1,10 @@
+postgresql-common (164) UNRELEASED; urgency=medium
+
+  * Debconf translation updates, thanks!
+    + pt by Ricardo Silva. (Closes: #767399)
+
+ -- Christoph Berg <myon@debian.org>  Sat, 08 Nov 2014 16:52:03 +0100
+
 postgresql-common (163) unstable; urgency=medium
 
   [ Martin Pitt ]
