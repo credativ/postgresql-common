@@ -38,6 +38,12 @@ foreach (</usr/share/postgresql/$v/extension/*.control>) {
 	# EXFAIL: hstore in 9.1 throws a warning about obsolete => operator
 	like_program_out 'postgres', "psql -qc 'CREATE EXTENSION \"$extname\"'", 0,
 	   qr/=>/, "extension $extname installs (with warning)";
+    } elsif ($extname eq 'chkpass' && $v eq '9.5') {
+        # chkpass is slightly broken, see
+        # http://www.postgresql.org/message-id/20141117162116.GA3565@msg.df7cb.de
+        like_program_out 'postgres', "psql -qc 'CREATE EXTENSION \"$extname\"'", 0,
+            qr/WARNING:  type input function chkpass_in should not be volatile/,
+            "extension $extname installs (with warning)";
     } else {
 	is_program_out 'postgres', "psql -qc 'CREATE EXTENSION \"$extname\"'", 0, '',
 	    "extension $extname installs without error";
