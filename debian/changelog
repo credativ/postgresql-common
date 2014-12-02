@@ -3,6 +3,7 @@ postgresql-common (164) UNRELEASED; urgency=medium
   * Debconf translation updates, thanks!
     + pt by Ricardo Silva. (Closes: #767399)
   * t/170_extensions.t: Catch warning with chkpass on 9.5.
+  * pgdg/apt.postgresql.org.sh: Support jessie.
 
  -- Christoph Berg <myon@debian.org>  Sat, 08 Nov 2014 16:52:03 +0100
 
