@@ -51,17 +51,19 @@ do_ctl_all() {
     return $status
 }
 
-# start all clusters of version $1
-# output according to Debian Policy for init scripts
-start() {
-    # create socket directory
+# create /var/run/postgresql
+create_socket_directory() {
     if [ -d /var/run/postgresql ]; then
 	chmod 2775 /var/run/postgresql
     else
 	install -d -m 2775 -o postgres -g postgres /var/run/postgresql
 	[ -x /sbin/restorecon ] && restorecon -R /var/run/postgresql || true
     fi
+}
 
+# start all clusters of version $1
+# output according to Debian Policy for init scripts
+start() {
     do_ctl_all start "$1" "Starting PostgreSQL $1 database server"
 }
 

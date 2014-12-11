@@ -1,5 +1,7 @@
 postgresql-common (164) UNRELEASED; urgency=medium
 
+  * Init script: Always create /var/run/postgresql on start.
+    (Closes: #772824)
   * Debconf translation updates, thanks!
     + pt by Ricardo Silva. (Closes: #767399)
   * t/170_extensions.t: Catch warning with chkpass on 9.5.

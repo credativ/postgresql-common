@@ -28,6 +28,9 @@ fi
 
 case "$1" in
     start|stop|restart|reload)
+        if [ "$1" = "start" ]; then
+            create_socket_directory
+        fi
 	if [ -z "`pg_lsclusters -h`" ]; then
 	    log_warning_msg 'No PostgreSQL clusters exist; see "man pg_createcluster"'
 	    exit 0
