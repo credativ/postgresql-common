@@ -4,6 +4,8 @@ postgresql-common (164) UNRELEASED; urgency=medium
     (Closes: #772824)
   * Debconf translation updates, thanks!
     + pt by Ricardo Silva. (Closes: #767399)
+  * t/100_upgrade_scripts.t: Incompatible with eatmydata, remove from
+    LD_PRELOAD when detected.
   * t/170_extensions.t: Catch warning with chkpass on 9.5.
   * pgdg/apt.postgresql.org.sh: Support jessie.
   * debian/supported-versions: Support jessie on apt.postgresql.org.

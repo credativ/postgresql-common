@@ -10,6 +10,13 @@ my @versions = ($MAJORS[-1]);
 use Test::More tests => 29;
 use PgCommon;
 
+# get_cluster_databases here and indirectly in run-upgrade-scripts is
+# incompatible with eatmydata, remove it from the environment
+if ($ENV{LD_PRELOAD} and $ENV{LD_PRELOAD} =~ /eatmydata/) {
+    $ENV{LD_PRELOAD} = join (' ', grep { $_ !~ /eatmydata/ }
+        split (/\s+/, $ENV{LD_PRELOAD}));
+}
+
 my $shellaction = '#!/bin/sh
 S=`basename $0`
 SQL="INSERT INTO log VALUES (\'$S $1 $2 $3\')"
