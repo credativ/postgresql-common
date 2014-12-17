@@ -1,4 +1,4 @@
-postgresql-common (164) UNRELEASED; urgency=medium
+postgresql-common (164) unstable; urgency=medium
 
   * Init script: Always create /var/run/postgresql on start.
     (Closes: #772824)
@@ -11,7 +11,7 @@ postgresql-common (164) UNRELEASED; urgency=medium
     apt.postgresql.org, with 9.4 as default.
   * pgdg/apt.postgresql.org.sh: Support jessie.
 
- -- Christoph Berg <myon@debian.org>  Sat, 08 Nov 2014 16:52:03 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 17 Dec 2014 20:00:04 +0100
 
 postgresql-common (163) unstable; urgency=medium
 
