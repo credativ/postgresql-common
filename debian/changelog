@@ -7,8 +7,9 @@ postgresql-common (164) UNRELEASED; urgency=medium
   * t/100_upgrade_scripts.t: Incompatible with eatmydata, remove from
     LD_PRELOAD when detected.
   * t/170_extensions.t: Catch warning with chkpass on 9.5.
+  * debian/supported-versions: Support jessie in backports and
+    apt.postgresql.org, with 9.4 as default.
   * pgdg/apt.postgresql.org.sh: Support jessie.
-  * debian/supported-versions: Support jessie on apt.postgresql.org.
 
  -- Christoph Berg <myon@debian.org>  Sat, 08 Nov 2014 16:52:03 +0100
 
