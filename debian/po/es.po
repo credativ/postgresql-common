@@ -5,54 +5,58 @@
 #
 # Changes:
 # - Initial translation
-#       Javier Fernández-Sanguino , 2006
+#       Javier FernÃ¡ndez-Sanguino , 2006
 # - Updated
-#       Javier Fernández-Sanguino , 2007-2008
-#
+#       Javier FernÃ¡ndez-Sanguino , 2007-2008
+#	Manuel "Venturi" Porras Peralta <venturi@openmailbox.org>, 2014.
 #
 #  Traductores, si no conoce el formato PO, merece la pena leer la 
-#  documentación de gettext, especialmente las secciones dedicadas a este
+#  documentaciÃ³n de gettext, especialmente las secciones dedicadas a este
 #  formato, por ejemplo ejecutando:
 #         info -n '(gettext)PO Files'
 #         info -n '(gettext)Header Entry'
 #
-# Equipo de traducción al español, por favor lean antes de traducir
+# Equipo de traducciÃ³n al espaÃ±ol, por favor lean antes de traducir
 # los siguientes documentos:
 #
-# - El proyecto de traducción de Debian al español
+# - El proyecto de traducciÃ³n de Debian al espaÃ±ol
 #   http://www.debian.org/intl/spanish/
-#   especialmente las notas y normas de traducción en
+#   especialmente las notas y normas de traducciÃ³n en
 #   http://www.debian.org/intl/spanish/notas
 #
-# - La guía de traducción de po's de debconf:
+# - La guÃ­a de traducciÃ³n de po's de debconf:
 #   /usr/share/doc/po-debconf/README-trans
 #   o http://www.debian.org/intl/l10n/po-debconf/README-trans
 #
-# Si tiene dudas o consultas sobre esta traducción consulte con el último
+# Si tiene dudas o consultas sobre esta traducciÃ³n consulte con el Ãºltimo
 # traductor (campo Last-Translator) y ponga en copia a la lista de
-# traducción de Debian al español (<debian-l10n-spanish@lists.debian.org>)
+# traducciÃ³n de Debian al espaÃ±ol (<debian-l10n-spanish@lists.debian.org>)
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 68\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2014-05-20 11:16+0200\n"
-"PO-Revision-Date: 2008-03-30 15:44+0200\n"
-"Last-Translator: Javier Fernández-Sanguino <jfs@debian.org>\n"
-"Language-Team: Debian Spanish <debian-l10n-spanish@lists.debian.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2014-12-21 12:27+0100\n"
+"Last-Translator: Manuel \"Venturi\" Porras Peralta <venturi@openmailbox."
+"org>\n"
+"Language-Team: EspaÃ±ol; Castellano <debian-l10n-spanish@lists.debian.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-POFile-SpellExtra: PostgreSQL oldversion clúster stop pgdropcluster\n"
-"X-POFile-SpellExtra: client old main clústers pgupgradecluster latest\n"
+"X-POFile-SpellExtra: PostgreSQL oldversion clÃºster stop pgdropcluster\n"
+"X-POFile-SpellExtra: client old main clÃºsters pgupgradecluster latest\n"
 "X-POFile-SpellExtra: postgresql\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "Obsolete major version ${old}"
-msgstr "Versión principal ${old} obsoleta"
+msgstr "VersiÃ³n principal ${old} obsoleta"
 
 #. Type: error
 #. Description
@@ -63,11 +67,11 @@ msgid ""
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"La versión de PostgreSQL ${old} está obsoleta, pero el paquete del cliente o "
-"del servidor aún están instalados. Debe instalar las últimas versiones de "
+"La versiÃ³n de PostgreSQL ${old} estÃ¡ obsoleta, pero el paquete del cliente o "
+"del servidor aÃºn estÃ¡n instalados. Debe instalar las Ãºltimas versiones de "
 "los paquetes (postgresql-${latest} y postgresql-client-${latest}) y "
-"actualizar sus clústers ${oldversion} con la orden "
-"«pg_upgradecluster» (consulte la página del manual)."
+"actualizar sus clÃºsters ${oldversion} con la orden "
+"Â«pg_upgradeclusterÂ» (consulte la pÃ¡gina del manual)."
 
 #. Type: error
 #. Description
@@ -79,10 +83,10 @@ msgid ""
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
 msgstr ""
-"Tenga en cuenta que la instalación de postgresql-${latest} creará "
-"automáticamente un clúster por omisión ${latest}/main. Tiene que borrar el "
-"clúster ${latest} existente («pg_dropcluster --stop ${latest}) si desea "
-"actualizar el clúster ${old}/main, consulte la página de manual para conocer "
+"Tenga en cuenta que la instalaciÃ³n de postgresql-${latest} crearÃ¡ "
+"automÃ¡ticamente un clÃºster por omisiÃ³n ${latest}/main. Tiene que borrar el "
+"clÃºster ${latest} existente (Â«pg_dropcluster --stop ${latest}) si desea "
+"actualizar el clÃºster ${old}/main, consulte la pÃ¡gina de manual para conocer "
 "los detalles."
 
 #. Type: error
@@ -93,9 +97,9 @@ msgid ""
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
 "${old} packages should be removed."
 msgstr ""
-"Ya no se da soporte a los paquetes antiguos de cliente y servidor. Debería "
-"eliminar los paquetes postgresql-${old} y postgresql-client-${old} después "
-"de actualizar los clústers que tenga."
+"Ya no se da soporte a los paquetes antiguos de cliente y servidor. DeberÃ­a "
+"eliminar los paquetes postgresql-${old} y postgresql-client-${old} despuÃ©s "
+"de actualizar los clÃºsters que tenga."
 
 #. Type: error
 #. Description
@@ -103,14 +107,15 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
-"Para más información consulte «/usr/share/doc/postgresql-common/README."
-"Debian.gz»."
+"Para mÃ¡s informaciÃ³n consulte Â«/usr/share/doc/postgresql-common/README."
+"Debian.gzÂ»."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
 msgstr ""
+"Â¿Desea activar SSL como predeterminado en los nuevos clÃºsters de PostgreSQL?"
 
 #. Type: boolean
 #. Description
@@ -120,6 +125,10 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL admite conexiones cifradas SSL. Esto suele ser una buena idea. "
+"AÃºn asÃ­, si se accede a la base de datos exclusivamente usando conexiones "
+"TCP en Â«localhostÂ», se puede desactivar el SSL sin provocar problemas de "
+"seguridad."
 
 #. Type: boolean
 #. Description
@@ -130,9 +139,13 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"Esta configuraciÃ³n no afecta a las conexiones a Â«socketÂ» del dominio UNIX, "
+"llamados Â«localÂ» en Â«pg_hba.confÂ». La configuraciÃ³n afecta a los clÃºsters de "
+"PostgreSQL nuevos creados durante la instalaciÃ³n del paquete o utilizando la "
+"orden Â«pg_createclusterÂ». No reconfigura ningÃºn clÃºster ya existente."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "Si no estÃ¡ seguro, active SSL."
