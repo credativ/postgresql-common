@@ -29,8 +29,9 @@ Description: PostgreSQL database-cluster manager
  multiple versions of PostgreSQL may be installed and/or multiple
  clusters maintained at one time.
  .
- This package will automatically create a (self-signed) certificate so
- that SSL connections are supported.
+ The commands provided are pg_conftool, pg_createcluster, pg_ctlcluster,
+ pg_dropcluster, pg_lsclusters, pg_renamecluster, pg_upgradecluster,
+ pg_virtualenv.
  .
  PostgreSQL is a fully featured object-relational database management
  system. It supports a large part of the SQL standard and is designed

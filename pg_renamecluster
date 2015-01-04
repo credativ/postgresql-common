@@ -1,0 +1,150 @@
+#!/usr/bin/perl -wT
+
+# Rename a PostgreSQL cluster
+#
+# (C) 2014 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+use strict;
+use warnings;
+use PgCommon;
+use Getopt::Long;
+use POSIX;
+
+# untaint environment
+$ENV{'PATH'} = '/bin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
+
+if (@ARGV != 3) {
+    print "Usage: $0 [OPTIONS] <version> <old cluster name> <new cluster name>\n";
+    exit 1;
+}
+
+my ($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+my ($oldcluster) = $ARGV[1] =~ /^([-.\w]+)$/;
+my ($newcluster) = $ARGV[2] =~ /^([-.\w]+)$/;
+
+error "Old and new name must be different"
+    if ($oldcluster eq $newcluster);
+error "specified cluster $version $oldcluster does not exist"
+    unless (cluster_exists $version, $oldcluster);
+error "target cluster $version $newcluster already exists"
+    if (cluster_exists $version, $newcluster);
+my %info = cluster_info ($version, $oldcluster);
+
+# stopping old cluster, so that we notice early when there are still
+# connections
+if ($info{'running'}) {
+    print "Stopping cluster $version $oldcluster ...\n";
+    my @argv = ('pg_ctlcluster', $version, $oldcluster, 'stop', '--');
+    push @argv, ('-t', '5') if $version >= '8.4';
+    error "Could not stop cluster" if system @argv;
+}
+
+# Arguments: <string>, <from>, <to>
+sub strrepl {
+    my ($s, $f, $t) = @_;
+    $s =~ s/\b\Q$f\E\b/$t/g;
+    return $s;
+}
+
+# rename config directory
+my $olddir = "$PgCommon::confroot/$version/$oldcluster";
+my $newdir = "$PgCommon::confroot/$version/$newcluster";
+rename $olddir, $newdir or error "Could not rename config directory $olddir: $!";
+
+# adapt paths to configuration files
+my %c = read_cluster_conf_file $version, $newcluster, 'postgresql.conf';
+if ($c{hba_file}) {
+    PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'hba_file',
+        strrepl($c{hba_file}, $oldcluster, $newcluster);
+}
+if ($c{ident_file}) {
+    PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'ident_file',
+        strrepl($c{ident_file}, $oldcluster, $newcluster);
+}
+if ($c{external_pid_file}) {
+    PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'external_pid_file',
+        strrepl($c{external_pid_file}, $oldcluster, $newcluster);
+}
+if ($c{stats_temp_directory}) {
+    PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'stats_temp_directory',
+        strrepl($c{stats_temp_directory}, $oldcluster, $newcluster);
+}
+
+# rename data directory
+if ($info{pgdata}) {
+    my $newpgdata = strrepl ($info{pgdata}, $oldcluster, $newcluster);
+    if ($info{pgdata} ne $newpgdata) {
+        rename $info{pgdata}, $newpgdata or
+            error "Could not rename data directory $info{pgdata}: $!";
+        PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf',
+            'data_directory', $newpgdata;
+    }
+}
+
+# rename old log files
+my $logdir = "/var/log/postgresql";
+if (opendir LOG, $logdir) {
+    while (my $logfile = readdir LOG) {
+        next unless $logfile =~ /^(\Qpostgresql-$version-$oldcluster.log\E.*)/;
+        $logfile = $1; # untaint
+        my $f = strrepl ($logfile, $oldcluster, $newcluster);
+        rename "$logdir/$logfile", "$logdir/$f" or error "rename $logdir/$logfile: $!";
+    }
+    closedir LOG;
+}
+
+# start cluster if it was running before
+if ($info{'running'}) {
+    print "Starting cluster $version $newcluster ...\n";
+    my @argv = ('pg_ctlcluster', $version, $newcluster, 'start');
+    error "Could not start cluster" if system @argv;
+}
+
+__END__
+
+=head1 NAME
+
+pg_renamecluster - rename a PostgreSQL cluster
+
+=head1 SYNOPSIS
+
+B<pg_renamecluster> I<version> I<oldname> I<newname>
+
+=head1 DESCRIPTION
+
+B<pg_renamecluster> changes the name of a PostgreSQL cluster, i. e. the name of
+the config directory in /etc/postgresql/I<version>/ along with the data
+directory in /var/lib/postgresql/I<version>/.  Existing log files in
+/var/log/postgresql/ are also renamed.  The cluster is stopped and started for
+the operation.
+
+The following B<postgresql.conf> config options are updated to refer to the
+changed path names: B<data_directory>, B<hba_file>, B<ident_file>,
+B<external_pid_file>, B<stats_temp_directory>.
+
+Cluster names are a Debian convention, the name is not explicitly known to the
+cluster itself.  From the PostgreSQL viewpoint, the name is merely a substring
+of various path names.
+
+=head1 OPTIONS
+
+None.
+
+=head1 SEE ALSO
+
+L<pg_createcluster(8)>, L<pg_dropcluster(8)>, L<pg_lsclusters(1)>, L<pg_wrapper(1)>
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>

@@ -72,6 +72,7 @@ manual page):
                        restart).
    pg_lsclusters     - Show a list of all existing clusters and their status.
    pg_upgradecluster - Migrate a cluster from one major version to another one.
+   pg_renamecluster  - Rename a cluster.
 
 Please note that you can of course also use the upstream tools for
 creating clusters, such as initdb(1). However, please note that in

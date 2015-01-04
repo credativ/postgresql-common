@@ -5,6 +5,7 @@ pg_lsclusters usr/bin
 pg_createcluster usr/bin
 pg_dropcluster usr/bin
 pg_ctlcluster usr/bin
+pg_renamecluster usr/bin
 pg_upgradecluster usr/bin
 pg_updatedicts usr/sbin
 pg_config usr/bin

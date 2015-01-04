@@ -4,6 +4,7 @@ POD1PROGS = pg_conftool.1 \
 	    pg_ctlcluster.1 \
 	    pg_dropcluster.1 \
 	    pg_lsclusters.1 \
+	    pg_renamecluster.1 \
 	    pg_upgradecluster.1 \
 	    pg_wrapper.1
 POD1PROGS_POD = pg_buildext.1 \
