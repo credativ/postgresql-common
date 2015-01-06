@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2014 Christoph Berg <myon@debian.org>
+# (C) 2013-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,20 +25,22 @@ use POSIX;
 $ENV{'PATH'} = '/bin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
-my ($version, $newversion, $cluster);
+# global variables
+my ($version, $newversion, $cluster, $newcluster);
 my (%info, %newinfo);
-my ($encoding, $old_lc_ctype, $old_lc_collate);
+my ($encoding, $old_lc_ctype, $old_lc_collate); # old cluster encoding
 
 # do not trip over cwd not being accessible to postgres superuser
 chdir '/';
 
+# update the new cluster's conffiles
 sub adapt_conffiles {
-    my %c = read_cluster_conf_file $newversion, $cluster, 'postgresql.conf';
+    my %c = read_cluster_conf_file $newversion, $newcluster, 'postgresql.conf';
 
     # Arguments: <ref to conf hash> <name> <comment>
     sub deprecate {
         if (defined ${$_[0]}{$_[1]}) {
-            PgCommon::disable_conf_value $newversion, $cluster,
+            PgCommon::disable_conf_value $newversion, $newcluster,
                 'postgresql.conf', $_[1], $_[2];
         }
     }
@@ -47,32 +49,28 @@ sub adapt_conffiles {
     sub rename_ {
         my ($conf, $old, $new) = @_;
         if (defined ${$conf}{$old}) {
-            PgCommon::replace_conf_value $newversion, $cluster,
+            PgCommon::replace_conf_value $newversion, $newcluster,
                 'postgresql.conf', $old, "deprecated in favor of $new", 
                 $new, ${$conf}{$old};
         }
     }
 
-    # Arguments: <string>, <from>, <to>
-    sub strrepl {
-        my ($s, $f, $t) = @_;
-        for(;;) {
-            my $i = index $s, $f;
-            last if $i < 0;
-            substr($s, $i, (length $f)) = $t;
-        }
-        return $s;
+    # Arguments: <config option> <value>
+    sub set {
+        my ($guc, $val) = @_;
+        PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
+            $guc, $val;
     }
 
     # adapt paths to configuration files
-    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-	'hba_file', strrepl($c{'hba_file'}, $version, $newversion) if $c{'hba_file'};
-    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-	'ident_file', strrepl($c{'ident_file'}, $version, $newversion) if $c{'ident_file'};
-    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-	'external_pid_file', strrepl($c{'external_pid_file'}, $version, $newversion) if $c{'external_pid_file'};
-    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-        'data_directory', $newinfo{'pgdata'};
+    set 'data_directory', $newinfo{'pgdata'};
+    for my $guc (qw(hba_file ident_file external_pid_file stats_temp_directory)) {
+        next unless (defined $c{$guc});
+        my $val = $c{$guc};
+        $val =~ s/\b\Q$version\E\b/$newversion/g;
+        $val =~ s/\b\Q$cluster\E\b/$newcluster/g if ($cluster ne $newcluster);
+        set $guc, $val;
+    }
 
     if ($newversion >= '8.2') {
         # preload_libraries -> shared_preload_libraries transition
@@ -81,7 +79,7 @@ sub adapt_conffiles {
 	# australian_timezones -> timezone_abbreviations transition
 	my $australian_timezones = config_bool $c{'australian_timezones'};
 	if (defined $australian_timezones) {
-	    PgCommon::replace_conf_value $newversion, $cluster, 'postgresql.conf',
+	    PgCommon::replace_conf_value $newversion, $newcluster, 'postgresql.conf',
 		    'australian_timezones', 'deprecated in favor of timezone_abbreviations', 
 		    'timezone_abbreviations', ($australian_timezones ?  'Australia' : 'Default');
 	}
@@ -102,14 +100,12 @@ sub adapt_conffiles {
 	if ($c{'stats_block_level'} || $c{'stats_row_level'}) {
 	    deprecate \%c, 'stats_block_level', 'deprecated in favor of track_counts';
 	    deprecate \%c, 'stats_row_level', 'deprecated in favor of track_counts';
-	    PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-		'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'yes' : 'no';
+            set 'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'yes' : 'no';
 	}
 
         # archive_command now has to be enabled explicitly
         if ($c{'archive_command'}) {
-            PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-                'archive_mode', 'yes';
+            set 'archive_mode', 'yes';
         }
     }
 
@@ -121,7 +117,7 @@ sub adapt_conffiles {
         rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
 
 	# "ident sameuser" -> "ident"
-	my $hba = "$PgCommon::confroot/$newversion/$cluster/pg_hba.conf";
+	my $hba = "$PgCommon::confroot/$newversion/$newcluster/pg_hba.conf";
 	open O, $hba or error "open $hba: $!";
 	open N, ">$hba.new" or error "open $hba.new: $!";
 	while (<O>) {
@@ -153,12 +149,10 @@ sub adapt_conffiles {
 		   ['root.crl', 'ssl_crl_file']) {
 	    my $file = "$newinfo{'pgdata'}/$f->[0]";
 	    if (-l $file) { # migrate symlink to config entry with link target
-		PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-		    $f->[1], (readlink $file);
+                set $f->[1], (readlink $file);
 		unlink $file;
 	    } elsif (-e $file) { # plain file in data dir, put in config
-		PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
-		    $f->[1], $file;
+                set $f->[1], $file;
 	    }
 	}
     }
@@ -208,6 +202,7 @@ sub enable_connections {
 # Get encoding and locales of a running cluster
 # Arguments: <version> <cluster>
 sub get_encoding {
+    my ($version, $cluster) = @_;
     $encoding = get_db_encoding $version, $cluster, 'template1';
     if ($version <= '8.3') {
 	($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
@@ -256,6 +251,7 @@ GetOptions ('v|version=s' => \$newversion,
 	    'logfile=s' => \$logfile,
 	    'm|method=s' => \$method,
 	    'k|link' => \$link,
+            'rename=s' => \$newcluster,
     ) or exit 1;
 
 $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
@@ -278,19 +274,21 @@ if ($#ARGV < 1) {
 
 ($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
+$newcluster ||= $cluster; # use old cluster name by default
+($newcluster) = $newcluster =~ /^([-.\w]+)$/;
 my $datadir;
 ($datadir) = $ARGV[2] =~ /(.*)/ if defined $ARGV[2];
 
 error "Cannot upgrade from $version to $newversion. " .
     "You should invoke pg_upgradecluster on a cluster with an old version."
-    if ($version eq $newversion);
+    if ($version eq $newversion and $cluster eq $newcluster);
 
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 error 'cluster is disabled' if $info{'start'} eq 'disabled';
 
-if (cluster_exists $newversion, $cluster) {
-    error "target cluster $newversion/$cluster already exists";
+if (cluster_exists $newversion, $newcluster) {
+    error "target cluster $newversion/$newcluster already exists";
 }
 
 my $oldpsql = get_program_path 'psql', $version;
@@ -302,7 +300,7 @@ my $old_hba_modified;
 # stopping old cluster, so that we notice early when there are still
 # connections
 if ($info{'running'}) {
-    get_encoding;
+    get_encoding $version, $cluster;
     print "Stopping old cluster...\n";
     my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
     push @argv, ('-t', '5') if $version >= '8.4';
@@ -319,7 +317,7 @@ if ($method eq 'dump' or ($method eq 'upgrade' and not $info{'running'})) {
     my @argv = ('pg_ctlcluster', $version, $cluster, 'start');
     error "Could not restart old cluster" if system @argv;
 
-    get_encoding unless ($encoding); # if the cluster was not running before, get encoding now
+    get_encoding $version, $cluster unless ($encoding); # if the cluster was not running before, get encoding now
 
     if ($method eq 'upgrade') {
 	print "Stopping old cluster...\n";
@@ -335,7 +333,7 @@ if ($method eq 'dump' or ($method eq 'upgrade' and not $info{'running'})) {
 # create new cluster, preserving encoding and locales
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
     '--socketdir', $info{'socketdir'}, $newversion,
-    $cluster);
+    $newcluster);
 
 push @argv, ('--datadir', $datadir) if $datadir;
 push @argv, ('--logfile', $logfile) if $logfile;
@@ -352,13 +350,13 @@ push @argv, ('--lc-time', $lc_time) if $lc_time;
 delete $ENV{'LC_ALL'};
 error "Could not create target cluster" if system @argv;
 
-%newinfo = cluster_info($newversion, $cluster);
+%newinfo = cluster_info($newversion, $newcluster);
 
 if ($method eq 'dump') {
     print "Disabling connections to the new cluster during upgrade...\n";
-    disable_connections $newversion, $cluster, $owner, $newinfo{'owneruid'};
+    disable_connections $newversion, $newcluster, $owner, $newinfo{'owneruid'};
 
-    @argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
+    @argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
     error "Could not start target cluster" if system @argv;
 }
 
@@ -386,11 +384,11 @@ if ($upgrade_scripts) {
 
         if ($PgCommon::rpm) {
             run_parts ("$PgCommon::common_confdir/pg_upgradecluster.d",
-                $version, $cluster, $newversion, 'init');
+                $version, $newcluster, $newversion, 'init');
             exit;
         }
 
-	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
+	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $newcluster,
 	    '-a', $newversion, '-a', 'init',
 	    "$PgCommon::common_confdir/pg_upgradecluster.d");
 	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
@@ -399,7 +397,7 @@ if ($upgrade_scripts) {
     wait;
     if ($?) {
         print STDERR "Error during running upgrade hooks, removing new cluster\n";
-        system 'pg_dropcluster', '--stop', $newversion, $cluster;
+        system 'pg_dropcluster', '--stop', $newversion, $newcluster;
         exit 1;
     }
 }
@@ -411,7 +409,7 @@ if (!fork) {
     my $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     my $pg_dump = get_program_path 'pg_dump', $newversion;
     my $psql = get_program_path 'psql', $newversion;
-    my $newsocket = get_cluster_socketdir $newversion, $cluster;
+    my $newsocket = get_cluster_socketdir $newversion, $newcluster;
     my $buffer;
 
     if ($method eq 'dump') {
@@ -577,7 +575,7 @@ if (!fork) {
 
 	# Make a directory for pg_upgrade to store its reports and log
 	# files.  It will not be removed.
-	my $logdir = tempdir("/var/log/postgresql/pg_upgradecluster-$version-$newversion-$cluster.XXXX");
+	my $logdir = tempdir("/var/log/postgresql/pg_upgradecluster-$version-$newversion-$newcluster.XXXX");
 	chdir $logdir;
 
 	# pg_upgrade doesn't support separate configuration and data
@@ -617,12 +615,12 @@ if ($old_hba_modified) {
 }
 if ($method eq 'dump') {
     print "Re-enabling connections to the new cluster...\n";
-    enable_connections $newversion, $cluster;
+    enable_connections $newversion, $newcluster;
 }
 
 if ($?) {
     print STDERR "Error during cluster dumping, removing new cluster\n";
-    system 'pg_dropcluster', '--stop', $newversion, $cluster;
+    system 'pg_dropcluster', '--stop', $newversion, $newcluster;
 
     # Reload old cluster to allow connections again
     if (system 'pg_ctlcluster', $version, $cluster, 'reload') {
@@ -662,11 +660,11 @@ for my $file (qw/server.crt server.key root.crt/) {
     }
 }
 
-adapt_conffiles;
+adapt_conffiles $newversion, $newcluster;
 
 if ($method eq 'dump') {
     print "Stopping target cluster...\n";
-    @argv = ('pg_ctlcluster', $newversion, $cluster, 'stop');
+    @argv = ('pg_ctlcluster', $newversion, $newcluster, 'stop');
     error "Could not stop target cluster" if system @argv;
 
     print "Stopping old cluster...\n";
@@ -693,7 +691,7 @@ print "Configuring old cluster to use a different port ($oldport)...\n";
 set_cluster_port $version, $cluster, $oldport;
 
 print "Starting target cluster on the original port...\n";
-@argv = ('pg_ctlcluster', $newversion, $cluster, 'start');
+@argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
 error "Could not start target cluster; please check configuration and log files" if system @argv;
 
 # Run upgrade scripts in finish phase
@@ -704,11 +702,11 @@ if ($upgrade_scripts) {
 
         if ($PgCommon::rpm) {
             run_parts ("$PgCommon::common_confdir/pg_upgradecluster.d",
-                $version, $cluster, $newversion, 'finish');
+                $version, $newcluster, $newversion, 'finish');
             exit;
         }
 
-	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $cluster,
+	@argv = ('run-parts', '--lsbsysinit', '-a', $version, '-a', $newcluster,
 	    '-a', $newversion, '-a', 'finish',
 	    "$PgCommon::common_confdir/pg_upgradecluster.d");
 	error "$PgCommon::common_confdir/pg_upgradecluster.d script failed" if system @argv;
@@ -800,6 +798,10 @@ L<pg_restore(1)>, "upgrade" uses L<pg_upgrade(1)>.  The default is
 In pg_upgrade mode, use hard links instead of copying files to the new
 cluster.  This option is merely passed on to pg_upgrade.  See
 L<pg_upgrade(1)> for details.
+
+=item B<--rename> I<new cluster name>
+
+Use a different name for the upgraded cluster.
 
 =back
 

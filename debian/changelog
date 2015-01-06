@@ -1,6 +1,7 @@
 postgresql-common (166) UNRELEASED; urgency=medium
 
   * pg_renamecluster: New tool to rename clusters.
+  * pg_upgradecluster: --rename allows renaming the upgraded cluster.
 
  -- Christoph Berg <myon@debian.org>  Sun, 04 Jan 2015 18:55:32 +0100
 
