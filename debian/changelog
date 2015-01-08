@@ -1,5 +1,8 @@
 postgresql-common (166) UNRELEASED; urgency=medium
 
+  * postgresql-common: Breaks: systemd (<< 204). postgresql@.service uses
+    reload-related config options that are incompatible with the systemd
+    version in wheezy. (Consider upgrading to the wheezy-backports version.)
   * pg_renamecluster: New tool to rename clusters.
   * pg_upgradecluster: --rename allows renaming the upgraded cluster.
 
