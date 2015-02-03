@@ -5,8 +5,9 @@ postgresql-common (166) UNRELEASED; urgency=medium
     version in wheezy. (Consider upgrading to the wheezy-backports version.)
   * pg_renamecluster: New tool to rename clusters.
   * pg_upgradecluster: --rename allows renaming the upgraded cluster.
+  * pg_conftool: Allow to "edit" files.
 
- -- Christoph Berg <myon@debian.org>  Sun, 04 Jan 2015 18:55:32 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 03 Feb 2015 15:30:52 +0100
 
 postgresql-common (165) unstable; urgency=medium
 

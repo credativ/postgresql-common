@@ -2,7 +2,7 @@
 # Read and edit PostgreSQL config files
 # vim:sw=4:et:
 #
-# (C) 2014 Christoph Berg <myon@debian.org>
+# (C) 2014-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ help(1) unless GetOptions (
 # find command in argument array
 my $cmdidx;
 for (my $i = 0; $i < @ARGV; $i++) {
-    if ($ARGV[$i] =~ /^(show|get|set|remove|delete|disable)$/) {
+    if ($ARGV[$i] =~ /^(show|get|set|remove|delete|disable|edit)$/) {
         $cmdidx = $i;
         last;
     }
@@ -81,7 +81,10 @@ $ARGV[0] = 'show' if ($ARGV[0] eq 'get'); # accept alternative variants of some 
 $ARGV[0] = 'remove' if ($ARGV[0] =~ /delete|disable/);
 
 my ($cmd, $key, $value);
-if ($ARGV[0] =~ /^(show|disable)$/) {
+if ($ARGV[0] =~ /^(edit)$/) {
+    help(1, "$ARGV[0] takes no argument") unless (@ARGV == 1);
+    ($cmd) = @ARGV;
+} elsif ($ARGV[0] =~ /^(show|disable)$/) {
     help(1, "$ARGV[0] needs exactly one argument") unless (@ARGV == 2);
     ($cmd, $key) = @ARGV;
 } else {
@@ -126,6 +129,17 @@ if ($cmd eq 'show') {
         disable_conffile_value ($conffile, $key);
     } else {
         disable_conf_value ($version, $cluster, $conffile, $key);
+    }
+
+} elsif ($cmd eq 'edit') {
+    my $editor = 'vi';
+    if ($ENV{EDITOR}) {
+        ($editor) = $ENV{EDITOR} =~ /(.*)/; # untaint
+    }
+    if ($conffile =~ m!/!) {
+        system $editor, $conffile;
+    } else {
+        system $editor, "$PgCommon::confroot/$version/$cluster/$conffile";
     }
 }
 
@@ -182,6 +196,10 @@ Set or update a parameter.
 =item B<remove> I<parameter>
 
 Remove (comment out) a parameter from a config file.
+
+=item B<edit>
+
+Open the config file in an editor.  Unless B<$EDITOR> is set, B<vi> is used.
 
 =back
 
