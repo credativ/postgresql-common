@@ -620,20 +620,17 @@ sub cluster_info {
     }
     $result{'start'} = get_cluster_start_conf $v, $c;
 
-    # default log file (only if not explicitly configured in postgresql.conf)
-    unless (config_bool ($postgresql_conf{logging_collector}) or
-        ($postgresql_conf{'log_destination'} || '') =~ /syslog/) {
-        my $log_symlink = $result{'configdir'} . "/log";
-        if (-l $log_symlink) {
-            ($result{'logfile'}) = readlink ($log_symlink) =~ /(.*)/; # untaint
-        } else {
-            $result{'logfile'} = "/var/log/postgresql/postgresql-$v-$c.log";
-        }
+    # default log file (possibly used only for early startup messages)
+    my $log_symlink = $result{'configdir'} . "/log";
+    if (-l $log_symlink) {
+        ($result{'logfile'}) = readlink ($log_symlink) =~ /(.*)/; # untaint
     } else {
-        $result{log_destination} = $postgresql_conf{log_destination};
-        $result{log_directory} = $postgresql_conf{log_directory};
-        $result{log_filename} = $postgresql_conf{log_filename};
+        $result{'logfile'} = "/var/log/postgresql/postgresql-$v-$c.log";
     }
+    $result{logging_collector} = $postgresql_conf{logging_collector};
+    $result{log_destination} = $postgresql_conf{log_destination};
+    $result{log_directory} = $postgresql_conf{log_directory};
+    $result{log_filename} = $postgresql_conf{log_filename};
 
     # autovacuum defaults to on since 8.3
     $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($v >= '8.3');

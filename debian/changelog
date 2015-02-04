@@ -6,6 +6,10 @@ postgresql-common (166) UNRELEASED; urgency=medium
   * pg_renamecluster: New tool to rename clusters.
   * pg_upgradecluster: --rename allows renaming the upgraded cluster.
   * pg_conftool: Allow to "edit" files.
+  * PgCommon.pm, pg_lsclusters: Fix thinko which broke logging to
+    /var/log/postgresql when log_destination was "syslog,stderr". The default
+    logfile is now always used even if logging_collector is enabled; it
+    receives the log messages produced before logging_collector is started.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Tue, 03 Feb 2015 15:30:52 +0100
 

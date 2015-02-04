@@ -2,7 +2,7 @@
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013,2014 Christoph Berg <myon@debian.org>
+# (C) 2013-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,20 +29,22 @@ foreach my $v (sort (get_versions())) {
     my @clusters = get_version_clusters $v;
     foreach my $c (sort @clusters) {
         my %info = cluster_info $v, $c;
-        my $logfile;
-        if ($info{logfile}) { # postgresql-common-provided location
-            $logfile = $info{'logfile'};
-        } elsif ($info{log_destination} and $info{log_destination} =~ /syslog/) {
-            $logfile = $info{log_destination}; # could be "syslog,whatever", show both
-        } else { # logging_collector is active
+        my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
+        if (config_bool ($info{logging_collector})) {
             my $path = $info{log_directory} || 'pg_log';
             my $file = $info{log_filename} || 'postgresql-%Y-%m-%d_%H%M%S.log';
             $logfile = "$path/$file";
         }
+        my $destination = $info{log_destination} || 'stderr';
+        $destination =~ s/stderr/$logfile/;
+        my $csvlog = $logfile;
+        $csvlog =~ s/(?:\.log)?$/.csv/;
+        $destination =~ s/csvlog/$csvlog/;
+
         push @lines, [$v, $c, $info{'port'},
             ($info{'running'} ? "online" : "down") . ($info{'recovery'} ? ",recovery" : ""),
             defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>',
-            $info{'pgdata'} || '<not set>', $logfile];
+            $info{'pgdata'} || '<not set>', $destination];
     }
 }
 
