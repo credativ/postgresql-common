@@ -10,6 +10,7 @@ postgresql-common (166) UNRELEASED; urgency=medium
     /var/log/postgresql when log_destination was "syslog,stderr". The default
     logfile is now always used even if logging_collector is enabled; it
     receives the log messages produced before logging_collector is started.
+  * t/020_create_sql_remove.t: Versions >= 9.0 are OOM-protected.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Tue, 03 Feb 2015 15:30:52 +0100
 
