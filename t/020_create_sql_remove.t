@@ -130,7 +130,7 @@ sub check_major {
     is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 
         'restarting cluster with explicitly configured log file');
     ok -z $default_log, "default log is not used";
-    ok -z $p, "log symlink target is not used";
+    ok !-z $p, "log symlink target is used for startup message";
     my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/pg_log/$v#main.log*");
     is $#l, 0, 'exactly one log file';
     ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
