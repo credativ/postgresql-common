@@ -38,7 +38,7 @@ sub check_major {
     is_program_out 'postgres', "psql -Atc \"show log_destination\"", 0, "syslog\n", 'log_destination is syslog';
     check_logging qr($v main 5432 online postgres $pgdata syslog), "pg_lscluster reports syslog";
     SKIP: {
-        skip 2, "/var/log/syslog not readable" unless (-r '/var/log/syslog');
+        skip "/var/log/syslog not readable", 2 unless (-r '/var/log/syslog');
         like_program_out 0, "grep 'postgres.*parameter \"log_destination\" changed to \"syslog\"' /var/log/syslog", 0, qr/log_destination/, 'error appears in /var/log/syslog';
     }
 
@@ -60,7 +60,7 @@ sub check_major {
     like_program_out 'postgres', "psql -qc \"moo$$\"", 1, qr/syntax error.*moo$$/, 'log an error';
     like_program_out 'postgres', "grep moo$$ $pgdata/pg_log/*.log", 0, qr/syntax error.*moo$$/, 'error appears in pg_log/*.log';
     SKIP: {
-        skip 2, "/var/log/syslog not readable" unless (-r '/var/log/syslog');
+        skip "/var/log/syslog not readable", 2 unless (-r '/var/log/syslog');
         like_program_out 0, "grep 'postgres.*moo$$' /var/log/syslog", 0, qr/moo$$/, 'error appears in /var/log/syslog';
     }
     like_program_out 'postgres', "grep moo$$ $pgdata/pg_log/*.csv", 0, qr/syntax error.*moo$$/, 'error appears in pg_log/*.csv';
