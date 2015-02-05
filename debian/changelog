@@ -1,4 +1,4 @@
-postgresql-common (166) UNRELEASED; urgency=medium
+postgresql-common (166) unstable; urgency=medium
 
   * postgresql-common: Breaks: systemd (<< 204). postgresql@.service uses
     reload-related config options that are incompatible with the systemd
@@ -12,7 +12,7 @@ postgresql-common (166) UNRELEASED; urgency=medium
     receives the log messages produced before logging_collector is started.
   * t/020_create_sql_remove.t: Versions >= 9.0 are OOM-protected.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Tue, 03 Feb 2015 15:30:52 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 05 Feb 2015 22:19:07 +0100
 
 postgresql-common (165) unstable; urgency=medium
 
