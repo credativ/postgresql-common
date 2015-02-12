@@ -84,7 +84,7 @@ my ($cmd, $key, $value);
 if ($ARGV[0] =~ /^(edit)$/) {
     help(1, "$ARGV[0] takes no argument") unless (@ARGV == 1);
     ($cmd) = @ARGV;
-} elsif ($ARGV[0] =~ /^(show|disable)$/) {
+} elsif ($ARGV[0] =~ /^(show|remove)$/) {
     help(1, "$ARGV[0] needs exactly one argument") unless (@ARGV == 2);
     ($cmd, $key) = @ARGV;
 } else {
