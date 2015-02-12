@@ -1,6 +1,7 @@
 postgresql-common (167) UNRELEASED; urgency=medium
 
   * pg_conftool: Fix 'remove' operation. Spotted by François Henry, merci!
+    (Closes: #778243)
   * t/007_pg_conftool.t: Add pg_conftool tests.
 
  -- Christoph Berg <myon@debian.org>  Thu, 12 Feb 2015 17:21:25 +0100
