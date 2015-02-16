@@ -17,6 +17,15 @@ _link_manpages() {
             echo "Adjusting postmaster.1.gz alternatives for pg_basebackup move..."
 	    update-alternatives --remove postmaster.1.gz /usr/share/postgresql/9.1/man/man1/postmaster.1.gz
 	fi
+    # similarly, if we have both 9.1 and e. g. 9.3 installed, pg_basebackup.1
+    # will already be in the psql.1.gz alternative group; if we upgrade 9.1, we
+    # then must not try to put it into postmaster.1.gz again, as that will
+    # fail
+    elif [ "$2" = "postmaster.1.gz" ] && [ "$1" = "9.1" ]; then
+	if update-alternatives --display psql.1.gz 2>/dev/null | grep -q pg_basebackup; then
+	    #echo "Skipping postmaster.1.gz alternatives as pg_basebackup.1 is already in psql.1.gz group"
+	    return
+	fi
     fi
 
     section=$(echo "$2" | sed -e 's/.*\.\(.*\)\..*/man\1/')

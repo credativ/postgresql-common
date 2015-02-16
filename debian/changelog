@@ -1,8 +1,16 @@
 postgresql-common (167) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * pg_conftool: Fix 'remove' operation. Spotted by François Henry, merci!
     (Closes: #778243)
   * t/007_pg_conftool.t: Add pg_conftool tests.
+
+  [ Martin Pitt ]
+  * debian/maintscripts-functions: Avoid package installation failure of -9.1
+    due to the pg_basebackup.1 alternative on systems which have both -9.1 and
+    a later version installed in parallel. On those, pg_basebackup.1 will
+    already be in the psql.1.gz group, thus -9.1 must not try to put it back
+    into the postmaster.1.gz group. (LP: #1357682)
 
  -- Christoph Berg <myon@debian.org>  Thu, 12 Feb 2015 17:21:25 +0100
 
