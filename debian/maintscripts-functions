@@ -89,12 +89,15 @@ or a similar command (see 'man pg_createcluster')." >&2
     _link_manpages "$VERSION" postmaster.1.gz "postgresql-$1" "postgresql-contrib-$1"
 
     if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$VERSION ]; then
+       # reload systemd to let the generator pick up the new unit
+       if [ -d /run/systemd/system ]; then
+           systemctl daemon-reload
+       fi
        if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-                invoke-rc.d postgresql start $VERSION || exit $?
-        else
-                /etc/init.d/postgresql start $VERSION || exit $?
-        fi
-
+           invoke-rc.d postgresql start $VERSION || exit $?
+       else
+           /etc/init.d/postgresql start $VERSION || exit $?
+       fi
     fi
 }
 
