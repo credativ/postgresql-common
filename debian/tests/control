@@ -1,0 +1,3 @@
+Tests: default-psql
+Depends: postgresql
+Restrictions: needs-root

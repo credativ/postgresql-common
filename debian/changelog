@@ -11,6 +11,8 @@ postgresql-common (167) UNRELEASED; urgency=medium
     a later version installed in parallel. On those, pg_basebackup.1 will
     already be in the psql.1.gz group, thus -9.1 must not try to put it back
     into the postmaster.1.gz group. (LP: #1357682)
+  * Add "default-psql" autopkgtest: Smoketest to verify that installing the
+    "postgresql" metapackage results in a running and working cluster.
 
  -- Christoph Berg <myon@debian.org>  Thu, 12 Feb 2015 17:21:25 +0100
 

@@ -1,0 +1,12 @@
+#!/bin/sh
+# autopkgtest to check that installing the "postgresql" metapackage results in
+# a working cluster
+set -e
+if ! pg_lsclusters | grep -q 'main .* online'; then
+    echo "No running cluster!" >&2
+    pg_lsclusters >&2
+fi
+
+# check that we can connect to template1 on the default cluster
+OUT=$(su - -c 'psql -Atc "select 21*2" template1' postgres)
+[ "$OUT" = "42" ] || { echo "$OUT"; exit 1; }
