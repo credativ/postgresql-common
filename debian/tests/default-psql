@@ -2,6 +2,13 @@
 # autopkgtest to check that installing the "postgresql" metapackage results in
 # a working cluster
 set -e
+
+# disabled default cluster creation?
+if grep -q '\bcreate_main_cluster\b.*\bfalse\b' /etc/postgresql-common/createcluster.conf; then
+    echo "SKIP: default cluster creation disabled in createcluster.conf"
+    exit 0
+fi
+
 if ! pg_lsclusters | grep -q 'main .* online'; then
     echo "No running cluster!" >&2
     pg_lsclusters >&2
