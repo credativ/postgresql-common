@@ -16,6 +16,7 @@ postgresql-common (167) UNRELEASED; urgency=medium
   * debian/maintscripts-functions, configure_cluster(): When running under
     systemd, do a daemon-reload to re-run the generator and thus create a unit
     for the newly created cluster.
+  * Move package maintenance to git, update Vcs-* tags accordingly.
 
  -- Christoph Berg <myon@debian.org>  Thu, 12 Feb 2015 17:21:25 +0100
 
