@@ -1,3 +1,9 @@
+postgresql-common (168) UNRELEASED; urgency=medium
+
+  * Drop obsolete debian/backport-ppa script.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 06 May 2015 11:42:24 +0200
+
 postgresql-common (167) unstable; urgency=medium
 
   [ Christoph Berg ]
