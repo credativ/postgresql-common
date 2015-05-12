@@ -22,16 +22,27 @@ is ((system "pg_createcluster $v main --start >/dev/null"), 0, "pg_createcluster
 is_program_out 'postgres', "psql -qc 'DROP EXTENSION plpgsql'", 0, '';
 is_program_out 'postgres', "psql -Atc 'SELECT * FROM pg_extension'", 0, '';
 
+my %depends = (
+    earthdistance     => [qw(cube)],
+    hstore_plperl     => [qw(hstore plperl)],
+    hstore_plperlu    => [qw(hstore plperlu)],
+    hstore_plpython2u => [qw(hstore plpython2u)],
+    hstore_plpython3u => [qw(hstore plpython3u)],
+    ltree_plpython2u  => [qw(ltree plpython2u)],
+    ltree_plpython3u  => [qw(ltree plpython3u)],
+);
+
 foreach (</usr/share/postgresql/$v/extension/*.control>) {
     my ($extname) = $_ =~ /^.*\/(.*)\.control$/;
 
     my $expected_extensions = "$extname\n";
 
-    if ($extname eq 'earthdistance') {
-	# depends on cube
-	is_program_out 'postgres', "psql -qc 'CREATE EXTENSION cube'", 0, '',
-	    "dependency cube installs without error";
-	$expected_extensions = "cube\n" . $expected_extensions;
+    if ($depends{$extname}) {
+        for my $dep (@{$depends{$extname}}) {
+            is_program_out 'postgres', "psql -qc 'CREATE EXTENSION $dep'", 0, '',
+                "$extname dependency $dep installs without error";
+        }
+        $expected_extensions = join ("\n", sort ($extname, @{$depends{$extname}})) . "\n";
     }
 
     if ($extname eq 'hstore' && $v eq '9.1') {
@@ -53,9 +64,12 @@ foreach (</usr/share/postgresql/$v/extension/*.control>) {
 	$expected_extensions, "$extname is in pg_extension";
     is_program_out 'postgres', "psql -qc 'DROP EXTENSION \"$extname\"'", 0, '',
 	"extension $extname removes without error";
-    if ($extname eq 'earthdistance') {
-	is_program_out 'postgres', "psql -qc 'DROP EXTENSION cube'", 0, '',
-	    "dependency extension cube removes without error";
+
+    if ($depends{$extname}) {
+        for my $dep (@{$depends{$extname}}) {
+            is_program_out 'postgres', "psql -qc 'DROP EXTENSION $dep'", 0, '',
+                "$extname dependency extension $dep removes without error";
+        }
     }
 }
 

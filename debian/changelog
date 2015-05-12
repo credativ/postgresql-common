@@ -1,8 +1,13 @@
 postgresql-common (168) UNRELEASED; urgency=medium
 
+  [ Martin Pitt ]
   * Drop obsolete debian/backport-ppa script.
   * debian/tests/default-psql: Skip test if default cluster creation is
     disabled in createcluster.conf.
+
+  [ Christoph Berg ]
+  * t/170_extensions.t: Refactor dependency handling and add new extensions
+    shipped with 9.5.
 
  -- Martin Pitt <mpitt@debian.org>  Wed, 06 May 2015 11:42:24 +0200
 
