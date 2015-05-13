@@ -28,8 +28,10 @@ my %depends = (
     hstore_plperlu    => [qw(hstore plperlu)],
     hstore_plpython2u => [qw(hstore plpython2u)],
     hstore_plpython3u => [qw(hstore plpython3u)],
+    hstore_plpythonu  => [qw(hstore plpythonu)],
     ltree_plpython2u  => [qw(ltree plpython2u)],
     ltree_plpython3u  => [qw(ltree plpython3u)],
+    ltree_plpythonu   => [qw(ltree plpythonu)],
 );
 
 foreach (</usr/share/postgresql/$v/extension/*.control>) {
@@ -60,7 +62,7 @@ foreach (</usr/share/postgresql/$v/extension/*.control>) {
 	    "extension $extname installs without error";
     }
 
-    is_program_out 'postgres', "psql -Atc 'SELECT extname FROM pg_extension'", 0, 
+    is_program_out 'postgres', "psql -Atc 'SELECT extname FROM pg_extension ORDER BY extname'", 0,
 	$expected_extensions, "$extname is in pg_extension";
     is_program_out 'postgres', "psql -qc 'DROP EXTENSION \"$extname\"'", 0, '',
 	"extension $extname removes without error";
