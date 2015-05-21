@@ -1,4 +1,4 @@
-postgresql-common (168) UNRELEASED; urgency=medium
+postgresql-common (168) unstable; urgency=medium
 
   [ Martin Pitt ]
   * Drop obsolete debian/backport-ppa script.
@@ -9,7 +9,7 @@ postgresql-common (168) UNRELEASED; urgency=medium
   * t/170_extensions.t: Refactor dependency handling and add new extensions
     shipped with 9.5.
 
- -- Martin Pitt <mpitt@debian.org>  Wed, 06 May 2015 11:42:24 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 21 May 2015 11:28:45 +0200
 
 postgresql-common (167) unstable; urgency=medium
 
