@@ -1,3 +1,10 @@
+postgresql-common (169) UNRELEASED; urgency=medium
+
+  * t/022_recovery.t: New recovery tests to catch regression in 9.4.2 and
+    9.1.16.
+
+ -- Christoph Berg <myon@debian.org>  Sat, 23 May 2015 22:21:24 +0200
+
 postgresql-common (168) unstable; urgency=medium
 
   [ Martin Pitt ]
