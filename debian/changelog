@@ -1,3 +1,10 @@
+postgresql-common (165+deb8u1) UNRELEASED; urgency=medium
+
+  * pg_upgradecluster: Set default dynamic_shared_memory_type = mmap.
+    (Closes: #784005, #812206)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 04 Feb 2016 14:54:56 +0100
+
 postgresql-common (165) unstable; urgency=medium
 
   * Debconf translation updates, thanks!
