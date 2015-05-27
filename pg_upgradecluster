@@ -100,12 +100,12 @@ sub adapt_conffiles {
 	if ($c{'stats_block_level'} || $c{'stats_row_level'}) {
 	    deprecate \%c, 'stats_block_level', 'deprecated in favor of track_counts';
 	    deprecate \%c, 'stats_row_level', 'deprecated in favor of track_counts';
-            set 'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'yes' : 'no';
+            set 'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'on' : 'off';
 	}
 
         # archive_command now has to be enabled explicitly
         if ($c{'archive_command'}) {
-            set 'archive_mode', 'yes';
+            set 'archive_mode', 'on';
         }
     }
 
