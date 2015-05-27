@@ -255,6 +255,7 @@ GetOptions ('v|version=s' => \$newversion,
     ) or exit 1;
 
 $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
+$link and $method eq 'dump' and error 'cannot use --link with --method=dump';
 
 # untaint
 ($newversion) = $newversion =~ /^(\d+\.\d+)$/;
