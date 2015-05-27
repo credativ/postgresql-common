@@ -3,6 +3,8 @@ postgresql-common (169) UNRELEASED; urgency=medium
   * t/022_recovery.t: New recovery tests to catch regression in 9.4.2 and
     9.1.16.
   * pg_upgradecluster: Complain if --link is used without --method=upgrade.
+  * pg_upgradecluster: Better error message when old and new version are
+    equal.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 27 May 2015 11:27:57 +0200
 

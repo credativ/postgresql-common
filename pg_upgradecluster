@@ -233,7 +233,8 @@ sub run_parts {
 
 # command line arguments
 
-$newversion = get_newest_version;
+my $newest_version = get_newest_version;
+$newversion = $newest_version;
 
 my $method = 'dump';
 my $link = 0;
@@ -280,8 +281,8 @@ $newcluster ||= $cluster; # use old cluster name by default
 my $datadir;
 ($datadir) = $ARGV[2] =~ /(.*)/ if defined $ARGV[2];
 
-error "Cannot upgrade from $version to $newversion. " .
-    "You should invoke pg_upgradecluster on a cluster with an old version."
+error "cluster $version/$cluster is already on version $newversion. " .
+    "(The newest version installed on this system is $newest_version.)"
     if ($version eq $newversion and $cluster eq $newcluster);
 
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
