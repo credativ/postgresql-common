@@ -169,6 +169,14 @@ sub adapt_conffiles {
             set 'dynamic_shared_memory_type', 'mmap';
         }
     }
+
+    if ($newversion >= '9.5') {
+        if ($c{checkpoint_segments}) {
+            my $max_wal_size = 16*$c{checkpoint_segments} . 'MB';
+            rename_ \%c, 'checkpoint_segments', 'max_wal_size';
+            set 'max_wal_size', $max_wal_size;
+        }
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access
