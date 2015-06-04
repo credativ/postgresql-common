@@ -1,3 +1,9 @@
+postgresql-common (170) UNRELEASED; urgency=medium
+
+  * t/025_logging.t: Improve syslog detection in the test environment.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 04 Jun 2015 16:44:18 +0200
+
 postgresql-common (169) unstable; urgency=medium
 
   * t/022_recovery.t: New recovery tests to catch regression in 9.4.2 and
