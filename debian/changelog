@@ -3,8 +3,10 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * t/025_logging.t: Improve syslog detection in the test environment.
   * pg_upgradecluster, t/030_errors.t: Unbreak after we changed the old=new
     error message.
+  * PgCommon.pm: make read_cluster_conf_file read postgresql.auto.conf as well
+    (Closes: #787154)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 14:54:44 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 16:23:57 +0200
 
 postgresql-common (169) unstable; urgency=medium
 

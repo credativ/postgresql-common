@@ -171,9 +171,20 @@ sub read_conf_file {
 # Arguments: <version> <cluster> <config file name>
 # Returns: hash (empty if the file does not exist)
 sub read_cluster_conf_file {
-     my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
-     -e $fname or $fname = "$common_confdir/$_[2]";
-    return read_conf_file $fname;
+    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
+    -e $fname or $fname = "$common_confdir/$_[2]";
+    my %conf = read_conf_file $fname;
+
+    if ($_[0] >= 9.4 and $_[2] eq 'postgresql.conf') { # merge settings changed by ALTER SYSTEM
+        # data_directory cannot be changed by ALTER SYSTEM
+        my $data_directory = $conf{data_directory} || "/var/lib/postgresql/$_[0]/$_[1]";
+        my %auto_conf = read_conf_file "$data_directory/postgresql.auto.conf";
+        foreach my $guc (keys %auto_conf) {
+            $conf{$guc} = $auto_conf{$guc};
+        }
+    }
+
+    return %conf;
 }
 
 # Return parameter from a PostgreSQL configuration file, or undef if the parameter
