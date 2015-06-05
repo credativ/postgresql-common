@@ -29,7 +29,7 @@ sub check_nonexisting_cluster_error {
     my $outref;
     my $result = exec_as 0, $_[0], $outref;
     is $result, 1, "'$_[0]' fails";
-    like $$outref, qr/(invalid version|does not exist|cannot upgrade)/i, "$_[0] gives error message about nonexisting cluster";
+    like $$outref, qr/(invalid version|does not exist)/i, "$_[0] gives error message about nonexisting cluster";
     unlike $$outref, qr/invalid symbolic link/i, "$_[0] does not print 'invalid symbolic link' gibberish";
 }
 

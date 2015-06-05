@@ -293,13 +293,13 @@ $newcluster ||= $cluster; # use old cluster name by default
 my $datadir;
 ($datadir) = $ARGV[2] =~ /(.*)/ if defined $ARGV[2];
 
-error "cluster $version/$cluster is already on version $newversion. " .
-    "(The newest version installed on this system is $newest_version.)"
-    if ($version eq $newversion and $cluster eq $newcluster);
-
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 error 'cluster is disabled' if $info{'start'} eq 'disabled';
+
+error "cluster $version/$cluster is already on version $newversion. " .
+    "(The newest version installed on this system is $newest_version.)"
+    if ($version eq $newversion and $cluster eq $newcluster);
 
 if (cluster_exists $newversion, $newcluster) {
     error "target cluster $newversion/$newcluster already exists";
