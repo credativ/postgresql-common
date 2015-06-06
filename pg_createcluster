@@ -4,7 +4,7 @@
 # the postgresql-common infrastructure.
 #
 # (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2014 Christoph Berg <myon@debian.org>
+# (C) 2012-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -577,6 +577,11 @@ foreach my $guc (sort keys %defaultconf) {
 # process --pgoption parameters
 foreach my $guc (@pgoptions) {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $guc->[0], $guc->[1];
+}
+
+# notify systemd about the new cluster
+if ($startconf eq 'auto' and -d '/var/run/systemd/system' and $euid == 0) {
+    system 'systemctl daemon-reload';
 }
 
 # start it if requested

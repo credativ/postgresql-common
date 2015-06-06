@@ -4,6 +4,7 @@
 # process attached.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -38,6 +39,7 @@ error 'invalid cluster name' unless defined $cluster;
 
 my %info;
 my $c; # configuration directory
+my $startconf;
 
 if (cluster_exists $version, $cluster) {
     %info = cluster_info ($version, $cluster);
@@ -55,6 +57,7 @@ if (cluster_exists $version, $cluster) {
 	}
     }
     $c = $info{'configdir'};
+    $startconf = $info{'start'};
 } else {
     $c = "/etc/postgresql/$version/$cluster";
 
@@ -89,6 +92,12 @@ unlink "/var/log/postgresql/postgresql-$version-$cluster.log";
 foreach my $f (</var/log/postgresql/postgresql-$version-$cluster.log.[1-9]*>) {
     unlink ($f =~ /(.*)/); # untaint
 }
+
+# notify systemd when an autostarted cluster went away
+if ($startconf eq 'auto' and -d '/var/run/systemd/system' and $> == 0) {
+    system 'systemctl daemon-reload';
+}
+
 exit 0;
 
 __END__
