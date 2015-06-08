@@ -4,7 +4,7 @@
 # tmpfses, so does not interfere with installed clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2014 Christoph Berg <myon@debian.org>
+# (C) 2012-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ fi
 
 # let everything happen in overlay tmpfses to avoid interfering with already
 # existing clusters; this also speeds up testing
-mount --make-rprivate / 2> /dev/null || : # reset / to private mounts (systemd changes this to shared)
+mount --make-rshared / 2> /dev/null || : # set / to shared mounts (linux (but not systemd) default is private)
 dirs="/etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql /dev/shm"
 created_dirs=""
 for d in $dirs; do
@@ -113,6 +113,7 @@ cleanup () {
     if [ "$created_dirs" ]; then
         rmdir --ignore-fail-on-non-empty -p $created_dirs
     fi
+    systemctl daemon-reload 2> /dev/null || : # poke generator to handle the system's clusters again
 }
 trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
 chown root:postgres /var/log/postgresql

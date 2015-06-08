@@ -6,7 +6,9 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 71;
+use Test::More tests => 75;
+
+my $systemd = -d '/var/run/systemd/system';
 
 # Do test with oldest version
 my $v = $MAJORS[0];
@@ -15,10 +17,20 @@ my $v = $MAJORS[0];
 is ((system "pg_createcluster $v main >/dev/null"), 0, "pg_createcluster $v main");
 
 # Check that we start with 'auto'
+note "start.conf auto";
 is ((get_cluster_start_conf $v, 'main'), 'auto', 
     'get_cluster_start_conf returns auto');
 is_program_out 'nobody', "grep '^[^\\s#]' /etc/postgresql/$v/main/start.conf",
     0, "auto\n", 'start.conf contains auto';
+SKIP: {
+    skip 'not running under systemd', 2 unless ($systemd);
+    ok_dir '/var/run/systemd/generator/postgresql.service.wants',
+        ["postgresql\@$v-main.service"],
+        "systemd generator links cluster";
+    is ((readlink "/var/run/systemd/generator/postgresql.service.wants/postgresql\@$v-main.service"),
+        "/lib/systemd/system/postgresql@.service",
+        "systemd generator links correct service file");
+}
 
 # init script should handle auto cluster
 like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*$v/;
@@ -27,12 +39,19 @@ like_program_out 0, "/etc/init.d/postgresql stop $v", 0, qr/Stop.*$v/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # change to manual, verify start.conf contents
+note "start.conf manual";
 set_cluster_start_conf $v, 'main', 'manual';
 
 is ((get_cluster_start_conf $v, 'main'), 'manual', 
     'get_cluster_start_conf returns manual');
 is_program_out 'nobody', "grep '^[^\\s#]' /etc/postgresql/$v/main/start.conf",
     0, "manual\n", 'start.conf contains manual';
+SKIP: {
+    skip 'not running under systemd', 1 unless ($systemd);
+    system "systemctl daemon-reload";
+    ok_dir '/var/run/systemd/generator/postgresql.service.wants',
+        [], "systemd generator doesn't link cluster";
+}
 
 # init script should not handle manual cluster ...
 like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*$v/;
@@ -45,10 +64,17 @@ is_program_out 'postgres', "pg_ctlcluster $v main stop", 0, '';
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # change to disabled, verify start.conf contents
+note "start.conf disabled";
 set_cluster_start_conf $v, 'main', 'disabled';
 
 is ((get_cluster_start_conf $v, 'main'), 'disabled', 
     'get_cluster_start_conf returns disabled');
+SKIP: {
+    skip 'not running under systemd', 1 unless ($systemd);
+    system "systemctl daemon-reload";
+    ok_dir '/var/run/systemd/generator/postgresql.service.wants',
+        [], "systemd generator doesn't link cluster";
+}
 
 # init script should not handle disabled cluster
 like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*$v/;
@@ -75,6 +101,7 @@ is_program_out 'postgres', "pg_ctlcluster $v main start", 0, '';
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
 
 # upgrade cluster
+note "test upgrade";
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade test';
     pass '...';
