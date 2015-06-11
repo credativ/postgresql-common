@@ -74,7 +74,7 @@ sub check_major {
 }
 
 system "logger -t '$0' 'test$$'";
-if (system ("grep -q 'test$$' /var/log/syslog") == 0) {
+if (system ("grep -q 'test$$' /var/log/syslog 2> /dev/null") == 0) {
     note 'Logging to /var/log/syslog works';
     $syslog_works = 1;
 } else {
