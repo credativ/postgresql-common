@@ -13,6 +13,10 @@ postgresql-common (165+deb8u1) jessie; urgency=medium
     config. (Newly created clusters do not have that problem because initdb
     probes for a method working in the given system.)
 
+  * t/040_upgrade.t: Skip testing pg_upgrade with datallowconn = f, it does
+    not support that anymore as of May 2015.
+    (Cherry-pick from master to allow testing the pg_upgradecluster fix)
+
  -- Christoph Berg <myon@debian.org>  Sat, 26 Mar 2016 16:52:30 +0100
 
 postgresql-common (165) unstable; urgency=medium
