@@ -424,22 +424,8 @@ if (!fork) {
     my $pg_dump = get_program_path 'pg_dump', $newversion;
     my $psql = get_program_path 'psql', $newversion;
     my $newsocket = get_cluster_socketdir $newversion, $newcluster;
-    my $buffer;
 
     if ($method eq 'dump') {
-	# check for tablespaces (not supported)
-	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-d', 'template1', '-Atc', 
-		"SELECT count(*) FROM pg_tablespace WHERE spcname <> 'pg_default' AND spcname <> 'pg_global'"
-	    or die "Calling $psql: $!";
-	$buffer = <F>;
-	close F;
-	if (not defined $buffer) {
-	    error 'Could not query number of tablespace in old cluster';
-	}
-	if ($buffer ne "0\n") {
-	    error 'automatic upgrade of tablespaces is not supported';
-	}
-
 	# get list of databases, owners, and allowed connections
 	my %databases;
 	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
@@ -474,6 +460,7 @@ if (!fork) {
 	open SOURCE, '-|', $pg_dumpall, '-h', $oldsocket, '-p', $info{'port'},
 	     '-s', '--quote-all-identifiers' or error 'Could not execute pg_dumpall for old cluster';
 	my $data = '';
+        my $buffer;
 	while (read SOURCE, $buffer, 1048576) {
 	    $data .= $buffer;
 	}
@@ -503,7 +490,7 @@ if (!fork) {
 	    next if $db eq 'template0';
 
 	    print "Fixing hardcoded library paths for stored procedures...\n";
-	    # starting from 9.0, replace() works on strings; for ealier versions it
+	    # starting from 9.0, replace() works on strings; for earlier versions it
 	    # works on bytea
 	    if ($version >= '9.0') {
 		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
@@ -540,6 +527,7 @@ if (!fork) {
 	    open SINK, '|-', @restore_argv or
 		error 'Could not execute pg_restore for new cluster';
 
+            my $buffer;
 	    while (read SOURCE, $buffer, 1048576) {
 		print SINK $buffer;
 	    }
@@ -766,9 +754,6 @@ L<pg_createcluster(8)> for details.
 The I<newdatadir> argument can be used to specify a non-default data directory
 of the upgraded cluster. It is passed to B<pg_createcluster>. If not specified,
 this defaults to /var/lib/postgresql/I<newversion>/I<name>.
-
-Please note that this program cannot upgrade clusters which use tablespaces. If
-you use those, you have to upgrade manually.
 
 =head1 OPTIONS
 

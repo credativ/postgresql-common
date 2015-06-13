@@ -9,6 +9,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
     error message.
   * PgCommon.pm: make read_cluster_conf_file read postgresql.auto.conf as well
     (Closes: #787154)
+  * pg_upgradecluster: Support upgrading tablespaces. (Closes: #772202)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 16:23:57 +0200
 
