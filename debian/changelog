@@ -10,6 +10,8 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * PgCommon.pm: make read_cluster_conf_file read postgresql.auto.conf as well
     (Closes: #787154)
   * pg_upgradecluster: Support upgrading tablespaces. (Closes: #772202)
+  * t/040_upgrade.t: Skip testing pg_upgrade with datallowconn = f, it does
+    not support that anymore as of May 2015.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 16:23:57 +0200
 
