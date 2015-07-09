@@ -12,6 +12,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * pg_upgradecluster: Support upgrading tablespaces. (Closes: #772202)
   * t/040_upgrade.t: Skip testing pg_upgrade with datallowconn = f, it does
     not support that anymore as of May 2015.
+  * t/170_extensions.t: Catch warning with chkpass >= 9.5.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 16:23:57 +0200
 
