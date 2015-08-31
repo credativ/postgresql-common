@@ -362,7 +362,7 @@ if (-f "$datadir/PG_VERSION") {
         error "$datadir already contains a version $existingver cluster";
     }
 } else {
-    my $loc = setlocale (LC_CTYPE);
+    my $loc = $locale || setlocale (LC_CTYPE);
     print "Creating new cluster $version/$cluster ...\n";
     print "  config $confdir\n  data   $datadir\n  locale $loc\n";
     init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;

@@ -1,5 +1,6 @@
 postgresql-common (170) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * pg_createcluster, pg_dropcluster: When an auto-started cluster is created/
     dropped by root, notify systemd to update the dependencies of
     postgresql.service.wants.
@@ -13,6 +14,10 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * t/040_upgrade.t: Skip testing pg_upgrade with datallowconn = f, it does
     not support that anymore as of May 2015.
   * t/170_extensions.t: Catch warning with chkpass >= 9.5.
+
+  [ Martin Pitt ]
+  * pg_createcluster: Show the locale selected with --locale instead of the
+    current one. (LP: #1467061)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 16:23:57 +0200
 
