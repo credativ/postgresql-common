@@ -14,12 +14,14 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * t/040_upgrade.t: Skip testing pg_upgrade with datallowconn = f, it does
     not support that anymore as of May 2015.
   * t/170_extensions.t: Catch warning with chkpass >= 9.5.
+  * debian/maintscripts-functions: Unset all locale-specific environment
+    variables when creating the initial database cluster. (Closes: #791526)
 
   [ Martin Pitt ]
   * pg_createcluster: Show the locale selected with --locale instead of the
     current one. (LP: #1467061)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Fri, 05 Jun 2015 16:23:57 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 04 Sep 2015 14:17:55 +0200
 
 postgresql-common (169) unstable; urgency=medium
 

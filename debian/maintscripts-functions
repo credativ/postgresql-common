@@ -52,7 +52,7 @@ _remove_tsearch() {
 # predictable.  /etc/default/locale overrides /etc/environment. Note that
 # /etc/environment is not a shell script, so we must be careful with parsing.
 set_system_locale() {
-    loc_vars="LC_COLLATE LC_CTYPE LC_MONETARY LC_MESSAGES LC_NUMERIC LC_TIME LC_ALL LANG LANGUAGE"
+    loc_vars="LANG LANGUAGE LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL"
     unset $loc_vars
     for v in $loc_vars; do
         unset val
