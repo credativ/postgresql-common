@@ -1,2 +1,4 @@
 # Directory for PostgreSQL sockets, lockfiles and stats tempfiles
 d /var/run/postgresql 2775 postgres postgres - -
+# Log directory
+d /var/log/postgresql 1775 root postgres - -

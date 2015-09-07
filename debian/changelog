@@ -16,12 +16,13 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * t/170_extensions.t: Catch warning with chkpass >= 9.5.
   * debian/maintscripts-functions: Unset all locale-specific environment
     variables when creating the initial database cluster. (Closes: #791526)
+  * Add /var/log/postgresql to /usr/lib/tmpfiles.d/postgresql.conf.
 
   [ Martin Pitt ]
   * pg_createcluster: Show the locale selected with --locale instead of the
     current one. (LP: #1467061)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Fri, 04 Sep 2015 14:17:55 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Mon, 07 Sep 2015 17:08:38 +0200
 
 postgresql-common (169) unstable; urgency=medium
 
