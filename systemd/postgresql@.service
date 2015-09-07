@@ -18,6 +18,9 @@ ExecStop=/usr/bin/pg_ctlcluster -m fast %i stop
 ExecReload=/usr/bin/pg_ctlcluster %i reload
 PIDFile=/var/run/postgresql/%i.pid
 SyslogIdentifier=postgresql@%i
+# prevent OOM killer from choosing the postmaster (individual backends will
+# reset the score to 0)
+OOMScoreAdjust=-900
 # restarting automatically will prevent "pg_ctlcluster ... stop" from working,
 # so we disable it here. Also, the postmaster will restart by itself on most
 # problems anyway, so it is questionable if one wants to enable external

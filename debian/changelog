@@ -17,6 +17,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * debian/maintscripts-functions: Unset all locale-specific environment
     variables when creating the initial database cluster. (Closes: #791526)
   * Add /var/log/postgresql to /usr/lib/tmpfiles.d/postgresql.conf.
+  * Also set OOMScoreAdjust in postgresql@.service.
 
   [ Martin Pitt ]
   * pg_createcluster: Show the locale selected with --locale instead of the
