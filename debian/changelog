@@ -4,7 +4,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * pg_createcluster, pg_dropcluster: When an auto-started cluster is created/
     dropped by root, notify systemd to update the dependencies of
     postgresql.service.wants.
-  * pg_dropcluster: Remove stats_temp_directory.
+  * pg_dropcluster, pg_renamecluster: Handle stats_temp_directory.
   * testsuite, pg_virtualenv: Remove the unshare hack, too much trouble.
   * t/025_logging.t: Improve syslog detection in the test environment.
   * pg_upgradecluster, t/030_errors.t: Unbreak after we changed the old=new

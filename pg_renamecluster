@@ -2,7 +2,7 @@
 
 # Rename a PostgreSQL cluster
 #
-# (C) 2014 Christoph Berg <myon@debian.org>
+# (C) 2014-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -76,10 +76,6 @@ if ($c{external_pid_file}) {
     PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'external_pid_file',
         strrepl($c{external_pid_file}, $oldcluster, $newcluster);
 }
-if ($c{stats_temp_directory}) {
-    PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'stats_temp_directory',
-        strrepl($c{stats_temp_directory}, $oldcluster, $newcluster);
-}
 
 # rename data directory
 if ($info{pgdata}) {
@@ -89,6 +85,17 @@ if ($info{pgdata}) {
             error "Could not rename data directory $info{pgdata}: $!";
         PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf',
             'data_directory', $newpgdata;
+    }
+}
+
+# rename stats_temp_directory
+if ($info{statstempdir}) {
+    my $newstatstempdir = strrepl ($info{statstempdir}, $oldcluster, $newcluster);
+    if ($info{statstempdir} ne $newstatstempdir) {
+        rename $info{statstempdir}, $newstatstempdir or
+            error "Could not rename stats temp directory $info{statstempdir}: $!";
+        PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf',
+            'stats_temp_directory', $newstatstempdir;
     }
 }
 
