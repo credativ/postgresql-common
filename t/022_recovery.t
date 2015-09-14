@@ -16,31 +16,30 @@ sub check_major {
     note "Running tests for $v";
 
     # create cluster
-    ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
-        "pg_createcluster $v main");
+    program_ok (0, "pg_createcluster $v main --start >/dev/null");
 
     # try an immediate shutdown and restart
-    ok ((system "pg_ctlcluster $v main stop -m i") == 0,
-        "pg_ctlcluster $v main stop -m i");
-    ok ((system "pg_ctlcluster $v main start") == 0,
-        "pg_ctlcluster $v main start");
-    ok ((exec_as 'postgres', "psql -c ''") == 0,
-        "psql");
+    program_ok (0, "pg_ctlcluster $v main stop -m i");
+    program_ok (0, "pg_ctlcluster $v main start");
+    while (system ("pg_isready -q") >> 8 == 1) {
+        sleep(1);
+    }
+    program_ok ('postgres', "psql -c ''");
 
     # try again with an write-protected file
-    ok ((system "pg_ctlcluster $v main stop -m i") == 0,
-        "pg_ctlcluster $v main stop -m i");
+    program_ok (0, "pg_ctlcluster $v main stop -m i");
     open F, ">/var/lib/postgresql/$v/main/foo";
     print F "moo\n";
     close F;
     ok ((chmod 0444, "/var/lib/postgresql/$v/main/foo"),
         "create write-protected file in data directory");
-    ok ((system "pg_ctlcluster $v main start") == 0,
-        "pg_ctlcluster $v main start");
-    ok ((exec_as 'postgres', "psql -c ''") == 0,
-        "psql");
+    program_ok (0, "pg_ctlcluster $v main start");
+    while (system ("pg_isready -q") >> 8 == 1) {
+        sleep(1);
+    }
+    program_ok ('postgres', "psql -c ''");
 
-    ok ((system "pg_dropcluster $v main --stop") == 0,
+    program_ok (0, "pg_dropcluster $v main --stop", 0,
         'pg_dropcluster removes cluster');
 
     check_clean;
