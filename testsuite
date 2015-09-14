@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Run integration tests (on the installed package). This happens on unshared
-# tmpfses, so does not interfere with installed clusters.
+# Run integration tests (on the installed packages).
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
 # (C) 2012-2015 Christoph Berg <myon@debian.org>
@@ -16,7 +15,7 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-set -e
+set -eu
 
 # default config
 TESTSDIR="$(dirname $0)/t"
@@ -40,7 +39,7 @@ while getopts "hf:isu:v:" opt ; do
         f) FROM="$OPTARG" ;;
         i) INSTALL=1 ;;
         h) help ;;
-        s) RUN_SHELL=1 ;;
+        s) export FAILURE="shell" ;;
         u) PG_UMASKS="$OPTARG" ;;
         v) export PG_VERSIONS="$OPTARG" ;; # used in t/TestLib.pm
         *) help 1 ;;
@@ -73,11 +72,6 @@ fi
 # requirements on RedHat:
 # perl-Test-Simple perl-Time-HiRes
 
-# re-exec ourselves through unshare
-if [ -z "$UNSHARED" ]; then
-    UNSHARED=1 exec unshare -uimn -- "$0" "$@"
-fi
-
 # shift away args
 shift $(($OPTIND - 1))
 
@@ -95,46 +89,38 @@ if [ -x "/etc/init.d/postgresql" ]; then
     /etc/init.d/postgresql stop
 fi
 
-# let everything happen in overlay tmpfses to avoid interfering with already
-# existing clusters; this also speeds up testing
-mount --make-rshared / 2> /dev/null || : # set / to shared mounts (linux (but not systemd) default is private)
-dirs="/etc/postgresql /etc/postgresql-common /var/lib/postgresql /var/log/postgresql /var/run/postgresql /dev/shm"
-created_dirs=""
-for d in $dirs; do
-    if ! [ -d $d ]; then
-        created_dirs="$created_dirs $d"
-        mkdir -p $d
-    fi
-    mount -n -t tmpfs -o mode=755 tmpfs $d
-done
+# set up test directories
+dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
+
 # clean up created directories after us
 cleanup () {
-    umount $dirs
-    if [ "$created_dirs" ]; then
-        rmdir --ignore-fail-on-non-empty -p $created_dirs
-    fi
+    set +e
+    umount -l $dirs
+    sed -i -e '/# by pg-testsuite/d' /etc/postgresql-common/createcluster.conf
     systemctl daemon-reload 2> /dev/null || : # poke generator to handle the system's clusters again
 }
 trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
-chown root:postgres /var/log/postgresql
-chmod 1775 /var/log/postgresql
-chown postgres:postgres /var/run/postgresql
-chmod 2775 /var/run/postgresql
-chmod 1777 /dev/shm
+
+for d in $dirs; do
+    mount -t tmpfs tmpfs $d
+done
+if [ -d /var/run/systemd/system ]; then
+    systemctl daemon-reload # poke generator to forget the system's clusters
+fi
+
+chown     root:root         /etc/postgresql ; chmod  755     /etc/postgresql
+chown postgres:postgres /var/lib/postgresql ; chmod  755 /var/lib/postgresql
+chown     root:postgres /var/log/postgresql ; chmod 1775 /var/log/postgresql
+chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql
 
 # the RPM packages enable the logging_collector by default, which the testsuite
 # doesn't like. We disable it unconditionally here.
-echo "logging_collector = off" >> /etc/postgresql-common/createcluster.conf
+if ! grep -q logging_collector /etc/postgresql-common/createcluster.conf; then
+    echo "logging_collector = off # by pg-testsuite" >> /etc/postgresql-common/createcluster.conf
+fi
 
 # reset core limit for pg_ctl tests
 ulimit -S -c 0
-
-# start localhost interface
-if [ -x /bin/ip ]; then
-    ip link set dev lo up || true
-else
-    ifconfig lo up || true
-fi
 
 # set environment
 unset TMPDIR
@@ -162,11 +148,11 @@ for U in $PG_UMASKS; do
     umask $U
     for T; do
         TBASE=${T##*/}
-        [ "$FROM" ] && [ "${TBASE%%_*}" -lt "$FROM" ] && continue
+        [ "${FROM:-}" ] && [ "${TBASE%%_*}" -lt "${FROM:-}" ] && continue
         echo "=== Running test $TBASE ... ==="
         perl $T || {
             EXIT=$?
-            if [ "${RUN_SHELL:-}" ]; then
+            if [ "${FAILURE:-}" ]; then
                 echo "*** $TBASE failed with status $EXIT, dropping you into a shell in the testbed ***"
                 ${SHELL:-/bin/sh}
             fi
