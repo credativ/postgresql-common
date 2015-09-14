@@ -591,7 +591,7 @@ track_counts = on
 track_functions = none
 track_activity_query_size = 1024
 update_process_title = on
-stats_temp_directory = 'pg_stat_tmp'
+stats_temp_directory = '/var/run/postgresql/8.4-main.pg_stat_tmp'
 log_parser_stats = off
 log_planner_stats = off
 log_executor_stats = off
@@ -771,7 +771,7 @@ track_counts = on
 track_functions = none
 track_activity_query_size = 1024
 update_process_title = on
-stats_temp_directory = 'pg_stat_tmp'
+stats_temp_directory = '/var/run/postgresql/9.0-main.pg_stat_tmp'
 log_parser_stats = off
 log_planner_stats = off
 log_executor_stats = off
@@ -956,7 +956,7 @@ track_counts = on
 track_functions = none
 track_activity_query_size = 1024 
 update_process_title = on
-stats_temp_directory = 'pg_stat_tmp'
+stats_temp_directory = '/var/run/postgresql/9.1-main.pg_stat_tmp'
 log_parser_stats = off
 log_planner_stats = off
 log_executor_stats = off
@@ -1114,6 +1114,7 @@ log_statement = 'none'
 log_temp_files = -1
 track_functions = none
 track_activity_query_size = 1024
+stats_temp_directory = '/var/run/postgresql/9.2-main.pg_stat_tmp'
 autovacuum = on
 log_autovacuum_min_duration = -1
 autovacuum_max_workers = 3
@@ -1280,7 +1281,7 @@ track_io_timing = off
 track_functions = none
 track_activity_query_size = 1024
 update_process_title = on
-stats_temp_directory = 'pg_stat_tmp'
+stats_temp_directory = '/var/run/postgresql/9.3-main.pg_stat_tmp'
 log_parser_stats = off
 log_planner_stats = off
 log_executor_stats = off
@@ -1490,7 +1491,7 @@ track_io_timing = off
 track_functions = none
 track_activity_query_size = 1024
 update_process_title = on
-stats_temp_directory = 'pg_stat_tmp'
+stats_temp_directory = '/var/run/postgresql/9.4-main.pg_stat_tmp'
 log_parser_stats = off
 log_planner_stats = off
 log_executor_stats = off
@@ -1563,6 +1564,7 @@ include_if_exists = 'exists.conf'
 # ... plus quoting of " and $
 # remove/comment data_directory, hba_file, ident_file, external_pid_file, include_dir, include
 # lc_* should be 'C'
+# stats_temp_directory should point to /var/run/postgresql/*.pg_stat_tmp
 
 # Test one particular upgrade (old version, new version)
 sub do_upgrade {

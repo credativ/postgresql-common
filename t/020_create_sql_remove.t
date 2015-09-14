@@ -22,10 +22,10 @@ sub check_major {
 
     # check that a /var/run/postgresql/ pid file is created
     unless ($PgCommon::rpm) {
-        ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid"], 
+        ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid", "$v-main.pg_stat_tmp"],
             'Socket and pid file are in /var/run/postgresql/';
     } else {
-        ok_dir '/var/run/postgresql/', ["$v-main.pid"], 'Pid File is in /var/run/postgresql/';
+        ok_dir '/var/run/postgresql/', ["$v-main.pid", "$v-main.pg_stat_tmp"], 'Pid File is in /var/run/postgresql/';
     }
 
     # verify that exactly one postmaster is running
@@ -59,7 +59,7 @@ sub check_major {
     # Now there should not be an external PID file any more, since we set it
     # explicitly
     unless ($PgCommon::rpm) {
-        ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], 
+        ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pg_stat_tmp"],
             'Socket, but not PID file in /var/run/postgresql/';
     } else {
         ok_dir '/var/run/postgresql', [], '/var/run/postgresql/ is empty';
