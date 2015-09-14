@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# Create a throw-away PostgreSQL environment for running regression tests. This
-# happens in a temp dir/on unshared tmpfses, so does not interfere with
-# existing clusters.
+# Create a throw-away PostgreSQL environment for running regression tests.
+# This does not interfere with existing clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2014 Christoph Berg <myon@debian.org>
+# (C) 2012-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,19 +18,6 @@
 
 set -e # no -u here as that breaks PGCONF_OPTS[@]
 
-case ${LD_PRELOAD:-} in
-    *fakeroot*) NONROOT=1 ;;
-esac
-if [ -z "${NONROOT:-}" ] && [ "$(id -u)" != 0 ]; then
-    NONROOT=1
-fi
-
-# root operation: re-exec ourselves through unshare
-if [ -z "${NONROOT:-}" ] && [ -z "${UNSHARED:-}" ]; then
-    UNSHARED=1 exec unshare -uimn -- "$0" "$@"
-fi
-# unshared program starts here
-
 help ()
 {
     echo "pg_virtualenv: Create throw-away PostgreSQL environment for regression tests"
@@ -42,6 +28,7 @@ help ()
     echo "    -i 'initdb opts'  extra initdb options to pass to pg_createcluster"
     echo "    -o 'guc=value'    postgresql.conf options to pass to pg_createcluster"
     echo "    -s                open a shell when command fails"
+    echo "    -t                use a temporary cluster directory even as root"
     exit ${1:-0}
 }
 
@@ -50,7 +37,7 @@ PGBINROOT="/usr/lib/postgresql/"
 #redhat# PGBINROOT="/usr/pgsql-"
 PG_VERSIONS=""
 PGCONF_OPTS=()
-while getopts "ac:i:ho:sv:" opt ; do
+while getopts "ac:i:ho:stv:" opt ; do
     case $opt in
 	a) for d in $PGBINROOT*/bin/pg_ctl; do
 		# prepend version so latest ends up first (i.e. on port 5432)
@@ -62,6 +49,7 @@ while getopts "ac:i:ho:sv:" opt ; do
 	h) help ;;
 	o) PGCONF_OPTS+=("--pgoption" "$OPTARG") ;;
 	s) run_shell=1 ;;
+        t) NONROOT=1 ;;
 	v) PG_VERSIONS="$OPTARG" ;;
 	*) help 1 ;;
     esac
@@ -77,9 +65,22 @@ shift $(($OPTIND - 1))
 # if no command is given, open a shell
 [ "${1:-}" ] || set -- ${SHELL:-/bin/sh}
 
+# we are not root
+if [ "$(id -u)" != 0 ]; then
+    NONROOT=1
+fi
+# we aren't really root in fakeroot
+case ${LD_PRELOAD:-} in
+    *fakeroot*) NONROOT=1 ;;
+esac
+
 # non-root operation: create a temp dir where we store everything
 if [ "${NONROOT:-}" ]; then
     WORKDIR=$(mktemp -d -t pg_virtualenv.XXXXXX)
+    if [ $(id -u) = 0 ]; then
+        chown postgres:postgres $WORKDIR
+        umask 022
+    fi
     export PG_CLUSTER_CONF_ROOT="$WORKDIR/postgresql"
     export PGUSER="${USER:-${LOGNAME:-$(id -un)}}"
     PGSYSCONFDIR="$WORKDIR/postgresql-common" # no export yet so pg_createcluster uses the original createcluster.conf
@@ -90,26 +91,26 @@ if [ "${NONROOT:-}" ]; then
     cleanup () {
 	set +e
 	for v in $PG_VERSIONS; do
-	    echo "Stopping cluster $v/regress..."
+            if [ ! -f $PG_CLUSTER_CONF_ROOT/$v/regress/.by_pg_virtualenv ]; then
+                echo "BUG: Cluster $v/regress was not created by me (PGSYSCONFDIR=${PGSYSCONFDIR:-}, PG_CLUSTER_CONF_ROOT=${PG_CLUSTER_CONF_ROOT:-})" >&2
+                continue
+            fi
+            echo "Dropping cluster $v/regress ..."
 	    pg_ctlcluster --mode immediate $v regress stop
 	done
 	rm -rf $WORKDIR
     }
     trap cleanup 0 HUP INT QUIT ILL ABRT PIPE TERM
 
-# root operation: keep everything in the standard locations
+# root: keep everything in the standard locations
 else
-    # let everything happen in overlay tmpfses to avoid interfering with already
-    # existing clusters; this also speeds up testing
-    mount --make-rprivate / 2> /dev/null || : # reset / to private mounts (systemd changes this to shared)
-    created_dirs=""
-    for d in /etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql; do
-	if ! [ -d $d ]; then
-	    created_dirs="$created_dirs $d"
-	    mkdir -p $d
-	fi
-	mount -n -t tmpfs -o mode=755 tmpfs $d
+    for v in $PG_VERSIONS; do
+        if [ -d /etc/postgresql/$v/regress ]; then
+            echo "Cluster $v/regress exists, refusing to overwrite" >&2
+            exit 2
+        fi
     done
+
     : ${PGSYSCONFDIR:=/etc/postgresql-common}
     pg_service="$PGSYSCONFDIR/pg_service.conf"
 
@@ -117,37 +118,27 @@ else
     PWFILE=$(mktemp -t pgpassword.XXXXXX)
     chown postgres:postgres "$PWFILE"
 
-    # clean up created clusters and directories after us
     cleanup () {
 	set +e
+        rm -f $PWFILE $pg_service
+        if [ -f $pg_service.pg_virtualenv-save.$$ ]; then
+            mv -f $pg_service.pg_virtualenv-save.$$ $pg_service
+        fi
 	for v in $PG_VERSIONS; do
-	    echo "Stopping cluster $v/regress..."
+            if [ ! -f /etc/postgresql/$v/regress/.by_pg_virtualenv ]; then
+                echo "BUG: Cluster $v/regress was not created by me (PGSYSCONFDIR=${PGSYSCONFDIR:-}, PG_CLUSTER_CONF_ROOT=${PG_CLUSTER_CONF_ROOT:-})" >&2
+                continue
+            fi
+            echo "Dropping cluster $v/regress ..."
+            rm -f /etc/postgresql/$v/regress/.by_pg_virtualenv
 	    pg_ctlcluster --mode immediate $v regress stop
+	    pg_dropcluster $v regress
 	done
-	if [ "$created_dirs" ]; then
-	    umount $created_dirs
-	    rmdir --ignore-fail-on-non-empty -p $created_dirs
-	fi
-	rm -f $PWFILE $pg_service
-	if [ -f $pg_service.pg_virtualenv-save ]; then
-	    mv -f $pg_service.pg_virtualenv-save $pg_service
-	fi
     }
     trap cleanup 0 HUP INT QUIT ILL ABRT PIPE TERM
 
-    chown root:postgres /var/log/postgresql
-    chmod 1775 /var/log/postgresql
-    chown postgres:postgres /var/run/postgresql
-    chmod 2775 /var/run/postgresql
     if [ -f $pg_service ]; then
-	mv -f $pg_service $pg_service.pg_virtualenv-save
-    fi
-
-    # start localhost interface
-    if [ -x /bin/ip ]; then
-        ip link set dev lo up || true
-    else
-        ifconfig lo up || true
+	mv --no-clobber $pg_service $pg_service.pg_virtualenv-save.$$
     fi
 fi
 
@@ -174,6 +165,7 @@ for v in $PG_VERSIONS; do
 	    ${CREATE_OPTS:-} "${PGCONF_OPTS[@]}" $v regress -- \
 	    --username="$PGUSER" --pwfile="$PWFILE" $NOSYNC ${INITDB_OPTS:-}
 	# in fakeroot, the username will likely default to "postgres" otherwise
+        echo "This is a temporary throw-away cluster" > ${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/.by_pg_virtualenv
 	pg_ctlcluster -o '-F' $v regress start
     )
     port=$(pg_conftool -s $v regress show port)
@@ -196,7 +188,7 @@ export PGDATABASE="postgres"
 case $PG_VERSIONS in
     *\ *) ;; # multiple versions: do not set PGPORT because that breaks --cluster
     *)
-	export PGPORT="$port" # will always be 5432 in root mode, but could differ otherwise
+        export PGPORT="$port"
 	export PG_CONFIG="$PGBINROOT$PG_VERSIONS/bin/pg_config"
 	;;
 esac
@@ -205,7 +197,7 @@ esac
 "$@" || EXIT="$?"
 if [ ${EXIT:-0} -gt 0 ]; then
     for log in ${LOGDIR:-/var/log/postgresql}/*.log; do
-	echo "$log:"
+        echo "*** $log (last 100 lines) ***"
 	tail -100 $log
     done
 

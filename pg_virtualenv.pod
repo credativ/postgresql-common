@@ -4,7 +4,7 @@ pg_virtualenv - Create a throw-away PostgreSQL environment for running regressio
 
 =head1 SYNOPSIS
 
-B<pg_virtualenv> [B<-ash> B<-v> 'I<version ...>'] [I<command>]
+B<pg_virtualenv> [I<OPTIONS>] [B<-v> 'I<version ...>'] [I<command>]
 
 =head1 DESCRIPTION
 
@@ -13,24 +13,20 @@ environment variables such that I<command> can access the PostgreSQL database
 server(s). The servers are destroyed when I<command> exits.
 
 The environment variables B<PGHOST>, B<PGDATABASE>, B<PGUSER>, and
-B<PGPASSWORD> will be set. Per default, a single new cluster is created on port
-B<5432>, using the newest PostgreSQL server version installed. When more
-clusters are created for other versions, they will use other port numbers.
+B<PGPASSWORD> will be set. Per default, a single new cluster is created,
+using the newest PostgreSQL server version installed. The cluster will use the
+first available port number starting from B<5432>, and B<PGPORT> will be set.
 
-B<pg_createcluster> is used to create the database clusters. The clusters are
+When clusters for more than one versions are created, they will differ in the
+port number used, and B<PGPORT> is not set. The clusters are
 named I<version>/regress. To access a cluster, set
 B<PGCLUSTER=>I<version>B</regress>. For ease of access, the clusters are also
 registered in F</etc/postgresql-common/pg_service.conf>, with the version
 number as cluster name. Clusters can be accessed by passing the connection
 string "B<service=>I<version>", e.g. B<psql service=9.2>.
 
-When invoked as root user, the servers and I<command> are run in an unshared
-mount and network namespace; the servers are created on tmpfses, so actions
-caused by I<command> in the database do not affect the running system.
-I<command> can drop privileges as needed, provided the environment variables
-are passed.
-
-When invoked as non-root user, B<PG_CLUSTER_CONF_ROOT> and B<PGSYSCONFDIR> are
+When invoked as root, the clusters are created in F</etc/postgresql/> as usual;
+for other users, B<PG_CLUSTER_CONF_ROOT> and B<PGSYSCONFDIR> are
 set to a temporary directory where all files belonging to the clusters are
 created.
 
@@ -63,6 +59,10 @@ B<pg_createcluster>.
 
 Launch a shell inside the virtual environment when I<command> fails.
 
+=item B<-t>
+
+Install clusters in a temporary directory, even when running as root.
+
 =item B<-h>
 
 Show program help.
@@ -80,7 +80,7 @@ of operation. Running "fakeroot pg_virtualenv" as root will fail, though.
 
 =head1 SEE ALSO
 
-initdb(1), pg_createcluster(1), unshare(1).
+initdb(1), pg_createcluster(1).
 
 =head1 AUTHOR
 
