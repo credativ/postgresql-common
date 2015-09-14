@@ -92,6 +92,16 @@ unlink "/var/log/postgresql/postgresql-$version-$cluster.log";
 foreach my $f (</var/log/postgresql/postgresql-$version-$cluster.log.[1-9]*>) {
     unlink ($f =~ /(.*)/); # untaint
 }
+# remove stats_temp_directory
+if ($info{statstempdir}) {
+    my $statsowner = (stat($info{statstempdir}))[4];
+    if (defined $statsowner and $statsowner == $info{owneruid}) {
+        foreach my $f (<$info{statstempdir}/*.stat>) {
+            unlink ($f =~ /(.*)/); # untaint
+        }
+        rmdir $info{statstempdir};
+    }
+}
 
 # notify systemd when an autostarted cluster went away
 if ($startconf eq 'auto' and -d '/var/run/systemd/system' and $> == 0) {
