@@ -10,7 +10,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 132 * ($#MAJORS+1);
+use Test::More tests => 127 * ($#MAJORS+1);
 
 sub check_major {
     my $v = $_[0];
@@ -338,21 +338,8 @@ tel|2
     is ((exec_as 'postgres', "pg_ctlcluster $v main start"), 0, 'starting cluster as postgres works without a log file');
     ok (-e $default_log && ! -z $default_log, 'log file got recreated and used');
 
-    # test pg_renamecluster with a running cluster
-    is ((exec_as 'root', "pg_renamecluster $v main donau"), 0, 'pg_renamecluster works');
-    is_program_out 'postgres', 'psql -tAc "show data_directory"', 0,
-        "/var/lib/postgresql/$v/donau\n", 'data_directory was moved';
-    is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'hba_file'),
-        "/etc/postgresql/$v/donau/pg_hba.conf", 'pg_hba.conf location updated');
-    is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'ident_file'),
-        "/etc/postgresql/$v/donau/pg_ident.conf", 'pg_ident.conf location updated');
-    #is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'external_pid_file'),
-    #    "/var/run/postgresql/$v-donau.pid", 'external_pid_file location updated');
-    #is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'stats_temp_directory'),
-    #    "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory location updated');
-
     # stop server, clean up, check for leftovers
-    ok ((system "pg_dropcluster $v donau --stop") == 0,
+    ok ((system "pg_dropcluster $v main --stop") == 0,
 	'pg_dropcluster removes cluster');
 
     check_clean;
