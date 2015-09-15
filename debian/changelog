@@ -20,6 +20,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
     variables when creating the initial database cluster. (Closes: #791526)
   * Add /var/log/postgresql to /usr/lib/tmpfiles.d/postgresql.conf.
   * Also set OOMScoreAdjust in postgresql@.service.
+  * pg_lsclusters: Color online/down clusters green/red.
 
   [ Martin Pitt ]
   * pg_createcluster: Show the locale selected with --locale instead of the

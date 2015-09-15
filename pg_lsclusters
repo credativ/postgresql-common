@@ -56,10 +56,20 @@ foreach my $line (@lines) {
     }
 }
 
+my $color = -t 1; # color output if stdout is a terminal
 my $fmtstring = join ' ', map { "%-${_}s" } @colwidth;
 
 foreach my $line (@lines) {
+    if ($color and $line->[3] =~ /online/) {
+        print "\033[32m"; # green
+    } elsif ($color and $line->[3] =~ /down/) {
+        print "\033[31m"; # red
+    }
     printf "$fmtstring\n", @$line;
+}
+
+if ($color) {
+    print "\033[0m"; # reset terminal
 }
 
 __END__
@@ -85,6 +95,15 @@ This command shows a list about the configuration and status of all clusters.
 Do not print the column header line.
 
 =back
+
+=head1 NOTES
+
+The cluster status is shown as B<online> or B<down>. If a F<recovery.conf> file
+is found in the data directory, B<,recovery> is appended. The latter needs read
+access to the data directory, which only root and the cluster owner have.
+
+The output lines are colored green and red to indicate the cluster status
+visually.
 
 =head1 AUTHOR
 
