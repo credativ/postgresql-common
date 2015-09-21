@@ -387,7 +387,7 @@ if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
 }
 
 # redirect the request through systemd (if we are root and we are not a direct pid 1 child)
-if ($> == 0 and getppid() != 1 and not exists $ENV{_SYSTEMCTL_SKIP_REDIRECT}) {
+if ($> == 0 and getppid() != 1 and not exists $ENV{_SYSTEMCTL_SKIP_REDIRECT} and not exists $ENV{'PG_CLUSTER_CONF_ROOT'}) {
     if ($action =~ /^(start|stop|restart)$/) {
         print "Redirecting $1 request to systemctl\n";
         system ('systemctl', $1, "postgresql\@$version-$cluster");

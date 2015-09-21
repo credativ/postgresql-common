@@ -581,7 +581,7 @@ foreach my $guc (@pgoptions) {
 }
 
 # notify systemd about the new cluster
-if ($startconf eq 'auto' and -d '/var/run/systemd/system' and $euid == 0) {
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/var/run/systemd/system' and $euid == 0) {
     system 'systemctl daemon-reload';
 }
 

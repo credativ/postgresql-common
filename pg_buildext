@@ -106,10 +106,13 @@ loop() {
 installcheck() {
     prepare_env $1
 
-    if [ -z "$PG_VIRTUALENV_UNSHARE" ] && [ $(id -u) = 0 ]; then
-        # request new network namespace by default; override by setting
-        # PG_VIRTUALENV_UNSHARE (set to "--" to disable)
-        export PG_VIRTUALENV_UNSHARE="-n"
+    if [ "${PG_VIRTUALENV_UNSHARE-unset}" = "unset" ] && [ $(id -u) = 0 ]; then
+        export PG_VIRTUALENV_UNSHARE="-n" # request new network namespace by default
+    fi
+
+    # ask pg_virtualenv to create a non-system cluster
+    if [ "${NONROOT-unset}" = "unset" ]; then
+        export NONROOT=1
     fi
 
     if [ "$target" ]; then # if target is given, use it, else stay in the top source dir

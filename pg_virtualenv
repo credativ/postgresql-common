@@ -105,6 +105,7 @@ if [ "${NONROOT:-}" ]; then
     fi
     export PG_CLUSTER_CONF_ROOT="$WORKDIR/postgresql"
     export PGUSER="${USER:-${LOGNAME:-$(id -un)}}"
+    [ "$PGUSER" = "root" ] && PGUSER="postgres"
     PGSYSCONFDIR="$WORKDIR/postgresql-common" # no export yet so pg_createcluster uses the original createcluster.conf
     mkdir "$PGSYSCONFDIR" "$WORKDIR/log"
     PWFILE="$PGSYSCONFDIR/pwfile"
@@ -182,6 +183,7 @@ for v in $PG_VERSIONS; do
             *) NOSYNC="--nosync" ;;
         esac
 	pg_createcluster \
+	    ${PGPORT:+-p "$PGPORT"} \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
 	    ${CREATE_OPTS:-} "${PGCONF_OPTS[@]}" $v regress -- \

@@ -216,8 +216,7 @@ configure the list of supported versions on your system.
 
 B<pg_buildext> sets B<PG_VIRTUALENV_UNSHARE=-n> for the installcheck actions by
 default to request a new network namespace, enabling several instances running
-in parallel to share port 5432. Override by setting to a different value;
-disable by setting to B<-->.
+in parallel to share port 5432. Override by setting to a different value.
 
 =head1 COMPATIBILITY
 

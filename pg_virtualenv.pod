@@ -91,6 +91,10 @@ When non-empty, B<pg_virtualenv> will re-exec itself using newpid(1).
 When non-empty, B<pg_virtualenv> will re-exec itself using unshare(1) using
 these flags.
 
+=item B<PGPORT>=I<n>
+
+When set, the value is used for the (single) cluster created.
+
 =back
 
 =head1 SEE ALSO
