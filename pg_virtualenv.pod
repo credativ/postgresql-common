@@ -91,6 +91,8 @@ When non-empty, B<pg_virtualenv> will re-exec itself using newpid(1).
 When non-empty, B<pg_virtualenv> will re-exec itself using unshare(1) using
 these flags.
 
+=back
+
 =head1 SEE ALSO
 
 initdb(1), pg_createcluster(1).
