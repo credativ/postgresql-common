@@ -106,6 +106,12 @@ loop() {
 installcheck() {
     prepare_env $1
 
+    if [ -z "$PG_VIRTUALENV_UNSHARE" ] && [ $(id -u) = 0 ]; then
+        # request new network namespace by default; override by setting
+        # PG_VIRTUALENV_UNSHARE (set to "--" to disable)
+        export PG_VIRTUALENV_UNSHARE="-n"
+    fi
+
     if [ "$target" ]; then # if target is given, use it, else stay in the top source dir
 	# if a Makefile was created by configure, use it, else the top level Makefile
 	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"

@@ -386,6 +386,15 @@ if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
     error "Config owner ($configowner:$info{configuid}) and data owner ($dataowner:$info{owneruid}) do not match, and config owner is not root";
 }
 
+# redirect the request through systemd (if we are root and we are not a direct pid 1 child)
+if ($> == 0 and getppid() != 1 and not exists $ENV{_SYSTEMCTL_SKIP_REDIRECT}) {
+    if ($action =~ /^(start|stop|restart)$/) {
+        print "Redirecting $1 request to systemctl\n";
+        system ('systemctl', $1, "postgresql\@$version-$cluster");
+        exit $? >> 8;
+    }
+}
+
 # recreate missing standard log dir
 if ($> == 0 && ! -e '/var/log/postgresql' &&
     $info{'logfile'} =~ m!^/var/log/postgresql!) {

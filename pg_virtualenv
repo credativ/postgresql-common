@@ -18,6 +18,28 @@
 
 set -e # no -u here as that breaks PGCONF_OPTS[@]
 
+# wrap ourselves in newpid if requested
+if [ "$PG_VIRTUALENV_NEWPID" ]; then
+    unset PG_VIRTUALENV_NEWPID
+    exec newpid $0 "$@"
+fi
+
+# wrap ourselves in unshare if requested
+if [ "$PG_VIRTUALENV_UNSHARE" ]; then
+    export _PG_VIRTUALENV_UNSHARE="$PG_VIRTUALENV_UNSHARE"
+    unset PG_VIRTUALENV_UNSHARE
+    exec unshare $_PG_VIRTUALENV_UNSHARE -- $0 "$@"
+fi
+if [ "$_PG_VIRTUALENV_UNSHARE" ]; then
+    unset _PG_VIRTUALENV_UNSHARE
+    # start localhost interface
+    if [ -x /bin/ip ]; then
+        ip link set dev lo up || true
+    else
+        ifconfig lo up || true
+    fi
+fi
+
 help ()
 {
     echo "pg_virtualenv: Create throw-away PostgreSQL environment for regression tests"

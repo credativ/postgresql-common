@@ -212,6 +212,13 @@ configure the list of supported versions on your system.
 
 =back
 
+=head1 ENVIRONMENT
+
+B<pg_buildext> sets B<PG_VIRTUALENV_UNSHARE=-n> for the installcheck actions by
+default to request a new network namespace, enabling several instances running
+in parallel to share port 5432. Override by setting to a different value;
+disable by setting to B<-->.
+
 =head1 COMPATIBILITY
 
 Earlier B<pg_buildext> versions required a "source dir" argument after the
@@ -224,6 +231,8 @@ postgresql-server-dev-all (>= 148~).
 
 B<pg_buildext installcheck> was introduced in postgresql-server-dev-all (>=
 153~).
+
+B<PG_VIRTUALENV_UNSHARE=-n> was introduced in postgresql-common (>= 170~).
 
 =head1 SEE ALSO
 
