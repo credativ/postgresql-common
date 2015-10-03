@@ -18,9 +18,11 @@
 # The *last* version returned here will be considered the default version, the
 # remaining lines list other supported versions in an undefined order.
 #
-# The environment variable PG_SUPPORTED_VERSIONS, and the files
-# ~/.pg_supported_versions and /etc/postgresql-common/supported_versions (in
-# that order) can be used to override the defaults. (Tokens separated by
+# * PG_SUPPORTED_VERSIONS
+# * DEB_PG_SUPPORTED_VERSIONS
+# * ~/.pg_supported_versions
+# * /etc/postgresql-common/supported_versions
+# (in that order) can be used to override the defaults. (Tokens separated by
 # newlines.)
 #
 # Recognized tokens:
@@ -35,7 +37,7 @@
 # X.Y: consider this version supported
 #
 # (C) 2005-2014 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2014 Christoph Berg <myon@debian.org>
+# (C) 2012-2015 Christoph Berg <myon@debian.org>
 
 set -eu
 
@@ -167,6 +169,8 @@ installed() {
 
 if [ "${PG_SUPPORTED_VERSIONS:-}" ] ; then
     SUPPORTED_VERSIONS=$(echo "$PG_SUPPORTED_VERSIONS" | xargs -n1)
+elif [ "${DEB_PG_SUPPORTED_VERSIONS:-}" ] ; then
+    SUPPORTED_VERSIONS=$(echo "$DEB_PG_SUPPORTED_VERSIONS" | xargs -n1)
 elif [ -f ${HOME:-}/.pg_supported_versions ] ; then
     SUPPORTED_VERSIONS="$(cat ${HOME:-}/.pg_supported_versions)"
 elif [ -f ${PGSYSCONFDIR:-/etc/postgresql-common}/supported_versions ] ; then
