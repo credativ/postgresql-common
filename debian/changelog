@@ -24,6 +24,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * Also set OOMScoreAdjust in postgresql@.service.
   * pg_lsclusters: Color online/down clusters green/red.
   * supported-versions: Accept DEB_PG_SUPPORTED_VERSIONS as well.
+  * Ship /etc/postgresql/ in postgresql-common. (Closes: #801140)
 
   [ Martin Pitt ]
   * pg_createcluster: Show the locale selected with --locale instead of the

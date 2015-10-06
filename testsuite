@@ -92,7 +92,7 @@ fi
 # set up test directories
 dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
 
-# clean up created directories after us
+# clean up after us
 cleanup () {
     set +e
     umount -l $dirs
@@ -102,6 +102,7 @@ cleanup () {
 trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
 
 for d in $dirs; do
+    mkdir -p $d
     mount -t tmpfs tmpfs $d
 done
 if [ -d /var/run/systemd/system ]; then
