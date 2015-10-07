@@ -21,7 +21,8 @@ sub check_major {
     # try an immediate shutdown and restart
     program_ok (0, "pg_ctlcluster $v main stop -m i");
     program_ok (0, "pg_ctlcluster $v main start");
-    while (system ("pg_isready -q") >> 8 == 1) {
+    my $c = 0; # fallback for when pg_isready is missing (PG < 9.3)
+    while (system ("pg_isready -q") >> 8 == 1 and $c++ < 15) {
         sleep(1);
     }
     program_ok ('postgres', "psql -c ''");
@@ -34,7 +35,8 @@ sub check_major {
     ok ((chmod 0444, "/var/lib/postgresql/$v/main/foo"),
         "create write-protected file in data directory");
     program_ok (0, "pg_ctlcluster $v main start");
-    while (system ("pg_isready -q") >> 8 == 1) {
+    $c = 0;
+    while (system ("pg_isready -q") >> 8 == 1 and $c++ < 15) {
         sleep(1);
     }
     program_ok ('postgres', "psql -c ''");
