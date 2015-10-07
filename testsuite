@@ -97,7 +97,9 @@ cleanup () {
     set +e
     umount -l $dirs
     sed -i -e '/# by pg-testsuite/d' /etc/postgresql-common/createcluster.conf
-    systemctl daemon-reload 2> /dev/null || : # poke generator to handle the system's clusters again
+    if [ -d /var/run/systemd/system ]; then
+        systemctl daemon-reload || : # poke generator to handle the system's clusters again
+    fi
 }
 trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
 
