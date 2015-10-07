@@ -25,23 +25,29 @@ help ()
 {
     echo "postgresql-common testsuite"
     echo "Syntax: $0 [options] [test ...]"
+    echo "    -D               drop all existing clusters (USE WITH CARE)"
     echo "    -f number        run tests starting at this number"
     echo "    -i               install packages for versions specified by -v"
+    echo "    -M               don't mount tmpfses, run in the host system"
     echo "    -s               start a shell in the testbed on failure"
     echo "    -u 'umask ...'   umasks to run testsuite with [default: 022 077]"
     echo "    -v 'version ...' PostgreSQL versions to test [default: client versions installed]"
+    echo "    -V               debug output"
     exit ${1:-0}
 }
 
 # option parsing
-while getopts "hf:isu:v:" opt ; do
+while getopts "Dhf:iMsu:v:V" opt ; do
     case $opt in
+        D) DROP_ALL_CLUSTERS=1 ;;
         f) FROM="$OPTARG" ;;
         i) INSTALL=1 ;;
         h) help ;;
+        M) NO_TMPFS=1 ;;
         s) export FAILURE="shell" ;;
         u) PG_UMASKS="$OPTARG" ;;
         v) export PG_VERSIONS="$OPTARG" ;; # used in t/TestLib.pm
+        V) VERBOSE=1 ;;
         *) help 1 ;;
     esac
 done
@@ -89,32 +95,40 @@ if [ -x "/etc/init.d/postgresql" ]; then
     /etc/init.d/postgresql stop
 fi
 
+# drop all existing clusters if the user requested it
+if [ "${DROP_ALL_CLUSTERS:-}" ]; then
+    pg_lsclusters -h | while read ver cluster rest; do
+        pg_dropcluster $ver $cluster
+    done
+fi
+
 # set up test directories
 dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
 
-# clean up after us
-cleanup () {
-    set +e
-    umount -l $dirs
-    sed -i -e '/# by pg-testsuite/d' /etc/postgresql-common/createcluster.conf
-    if [ -d /var/run/systemd/system ]; then
-        systemctl daemon-reload || : # poke generator to handle the system's clusters again
-    fi
-}
-trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
+if [ -z "${NO_TMPFS:-}" ]; then
+    # clean up after us
+    cleanup () {
+        set +e
+        umount -l $dirs
+        sed -i -e '/# by pg-testsuite/d' /etc/postgresql-common/createcluster.conf
+        systemctl daemon-reload 2> /dev/null || : # poke generator to handle the system's clusters again
+    }
+    trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM
 
-for d in $dirs; do
-    mkdir -p $d
-    mount -t tmpfs tmpfs $d
-done
+    for d in $dirs; do
+        mkdir -p $d
+        mount -t tmpfs tmpfs $d
+    done
+
+    chown     root:root         /etc/postgresql ; chmod  755     /etc/postgresql
+    chown postgres:postgres /var/lib/postgresql ; chmod  755 /var/lib/postgresql
+    chown     root:postgres /var/log/postgresql ; chmod 1775 /var/log/postgresql
+    chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql
+fi
+
 if [ -d /var/run/systemd/system ]; then
     systemctl daemon-reload # poke generator to forget the system's clusters
 fi
-
-chown     root:root         /etc/postgresql ; chmod  755     /etc/postgresql
-chown postgres:postgres /var/lib/postgresql ; chmod  755 /var/lib/postgresql
-chown     root:postgres /var/log/postgresql ; chmod 1775 /var/log/postgresql
-chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql
 
 # the RPM packages enable the logging_collector by default, which the testsuite
 # doesn't like. We disable it unconditionally here.
@@ -138,6 +152,17 @@ export BASH_ENV=/nonexisting
 
 if [ $# -eq 0 ]; then
     set -- $TESTSDIR/*.t
+fi
+
+# dump environment for debugging
+if [ "${VERBOSE:-}" ]; then
+    echo "Environment:"
+    env | sort
+    echo "Mounts:"
+    cat /proc/mounts
+    echo "Namespaces:"
+    ls -l /proc/self/ns
+    echo
 fi
 
 for U in $PG_UMASKS; do
