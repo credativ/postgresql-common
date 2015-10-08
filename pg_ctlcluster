@@ -430,9 +430,9 @@ if ($action ne 'stop' && $info{'statstempdir'} && ! -d $info{'statstempdir'}) {
 }
 
 if ($> == 0) {
-    # have postgres start with increased OOM killer protection; 9.1 and
+    # have postgres start with increased OOM killer protection; 9.0 and
     # later has builtin support for resetting the adjustment of child processes
-    if ($action eq 'start' and $version >= '9.1' and not $PgCommon::rpm) {
+    if ($action eq 'start' and $version >= '9.0' and not $PgCommon::rpm) {
         if (-w '/proc/self/oom_score_adj') {
 	    open F, '>/proc/self/oom_score_adj';
 	    print F "-900\n";
