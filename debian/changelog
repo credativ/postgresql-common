@@ -1,4 +1,4 @@
-postgresql-common (170) UNRELEASED; urgency=medium
+postgresql-common (170) unstable; urgency=medium
 
   [ Christoph Berg ]
   * pg_createcluster, pg_dropcluster: When an auto-started cluster is created/
@@ -31,7 +31,7 @@ postgresql-common (170) UNRELEASED; urgency=medium
   * pg_createcluster: Show the locale selected with --locale instead of the
     current one. (LP: #1467061)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Mon, 07 Sep 2015 17:08:38 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 08 Oct 2015 13:48:26 +0200
 
 postgresql-common (169) unstable; urgency=medium
 
