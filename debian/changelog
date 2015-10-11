@@ -1,6 +1,6 @@
 postgresql-common (171) UNRELEASED; urgency=medium
 
-  * pgdg: Deprecate 8.4 and 9.0, add 9.5.
+  * pgdg: Deprecate 8.4 and 9.0.
 
  -- Christoph Berg <myon@debian.org>  Sat, 10 Oct 2015 16:11:33 +0200
 
