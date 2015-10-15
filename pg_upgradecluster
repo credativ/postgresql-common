@@ -539,7 +539,7 @@ if (!fork) {
 	    print 'Analyzing database ', $db, "...\n";
 	    (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
 		'-d', $db, '-c', 'ANALYZE') == 0 or
-		error 'Could not ANALZYE database';
+		error 'Could not ANALYZE database';
 
 	    unless (${$databases{$db}}[0]) {
 		print "Disabling access to database $db\n";
