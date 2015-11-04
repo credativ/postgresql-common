@@ -466,7 +466,8 @@ change_ugid $owneruid, $ownergid;
 $ssl_key_access = -r $ssl_key_file;
 
 # check for stats_temp_directory access
-if ($defaultconf{stats_temp_directory} and $version >= 8.4) {
+delete $defaultconf{stats_temp_directory} if ($version < 8.4);
+if ($defaultconf{stats_temp_directory}) {
     my $stats_temp_directory = replace_v_c ($defaultconf{stats_temp_directory}, $version, $cluster);
     $stats_temp_directory =~ s!/$!!; # strip trailing slash
     my $stats_temp_parent = $stats_temp_directory;
