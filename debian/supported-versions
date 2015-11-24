@@ -132,7 +132,7 @@ debian_backports() {
             /bin/echo -e "8.4\n9.1"
             ;;
         7|7.*) # Wheezy
-            /bin/echo -e "9.1"
+            /bin/echo -e "9.1\n9.4"
             ;;
         8|8.*) # Jessie
             /bin/echo -e "9.4"
