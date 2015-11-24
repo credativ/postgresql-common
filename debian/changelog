@@ -2,6 +2,7 @@ postgresql-common (171) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
   * pgdg: Deprecate 8.4 and 9.0.
+  * Enable 9.4 for wheezy-backports.
   * pg_createcluster: Fix stats_temp_directory handling on 8.3, thanks to
     Marco Nenciarini for the inital patch.
   * pg_conftool: Don't quote output in '-s'hort mode.
