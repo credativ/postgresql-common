@@ -5,6 +5,7 @@ postgresql-common (171) UNRELEASED; urgency=medium
   * Enable 9.4 for wheezy-backports.
   * pg_createcluster: Fix stats_temp_directory handling on 8.3, thanks to
     Marco Nenciarini for the inital patch.
+  * pg_createcluster: Mute verbose chattr output.
   * pg_conftool: Don't quote output in '-s'hort mode.
   * debian/maintscripts-functions: If the catalog version changes in
     devel/alpha versions, save a minimal copy of the old version binaries in

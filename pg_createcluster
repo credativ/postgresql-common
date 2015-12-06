@@ -57,7 +57,7 @@ sub init_db {
 
     # disable copy-on-write semantics for PostgreSQL data on btrfs and similar;
     # this fails on file systems which don't support it, so ignore errors
-    system "chattr -V +C '$datadir' 2>/dev/null";
+    system "chattr +C '$datadir' 2>/dev/null";
 
     my @initdb = (get_program_path 'initdb', $version);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
