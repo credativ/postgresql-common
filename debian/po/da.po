@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2014-05-20 11:16+0200\n"
+"POT-Creation-Date: 2015-12-06 22:52+0100\n"
 "PO-Revision-Date: 2014-07-06 19:25+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -18,13 +18,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid "Obsolete major version ${old}"
 msgstr "Forældet hovedversion ${old}"
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but the server or client packages "
 "are still installed. Please install the latest packages (postgresql-"
@@ -38,7 +38,7 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -54,7 +54,7 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "The old server and client packages are no longer supported. After the "
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
@@ -66,7 +66,7 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
@@ -74,13 +74,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
 msgstr "Aktiver SSL som standard i nye PostgreSQL-klynger?"
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid ""
 "PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
 "However, if the database is solely accessed using TCP connections on "
@@ -88,11 +88,11 @@ msgid ""
 msgstr ""
 "PostgreSQL understøtter SSL-krypterede forbindelser. Dette er normalt en god "
 "ting. Hvis databasen alene tilgås via TCP-forbindelser på localhost, så kan "
-"SSL dog slukkes uden at der bliver introduceret sikkerhedsproblemstillinger." 
+"SSL dog slukkes uden at der bliver introduceret sikkerhedsproblemstillinger."
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid ""
 "UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
 "affected by this setting. This setting concerns new PostgreSQL clusters "
@@ -101,12 +101,48 @@ msgid ""
 msgstr ""
 "UNIX-domænesokkelforbindelser (kaldt »local« i pg_hba.conf) influeres ikke "
 "af denne indstilling. Denne indstilling vedrører nye PostgreSQL-klynger "
-"oprettet under pakkeinstallation, eller ved at bruge kommandoen pg_createcluster. "
-"Den rekonfigurerer eksisterende klynger."
+"oprettet under pakkeinstallation, eller ved at bruge kommandoen "
+"pg_createcluster. Den rekonfigurerer eksisterende klynger."
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid "If unsure, enable SSL."
 msgstr "Hvis usikker, aktiver SSL."
 
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "PostgreSQL ${version} catalog version changed"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"The PostgreSQL cluster ${version} ${cluster} was created using catalog "
+"version ${db_catversion}, but the currently being installed package "
+"postgresql-${version} is using catalog version ${new_catversion}. You will "
+"not be able to use this cluster until it was upgraded to the new catalog "
+"version."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"The necessary subset of binaries from the old version was saved in "
+"${vartmpdir}. To upgrade the cluster, execute these commands:"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+" # pg_renamecluster ${version} ${cluster} ${cluster}.old\n"
+" # pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} -m "
+"upgrade \\\n"
+"     --old-bindir=${vartmpdir}/bin\n"
+" # pg_dropcluster ${version} ${cluster}.old\n"
+" # rm -rf ${vartmpdir}"
+msgstr ""

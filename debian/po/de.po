@@ -1,15 +1,15 @@
 # postgresql-common debconf templates.
 # Copyright (C) 2005 Martin Pitt <mpitt@debian.org>
-# Copyright (C) 2014 Christoph Berg <myon@debian.org>
+# Copyright (C) 2014-2015 Christoph Berg <myon@debian.org>
 # This file is distributed under the same license as the postgresql-common package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
-"POT-Creation-Date: 2014-05-20 11:16+0200\n"
-"PO-Revision-Date: 2014-05-20 11:22+0200\n"
-"Last-Translator: Martin Pitt <mpitt@debian.org>\n"
+"POT-Creation-Date: 2015-12-06 22:52+0100\n"
+"PO-Revision-Date: 2015-12-06 22:54+0100\n"
+"Last-Translator: Christoph Berg <myon@debian.org>\n"
 "Language-Team: German <de@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -18,13 +18,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid "Obsolete major version ${old}"
 msgstr "Veraltete Version ${old}"
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but the server or client packages "
 "are still installed. Please install the latest packages (postgresql-"
@@ -38,7 +38,7 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "Please be aware that the installation of postgresql-${latest} will "
 "automatically create a default cluster ${latest}/main. If you want to "
@@ -54,7 +54,7 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "The old server and client packages are no longer supported. After the "
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
@@ -66,7 +66,7 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../postgresql-common.templates:2001
+#: ../postgresql-common.templates:1001
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
@@ -75,38 +75,84 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
 msgstr "SSL standardmäßig in neuen PostgreSQL-Clustern aktivieren?"
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid ""
 "PostgreSQL supports SSL-encrypted connections. This is usually a good thing. "
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
-"PostgreSQL unterstützt SSL-verschlüsselte Verbindungen, was normalerweise benutzt werden sollte. "
-"Wenn die Datenbank jedoch ausschließlich über TCP-Verbindungen über localhost benutzt wird, "
-"kann SSL abgeschaltet werden, ohne die Sicherheit zu beeinträchtigen."
+"PostgreSQL unterstützt SSL-verschlüsselte Verbindungen, was normalerweise "
+"benutzt werden sollte. Wenn die Datenbank jedoch ausschließlich über TCP-"
+"Verbindungen über localhost benutzt wird, kann SSL abgeschaltet werden, ohne "
+"die Sicherheit zu beeinträchtigen."
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid ""
 "UNIX domain socket connections (called \"local\" in pg_hba.conf) are not "
 "affected by this setting. This setting concerns new PostgreSQL clusters "
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
-"Verbindungen über UNIX-Sockets (in der pg_hba.conf \"local\" genannt) sind nicht von dieser Einstellung betroffen. "
-"Diese Einstellung betrifft nur neue PostgreSQL-Cluster, die während der "
-"Paket-Installation oder durch pg_createcluster angelegt werden. "
-"Es konfiguriert bestehende Cluster nicht um."
+"Verbindungen über UNIX-Sockets (in der pg_hba.conf \"local\" genannt) sind "
+"nicht von dieser Einstellung betroffen. Diese Einstellung betrifft nur neue "
+"PostgreSQL-Cluster, die während der Paket-Installation oder durch "
+"pg_createcluster angelegt werden. Es konfiguriert bestehende Cluster nicht "
+"um."
 
 #. Type: boolean
 #. Description
-#: ../postgresql-common.templates:3001
+#: ../postgresql-common.templates:2001
 msgid "If unsure, enable SSL."
 msgstr "Aktivieren Sie SSL im Zweifelsfall."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid "PostgreSQL ${version} catalog version changed"
+msgstr "Geänderte Katalogversion in PostgreSQL ${version}"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"The PostgreSQL cluster ${version} ${cluster} was created using catalog "
+"version ${db_catversion}, but the currently being installed package "
+"postgresql-${version} is using catalog version ${new_catversion}. You will "
+"not be able to use this cluster until it was upgraded to the new catalog "
+"version."
+msgstr ""
+"Der PostgreSQL-Cluster ${version} ${cluster} wurde mit der Katalogversion "
+"${db_catversion} erstellt, aber das gerade installierte Paket postgresql-"
+"${version} benutzt Katalogversion ${new_catversion}. Sie werden diesen "
+"Cluster erst wieder benutzen können, wenn er auf die neue Katalogversion "
+"aktualisiert wurde."
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+"The necessary subset of binaries from the old version was saved in "
+"${vartmpdir}. To upgrade the cluster, execute these commands:"
+msgstr ""
+"Die notwendigen Programmdateien der alten Version wurden in ${vartmpdir} "
+"gesichert. Benutzen Sie folgende Kommandos um den Cluster zu aktualisieren:"
+
+#. Type: note
+#. Description
+#: ../postgresql-common.templates:3001
+msgid ""
+" # pg_renamecluster ${version} ${cluster} ${cluster}.old\n"
+" # pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} -m "
+"upgrade \\\n"
+"     --old-bindir=${vartmpdir}/bin\n"
+" # pg_dropcluster ${version} ${cluster}.old\n"
+" # rm -rf ${vartmpdir}"
+msgstr ""
