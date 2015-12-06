@@ -6,7 +6,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2009 Cyril Bouthors <cyril@bouthors.org>
-# (C) 2013-2014 Christoph Berg <myon@debian.org>
+# (C) 2013-2015 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -320,11 +320,14 @@ sub promote {
 # main
 #
 
+my ($bindir);
+
 exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
     'f|force' => \$force,
     'm|mode=s' => \$mode,
     'foreground' => \$foreground,
     'stdlog' => \$stdlog,
+    'bindir=s' => \$bindir,
 );
 
 if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
@@ -333,6 +336,8 @@ if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
     print "Invalid -m mode, valid are: smart fast immediate\n";
     exit 1;
 }
+
+($bindir) = $bindir =~ /^(\/.*)$/ if $bindir; # untaint
 
 # accept both "version cluster action" and "version[-/]cluster action"
 if (@ARGV < 2 or (@ARGV < 3 and $ARGV[0] !~ m![-/]!)) {
@@ -451,7 +456,7 @@ if( $> != $info{'owneruid'} ) {
         (getpwuid $info{'owneruid'})[0].') or root';
 }
 
-$pg_ctl = get_program_path 'pg_ctl', $version;
+$pg_ctl = $bindir ? "$bindir/pg_ctl" : get_program_path ('pg_ctl', $version);
 
 if ($action =~ /^(start|stop|restart|reload|status|promote)$/) {
     no strict 'refs';
@@ -552,6 +557,10 @@ Start B<postgres> in foreground, without daemonizing via B<pg_ctl>.
 
 When B<--foreground> is in use, redirect stderr to the standard logfile in
 C</var/log/postgresql/>.  (Default when not run in foreground.)
+
+=item B<--bindir> I<directory>
+
+Path to B<pg_ctl>.  (Default is C</usr/lib/postgresql/>I<version>C</bin>.)
 
 =item B<-o>|B<--options> I<option>
 
