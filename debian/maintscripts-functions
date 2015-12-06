@@ -88,6 +88,12 @@ or a similar command (see 'man pg_createcluster')." >&2
 
     _link_manpages "$VERSION" postmaster.1.gz "postgresql-$1" "postgresql-contrib-$1"
 
+    # check if our catalog version changed
+    postinst_check_catversion "$VERSION"
+
+    # done with debconf
+    db_stop
+
     if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$VERSION ]; then
        # reload systemd to let the generator pick up the new unit
        if [ -d /run/systemd/system ]; then
@@ -142,3 +148,100 @@ remove_doc_version() {
     _unlink_manpages "$1" SPI_connect.3.gz
 }
 
+# Compare the catalog version number of the installed package and the new
+# package. When differing, check if any clusters present are using the old
+# catalog version. If so, copy a minimal set of files from the old package to
+# /var/tmp to enable pg_upgrade to upgrade to the new version.
+
+preinst_check_catversion()
+{
+    MAJOR_VER="$1"
+    NEW_CATVERSION="$2"
+    case $NEW_CATVERSION in
+        *CATVERSION*) echo "BUG: override_dh_installdeb failed to set CATVERSION" >&2
+        return ;;
+    esac
+
+    OLD_CATVERSION="$(cat /usr/share/postgresql/$MAJOR_VER/catalog_version || :)"
+    [ -z "$OLD_CATVERSION" ] && return # shouldn't happen, but bail out gracefully
+
+    [ "$OLD_CATVERSION" = "$NEW_CATVERSION" ] && return # no change, nothing to do
+
+    PGCONTROLDATA="/usr/lib/postgresql/$MAJOR_VER/bin/pg_controldata"
+    [ -x "$PGCONTROLDATA" ] || return 0
+
+    echo "PostgreSQL $MAJOR_VER catalog version number changed from $OLD_CATVERSION to $NEW_CATVERSION, checking for clusters using the old version ..."
+
+    pg_lsclusters -h | \
+    while read version cluster port status owner pgdata logfile; do
+        [ "$version" = "$MAJOR_VER" ] || continue
+        [ -d "$pgdata" ] || continue
+        DB_CATVERSION=$(LC_ALL=C $PGCONTROLDATA $pgdata | sed -ne 's/^Catalog version number: *\([0-9]\+\)/\1/p')
+
+        if [ "$DB_CATVERSION" = "$OLD_CATVERSION" ]; then
+            echo "Cluster $MAJOR_VER/$cluster is using catalog version $DB_CATVERSION"
+
+            VARTMPDIR="/var/tmp/postgresql-$MAJOR_VER-$OLD_CATVERSION"
+            if [ ! -d "$VARTMPDIR" ]; then
+                echo "Saving binaries for PostgreSQL $MAJOR_VER catalog version $OLD_CATVERSION in $VARTMPDIR ..."
+                mkdir "$VARTMPDIR" # will fail&exit if (potentially rogue) file exists
+                (
+                    cd "$VARTMPDIR"
+                    mkdir bin lib # lib needs to exists, but we do not copy files there
+                    for f in pg_ctl pg_resetxlog postgres; do
+                        cp -a /usr/lib/postgresql/$MAJOR_VER/bin/$f bin
+                    done
+                )
+            fi
+        fi
+    done
+}
+
+postinst_check_catversion()
+{
+    MAJOR_VER="$1"
+    NEW_CATVERSION="$(cat /usr/share/postgresql/$MAJOR_VER/catalog_version || :)"
+    [ -z "$NEW_CATVERSION" ] && return # shouldn't happen, but bail out gracefully
+
+    PGCONTROLDATA="/usr/lib/postgresql/$MAJOR_VER/bin/pg_controldata"
+    [ -x "$PGCONTROLDATA" ] || return 0
+
+    for cluster in $(pg_lsclusters -h | awk "/^$MAJOR_VER / { print \$2 }"); do
+        pgdata=$(pg_conftool -s $MAJOR_VER $cluster show data_directory)
+        [ -d "$pgdata" ] || continue
+
+        DB_CATVERSION=$(LC_ALL=C $PGCONTROLDATA $pgdata | sed -ne 's/^Catalog version number: *\([0-9]\+\)/\1/p')
+        [ -z "$DB_CATVERSION" ] && continue
+        [ "$DB_CATVERSION" = "$NEW_CATVERSION" ] && continue
+
+        VARTMPDIR="/var/tmp/postgresql-$MAJOR_VER-$DB_CATVERSION"
+        [ -d "$VARTMPDIR" ] || continue
+        [ -O "$VARTMPDIR" ] || continue # test if owned by root
+
+        # tell the user about it
+	cat <<-EOF
+	Cluster $MAJOR_VER $cluster needs upgrading:
+	# pg_renamecluster ${MAJOR_VER} ${cluster} ${cluster}.old
+	# pg_upgradecluster ${MAJOR_VER} ${cluster}.old --rename ${cluster} -m upgrade --old-bindir=${VARTMPDIR}/bin
+	# pg_dropcluster ${MAJOR_VER} ${cluster}.old
+	# rm -rf ${VARTMPDIR}
+	EOF
+        db_fset postgresql-common/catversion-bump seen false
+        db_subst postgresql-common/catversion-bump version $MAJOR_VER
+        db_subst postgresql-common/catversion-bump cluster $cluster
+        db_subst postgresql-common/catversion-bump db_catversion $DB_CATVERSION
+        db_subst postgresql-common/catversion-bump new_catversion $NEW_CATVERSION
+        db_subst postgresql-common/catversion-bump vartmpdir $VARTMPDIR
+        db_input high postgresql-common/catversion-bump || true
+        db_go || true
+    done
+}
+
+# start debconf if we are in the server's postinst (can't run from a function)
+if [ "${DPKG_MAINTSCRIPT_NAME:-}" = "postinst" ] && [ "$1" = "configure" ]; then
+    case $DPKG_MAINTSCRIPT_PACKAGE in
+        postgresql-?.?|postgresql-?.??)
+            . /usr/share/debconf/confmodule
+            ;;
+    esac
+fi

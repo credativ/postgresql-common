@@ -5,6 +5,10 @@ postgresql-common (171) UNRELEASED; urgency=medium
   * pg_createcluster: Fix stats_temp_directory handling on 8.3, thanks to
     Marco Nenciarini for the inital patch.
   * pg_conftool: Don't quote output in '-s'hort mode.
+  * debian/maintscripts-functions: If the catalog version changes in
+    devel/alpha versions, save a minimal copy of the old version binaries in
+    the preinst to enable using pg_upgrade. Use debconf in the postinst to
+    instruct the user how to proceed with the upgrade.
 
   [ Martin Pitt ]
   * pg_upgradecluster: Fix "ANALZYE" typo.
