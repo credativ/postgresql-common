@@ -108,7 +108,7 @@ if ($cmd eq 'show') {
         }
     } elsif (exists $conf{$key}) {
         if ($short) {
-            printf "%s\n", quote_conf_value($conf{$key});
+            printf "%s\n", $conf{$key};
         } else {
             printf "%s = %s\n", $key, quote_conf_value($conf{$key});
         }
