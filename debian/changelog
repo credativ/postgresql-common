@@ -11,6 +11,8 @@ postgresql-common (171) UNRELEASED; urgency=medium
     devel/alpha versions, save a minimal copy of the old version binaries in
     the preinst to enable using pg_upgrade. Use debconf in the postinst to
     instruct the user how to proceed with the upgrade.
+  * pg_buildext: Replace multiple occurrences of PGVERSION on the same line,
+    and implement replacing for debian/tests/control.in.
 
   [ Martin Pitt ]
   * pg_upgradecluster: Fix "ANALZYE" typo.

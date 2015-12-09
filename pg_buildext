@@ -164,11 +164,38 @@ versions() {
 
 gencontrol() {
     tmpcontrol=$(mktemp debian/control.XXXXXX)
-    trap "rm -f $tmpcontrol" 0 2 3 15
+    if [ -f debian/tests/control.in ]; then
+        tmptestscontrol=$(mktemp debian/tests/control.XXXXXX)
+    fi
+    trap "rm -f $tmpcontrol ${tmptestscontrol:-}" 0 2 3 15
+
     grep-dctrl -vP PGVERSION debian/control.in > $tmpcontrol
     for v in $(versions); do
-        grep-dctrl -P PGVERSION debian/control.in | sed -e "s:PGVERSION:$v:" >> $tmpcontrol
+        grep-dctrl -P PGVERSION debian/control.in | sed -e "s:PGVERSION:$v:g" >> $tmpcontrol
     done
+
+    if [ -f debian/tests/control.in ]; then
+        cp debian/tests/control.in $tmptestscontrol
+        # find words (package names) containing PGVERSION
+        REGEXP='[[:alnum:]-]*PGVERSION[[:alnum:]-]*'
+        for pkgpattern in $(egrep -wo "$REGEXP" debian/tests/control.in); do
+            repl=""
+            # build an array of replacements separated by ,
+            for v in $(versions); do
+                repl="${repl:+$repl, }$(echo $pkgpattern | sed -e "s/PGVERSION/$v/g")"
+            done
+            # put array into control file
+            sed -i -e "s/$pkgpattern/$repl/g" $tmptestscontrol
+        done
+    fi
+}
+
+updatecontrol() {
+    cat $tmpcontrol > debian/control
+
+    if [ -f debian/tests/control.in ]; then
+        cat $tmptestscontrol > debian/tests/control
+    fi
 }
 
 # when a version is included in the action, just act on this one (this is
@@ -189,19 +216,24 @@ case $action in
         if ! diff -u debian/control $tmpcontrol; then
             if [ "${PG_UPDATECONTROL:-no}" != "no" ] || head -1 debian/changelog | egrep -q -- '-backports|-pgdg|-pgapt'; then
                 echo "Notice: Updating debian/control from debian/control.in."
-                mv $tmpcontrol debian/control
-                exit
+                need_update=1
+            else
+                echo "Error: debian/control needs updating from debian/control.in. Run 'pg_buildext updatecontrol'."
+                echo "If you are seeing this message in a buildd log, a sourceful upload is required."
+                exit 1
             fi
-            echo "Error: debian/control needs updating from debian/control.in. Run 'pg_buildext updatecontrol'."
-            echo "If you are seeing this message in a buildd log, a sourceful upload is required."
-            exit 1
         fi
-        exit
+        if ! diff -u debian/tests/control $tmptestscontrol; then
+            echo "Notice: Updating debian/tests/control from debian/tests/control.in."
+            need_update=1
+        fi
+        [ "$need_update" ] && updatecontrol
+        exit 0
         ;;
 
     updatecontrol)
         gencontrol
-        mv $tmpcontrol debian/control
+        updatecontrol
         exit
         ;;
 esac
