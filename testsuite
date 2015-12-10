@@ -145,7 +145,7 @@ unset LC_ALL
 export LANG=en_US.utf8
 
 # set variables which cause taint check errors
-export IFS=' '
+export IFS
 export CDPATH=/usr
 export ENV=/nonexisting
 export BASH_ENV=/nonexisting
