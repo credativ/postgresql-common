@@ -179,10 +179,13 @@ sub exec_as {
 }
 
 # Execute a command as a particular user, and check the exit code
-# Arguments: <user> <command> <expected exit code> [<description>]
+# Arguments: <user> <command> [<expected exit code>] [<description>]
 sub program_ok {
+    my ($user, $cmd, $exit, $description) = @_;
+    $exit ||= 0;
+    $description ||= $cmd;
     my $outref;
-    ok ((exec_as $_[0], $_[1], $outref, $_[2]) == 0, $_[3] || $_[1]);
+    ok ((exec_as $user, $cmd, \$outref, $exit) == $exit, $description);
 }
 
 # Execute a command as a particular user, and check the exit code and output
