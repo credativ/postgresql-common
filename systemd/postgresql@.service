@@ -13,9 +13,9 @@ Before=postgresql.service
 [Service]
 Type=forking
 # @: use "postgresql@%i" as process name
-ExecStart=@/usr/bin/pg_ctlcluster postgresql@%i %i start
-ExecStop=/usr/bin/pg_ctlcluster -m fast %i stop
-ExecReload=/usr/bin/pg_ctlcluster %i reload
+ExecStart=@/usr/bin/pg_ctlcluster postgresql@%i --skip-systemctl-redirect %i start
+ExecStop=/usr/bin/pg_ctlcluster --skip-systemctl-redirect -m fast %i stop
+ExecReload=/usr/bin/pg_ctlcluster --skip-systemctl-redirect %i reload
 PIDFile=/var/run/postgresql/%i.pid
 SyslogIdentifier=postgresql@%i
 # prevent OOM killer from choosing the postmaster (individual backends will

@@ -104,8 +104,13 @@ if ($info{statstempdir}) {
 }
 
 # notify systemd when an autostarted cluster went away
-if ($startconf eq 'auto' and -d '/var/run/systemd/system' and $> == 0) {
-    system 'systemctl daemon-reload';
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/run/systemd/system') {
+    if ($> == 0) {
+        system 'systemctl daemon-reload';
+    } elsif (-t 1) {
+        print "Warning: systemd was not informed about the removed yet. Operations like \"service postgresql start\" might fail. To fix, run:\n";
+        print "  sudo systemctl daemon-reload\n";
+    }
 }
 
 exit 0;

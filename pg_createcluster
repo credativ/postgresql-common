@@ -582,8 +582,13 @@ foreach my $guc (@pgoptions) {
 }
 
 # notify systemd about the new cluster
-if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/var/run/systemd/system' and $euid == 0) {
-    system 'systemctl daemon-reload';
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/run/systemd/system') {
+    if ($> == 0) {
+        system 'systemctl daemon-reload';
+    } elsif (-t 1) {
+        print "Warning: systemd does not know about the new cluster yet. Operations like \"service postgresql start\" will not handle it. To fix, run:\n";
+        print "  sudo systemctl daemon-reload\n";
+    }
 }
 
 # start it if requested

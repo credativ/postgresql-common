@@ -126,7 +126,7 @@ if [ -z "${NO_TMPFS:-}" ]; then
     chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql
 fi
 
-if [ -d /var/run/systemd/system ]; then
+if [ -d /run/systemd/system ]; then
     systemctl daemon-reload # poke generator to forget the system's clusters
 fi
 

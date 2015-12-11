@@ -108,7 +108,7 @@ sub cluster_port_ready {
     }
 
     if ($out =~ 'FATAL:') {
-	print STDERR "WARNING: connection to the database failed, disabling startup checks:\n$out\n";
+	print STDERR "Warning: connection to the database failed, disabling startup checks:\n$out\n";
 	return cluster_port_running $v, $c, $p;
     }
     return !$result;
@@ -320,12 +320,13 @@ sub promote {
 # main
 #
 
-my ($bindir);
+my ($skip_systemctl_redirect, $bindir);
 
 exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
     'f|force' => \$force,
     'm|mode=s' => \$mode,
     'foreground' => \$foreground,
+    'skip-systemctl-redirect' => \$skip_systemctl_redirect,
     'stdlog' => \$stdlog,
     'bindir=s' => \$bindir,
 );
@@ -391,15 +392,43 @@ if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
     error "Config owner ($configowner:$info{configuid}) and data owner ($dataowner:$info{owneruid}) do not match, and config owner is not root";
 }
 
-# WIP:
-## redirect the request through systemd (if we are root and we are not a direct pid 1 child)
-#if ($> == 0 and getppid() != 1 and -d '/var/run/systemd/system' and not exists $ENV{_SYSTEMCTL_SKIP_REDIRECT} and not exists $ENV{'PG_CLUSTER_CONF_ROOT'}) {
-#    if ($action =~ /^(start|stop|restart)$/) {
-#        print "Redirecting $1 request to systemctl\n";
-#        system ('systemctl', $1, "postgresql\@$version-$cluster");
-#        exit $? >> 8;
-#    }
-#}
+# redirect the request through systemd
+if (not $skip_systemctl_redirect and getppid() != 1 and # not run from init
+    -d '/run/systemd/system' and not exists $ENV{_SYSTEMCTL_SKIP_REDIRECT} and # systemd is running
+    not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and # not handling user clusters
+    $action =~ /^(start|stop|restart)$/ # redirect only these actions
+) {
+    $action = $1; # untaint
+    system 'systemctl', 'is-active', '-q', "postgresql\@$version-$cluster";
+    my $unit_active = $? == 0;
+
+    # if extra options are given, proceed with pg_ctlcluster with a warning
+    if (@postmaster_auxoptions != 0 or @pg_ctl_opts_from_cli != 0) { # extra options given
+        print "Notice: extra pg_ctl/postgres options given, bypassing systemctl for $action operation\n" if (-t 1);
+    # if we are root, redirect to systemctl unless stopping a cluster running outside systemd
+    } elsif ($> == 0) {
+        if ($action eq 'stop' and not $unit_active) {
+            # proceed with pg_ctlcluster
+        } else {
+            print "Redirecting $action request to systemctl\n" if (-t 1);
+            system 'systemctl', $action, "postgresql\@$version-$cluster";
+            exit $? >> 8;
+            # program end
+        }
+    # as non-root, raise an error on restarting a cluster running from systemd
+    } elsif ($action eq 'restart' and $unit_active) {
+        error "cluster is running from systemd, can only restart it as root. Try instead:\n  sudo systemctl $action postgresql\@$version-$cluster";
+        # program end
+    # otherwise just raise a warning on start and restart as non-root
+    } elsif (-t 1) {
+        if ($action =~ /start/) {
+            print "Warning: the cluster will not be running as a systemd service. Consider using systemctl:\n";
+        } elsif ($unit_active) { # on stop, warn when running from systemd
+            print "Warning: stopping the cluster using pg_ctlcluster will mark the systemd unit as failed. Consider using systemctl:\n";
+        }
+        print "  sudo systemctl $action postgresql\@$version-$cluster\n";
+    }
+}
 
 # recreate missing standard log dir
 if ($> == 0 && ! -e '/var/log/postgresql' &&
