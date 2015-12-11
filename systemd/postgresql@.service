@@ -30,4 +30,4 @@ OOMScoreAdjust=-900
 #RestartPreventExitStatus=SIGINT SIGTERM
 
 [Install]
-WantedBy=multi-user.target
+RequiredBy=multi-user.target

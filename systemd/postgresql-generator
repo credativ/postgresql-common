@@ -7,10 +7,10 @@
 set -eu
 
 gendir="$1"
-wantdir="$1/postgresql.service.wants"
+requiredir="$1/postgresql.service.requires"
 pgservice="/lib/systemd/system/postgresql@.service"
 
-mkdir -p "$wantdir"
+mkdir -p "$requiredir"
 
 for conf in /etc/postgresql/*/*/postgresql.conf; do
 	test -e "$conf" || continue
@@ -27,7 +27,7 @@ for conf in /etc/postgresql/*/*/postgresql.conf; do
 	verdir="${dir%/*}"
 	version="${verdir##*/}"
 	cluster="${dir##*/}"
-	ln -s "$pgservice" "$wantdir/postgresql@$version-$cluster.service"
+	ln -s "$pgservice" "$requiredir/postgresql@$version-$cluster.service"
 done
 
 exit 0

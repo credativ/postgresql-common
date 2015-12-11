@@ -19,6 +19,8 @@ postgresql-common (171) UNRELEASED; urgency=medium
     Trying to start already running clusters clusters will return 0 now
     (was 2 in the native implementation).
   * pg_createcluster, pg_renamecluster: Warn on cluster names with dashes.
+  * postgresql@.service, postgresql-generator: Upgrade postgresql dependency
+    to Required from Wanted.
 
   [ Martin Pitt ]
   * pg_upgradecluster: Fix "ANALZYE" typo.
