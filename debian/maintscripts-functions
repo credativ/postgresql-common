@@ -200,8 +200,11 @@ preinst_check_catversion()
 postinst_check_catversion()
 {
     MAJOR_VER="$1"
-    NEW_CATVERSION="$(cat /usr/share/postgresql/$MAJOR_VER/catalog_version || :)"
-    [ -z "$NEW_CATVERSION" ] && return # shouldn't happen, but bail out gracefully
+
+    CATFILE="/usr/share/postgresql/$MAJOR_VER/catalog_version"
+    [ -f "$CATFILE" ] || return 0 # file introduced in 9.6
+    NEW_CATVERSION="$(cat $CATFILE)"
+    [ -z "$NEW_CATVERSION" ] && return
 
     PGCONTROLDATA="/usr/lib/postgresql/$MAJOR_VER/bin/pg_controldata"
     [ -x "$PGCONTROLDATA" ] || return 0
