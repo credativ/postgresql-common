@@ -62,6 +62,7 @@ sub check_major {
     # stop postgresql
     if ($systemd) {
         program_ok (0, "systemctl stop postgresql");
+        sleep 3; # FIXME: systemctl stop postgresql is not yet synchronous (#759725)
     } else {
         program_ok (0, "/etc/init.d/postgresql stop");
     }
