@@ -4,7 +4,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 67 * ($#MAJORS+1);
+use Test::More tests => 73 * ($#MAJORS+1);
 
 my $systemd = (-d "/var/run/systemd/system" and not $ENV{_SYSTEMCTL_SKIP_REDIRECT});
 note $systemd ? "We are running systemd" : "We are not running systemd";
@@ -59,6 +59,14 @@ sub check_major {
     }
     check_status $v, 0, 0, "is running";
 
+    # start postgresql again
+    if ($systemd) {
+        program_ok (0, "systemctl start postgresql");
+    } else {
+        program_ok (0, "/etc/init.d/postgresql start");
+    }
+    check_status $v, 0, 0, "is already running";
+
     # stop postgresql
     if ($systemd) {
         program_ok (0, "systemctl stop postgresql");
@@ -67,6 +75,14 @@ sub check_major {
         program_ok (0, "/etc/init.d/postgresql stop");
     }
     check_status $v, $ctlstopped, 3, "is stopped";
+
+    # stop postgresql again
+    if ($systemd) {
+        program_ok (0, "systemctl stop postgresql");
+    } else {
+        program_ok (0, "/etc/init.d/postgresql stop");
+    }
+    check_status $v, $ctlstopped, 3, "is already stopped";
 
     note "Start/stop specific cluster using system tools"; ###############################
 
@@ -125,7 +141,8 @@ sub check_major {
     check_status $v, 0, 0, "is running";
 
     # try to start cluster again
-    program_ok (0, "pg_ctlcluster $v main start", 2);
+    my $exitagain = $systemd ? 0 : 2;
+    program_ok (0, "pg_ctlcluster $v main start", $exitagain);
     check_status $v, 0, 0, "is already running";
 
     # restart cluster
