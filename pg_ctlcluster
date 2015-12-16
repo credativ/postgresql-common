@@ -420,13 +420,9 @@ if (not $skip_systemctl_redirect and getppid() != 1 and # not run from init
         error "cluster is running from systemd, can only restart it as root. Try instead:\n  sudo systemctl $action postgresql\@$version-$cluster";
         # program end
     # otherwise just raise a warning on start and restart as non-root
-    } elsif (-t 1) {
-        if ($action =~ /start/) {
-            print "Warning: the cluster will not be running as a systemd service. Consider using systemctl:\n";
-        } elsif ($unit_active) { # on stop, warn when running from systemd
-            print "Warning: stopping the cluster using pg_ctlcluster will mark the systemd unit as failed. Consider using systemctl:\n";
-        }
-        print "  sudo systemctl $action postgresql\@$version-$cluster\n";
+    } else {
+        print "Redirecting $1 request to sudo\n" if (-t 1);
+        system ('sudo', '/usr/share/postgresql-common/pg_ctlcluster.sudo', $version, $cluster, $action);
     }
 }
 

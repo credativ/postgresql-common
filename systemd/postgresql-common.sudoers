@@ -1,0 +1,2 @@
+# Allow postgres to manage database clusters
+postgres ALL=(root) NOPASSWD: /usr/share/postgresql-common/pg_ctlcluster.sudo

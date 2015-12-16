@@ -1,0 +1,48 @@
+#!/usr/bin/perl -wT
+
+# pg_ctlcluster to sudo-systemctl wrapper
+#
+# (C) 2015 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+use strict;
+use warnings;
+use PgCommon;
+
+# sudo sanity checking
+exists ($ENV{SUDO_UID}) or error "SUDO_UID is unset, pg_ctlcluster.sudo must be invoked through sudo";
+my ($sudo_uid) = $ENV{SUDO_UID} =~ /^(\d+)$/;
+
+# wipe environment
+%ENV = (
+    PATH => '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin',
+);
+
+# argument handling
+@ARGV == 3 or error "pg_ctlcluster.sudo must be invoked with exactly 3 arguments";
+my ($version) = $ARGV[0] =~ /^(\d+\.\d+)$/ or error "malformatted version number";
+my ($cluster) = $ARGV[1] =~ /^([^'"\s]+)$/ or error "malformatted cluster name";
+my ($action) = $ARGV[2] =~ /^(start|stop|restart|reload)$/ or error "malformatted action";
+cluster_exists ($version, $cluster) or error "specified cluster does not exist";
+
+# cluster owner checking
+my %info = cluster_info ($version, $cluster);
+exists ($info{owneruid}) or error "could not determine cluster owner UID";
+exists ($info{configuid}) or error "could not determine cluster config UID";
+$info{owneruid} == $sudo_uid or error "user does not own cluster data directory";
+if ($info{configuid} != 0) {
+    $info{configuid} == $sudo_uid or error "user does not own cluster config";
+}
+
+# forward action to systemctl
+system "/bin/systemctl", $action, "postgresql\@$version-$cluster";
+exit $? >> 8;
