@@ -33,9 +33,10 @@ SKIP: {
 }
 
 # init script should handle auto cluster
-like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*$v/;
+like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*($v|systemctl)/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is online';
-like_program_out 0, "/etc/init.d/postgresql stop $v", 0, qr/Stop.*$v/;
+like_program_out 0, "/etc/init.d/postgresql stop $v", 0, qr/Stop.*($v|systemctl)/;
+sleep 3 if ($systemd); # FIXME: systemctl stop postgresql is not yet synchronous (#759725)
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # change to manual, verify start.conf contents
@@ -54,7 +55,7 @@ SKIP: {
 }
 
 # init script should not handle manual cluster ...
-like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*$v/;
+like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*($v|systemctl)/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # pg_ctlcluster should handle manual cluster
@@ -77,7 +78,7 @@ SKIP: {
 }
 
 # init script should not handle disabled cluster
-like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*$v/;
+like_program_out 0, "/etc/init.d/postgresql start $v", 0, qr/Start.*($v|systemctl)/;
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 
 # pg_ctlcluster should not start disabled cluster

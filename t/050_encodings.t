@@ -12,7 +12,9 @@ use Test::More tests => ($#MAJORS+1) * 52 + 10;
 # Arguments: <version> <locale> [<encoding>] 
 sub check_cluster {
     my ($v, $locale, $enc) = @_;
+    note "Checking $v $locale";
     my $cluster_name = $locale;
+    $cluster_name =~ s/-//g; # strip dashes so postgresql@.service likes it
     if (defined $enc) {
 	$cluster_name .= "_$enc";
 	is ((system "LC_ALL='$locale' pg_createcluster --encoding $enc --start $v $cluster_name >/dev/null 2>&1"), 0,
@@ -101,6 +103,7 @@ foreach my $v (@MAJORS) {
     check_cluster $v, 'ru_RU';
     check_cluster $v, 'ru_RU.UTF-8';
 
+    note "Check $v locale environment variables";
     # check LC_* over LANG domination
     is ((system "LANGUAGE= LC_ALL=C LANG=bo_GUS.UTF-8 pg_createcluster --start $v main >/dev/null 2>&1"), 0,
             "pg_createcluster: LC_ALL dominates LANG");

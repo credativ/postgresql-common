@@ -14,6 +14,8 @@ if ($#MAJORS == 0) {
     exit 0;
 }
 
+$ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
+
 # postgresql.conf configuration file with all available options turned on
 my %fullconf;
 $fullconf{'8.1'} = "port = 5432
@@ -1582,7 +1584,7 @@ sub do_upgrade {
     # restore data directory, we just scribbled over it
     PgCommon::set_conf_value $cur, 'main', 'postgresql.conf', 'data_directory', $datadir;
     
-    is ((exec_as 'postgres', "pg_ctlcluster $cur main start"), 0,
+    is ((exec_as 0, "pg_ctlcluster $cur main start"), 0,
         'pg_ctlcluster start');
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$cur.*online/, 
         "Old $cur cluster is online";
@@ -1594,7 +1596,7 @@ sub do_upgrade {
 
     is ((system "pg_dropcluster $cur main"), 0, "pg_dropcluster $cur main");
 
-    is ((exec_as 'postgres', "pg_ctlcluster $new main stop 2>/dev/null"), 0,
+    is ((exec_as 0, "pg_ctlcluster $new main stop 2>/dev/null"), 0,
         "Stopping new $new pg_ctlcluster");
 }
 

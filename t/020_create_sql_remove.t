@@ -12,6 +12,8 @@ use PgCommon;
 
 use Test::More tests => 127 * ($#MAJORS+1);
 
+$ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
+
 sub check_major {
     my $v = $_[0];
     note "Running tests for $v";
@@ -47,7 +49,7 @@ sub check_major {
         die 'could not open environment file for appending';
     print E "PGEXTRAVAR1 = 1 # short one\nPGEXTRAVAR2='foo bar '\n\n# comment";
     close E;
-    is_program_out 'postgres', "pg_ctlcluster $v main restart", 0, '',
+    is_program_out 0, "pg_ctlcluster $v main restart", 0, '',
         'cluster restarts with new environment file';
 
     @pm_pids = pidof (($v >= '8.2') ? 'postgres' : 'postmaster');
@@ -109,7 +111,7 @@ sub check_major {
     ok !-e "/etc/postgresql/$v/main/log", 'no log symlink by default';
     ok !-z $default_log, "$default_log is the default log if log symlink is missing";
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$default_log\n$/;
- 
+
     # verify that log symlink works
     is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
     open L, ">$default_log"; close L; # empty default log file
@@ -333,9 +335,9 @@ tel|2
     is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
 
     # log file gets re-created by pg_ctlcluster
-    is ((exec_as 'postgres', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
+    is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
     unlink $default_log;
-    is ((exec_as 'postgres', "pg_ctlcluster $v main start"), 0, 'starting cluster as postgres works without a log file');
+    is ((exec_as 0, "pg_ctlcluster $v main start"), 0, 'starting cluster as postgres works without a log file');
     ok (-e $default_log && ! -z $default_log, 'log file got recreated and used');
 
     # stop server, clean up, check for leftovers
