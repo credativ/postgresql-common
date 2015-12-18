@@ -110,10 +110,10 @@ sub adapt_conffiles {
     }
 
     if ($newversion >= '8.4') {
-        deprecate \%c, 'max_fsm_pages', 'not needed any more';
-        deprecate \%c, 'max_fsm_relations', 'not needed any more';
-        deprecate \%c, 'krb_server_hostname', 'does not exist any more';
-        deprecate \%c, 'krb_realm', 'does not exist any more';
+        deprecate \%c, 'max_fsm_pages', 'not needed anymore';
+        deprecate \%c, 'max_fsm_relations', 'not needed anymore';
+        deprecate \%c, 'krb_server_hostname', 'does not exist anymore';
+        deprecate \%c, 'krb_realm', 'does not exist anymore';
         rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
 
 	# "ident sameuser" -> "ident"
@@ -132,14 +132,14 @@ sub adapt_conffiles {
     }
 
     if ($newversion >= '9.0') {
-	deprecate \%c, 'add_missing_from', 'does not exist any more';
-	deprecate \%c, 'regex_flavor', 'does not exist any more';
+	deprecate \%c, 'add_missing_from', 'does not exist anymore';
+	deprecate \%c, 'regex_flavor', 'does not exist anymore';
     }
 
     if ($newversion >= '9.2') {
-	deprecate \%c, 'wal_sender_delay', 'does not exist any more';
-	deprecate \%c, 'silent_mode', 'does not exist any more';
-	deprecate \%c, 'custom_variable_classes', 'does not exist any more';
+	deprecate \%c, 'wal_sender_delay', 'does not exist anymore';
+	deprecate \%c, 'silent_mode', 'does not exist anymore';
+	deprecate \%c, 'custom_variable_classes', 'does not exist anymore';
 
         # SSL certificate paths have an explicit option now, older versions use
         # a symlink
@@ -176,6 +176,7 @@ sub adapt_conffiles {
             rename_ \%c, 'checkpoint_segments', 'max_wal_size';
             set 'max_wal_size', $max_wal_size;
         }
+        deprecate \%c, 'ssl_renegotiation_limit', 'does not exist anymore';
     }
 }
 

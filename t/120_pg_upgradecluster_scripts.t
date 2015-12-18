@@ -30,7 +30,7 @@ is_program_out 'postgres',
     0, '', 'adding schema s and s.auxdata to test and fill in some values';
 
 # move current pg_upgradecluster.d aside for the test
-if (-d '/etc/postgresql-common/pg_upgradecluster.d') {
+if (-d '/etc/postgresql-common/pg_upgradecluster.d' and not -d '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite') {
     ok ((rename '/etc/postgresql-common/pg_upgradecluster.d',
     '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite'),
     'Temporarily moving away /etc/postgresql-common/pg_upgradecluster.d');
@@ -39,7 +39,9 @@ if (-d '/etc/postgresql-common/pg_upgradecluster.d') {
 }
 
 # create test scripts
-mkdir '/etc/postgresql-common/pg_upgradecluster.d' or die "mkdir: $!";
+if (not -d '/etc/postgresql-common/pg_upgradecluster.d') {
+    mkdir '/etc/postgresql-common/pg_upgradecluster.d' or die "mkdir: $!";
+}
 chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d' or die "chmod: $!";
 open F, '>/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "open: $!";
 print F <<EOS;
@@ -102,7 +104,7 @@ unlink '/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "unlink: $!";
 rmdir '/etc/postgresql-common/pg_upgradecluster.d' or die "rmdir: $!";
 
 # restore original pg_upgradecluster.d
-if (-f '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite') {
+if (-d '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite') {
     ok ((rename '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite',
     '/etc/postgresql-common/pg_upgradecluster.d'),
     'Restoring original /etc/postgresql-common/pg_upgradecluster.d');

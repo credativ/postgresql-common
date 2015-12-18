@@ -286,6 +286,9 @@ error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 error "invalid version '$ARGV[0]'" unless defined $version;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error "invalid cluster name '$ARGV[1]'" unless defined $cluster;
+if ($cluster =~ /-/ and -t 1) {
+    print "Warning: cluster names containing dashes (-) will cause problems when running from systemd. Continuing anyway\n";
+}
 splice @ARGV, 0, 2;
 
 # initdb options passed after --
@@ -582,8 +585,13 @@ foreach my $guc (@pgoptions) {
 }
 
 # notify systemd about the new cluster
-if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/var/run/systemd/system' and $euid == 0) {
-    system 'systemctl daemon-reload';
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/run/systemd/system') {
+    if ($> == 0) {
+        system 'systemctl daemon-reload';
+    } elsif (-t 1) {
+        print "Warning: systemd does not know about the new cluster yet. Operations like \"service postgresql start\" will not handle it. To fix, run:\n";
+        print "  sudo systemctl daemon-reload\n";
+    }
 }
 
 # start it if requested
@@ -623,6 +631,10 @@ package is C<main>. However, you might wish to create other clusters for
 testing, with other superusers, a cluster for each user on a shared server,
 etc. C<pg_createcluster> will abort with an error if you try to create a
 cluster with a name that already exists for that version.
+
+For compatibility with B<systemd> service units, the cluster name should not
+contain any dashes (B<->). B<pg_ctlcluster> will warn about the problem, but
+succeed with the operation.
 
 Given a major PostgreSQL I<version> (like "8.2" or "8.3") and a cluster
 I<name>, it creates the necessary configuration files in

@@ -8,6 +8,8 @@ use TestLib;
 
 use Test::More tests => 52;
 
+$ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
+
 my $owner = 'nobody';
 my $v = $MAJORS[0];
 
@@ -21,7 +23,7 @@ my ($origuid, $origgid) = (stat $pgconf)[4,5];
 chown 1, 1, $pgconf;
 like_program_out 0, "pg_ctlcluster $v main start", 1, qr/do not match/, "start refused when config and data owners mismatch";
 chown $origuid, $origgid, $pgconf;
-is ((system "pg_ctlcluster $v main start >/dev/null"), 0, "pg_ctlcluster succeeds with owner $owner");
+is ((system "pg_ctlcluster $v main start"), 0, "pg_ctlcluster succeeds with owner $owner");
 
 # Check cluster
 like_program_out $owner, 'pg_lsclusters -h', 0, 

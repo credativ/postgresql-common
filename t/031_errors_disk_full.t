@@ -8,6 +8,9 @@ use lib 't';
 use TestLib;
 use Test::More tests => 26;
 
+# we are using unshare here, won't work with systemd
+$ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1;
+
 my $outref;
 
 # check that a failed pg_createcluster leaves no cruft behind: try creating a
