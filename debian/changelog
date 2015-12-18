@@ -1,4 +1,4 @@
-postgresql-common (171) UNRELEASED; urgency=medium
+postgresql-common (171) unstable; urgency=medium
 
   [ Christoph Berg ]
   * pgdg: Deprecate 8.4 and 9.0.
@@ -29,7 +29,7 @@ postgresql-common (171) UNRELEASED; urgency=medium
   * t/020_create_sql_remove.t: Skip postmaster OOM killer adjustment when
     running in a container, as these often have restricted privileges.
 
- -- Christoph Berg <myon@debian.org>  Sat, 10 Oct 2015 16:11:33 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 18 Dec 2015 16:22:37 +0100
 
 postgresql-common (170) unstable; urgency=medium
 
