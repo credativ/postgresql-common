@@ -7,8 +7,9 @@ Description=PostgreSQL RDBMS
 
 [Service]
 Type=oneshot
-ExecStart=/bin/true
+ExecStart=/usr/bin/pg_lsclusters
 ExecReload=/bin/true
+ExecStopPost=/usr/bin/pg_lsclusters --wait-stopping
 RemainAfterExit=on
 
 [Install]

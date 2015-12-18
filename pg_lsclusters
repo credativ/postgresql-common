@@ -15,11 +15,51 @@
 #  GNU General Public License for more details.
 
 use strict;
+use warnings;
 use PgCommon;
 use Getopt::Long;
+use Time::HiRes qw(usleep);
 
-my $no_header;
-exit 1 unless GetOptions ('h|no-header' => \$no_header);
+my ($no_header, $wait_stop);
+exit 1 unless GetOptions (
+    'h|no-header' => \$no_header,
+    'wait-stopping' => \$wait_stop,
+);
+
+if ($wait_stop) {
+    my $waiting = 0;
+
+    # collect list of running "auto" clusters
+    my %clusters = ();
+    foreach my $v (get_versions()) {
+        foreach my $c (get_version_clusters $v) {
+            my %info = cluster_info $v, $c;
+            next unless ($info{start} eq 'auto');
+            next unless ($info{running});
+            $clusters{$v}->{$c} = 1;
+            $waiting = 1; # there is a cluster to wait for
+        }
+    }
+
+    my $sleep = 100_000; # initial delay 0.1s
+    do {
+        $waiting = 0;
+        # wait for all running clusters to stop
+        foreach my $v (keys %clusters) {
+            foreach my $c (keys %{$clusters{$v}}) {
+                my %info = cluster_info $v, $c;
+                if ($info{running}) {
+                    print "Waiting $sleep for $v $c to shut down ...\n";
+                    usleep $sleep;
+                    $sleep *= 1.5;
+                    $waiting = 1;
+                } else {
+                    delete $clusters{$v}->{$c};
+                }
+            }
+        }
+    } while ($waiting and $sleep < 30_000_000);
+}
 
 my @lines;
 push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Log file']
