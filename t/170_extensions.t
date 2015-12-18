@@ -7,12 +7,12 @@ use TestLib;
 use PgCommon;
 use Test::More 0.87; # needs libtest-simple-perl backport on lenny
 
-my $v = $MAJORS[-1];
+foreach my $v (@MAJORS) {
+note "Running tests for $v";
 
 if ($v < '9.1') {
     pass 'No extensions for version < 9.1';
-    done_testing(1);
-    exit 0;
+    next;
 }
 
 # create cluster
@@ -78,6 +78,7 @@ foreach (</usr/share/postgresql/$v/extension/*.control>) {
 # clean up
 is ((system "pg_dropcluster $v main --stop"), 0, "pg_dropcluster $v main");
 check_clean;
+}
 
 done_testing();
 
