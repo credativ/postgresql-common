@@ -19,6 +19,8 @@ postgresql-common (171) UNRELEASED; urgency=medium
   * debian/supported-versions: Add Ubuntu 16.04.
   * Update Turkish debconf translations, thanks Atila KOÇ!
     (Closes: #799274)
+  * t/020_create_sql_remove.t: Skip postmaster OOM killer adjustment when
+    running in a container, as these often have restricted privileges.
 
  -- Christoph Berg <myon@debian.org>  Sat, 10 Oct 2015 16:11:33 +0200
 
