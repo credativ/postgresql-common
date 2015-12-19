@@ -223,7 +223,7 @@ case $action in
                 exit 1
             fi
         fi
-        if ! diff -u debian/tests/control $tmptestscontrol; then
+        if [ -f debian/tests/control.in ] && ! diff -u debian/tests/control $tmptestscontrol; then
             echo "Notice: Updating debian/tests/control from debian/tests/control.in."
             need_update=1
         fi

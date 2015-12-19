@@ -1,3 +1,9 @@
+postgresql-common (172) UNRELEASED; urgency=medium
+
+  * pg_buildext: Mute diff warning about missing debian/tests/control.in.
+
+ -- Christoph Berg <myon@debian.org>  Sat, 19 Dec 2015 15:06:46 +0100
+
 postgresql-common (171) unstable; urgency=medium
 
   [ Christoph Berg ]
