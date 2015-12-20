@@ -368,7 +368,9 @@ if (-f "$datadir/PG_VERSION") {
 } else {
     my $loc = $locale || setlocale (LC_CTYPE);
     print "Creating new cluster $version/$cluster ...\n";
-    print "  config $confdir\n  data   $datadir\n  locale $loc\n";
+    print "  config $confdir\n";
+    print "  data   $datadir\n";
+    print "  locale $loc\n";
     init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
@@ -411,14 +413,10 @@ unless ($socketdir) {
 	$socketdir = '/var/run/postgresql';
     } else {
         $socketdir='/tmp';
-	my $usd = $version >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory';
-	print "Warning: The socket directory for owners other than 'postgres'
-defaults to /tmp. You might want to change the $usd parameter
-in postgresql.conf to a more secure directory.
-"
     }
 }
-set_cluster_socketdir $version, $cluster, $socketdir if $socketdir;
+print "  socket $socketdir\n";
+set_cluster_socketdir $version, $cluster, $socketdir;
 $> = $orig_euid;
 $) = $orig_egid;
 
