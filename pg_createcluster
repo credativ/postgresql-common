@@ -601,7 +601,7 @@ END {
     # clean up cruft if something went wrong
     if ($cleanup_cruft && defined $version && defined $cluster) {
 	system "pg_dropcluster $version $cluster 2>/dev/null";
-        rmdir $datadirp_created; # clean up after early errors which pg_dropcluster doesn't handle
+        rmdir $datadirp_created if ($datadirp_created); # clean up after early errors which pg_dropcluster doesn't handle
 	exit 1;
     }
 }
