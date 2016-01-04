@@ -4,6 +4,8 @@ postgresql-common (172) UNRELEASED; urgency=medium
   * pg_ctlcluster: Skip systemctl redirect with --bindir.
   * pg_createcluster: Drop warning if /tmp is used as socket directory.
     Instead, just print the socket directory on cluster creation.
+  * Update French debconf translations, thanks Julien Patriarca!
+    (Closes: #809800)
 
  -- Christoph Berg <myon@debian.org>  Sat, 19 Dec 2015 15:06:46 +0100
 
