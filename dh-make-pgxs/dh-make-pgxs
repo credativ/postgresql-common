@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# (C) 2015 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+set -eu
+
+# options
+
+while getopts "f" opt ; do
+    case $opt in
+        f) FORCE=yes ;;
+        *) exit 5 ;;
+    esac
+done
+shift $((OPTIND - 1)) # shift away args
+
+# variables
+
+template_dir="/usr/share/postgresql-common/dh-make-pgxs/debian"
+DIRECTORY="$(basename $PWD)"
+NAME="${DIRECTORY%-*}" # Upstream name
+SOURCE="${NAME//_/-}"  # Debian name
+VERSION="${DIRECTORY##*-}"
+
+echo "Upstream: $NAME ($VERSION)"
+echo "Debian:   $SOURCE ($VERSION-1)"
+echo
+
+COMPAT="$(apt-cache show debhelper | sed -n 's/Version: \([0-9]*\)\..*/\1/p' | head -n1)"
+STANDARDS_VERSION="$(apt-cache show debian-policy | sed -n 's/Version: \(.*\)\..*/\1/p' | head -n1)"
+USERNAME=${LOGNAME:-${USER:-root}}
+MAINTAINER_NAME=$(getent passwd $USERNAME | cut -d : -f 5 | sed -e 's/,.*//')
+: ${DEBEMAIL:=$USERNAME@localhost}
+
+# install files
+
+install_dir ()
+{
+    local directory="debian/$1"
+    #[ -z "$directory" ] && return
+    [ -d "$directory" ] && return
+    echo "Creating $directory/"
+    mkdir "$directory"
+}
+
+install_template ()
+{
+    local template="$1"
+
+    if [ "${FORCE:-}" ] || ! [ -e debian/$template ]; then
+        echo "Installing debian/$template"
+        sed -e "s/@COMPAT@/$COMPAT/g" \
+            -e "s/@NAME@/$NAME/g" \
+            -e "s/@STANDARDS_VERSION@/$STANDARDS_VERSION/g" \
+            -e "s/@SOURCE@/$SOURCE/g" \
+            -e "s/@MAINTAINER_NAME@/$MAINTAINER_NAME/g" \
+            -e "s/@DEBEMAIL@/$DEBEMAIL/g" \
+            "$template_dir/$template" > "debian/$template"
+        if [ -x $template_dir/$template ]; then
+            chmod +x "debian/$template"
+        fi
+    else
+        echo "Keeping existing debian/$template"
+    fi
+}
+
+for template in $(find $template_dir -mindepth 1 | sort); do
+    case $template in
+        *.swp|*~) continue ;; # skip vim stuff
+    esac
+    basename=${template##$template_dir/}
+    if [ -d $template ]; then
+        install_dir "$basename"
+    else
+        install_template "$basename"
+    fi
+done
+
+echo "Updating debian/control from debian/control.in"
+pg_buildext updatecontrol
+
+if [ "${FORCE:-}" ] || ! [ -e debian/changelog ]; then
+    rm -f debian/changelog
+    echo "Creating debian/changelog"
+    dch --create --package "$SOURCE" --newversion "$VERSION-1"
+else
+    echo "Keeping existing debian/changelog"
+fi

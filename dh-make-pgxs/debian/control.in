@@ -1,0 +1,16 @@
+Source: @SOURCE@
+Section: database
+Priority: optional
+Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
+Uploaders: @MAINTAINER_NAME@ <@DEBEMAIL@>
+Build-Depends: debhelper (>= @COMPAT@), postgresql-server-dev-all (>= 153~)
+Standards-Version: @STANDARDS_VERSION@
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-postgresql/@SOURCE@.git/
+Vcs-Git: https://anonscm.debian.org/git/pkg-postgresql/@SOURCE@.git
+XS-Testsuite: autopkgtest
+
+Package: postgresql-PGVERSION-@SOURCE@
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, postgresql-PGVERSION
+Description: FIXME PostgreSQL extension @SOURCE@
+ FIXME long description here
