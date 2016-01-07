@@ -10,6 +10,7 @@ postgresql-common (172) UNRELEASED; urgency=medium
 
   [ Martin Pitt ]
   * debian/supported-versions: Switch Ubuntu 16.04 to 9.5.
+  * debian/supported-versions: Drop obsolete Ubuntu versions.
 
  -- Christoph Berg <myon@debian.org>  Sat, 19 Dec 2015 15:06:46 +0100
 
