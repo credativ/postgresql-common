@@ -1,4 +1,4 @@
-postgresql-common (172) UNRELEASED; urgency=medium
+postgresql-common (172) unstable; urgency=medium
 
   [ Christoph Berg ]
   * pg_buildext: Mute diff warning about missing debian/tests/control.in.
@@ -7,12 +7,13 @@ postgresql-common (172) UNRELEASED; urgency=medium
     Instead, just print the socket directory on cluster creation.
   * Update French debconf translations, thanks Julien Patriarca!
     (Closes: #809800)
+  * 9.5 released! Setting as default.
 
   [ Martin Pitt ]
   * debian/supported-versions: Switch Ubuntu 16.04 to 9.5.
   * debian/supported-versions: Drop obsolete Ubuntu versions.
 
- -- Christoph Berg <myon@debian.org>  Sat, 19 Dec 2015 15:06:46 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 07 Jan 2016 15:13:06 +0100
 
 postgresql-common (171) unstable; urgency=medium
 
