@@ -1,11 +1,15 @@
 postgresql-common (172) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * pg_buildext: Mute diff warning about missing debian/tests/control.in.
   * pg_ctlcluster: Skip systemctl redirect with --bindir.
   * pg_createcluster: Drop warning if /tmp is used as socket directory.
     Instead, just print the socket directory on cluster creation.
   * Update French debconf translations, thanks Julien Patriarca!
     (Closes: #809800)
+
+  [ Martin Pitt ]
+  * debian/supported-versions: Switch Ubuntu 16.04 to 9.5.
 
  -- Christoph Berg <myon@debian.org>  Sat, 19 Dec 2015 15:06:46 +0100
 
