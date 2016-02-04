@@ -34,7 +34,7 @@ postgresql-common (171) unstable; urgency=medium
   * pg_ctlcluster: Redirect requests to systemd when invoked as root and no
     extra pg_ctl or postgres options are given.
     Trying to start already running clusters clusters will return 0 now
-    (was 2 in the native implementation).
+    (was 2 in the native implementation). (Closes: #784878)
   * pg_createcluster, pg_renamecluster: Warn on cluster names with dashes.
   * pg_upgradecluster: Deprecate ssl_renegotiation_limit in 9.5.
 
