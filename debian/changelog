@@ -1,3 +1,9 @@
+postgresql-common (173) UNRELEASED; urgency=medium
+
+  * README.Debian: Fix a typo.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 04 Feb 2016 15:27:07 +0100
+
 postgresql-common (172) unstable; urgency=medium
 
   [ Christoph Berg ]

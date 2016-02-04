@@ -26,7 +26,7 @@ but if you want to get straight into playing SQL, here are the steps to create
 a database user and a database for the Unix user 'joe':
 
 1. Install a database server with the major version of your choice
-   ('postgresql-X.Y', e. g. 'postgresql-9.1').  Preferrably the latest
+   ('postgresql-X.Y', e. g. 'postgresql-9.1').  Preferably the latest
    version, which you can get by installing the metapackage
    'postgresql'. This will automatically create a default cluster
    'main' with the database superuser 'postgres'.
