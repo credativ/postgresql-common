@@ -1,4 +1,4 @@
-*.debhelper
+*debhelper*
 files
 *.log
 postgresql*/
