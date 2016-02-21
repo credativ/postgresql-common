@@ -2,6 +2,7 @@ postgresql-common (173) UNRELEASED; urgency=medium
 
   * README.Debian: Fix a typo.
   * Updated nl translation, thanks Frans Spiesschaert! (Closes: #812353)
+  * preinst_check_catversion: Handle missing catalog version file.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 11:28:46 +0100
 

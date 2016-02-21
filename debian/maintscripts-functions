@@ -162,8 +162,10 @@ preinst_check_catversion()
         return ;;
     esac
 
-    OLD_CATVERSION="$(cat /usr/share/postgresql/$MAJOR_VER/catalog_version || :)"
-    [ -z "$OLD_CATVERSION" ] && return # shouldn't happen, but bail out gracefully
+    CATFILE="/usr/share/postgresql/$MAJOR_VER/catalog_version"
+    [ -f "$CATFILE" ] || return 0 # file introduced in 9.6
+    OLD_CATVERSION="$(cat $CATFILE)"
+    [ -z "$OLD_CATVERSION" ] && return
 
     [ "$OLD_CATVERSION" = "$NEW_CATVERSION" ] && return # no change, nothing to do
 
