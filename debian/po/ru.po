@@ -1,16 +1,17 @@
 # Translation of postgresql-common.po to Russian
-# This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# This file is distributed under the same license as the postgresql-common
+# package.
+#
 # Yuriy Talakan' <yt@amur.elektra.ru>, 2006.
 # Yuriy Talakan' <yt@drsk.ru>, 2007.
-# Sergey Alyoshin <alyoshin.s@gmail.com>, 2008.
+# Sergey Alyoshin <alyoshin.s@gmail.com>, 2008, 2016.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common_88+nmu1_ru\n"
+"Project-Id-Version: postgresql-common_178_ru\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2015-12-06 22:52+0100\n"
-"PO-Revision-Date: 2008-07-19 13:58+0400\n"
+"PO-Revision-Date: 2016-02-22 22:03+0300\n"
 "Last-Translator: Sergey Alyoshin <alyoshin.s@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "Language: ru\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: error
@@ -39,7 +40,7 @@ msgstr ""
 "PostgreSQL версии ${old} устарел, но пакет сервера или клиента все ещё "
 "установлен. Пожалуйста, установите последние пакеты (postgresql-${latest} и "
 "postgresql-client-${latest}), и обновите ваши существующие кластеры "
-"${oldversion} с помощью pg_upgradecluster (смотрите man-страницу)."
+"${oldversion} с помощью pg_upgradecluster (см. man-страницу)."
 
 #. Type: error
 #. Description
@@ -51,10 +52,10 @@ msgid ""
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
 msgstr ""
-"Предупреждаю, что установка postgresql-${latest} автоматически создаст "
-"кластер по умолчанию ${latest}/main. Если вы желаете обновить  кластер "
-"${old}/main, то должны удалить существующий кластер ${latest} "
-"(pg_dropcluster --stop ${latest} main, смотрите man-страницу)."
+"Учтите, что установка postgresql-${latest} автоматически создаст кластер по "
+"умолчанию ${latest}/main. Если вы желаете обновить кластер ${old}/main, то "
+"должны удалить существующий кластер ${latest} с помощью pg_dropcluster --"
+"stop ${latest} main (см. man-страницу)."
 
 #. Type: error
 #. Description
@@ -64,9 +65,9 @@ msgid ""
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
 "${old} packages should be removed."
 msgstr ""
-"Старые пакеты сервера и клиента более не поддерживаются. После того как "
-"существующие кластеры будут обновлены, пакеты postgresql-${old} и postgresql-"
-"client-${old} должны быть удалены."
+"Старые пакеты сервера и клиента более не поддерживаются. После обновления "
+"существующих кластеров, пакеты postgresql-${old} и postgresql-client-${old} "
+"должны быть удалены."
 
 #. Type: error
 #. Description
@@ -74,14 +75,14 @@ msgstr ""
 msgid ""
 "Please see /usr/share/doc/postgresql-common/README.Debian.gz for details."
 msgstr ""
-"Смотрите /usr/share/doc/postgresql-common/README.Debian.gz для дальнейшей "
-"информации."
+"Для дальнейшей информации см. /usr/share/doc/postgresql-common/README.Debian."
+"gz"
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
-msgstr ""
+msgstr "Включить SSL по умолчанию в новых кластерах PostgreSQL?"
 
 #. Type: boolean
 #. Description
@@ -91,6 +92,9 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL поддерживает соединения с SSL-шифрованием. Обычно это хорошо. Но, "
+"если база данных адресуется только по TCP-соединению на локальном "
+"компьютере, то SSL может быть выключен без повышения угроз безопасности."
 
 #. Type: boolean
 #. Description
@@ -101,18 +105,22 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"Соединения сокета домена UNIX (называемые \"local\" в pg_hba.conf) не будут "
+"затронуты этой настройкой. Она касается новых кластеров PostgreSQL, "
+"созданных при установке пакета или командой pg_createcluster. Существующие "
+"кластеры перенастроены не будут."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "Если не уверены, включите SSL."
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "Изменена версия каталога PostgreSQL ${version}"
 
 #. Type: note
 #. Description
@@ -124,6 +132,10 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"Был создан кластер ${cluster} PostgreSQL ${version} с использованием "
+"каталога версии ${db_catversion}, но устанавливаемый сейчас пакет postgresql-"
+"${version} использует каталог версии ${new_catversion}. Вы не сможете "
+"использовать данный кластер, пока не обновите его до каталога новой версии."
 
 #. Type: note
 #. Description
@@ -132,6 +144,8 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"Необходимый набор двоичных файлов из старой версии был сохранён в "
+"${vartmpdir}. Для обновления кластера выполните следующие команды:"
 
 #. Type: note
 #. Description
@@ -144,3 +158,9 @@ msgid ""
 " # pg_dropcluster ${version} ${cluster}.old\n"
 " # rm -rf ${vartmpdir}"
 msgstr ""
+" # pg_renamecluster ${version} ${cluster} ${cluster}.old\n"
+" # pg_upgradecluster ${version} ${cluster}.old \\\n"
+"     --rename ${cluster} -m upgrade \\\n"
+"     --old-bindir=${vartmpdir}/bin\n"
+" # pg_dropcluster ${version} ${cluster}.old\n"
+" # rm -rf ${vartmpdir}"
