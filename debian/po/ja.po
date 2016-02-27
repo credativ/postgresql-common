@@ -1,25 +1,28 @@
 # Copyright (C) 2006 Martin Pitt <mpitt@debian.org>
 # This file is distributed under the same license as the postgresql-common package.
 # Hideki Yamane <henrich@debian.or.jp>, 2006-2008.
+# Takuma Yamada <tyamada@takumayamada.com>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common 155\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2015-12-06 22:52+0100\n"
-"PO-Revision-Date: 2014-05-20 18:16+0900\n"
-"Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
+"PO-Revision-Date: 2016-02-22 11:32+0900\n"
+"Last-Translator: Takuma Yamada <tyamada@takumayamada.com>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #. Type: error
 #. Description
 #: ../postgresql-common.templates:1001
 msgid "Obsolete major version ${old}"
-msgstr "メジャーバージョン ${old} はもはや使われません"
+msgstr "廃止されたメジャーバージョン ${old}"
 
 #. Type: error
 #. Description
@@ -30,11 +33,10 @@ msgid ""
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"PostgreSQL バージョン ${old} は既に使われなくなっていますが、サーバおよびクラ"
-"イアント用パッケージがインストールされたままになっています。最新のパッケージ "
-"(postgresql-${latest} と postgresql-client-${latest}) をインストールして、現"
-"在の ${oldversion} クラスタを pg_upgradecluster コマンドを使ってアップグレー"
-"ドしてください (詳細は man ページを参照)。"
+"PostgreSQL バージョン ${old} は廃止されましたが、サーバまたはクライアントパッ"
+"ケージがまだインストールされています。最新のパッケージ (postgresql-${latest} "
+"および postgresql-client-${latest}) をインストールして、既存の ${oldversion} "
+"クラスタを pg_upgradecluster でアップグレードしてください (manpage を参照)。"
 
 #. Type: error
 #. Description
@@ -46,10 +48,10 @@ msgid ""
 "${latest} cluster (pg_dropcluster --stop ${latest} main, see manpage for "
 "details)."
 msgstr ""
-"postgresql-${latest} のインストールでは自動的にデフォルトのクラスタ "
-"${latest}/main が作成されることに注意してください。${old}/main クラスタをアッ"
-"プグレードしたい場合は、既にある ${latest} クラスタを削除する必要があります "
-"(pg_dropcluster --stop ${latest} main 、詳細は manpage を参照してください)。"
+"postgresql-${latest} のインストールは自動的にデフォルトのクラスタ ${latest}/"
+"main を作成することに注意してください。${old}/main クラスタをアップグレードす"
+"る場合は、既存の ${latest} クラスタを削除する必要があります (pg_dropcluster "
+"--stop ${latest} main、詳細は manpage を参照)。"
 
 #. Type: error
 #. Description
@@ -59,8 +61,8 @@ msgid ""
 "existing clusters are upgraded, the postgresql-${old} and postgresql-client-"
 "${old} packages should be removed."
 msgstr ""
-"以前のサーバ・クライアントパッケージはもはやサポートされていません。現在のク"
-"ラスタをアップグレード後、postgresql-${old} パッケージと postgresql-client-"
+"古いサーバおよびクライアントパッケージはサポートされなくなりました。既存のク"
+"ラスタがアップグレードされた後に、postgresql-${old} および postgresql-client-"
 "${old} パッケージを削除する必要があります。"
 
 #. Type: error
@@ -75,7 +77,7 @@ msgstr ""
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
-msgstr "新しい PostgreSQL クラスタでSSLをデフォルトで有効にしますか?"
+msgstr "新しい PostgreSQL クラスタではデフォルトで SSL を有効にしますか?"
 
 #. Type: boolean
 #. Description
@@ -85,9 +87,10 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
-"PostgreSQL はSSLで暗号化された接続をサポートしています。暗号化は通常良いこと"
-"です。しかし、データベースへのアクセスがローカルホスト上でのTCP接続を使ったも"
-"のだけであればSSLを利用しなくてもセキュリティ問題は発生しません。"
+"PostgreSQL は SSL で暗号化された接続をサポートしています。これは通常は良いこ"
+"とです。しかし、データベースが単にローカルホスト上の TCP 接続を使用してアクセ"
+"スされる場合は、セキュリティ問題を入れることなく SSL をオフにすることができま"
+"す。"
 
 #. Type: boolean
 #. Description
@@ -98,22 +101,22 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
-"UNIX ドメインソケット接続 (pg_hba.conf では「local」と呼ばれています) にはこ"
-"の設定は影響しません。この設定の影響を受けるのはパッケージのインストール時や "
-"pg_createcluster コマンドで作成される新しい PostgreSQL クラスタです。既存のク"
-"ラスタに対する再設定は行いません。"
+"UNIX ドメインソケット接続 (pg_hba.conf 中で「local」と呼ばれる) は、この設定"
+"の影響を受けません。この設定は、パッケージのインストールや pg_createcluster "
+"コマンドの使用で作成される新しい PostgreSQL クラスタに関するものです。これ"
+"は、既存のクラスタを再設定しません。"
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "If unsure, enable SSL."
-msgstr "よくわからない場合はSSLを有効にしてください。"
+msgstr "よくわからない場合は、SSL を有効にします。"
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "PostgreSQL ${version} カタログバージョンが変更されました"
 
 #. Type: note
 #. Description
@@ -125,6 +128,11 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"PostgreSQL クラスタ ${version} {$cluster} は、カタログバージョン "
+"${db_catversioin} を使用して作成されました。しかし、現在インストールされてい"
+"るパッケージ postgresql-${version} は、カタログバージョン ${new_catversion} "
+"を使用しています。新しいカタログバージョンにアップグレードされるまで、このク"
+"ラスタは使用することができません。"
 
 #. Type: note
 #. Description
@@ -133,6 +141,8 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"古いバージョンからのバイナリの必要なサブセットは、${vartmpdir} に保存されてい"
+"ました。クラスタをアップグレードするには、次のコマンドを実行します。"
 
 #. Type: note
 #. Description
@@ -145,3 +155,9 @@ msgid ""
 " # pg_dropcluster ${version} ${cluster}.old\n"
 " # rm -rf ${vartmpdir}"
 msgstr ""
+" # pg_renamecluster ${version} ${cluster} ${cluster}.old\n"
+" # pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} -m "
+"upgrade \\\n"
+"     --old-bindir=${vartmpdir}/bin\n"
+" # pg_dropcluster ${version} ${cluster}.old\n"
+" # rm -rf ${vartmpdir}"
