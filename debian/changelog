@@ -5,6 +5,7 @@ postgresql-common (173) UNRELEASED; urgency=medium
   * Updated ru translation, thanks Sergey Alyoshin! (Closes: #815596)
   * Updated ja translation, thanks Takuma Yamada! (Closes: #816069)
   * preinst_check_catversion: Handle missing catalog version file.
+  * pg_renamecluster: Don't try to rename a non-existing stats directory.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 11:28:46 +0100
 
