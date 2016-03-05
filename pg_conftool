@@ -2,7 +2,7 @@
 # Read and edit PostgreSQL config files
 # vim:sw=4:et:
 #
-# (C) 2014-2015 Christoph Berg <myon@debian.org>
+# (C) 2014-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ use warnings;
 use Getopt::Long;
 use PgCommon qw(quote_conf_value user_cluster_map read_cluster_conf_file
     read_conf_file set_conffile_value set_conf_value disable_conffile_value
-    disable_conf_value);
+    disable_conf_value cluster_exists error);
 
 ## option parsing
 
@@ -76,6 +76,10 @@ if ($cmdidx == 0) {
 } else {
     help(1, 'Too many arguments before command');
 }
+
+error "Cluster $version $cluster does not exist"
+    unless (cluster_exists $version, $cluster);
+
 splice @ARGV, 0, $cmdidx; # remove everything before the command
 $ARGV[0] = 'show' if ($ARGV[0] eq 'get'); # accept alternative variants of some commands
 $ARGV[0] = 'remove' if ($ARGV[0] =~ /delete|disable/);
@@ -102,6 +106,7 @@ if ($cmd eq 'show') {
     } else {
         %conf = read_cluster_conf_file ($version, $cluster, $conffile);
     }
+
     if ($key eq 'all') {
         foreach my $k (sort keys %conf) {
             printf "%s = %s\n", $k, quote_conf_value($conf{$k});
