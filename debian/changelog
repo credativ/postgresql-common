@@ -9,6 +9,7 @@ postgresql-common (173) UNRELEASED; urgency=medium
   * pg_conftool: Refuse operation on non-existing clusters.
   * maintscript-functions, templates: Remove '#' characters from upgrade
     instructions on catalog version change for easier cut-and-paste.
+  * t/032_ssl_key_permissions.t: Validate server snakeoil key checks.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 11:28:46 +0100
 
