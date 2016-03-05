@@ -225,11 +225,11 @@ postinst_check_catversion()
 
         # tell the user about it
 	cat <<-EOF
-	Cluster $MAJOR_VER $cluster needs upgrading:
-	# pg_renamecluster ${MAJOR_VER} ${cluster} ${cluster}.old
-	# pg_upgradecluster ${MAJOR_VER} ${cluster}.old --rename ${cluster} -m upgrade --old-bindir=${VARTMPDIR}/bin
-	# pg_dropcluster ${MAJOR_VER} ${cluster}.old
-	# rm -rf ${VARTMPDIR}
+	Cluster $MAJOR_VER $cluster needs upgrading due to catalog version change:
+	  pg_renamecluster ${MAJOR_VER} ${cluster} ${cluster}.old
+	  pg_upgradecluster ${MAJOR_VER} ${cluster}.old --rename ${cluster} -m upgrade --old-bindir=${VARTMPDIR}/bin
+	  pg_dropcluster ${MAJOR_VER} ${cluster}.old
+	  rm -rf ${VARTMPDIR}
 	EOF
         db_fset postgresql-common/catversion-bump seen false
         db_subst postgresql-common/catversion-bump version $MAJOR_VER

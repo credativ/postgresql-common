@@ -44,8 +44,8 @@ _Description: PostgreSQL ${version} catalog version changed
  The necessary subset of binaries from the old version was saved in
  ${vartmpdir}. To upgrade the cluster, execute these commands:
  .
-  # pg_renamecluster ${version} ${cluster} ${cluster}.old
-  # pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} -m upgrade \
-      --old-bindir=${vartmpdir}/bin
-  # pg_dropcluster ${version} ${cluster}.old
-  # rm -rf ${vartmpdir}
+   pg_renamecluster ${version} ${cluster} ${cluster}.old
+   pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} \
+     -m upgrade --old-bindir=${vartmpdir}/bin
+   pg_dropcluster ${version} ${cluster}.old
+   rm -rf ${vartmpdir}

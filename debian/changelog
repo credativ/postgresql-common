@@ -7,6 +7,8 @@ postgresql-common (173) UNRELEASED; urgency=medium
   * preinst_check_catversion: Handle missing catalog version file.
   * pg_renamecluster: Don't try to rename a non-existing stats directory.
   * pg_conftool: Refuse operation on non-existing clusters.
+  * maintscript-functions, templates: Remove '#' characters from upgrade
+    instructions on catalog version change for easier cut-and-paste.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 11:28:46 +0100
 
