@@ -1,5 +1,6 @@
 postgresql-common (173) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * README.Debian: Fix a typo.
   * Updated nl translation, thanks Frans Spiesschaert! (Closes: #812353)
   * Updated ru translation, thanks Sergey Alyoshin! (Closes: #815596)
@@ -10,6 +11,10 @@ postgresql-common (173) UNRELEASED; urgency=medium
   * maintscript-functions, templates: Remove '#' characters from upgrade
     instructions on catalog version change for easier cut-and-paste.
   * t/032_ssl_key_permissions.t: Validate server snakeoil key checks.
+
+  [ Adam Conrad ]
+  * pgcommon.sh: Adjust for >= xenial using Debian-style locale generation
+    methods, and allow fallback to the old Ubuntu method for old releases.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 11:28:46 +0100
 

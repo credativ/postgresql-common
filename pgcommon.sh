@@ -26,7 +26,7 @@ get_release() {
 
     # fall back to lsb_release
     elif type lsb_release >/dev/null 2>/dev/null; then
-        DISTRO="`lsb_release -is`"
+        DISTRO="`lsb_release -is | tr [:upper:] [:lower:]`"
         RELEASE="`lsb_release -rs`"
 
     else
@@ -41,6 +41,22 @@ locale_gen ()
     get_release
 
     case $DISTRO in
+        debian)
+            METHOD=debian
+            ;;
+        ubuntu)
+            case $RELEASE in
+                12.*|13.*|14.*|15.*)
+                   METHOD=ubuntu
+                   ;;
+                *)
+                   METHOD=debian
+                   ;;
+            esac
+            ;;
+    esac
+
+    case $METHOD in
         debian)
             local run
             while [ "${2:-}" ]; do
