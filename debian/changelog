@@ -11,6 +11,7 @@ postgresql-common (173) UNRELEASED; urgency=medium
   * maintscript-functions, templates: Remove '#' characters from upgrade
     instructions on catalog version change for easier cut-and-paste.
   * t/032_ssl_key_permissions.t: Validate server snakeoil key checks.
+  * pgdg/apt.postgresql.org.sh: Add xenial and trusty.
 
   [ Adam Conrad ]
   * pgcommon.sh: Adjust for >= xenial using Debian-style locale generation
