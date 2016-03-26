@@ -1,9 +1,19 @@
-postgresql-common (165+deb8u1) UNRELEASED; urgency=medium
+postgresql-common (165+deb8u1) jessie; urgency=medium
 
   * pg_upgradecluster: Set default dynamic_shared_memory_type = mmap.
     (Closes: #784005, #812206)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Thu, 04 Feb 2016 14:54:56 +0100
+    This primarily avoids problems with upgrading existing clusters in a LXC
+    container. As earlier PG versions did not have d_s_m_t, the upgraded
+    postgresql.conf won't have this setting either, yielding the compiled-in
+    default of 'posix' which doesn't work in LXC. Pick something else here to
+    avoid that problem. Notably, it's important that this problem is fixed in
+    pg_upgradecluster itself because working around the problem is hard as the
+    upgrade will fail early without the possibility of manually fixing the
+    config. (Newly created clusters do not have that problem because initdb
+    probes for a method working in the given system.)
+
+ -- Christoph Berg <myon@debian.org>  Sat, 26 Mar 2016 16:52:30 +0100
 
 postgresql-common (165) unstable; urgency=medium
 
