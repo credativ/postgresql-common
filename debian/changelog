@@ -1,4 +1,4 @@
-postgresql-common (173) UNRELEASED; urgency=medium
+postgresql-common (173) unstable; urgency=medium
 
   [ Christoph Berg ]
   * README.Debian: Fix a typo.
@@ -17,7 +17,7 @@ postgresql-common (173) UNRELEASED; urgency=medium
   * pgcommon.sh: Adjust for >= xenial using Debian-style locale generation
     methods, and allow fallback to the old Ubuntu method for old releases.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Wed, 10 Feb 2016 11:28:46 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 30 Mar 2016 15:08:06 +0200
 
 postgresql-common (172) unstable; urgency=medium
 
