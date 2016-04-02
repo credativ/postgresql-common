@@ -3,7 +3,7 @@ Section: database
 Priority: optional
 Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
 Uploaders: Martin Pitt <mpitt@debian.org>, Christoph Berg <myon@debian.org>, Peter Eisentraut <petere@debian.org>
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Vcs-Git: git://anonscm.debian.org/pkg-postgresql/postgresql-common.git
 Vcs-Browser: https://anonscm.debian.org/cgit/pkg-postgresql/postgresql-common.git
 Build-Depends: debhelper (>= 9),
@@ -14,7 +14,7 @@ Package: postgresql-common
 Architecture: all
 Multi-Arch: foreign
 Conflicts: postgresql-7.4, postgresql-8.0
-Depends: postgresql-client-common (>= ${source:Version}), 
+Depends: postgresql-client-common (= ${source:Version}),
  procps, 
  adduser,
  debconf (>= 0.5.00) | debconf-2.0,
