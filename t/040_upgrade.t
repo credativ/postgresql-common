@@ -32,8 +32,11 @@ is ((exec_as 'postgres', 'createuser nobody -D -R -s && createdb -O nobody test 
 is ((exec_as 'nobody', 'psql test -c "CREATE TABLE phone (name varchar(255) PRIMARY KEY, tel int NOT NULL)"'), 
     0, 'create table');
 is ((exec_as 'nobody', 'psql test -c "INSERT INTO phone VALUES (\'Alice\', 2)"'), 0, 'insert Alice into phone table');
-is ((exec_as 'postgres', 'psql template1 -c "UPDATE pg_database SET datallowconn = \'f\' WHERE datname = \'testnc\'"'), 
-    0, 'disallow connection to testnc');
+SKIP: {
+    skip 'datallowconn = f not supported with pg_upgrade', 1 if $upgrade_options =~ /upgrade/;
+    is ((exec_as 'postgres', 'psql template1 -c "UPDATE pg_database SET datallowconn = \'f\' WHERE datname = \'testnc\'"'),
+        0, 'disallow connection to testnc');
+}
 is ((exec_as 'nobody', 'psql testro -c "CREATE TABLE nums (num int NOT NULL); INSERT INTO nums VALUES (1)"'), 0, 'create table in testro');
 SKIP: {
     skip 'read-only not supported with pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
@@ -195,14 +198,15 @@ SKIP: {
     skip 'upgrading databases with datallowcon = false not supported by pg_upgrade', 2 if $upgrade_options =~ /upgrade/;
 
     # Check connection permissions
+    my $testnc_conn = $upgrade_options =~ /upgrade/ ? 't' : 'f';
     is_program_out 'nobody', 'psql -tAc "SELECT datname, datallowconn FROM pg_database ORDER BY datname" template1', 0,
-    'postgres|t
+    "postgres|t
 template0|f
 template1|t
 test|t
-testnc|f
+testnc|$testnc_conn
 testro|t
-', 'dataallowconn values';
+", 'dataallowconn values';
 }
 
 # check ACLs

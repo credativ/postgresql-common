@@ -170,6 +170,11 @@ sub adapt_conffiles {
 
     if ($newversion >= '9.4') {
         deprecate \%c, 'krb_srvname', 'native krb5 authentication deprecated in favor of GSSAPI';
+        # d_s_m_t defaults to 'posix', but that has various problems. Pick a safer variant here
+        unless ($c{dynamic_shared_memory_type}) {
+            PgCommon::set_conf_value $newversion, $cluster, 'postgresql.conf',
+                'dynamic_shared_memory_type', 'mmap';
+        }
     }
 }
 
