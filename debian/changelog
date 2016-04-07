@@ -2,8 +2,9 @@ postgresql-common (174) UNRELEASED; urgency=medium
 
   * postgresql-common: Enforce strict version dependency on
     postgresql-client-common to avoid API mismatch bugs in PgCommon.pm.
+  * maintscripts-functions: Save pg_dump on catversion bumps as well.
 
- -- Christoph Berg <myon@debian.org>  Sat, 02 Apr 2016 15:50:36 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 07 Apr 2016 09:59:30 +0200
 
 postgresql-common (173) unstable; urgency=medium
 

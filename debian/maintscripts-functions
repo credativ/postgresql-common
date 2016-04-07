@@ -190,7 +190,7 @@ preinst_check_catversion()
                 (
                     cd "$VARTMPDIR"
                     mkdir bin lib # lib needs to exists, but we do not copy files there
-                    for f in pg_ctl pg_resetxlog postgres; do
+                    for f in pg_ctl pg_dump pg_resetxlog postgres; do
                         cp -a /usr/lib/postgresql/$MAJOR_VER/bin/$f bin
                     done
                 )
