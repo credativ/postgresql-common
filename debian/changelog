@@ -1,9 +1,13 @@
 postgresql-common (174) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * postgresql-common: Enforce strict version dependency on
     postgresql-client-common to avoid API mismatch bugs in PgCommon.pm.
   * maintscripts-functions: Save pg_dump on catversion bumps as well.
   * Updated ja translation by Takuma Yamada, thanks! (Closes: #820756)
+
+  [ Martin Pitt ]
+  * debian/supported-versions: Add Ubuntu 16.10.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 07 Apr 2016 09:59:30 +0200
 
