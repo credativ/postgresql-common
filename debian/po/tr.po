@@ -140,14 +140,3 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:3001
-msgid ""
-"  pg_renamecluster ${version} ${cluster} ${cluster}.old\n"
-"  pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} \\\n"
-"    -m upgrade --old-bindir=${vartmpdir}/bin\n"
-"  pg_dropcluster ${version} ${cluster}.old\n"
-"  rm -rf ${vartmpdir}"
-msgstr ""

@@ -144,14 +144,3 @@ msgid ""
 msgstr ""
 "Die notwendigen Programmdateien der alten Version wurden in ${vartmpdir} "
 "gesichert. Benutzen Sie folgende Kommandos um den Cluster zu aktualisieren:"
-
-#. Type: note
-#. Description
-#: ../postgresql-common.templates:3001
-msgid ""
-"  pg_renamecluster ${version} ${cluster} ${cluster}.old\n"
-"  pg_upgradecluster ${version} ${cluster}.old --rename ${cluster} \\\n"
-"    -m upgrade --old-bindir=${vartmpdir}/bin\n"
-"  pg_dropcluster ${version} ${cluster}.old\n"
-"  rm -rf ${vartmpdir}"
-msgstr ""

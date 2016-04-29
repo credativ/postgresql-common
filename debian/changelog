@@ -5,6 +5,9 @@ postgresql-common (174) UNRELEASED; urgency=medium
     postgresql-client-common to avoid API mismatch bugs in PgCommon.pm.
   * maintscripts-functions: Save pg_dump on catversion bumps as well.
   * Updated ja translation by Takuma Yamada, thanks! (Closes: #820756)
+  * Remove not-to-be-translated shell code-only chunk from
+    debian/po/templates.pot. (debconf-updatepo --skip-pot to the rescue!)
+    (Closes: #821445)
 
   [ Martin Pitt ]
   * debian/supported-versions: Add Ubuntu 16.10.
