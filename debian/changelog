@@ -1,4 +1,4 @@
-postgresql-common (174) UNRELEASED; urgency=medium
+postgresql-common (174) unstable; urgency=medium
 
   [ Christoph Berg ]
   * postgresql-common: Enforce strict version dependency on
@@ -12,7 +12,7 @@ postgresql-common (174) UNRELEASED; urgency=medium
   [ Martin Pitt ]
   * debian/supported-versions: Add Ubuntu 16.10.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Thu, 07 Apr 2016 09:59:30 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 11 May 2016 15:04:25 +0200
 
 postgresql-common (173) unstable; urgency=medium
 
