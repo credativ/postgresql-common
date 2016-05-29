@@ -1,6 +1,7 @@
 postgresql-common (175) UNRELEASED; urgency=medium
 
   * pg_createcluster, createcluster.conf: Set cluster_name on 9.5+.
+  * pg_buildext: Don't set any CFLAGS by default.
 
  -- Christoph Berg <myon@debian.org>  Mon, 23 May 2016 17:34:49 +0200
 

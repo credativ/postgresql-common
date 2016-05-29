@@ -4,7 +4,7 @@
 # versions
 #
 # (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
-# (C) 2011-2014 Christoph Berg <myon@debian.org>
+# (C) 2011-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,12 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-set -e
+set -eu
+
+die() {
+    echo "$(basename $0): error: $*" >&2
+    exit 1
+}
 
 VENVARGS=""
 while getopts "c:i:o:s" opt ; do
@@ -29,23 +34,19 @@ done
 # shift away args
 shift $(($OPTIND - 1))
 
+[ "${1:-}" ] || die "no action given"
 action="$1"
-if [ -d "$2" ] && [ "$3" ]; then # compat mode: $2 is source directory
-    srcdir="$2"
+if [ -d "${2:-}" ] && [ "${3:-}" ]; then # compat mode: $2 is source directory
+    srcdir="${2:-}"
     shift
 else
     srcdir="$PWD"
 fi
-target="$2"
-opt="$3"
-
-die() {
-    echo "`basename $0`: error: $*" >&2
-    exit 1
-}
+target="${2:-}"
+opt="${3:-}"
 
 prepare_env() {
-    version=$1
+    local version=$1
     vtarget=`echo $target | sed -e "s:%v:$version:g"`
     pgc="/usr/lib/postgresql/$version/bin/pg_config"
     [ -e "$pgc" ] || die "$pgc does not exist"
@@ -53,7 +54,7 @@ prepare_env() {
 
 configure() {
     prepare_env $1
-    confopts=`echo $opt | sed -e "s:%v:$version:g"`
+    confopts=`echo $opt | sed -e "s:%v:$1:g"`
 
     mkdir -p $vtarget
     ( echo "calling configure in $vtarget" &&
@@ -62,22 +63,24 @@ configure() {
 
 build() {
     prepare_env $1
-    cflags="`$pgc --cflags` `echo $opt | sed -e "s:%v:$version:g"`"
+    if [ "$opt" ]; then
+        cflags="$(echo $opt | sed -e "s:%v:$1:g")"
+    fi
 
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget $makefile CFLAGS="$cflags" DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
+    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
 }
 
 install() {
     prepare_env $1
-    package=`echo $opt | sed -e "s:%v:$version:g"`
+    package=`echo $opt | sed -e "s:%v:$1:g"`
 
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget $makefile install DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
+    make -C $vtarget ${makefile:-} install DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
 }
 
 clean() {
@@ -85,21 +88,21 @@ clean() {
 
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    [ -d $vtarget ] && make -C $vtarget clean $makefile DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
+    [ -d $vtarget ] && make -C $vtarget clean ${makefile:-} DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
     rm -rf $vtarget
 }
 
 loop() {
     echo "### $1 ###"
     prepare_env $1
-    package=$(echo $target | sed -e "s:%v:$version:g")
+    package=$(echo $target | sed -e "s:%v:$1:g")
 
     echo "# $1: make clean"
-    make clean            DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make clean   DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
     echo "# $1: make"
-    make CFLAGS="$cflags" DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make         DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
     echo "# $1: make install"
-    make install          DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
     echo "### done $1 ###"
 }
 
@@ -119,7 +122,7 @@ installcheck() {
 	# if a Makefile was created by configure, use it, else the top level Makefile
 	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
 	if ! pg_virtualenv $VENVARGS -v $1 \
-	    make -C $vtarget $makefile installcheck \
+	    make -C $vtarget ${makefile:-} installcheck \
 		PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1; then
 	    if [ -r $vtarget/regression.diffs ]; then
 		echo "**** $vtarget/regression.diffs ****"
@@ -144,6 +147,7 @@ versions() {
 	die "/usr/share/postgresql-common/supported-versions not found"
     [ -e debian/pgversions ] || die "debian/pgversions not found"
     supported_versions=$(/usr/share/postgresql-common/supported-versions)
+    local version
     while read version; do
 	case $version in
 	    all) echo "$supported_versions" ;;
@@ -213,6 +217,7 @@ case $action in
 
     checkcontrol)
         gencontrol
+        need_update=
         if ! diff -u debian/control $tmpcontrol; then
             if [ "${PG_UPDATECONTROL:-no}" != "no" ] || head -1 debian/changelog | egrep -q -- '-backports|-pgdg|-pgapt'; then
                 echo "Notice: Updating debian/control from debian/control.in."
@@ -248,7 +253,7 @@ do
 	    ;;
 
 	configure|build|install|clean|loop)
-	    [ "$target" ] || die "syntax: pg_buildext $action [...]"
+	    [ "$target" ] || die "syntax: pg_buildext $action <target> [<opt>]"
 	    echo "### $action $v ###"
 	    $action $v
 	    ;;
@@ -259,7 +264,7 @@ do
 	    ;;
 
 	*)
-	    die "unsupported $action"
+	    die "unsupported action '$action'"
 	    ;;
     esac
 done
