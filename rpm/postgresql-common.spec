@@ -1,5 +1,5 @@
 Name:           postgresql-common
-Version:        160
+Version:        174
 Release:        1%{?dist}
 BuildArch:      noarch
 Summary:        PostgreSQL database-cluster manager
@@ -81,7 +81,7 @@ done < debian/postgresql-client-common.links
 sed -i -e 's/#redhat# //' \
     %{buildroot}/usr/bin/pg_config \
     %{buildroot}/usr/bin/pg_virtualenv \
-    %{buildroot}/usr/share/postgresql-common/PgCommon.pm \
+    %{buildroot}/usr/share/perl5/PgCommon.pm \
     %{buildroot}/usr/share/postgresql-common/init.d-functions
 # install init script
 mkdir -p %{buildroot}/etc/init.d %{buildroot}/etc/logrotate.d
