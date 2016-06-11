@@ -805,6 +805,9 @@ line with one of the following keywords:
 =item B<auto>
 
 The postmaster process is started/stopped automatically in the init script.
+
+When running from B<systemd>, the cluster is started/stopped when
+B<postgresql.service> is started/stopped.
 This is also the default if the file is missing.
 
 =item B<manual>
@@ -812,17 +815,25 @@ This is also the default if the file is missing.
 The postmaster process is not handled by the init script, but manually
 controlling the cluster with L<pg_ctlcluster(1)> is permitted.
 
+When running from B<systemd>, the cluster is not started automatically when
+B<postgresql.service> is started. However, stopping/restarting
+B<postgresql.service> will stop/restart the cluster. The cluster can be started
+using B<systemctl start postgresql@>I<version>B<->I<cluster>.
+
 =item B<disabled>
 
-Neither the init script nor L<pg_ctlcluster(1)> are permitted to start/stop the
+Neither the init script, L<pg_ctlcluster(1)>, nor B<postgresql@.service> are permitted to start/stop the
 cluster. Please be aware that this will not stop the cluster owner from calling
 lower level tools to control the postmaster process; this option is only meant
 to prevent accidents during maintenance, not more.
 
 =back
 
+When running from B<systemd>, invoke B<systemctl daemon-reload> after editing
+C<start.conf>.
+
 The C<pg_ctl.conf> file in the cluster configuration directory can contain
-additional options passed to pg_ctl of that cluster.
+additional options passed to B<pg_ctl> of that cluster.
 
 =head1 DEFAULT VALUES
 

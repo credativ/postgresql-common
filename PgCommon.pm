@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2014 Christoph Berg <myon@debian.org>
+# (C) 2012-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -505,12 +505,11 @@ sub set_cluster_start_conf {
 	close F;
     } else {
         $text = "# Automatic startup configuration
-# auto: automatically start/stop the cluster in the init script
-# manual: do not start/stop in init scripts, but allow manual startup with
-#         pg_ctlcluster
-# disabled: do not allow manual startup with pg_ctlcluster (this can be easily
-#           circumvented and is only meant to be a small protection for
-#           accidents).
+#   auto: automatically start the cluster
+#   manual: manual startup with pg_ctlcluster/postgresql@.service only
+#   disabled: refuse to start cluster
+# See pg_createcluster(1) for details. When running from systemd,
+# invoke 'systemctl daemon-reload' after editing this file.
 
 $val
 ";
