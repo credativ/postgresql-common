@@ -58,7 +58,7 @@ configure() {
 
     mkdir -p $vtarget
     ( echo "calling configure in $vtarget" &&
-      cd $vtarget && $srcdir/configure $confopts DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" )
+      cd $vtarget && $srcdir/configure $confopts PG_CONFIG="$pgc" VPATH="$srcdir" )
 }
 
 build() {
@@ -70,7 +70,7 @@ build() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
+    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
 }
 
 install() {
@@ -88,7 +88,7 @@ clean() {
 
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    [ -d $vtarget ] && make -C $vtarget clean ${makefile:-} DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
+    [ -d $vtarget ] && make -C $vtarget clean ${makefile:-} PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
     rm -rf $vtarget
 }
 
@@ -98,9 +98,9 @@ loop() {
     package=$(echo $target | sed -e "s:%v:$1:g")
 
     echo "# $1: make clean"
-    make clean   DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make clean   PG_CONFIG="$pgc" USE_PGXS=1
     echo "# $1: make"
-    make         DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make         PG_CONFIG="$pgc" USE_PGXS=1
     echo "# $1: make install"
     make install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
     echo "### done $1 ###"
