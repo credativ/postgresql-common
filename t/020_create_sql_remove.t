@@ -294,7 +294,7 @@ tel|2
     my $client_pid;
     while (!$client_pid) {
 	usleep $delay;
-	$client_pid = `ps --user postgres hu | grep 'postgres: nobody nobodydb' | grep -v grep | awk '{print \$2}'`;
+	$client_pid = `ps --user postgres hu | grep 'postgres.*: nobody nobodydb' | grep -v grep | awk '{print \$2}'`;
 	($client_pid) = ($client_pid =~ /(\d+)/); # untaint
     }
 
