@@ -1,11 +1,11 @@
-postgresql-common (175) UNRELEASED; urgency=medium
+postgresql-common (175) unstable; urgency=medium
 
   * pg_createcluster, createcluster.conf: Set cluster_name on 9.5+.
   * pg_buildext: Don't set any CFLAGS by default.
   * start.conf: Update documentation/comments to recommend running
     systemctl daemon-reload.
 
- -- Christoph Berg <myon@debian.org>  Mon, 23 May 2016 17:34:49 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 23 Jun 2016 12:26:27 +0200
 
 postgresql-common (174) unstable; urgency=medium
 
