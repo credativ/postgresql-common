@@ -98,12 +98,14 @@ sub ps {
     return `ps h -o user,group,args -C $_[0] | grep '$_[0]' | sort -u`;
 }
 
-# Return array of pids that match the given command line
+# Return array of pids that match the given command name (we require a leading
+# slash so the postmaster childs are filtered out)
 sub pidof {
-    open F, '-|', 'ps', 'h', '-C', $_[0], '-o', 'pid,cmd' or die "open: $!";
+    my $prg = shift;
+    open F, '-|', 'ps', 'h', '-C', $prg, '-o', 'pid,cmd' or die "open: $!";
     my @pids;
     while (<F>) {
-        if ((index $_, $_[0]) >= 0 && (index $_, '/') >= 0) {
+        if ((index $_, "/$prg") >= 0) {
             push @pids, (split)[0];
         }
     }
