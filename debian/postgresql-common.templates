@@ -33,8 +33,11 @@ _Description: Enable SSL by default in new PostgreSQL clusters?
  .
  If unsure, enable SSL.
 
+# The last paragraph of this note does not appear in PO files.
+# It contains shell commands and should not be translated.
 Template: postgresql-common/catversion-bump
 Type: note
+#flag:translate:1,2,3
 _Description: PostgreSQL ${version} catalog version changed
  The PostgreSQL cluster ${version} ${cluster} was created using catalog
  version ${db_catversion}, but the currently being installed package

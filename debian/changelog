@@ -1,3 +1,11 @@
+postgresql-common (176) UNRELEASED; urgency=medium
+
+  * debian/postgresql-common.templates: Properly mark not-to-be-translated
+    shell code-only chunk as such using flag:translate. Thanks to Rhonda for
+    the pointer! (See: #820756, #832282)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Mon, 01 Aug 2016 12:26:40 +0200
+
 postgresql-common (175) unstable; urgency=medium
 
   * pg_createcluster, createcluster.conf: Set cluster_name on 9.5+.
