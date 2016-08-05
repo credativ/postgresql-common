@@ -3,6 +3,7 @@ postgresql-common (176) UNRELEASED; urgency=medium
   * debian/postgresql-common.templates: Properly mark not-to-be-translated
     shell code-only chunk as such using flag:translate. Thanks to Rhonda for
     the pointer! (See: #820756, #832282)
+  * t/032_ssl_key_permissions.t: Skip tests on 9.0 and earlier.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 01 Aug 2016 12:26:40 +0200
 
