@@ -573,6 +573,7 @@ if ($socketdir eq '/var/run/postgresql') {
 # handle other createcluster.conf parameters
 foreach my $guc (sort keys %defaultconf) {
     next if $guc =~ /^(create_main_cluster|start_conf|data_directory|xlogdir|initdb_options|ssl)$/;
+    next if $guc eq 'logging_collector' and $version < 8.3;
     next if $guc eq 'cluster_name' and $version < 9.5;
     my $val = replace_v_c ($defaultconf{$guc}, $version, $cluster);
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $guc, $val;

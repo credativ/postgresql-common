@@ -45,6 +45,8 @@ sub check_major {
     }
 
     # turn logging_collector on, csvlog
+    SKIP: {
+        skip "No logging collector in 8.2", 30 if ($v <= 8.2);
     is_program_out 0, "pg_conftool $v main set logging_collector on", 0, "", "set logging_collector on";
     is_program_out 0, "pg_conftool $v main set log_destination csvlog", 0, "", "set log_destination csvlog";
     is_program_out 0, "pg_ctlcluster $v main restart", 0, "", "$v main restart";
@@ -66,6 +68,7 @@ sub check_major {
         like_program_out 0, "grep 'postgres.*moo$$' /var/log/syslog", 0, qr/moo$$/, 'error appears in /var/log/syslog';
     }
     like_program_out 'postgres', "grep moo$$ $pgdata/pg_log/*.csv", 0, qr/syntax error.*moo$$/, 'error appears in pg_log/*.csv';
+    }
 
     # stop server, clean up, check for leftovers
     is_program_out 0, "pg_dropcluster $v main --stop", 0, "", 'pg_dropcluster removes cluster';
