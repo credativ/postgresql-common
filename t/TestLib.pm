@@ -1,7 +1,7 @@
 # Common functionality for postgresql-common self tests
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2015 Christoph Berg <myon@debian.org>
+# (C) 2013-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ our @EXPORT = qw/ps ok_dir exec_as deb_installed rpm_installed package_version
     pidof pid_env check_clean
     @ALL_MAJORS @MAJORS $delay/;
 
-our @ALL_MAJORS = sort (get_versions()); # not affected by PG_VERSIONS/-v
+our @ALL_MAJORS = sort { $a <=> $b } (get_versions()); # not affected by PG_VERSIONS/-v
 our @MAJORS = $ENV{PG_VERSIONS} ? split (/\s+/, $ENV{PG_VERSIONS}) : @ALL_MAJORS;
 our $delay = 500_000; # 500ms
 

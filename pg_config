@@ -4,6 +4,7 @@
 # available one. Otherwise fall back to libpq-dev's version.
 #
 # (C) 2011 Martin Pitt <mpitt@debian.org>
+# (C) 2014-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,7 +19,7 @@
 set -e
 PGBINROOT="/usr/lib/postgresql/"
 #redhat# PGBINROOT="/usr/pgsql-"
-LATEST_SERVER_DEV=`ls $PGBINROOT*/bin/pg_config 2>/dev/null|tail -n1`
+LATEST_SERVER_DEV=`ls -v $PGBINROOT*/bin/pg_config 2>/dev/null|tail -n1`
 
 if [ -n "$LATEST_SERVER_DEV" ]; then
     exec "$LATEST_SERVER_DEV" "$@"
