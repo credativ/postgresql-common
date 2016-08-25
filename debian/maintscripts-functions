@@ -245,7 +245,7 @@ postinst_check_catversion()
 # start debconf if we are in the server's postinst (can't run from a function)
 if [ "${DPKG_MAINTSCRIPT_NAME:-}" = "postinst" ] && [ "$1" = "configure" ]; then
     case $DPKG_MAINTSCRIPT_PACKAGE in
-        postgresql-?.?|postgresql-?.??)
+        postgresql-[89].?|postgresql-[1-9]?)
             . /usr/share/debconf/confmodule
             ;;
     esac

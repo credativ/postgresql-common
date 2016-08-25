@@ -46,7 +46,7 @@ for (my $i = 0; $i <= $#ARGV; ++$i) {
 
         splice @ARGV, $i, 2;
         last;
-    } elsif ($ARGV[$i] =~ /^--cluster=(\d+\.\d)\/(.+)/) {
+    } elsif ($ARGV[$i] =~ /^--cluster=(\d+\.?\d)\/(.+)/) {
         ($version, $cluster) = ($1, $2);
         $host = undef; # --cluster overrides $PGHOST env var
         error 'Invalid version specified with --cluster' unless version_exists $version;

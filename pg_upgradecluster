@@ -273,7 +273,7 @@ $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "up
 $link and $method eq 'dump' and error 'cannot use --link with --method=dump';
 
 # untaint
-($newversion) = $newversion =~ /^(\d+\.\d+)$/;
+($newversion) = $newversion =~ /^(\d+\.?\d+)$/;
 ($locale) = $locale =~ /^([\w@._-]+)$/ if $locale;
 ($lc_collate) = $lc_collate =~ /^([\w@._-]+)$/ if $lc_collate;
 ($lc_ctype) = $lc_ctype =~ /^([\w@._-]+)$/ if $lc_ctype;
@@ -289,7 +289,7 @@ if ($#ARGV < 1) {
     exit 1;
 }
 
-($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 $newcluster ||= $cluster; # use old cluster name by default
 ($newcluster) = $newcluster =~ /^([-.\w]+)$/;

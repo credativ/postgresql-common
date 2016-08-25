@@ -282,7 +282,7 @@ if ($ownergid) {
 
 error 'clusters must not be owned by root' unless $owneruid && $ownergid;
 
-($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
 error "invalid version '$ARGV[0]'" unless defined $version;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error "invalid cluster name '$ARGV[1]'" unless defined $cluster;

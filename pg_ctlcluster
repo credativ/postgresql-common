@@ -347,7 +347,7 @@ if (@ARGV < 2 or (@ARGV < 3 and $ARGV[0] !~ m![-/]!)) {
 }
 
 $version = shift @ARGV;
-if ($version =~ m!^(\d+\.\d)[-/](.+)!) {
+if ($version =~ m!^(\d+\.?\d)[-/](.+)!) {
     ($version, $cluster) = ($1, $2);
 } else {
     $cluster = shift @ARGV;
@@ -359,7 +359,7 @@ foreach my $argv (@ARGV) {
     push @pg_ctl_opts_from_cli, $argv =~ /(.*)/; # untaint
 }
 
-($version) = $version =~ /^(\d+\.\d+)$/; # untaint
+($version) = $version =~ /^(\d+\.?\d+)$/; # untaint
 ($cluster) = $cluster =~ /^([^'"\s]+)$/; # untaint
 error 'specified cluster does not exist' unless $version && $cluster && cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);

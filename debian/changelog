@@ -1,5 +1,6 @@
 postgresql-common (176) UNRELEASED; urgency=medium
 
+  * Support "NN" major version numbers, next version will be PostgreSQL 10.
   * debian/postgresql-common.templates: Properly mark not-to-be-translated
     shell code-only chunk as such using flag:translate. Thanks to Rhonda for
     the pointer! (See: #820756, #832282)

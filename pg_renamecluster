@@ -29,7 +29,7 @@ if (@ARGV != 3) {
     exit 1;
 }
 
-my ($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+my ($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
 my ($oldcluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 my ($newcluster) = $ARGV[2] =~ /^([-.\w]+)$/;
 if ($newcluster =~ /-/ and -t 1) {

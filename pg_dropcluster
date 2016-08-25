@@ -32,7 +32,7 @@ if ($#ARGV != 1) {
     exit 1;
 }
 
-($version) = $ARGV[0] =~ /^(\d+\.\d+)$/;
+($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
 ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error 'invalid version' unless defined $version;
 error 'invalid cluster name' unless defined $cluster;
