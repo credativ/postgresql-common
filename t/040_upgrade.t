@@ -177,10 +177,8 @@ chdir '/';
 rmdir '/tmp/pgtest/';
 
 # Check clusters
-is_program_out 'nobody', 'pg_lsclusters -h', 0, 
-    "$MAJORS[0] upgr 5433 down   postgres /var/lib/postgresql/$MAJORS[0]/upgr /var/log/postgresql/postgresql-$MAJORS[0]-upgr.log
-$MAJORS[-1] upgr 5432 online postgres /var/lib/postgresql/$MAJORS[-1]/upgr /var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log
-", 'pg_lsclusters output';
+like_program_out 'nobody', 'pg_lsclusters -h', 0,
+    qr"$MAJORS[0] +upgr 5433 down   postgres /var/lib/postgresql/$MAJORS[0]/upgr +/var/log/postgresql/postgresql-$MAJORS[0]-upgr.log\n$MAJORS[-1] +upgr 5432 online postgres /var/lib/postgresql/$MAJORS[-1]/upgr +/var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log", 'pg_lsclusters output';
 
 # Check that SELECT output is identical
 is_program_out 'nobody', 'psql -tAc "SELECT * FROM phone ORDER BY name" test', 0,

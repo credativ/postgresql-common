@@ -62,7 +62,7 @@ sub do_upgrade {
 is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
 
 # Loop over all but the latest major version, testing N->N+1 upgrades
-my @testversions = sort @MAJORS;
+my @testversions = sort { $a <=> $b } @MAJORS;
 while ($#testversions) {
     my $cur = shift @testversions;
     my $new = $testversions[0];
