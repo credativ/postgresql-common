@@ -2,7 +2,7 @@
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2015 Christoph Berg <myon@debian.org>
+# (C) 2013-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ my @lines;
 push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Log file']
     unless ($no_header);
 
-foreach my $v (sort (get_versions())) {
+foreach my $v (sort { $a <=> $b } (get_versions())) {
     my @clusters = get_version_clusters $v;
     foreach my $c (sort @clusters) {
         my %info = cluster_info $v, $c;
