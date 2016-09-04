@@ -431,6 +431,7 @@ if (! -d '/var/log/postgresql') {
     chown 0, $postgres_user[3], '/var/log/postgresql';
 }
 $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
+error "logfile $real_logfile is a directory, not a file" if (-d $real_logfile);
 if (! -e $real_logfile) {
     open L, ">>$real_logfile" or error "could not create log file $real_logfile";
     close L;

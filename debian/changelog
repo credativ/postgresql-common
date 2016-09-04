@@ -11,6 +11,8 @@ postgresql-common (176) UNRELEASED; urgency=medium
   * pg_createcluster, t/025_logging.t: Skip logging_collector for 8.2.
   * Ship /etc/postgresql-common/supported_versions even in non-backport
     packages. (Closes: #808353)
+  * pg_createcluster: Error out if provided log file is a directory.
+    (Closes: #791556)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 01 Aug 2016 12:26:40 +0200
 
