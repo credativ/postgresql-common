@@ -27,9 +27,7 @@ override_dh_install:
 	dh_install
 	$(MAKE) -C systemd install DESTDIR=$(CURDIR)/debian/postgresql-common
 	install -m 644 -D debian/postgresql-common.sysctl debian/postgresql-common/etc/sysctl.d/30-postgresql-shm.conf
-ifneq ($(FLAVOR),default)
 	/bin/echo -e "# See /usr/share/postgresql-common/supported-versions for documentation of this file\n$(FLAVOR)" > debian/postgresql-client-common/etc/postgresql-common/supported_versions
-endif
 
 override_dh_installinit:
 	dh_installinit --name=postgresql -u'defaults 19 21' -r

@@ -7,6 +7,8 @@ postgresql-common (176) UNRELEASED; urgency=medium
     the pointer! (See: #820756, #832282)
   * t/032_ssl_key_permissions.t: Skip tests on 9.0 and earlier.
   * pg_createcluster, t/025_logging.t: Skip logging_collector for 8.2.
+  * Ship /etc/postgresql-common/supported_versions even in non-backport
+    packages. (Closes: #808353)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Mon, 01 Aug 2016 12:26:40 +0200
 
