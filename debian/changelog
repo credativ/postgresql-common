@@ -1,6 +1,8 @@
 postgresql-common (176) UNRELEASED; urgency=medium
 
   * Bump default PostgreSQL server version to 9.6.
+  * Use C.UTF-8 instead of C when the initial main cluster is created and no
+    locale is configured explicitly as system default. (Closes: #790507)
   * Support "NN" major version numbers, next version will be PostgreSQL 10.
   * debian/postgresql-common.templates: Properly mark not-to-be-translated
     shell code-only chunk as such using flag:translate. Thanks to Rhonda for

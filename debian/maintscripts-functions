@@ -54,6 +54,7 @@ _remove_tsearch() {
 set_system_locale() {
     loc_vars="LANG LANGUAGE LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL"
     unset $loc_vars
+    LANG="C.UTF-8" # fallback locale if nothing is configured explicitly
     for v in $loc_vars; do
         unset val
         val=`pam_getenv -l $v` || true
