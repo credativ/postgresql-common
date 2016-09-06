@@ -645,6 +645,9 @@ sub cluster_info {
     # autovacuum defaults to on since 8.3
     $result{'avac_enable'} = config_bool $postgresql_conf{'autovacuum'} || ($v >= '8.3');
 
+    # pg_upgradecluster wants to peek at dsmt in the new config
+    $result{dynamic_shared_memory_type} = $postgresql_conf{dynamic_shared_memory_type};
+
     return %result;
 }
 
