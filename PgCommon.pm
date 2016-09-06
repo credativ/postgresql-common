@@ -27,7 +27,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_start_conf set_cluster_start_conf set_cluster_pg_ctl_conf
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales
+    change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
     get_cluster_databases read_cluster_conf_file read_pg_hba read_pidfile/;
 our @EXPORT_OK = qw/$confroot $binroot $rpm quote_conf_value read_conf_file get_conf_value
     set_conf_value set_conffile_value disable_conffile_value disable_conf_value
@@ -970,6 +970,34 @@ sub get_cluster_locales {
     }
     close CTRL;
     return ($lc_ctype, $lc_collate);
+}
+
+# Return the pg_control data for a cluster
+# Arguments: <version> <cluster>
+# Returns: hashref
+sub get_cluster_controldata {
+    my ($version, $cluster) = @_;
+
+    my $pg_controldata = get_program_path 'pg_controldata', $version;
+    if (! -e $pg_controldata) {
+        print STDERR "Error: pg_controldata not found, please install postgresql-$version\n";
+        exit 1;
+    }
+    prepare_exec ('LC_ALL', 'LANG', 'LANGUAGE');
+    $ENV{'LC_ALL'} = 'C';
+    my $result = open (CTRL, '-|', $pg_controldata, (cluster_data_directory $version, $cluster));
+    restore_exec;
+    return undef unless defined $result;
+    my $data = {};
+    while (<CTRL>) {
+	if (/^(.+?):\s*(.*)/) {
+            $data->{$1} = $2;
+	} else {
+            error "Invalid pg_controldata output: $_";
+	}
+    }
+    close CTRL;
+    return $data;
 }
 
 # Return an array with all databases of a cluster. This requires connection

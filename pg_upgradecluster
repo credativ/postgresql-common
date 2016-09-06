@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2015 Christoph Berg <myon@debian.org>
+# (C) 2013-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 #  GNU General Public License for more details.
 
 use strict;
+use warnings;
 use PgCommon;
 use Getopt::Long;
 use POSIX;
@@ -308,6 +309,8 @@ if (cluster_exists $newversion, $newcluster) {
     error "target cluster $newversion/$newcluster already exists";
 }
 
+my $oldcontrol = get_cluster_controldata ($version, $cluster);
+
 my $oldpsql = get_program_path 'psql', $version;
 my $oldsocket = get_cluster_socketdir $version, $cluster;
 my $owner = getpwuid $info{'owneruid'};
@@ -367,6 +370,7 @@ push @argv, ('--lc-monetary', $lc_monetary) if $lc_monetary;
 push @argv, ('--lc-numeric', $lc_numeric) if $lc_numeric;
 push @argv, ('--lc-time', $lc_time) if $lc_time;
 delete $ENV{'LC_ALL'};
+push @argv, ('--', '--data-checksums') if $oldcontrol->{'Data page checksum version'}; # 0 = off
 error "Could not create target cluster" if system @argv;
 
 %newinfo = cluster_info($newversion, $newcluster);
@@ -744,7 +748,9 @@ B<pg_upgradecluster> [B<-v> I<newversion>] I<oldversion> I<name> [I<newdatadir>]
 B<pg_upgradecluster> upgrades an existing PostgreSQL server cluster (i. e. a
 collection of databases served by a B<postmaster> instance) to a new version
 specified by I<newversion> (default: latest available version).  The
-configuration files of the old version are copied to the new cluster.
+configuration files of the old version are copied to the new cluster and
+adjusted for the new version.  The new cluster is set up to use data page
+checksums if the old cluster uses them.
 
 The cluster of the old version will be configured to use a previously unused
 port since the upgraded one will use the original port. The old cluster is not
