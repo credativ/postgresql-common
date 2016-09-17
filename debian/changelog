@@ -7,6 +7,8 @@ postgresql-common (176) UNRELEASED; urgency=medium
   * debian/postgresql-common.templates: Properly mark not-to-be-translated
     shell code-only chunk as such using flag:translate. Thanks to Rhonda for
     the pointer! (See: #820756, #832282)
+  * t/031_errors_disk_full.t: Raise tmpfs size to account for larger cluster
+    footprint observed on ppc64el.
   * t/032_ssl_key_permissions.t: Skip tests on 9.0 and earlier.
   * pg_createcluster, t/025_logging.t: Skip logging_collector for 8.2.
   * Ship /etc/postgresql-common/supported_versions even in non-backport

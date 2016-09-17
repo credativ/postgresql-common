@@ -13,8 +13,8 @@ $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1;
 
 my $outref;
 
-# check that a failed pg_createcluster leaves no cruft behind: try creating a
-# cluster on a 10 MB tmpfs
+#
+note 'check that a failed pg_createcluster leaves no cruft behind: try creating a cluster on a 10 MB tmpfs';
 my $cmd = <<EOF;
 exec 2>&1
 set -e
@@ -41,7 +41,8 @@ like $$outref, qr/\nls><ls\n/, 'does not leave files behind';
 
 check_clean;
 
-# check disk full conditions on startup
+#
+note 'check disk full conditions on startup';
 my $cmd = <<EOF;
 set -e
 mount --make-rprivate / 2> /dev/null || :
@@ -50,7 +51,8 @@ dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql"
 mkdir -p \$dirs
 trap "umount \$dirs" 0 HUP INT QUIT ILL ABRT PIPE TERM
 mount -t tmpfs -o size=1000000 none /etc/postgresql
-mount -t tmpfs -o size=50000000 none /var/lib/postgresql
+# an empty cluster needs 69MB on ppc64el, round up to 90
+mount -t tmpfs -o size=90000000 none /var/lib/postgresql
 mount -t tmpfs -o size=1000000 none /var/log/postgresql
 pg_createcluster $MAJORS[-1] test
 
