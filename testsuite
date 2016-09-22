@@ -3,7 +3,7 @@
 # Run integration tests (on the installed packages).
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2015 Christoph Berg <myon@debian.org>
+# (C) 2012-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ set -eu
 
 # default config
 TESTSDIR="$(dirname $0)/t"
-: ${PG_UMASKS="022 077"}
+: ${PG_UMASKS="077"} # default umask(s) to try
 
 help ()
 {
@@ -30,7 +30,7 @@ help ()
     echo "    -i               install packages for versions specified by -v"
     echo "    -M               don't mount tmpfses, run in the host system"
     echo "    -s               start a shell in the testbed on failure"
-    echo "    -u 'umask ...'   umasks to run testsuite with [default: 022 077]"
+    echo "    -u 'umask ...'   umasks to run testsuite with [default: 077]"
     echo "    -v 'version ...' PostgreSQL versions to test [default: client versions installed]"
     echo "    -V               debug output"
     exit ${1:-0}
@@ -166,13 +166,7 @@ if [ "${VERBOSE:-}" ]; then
 fi
 
 for U in $PG_UMASKS; do
-    case $U in
-        022) TYPE="default" ;;
-        077) TYPE="tight" ;;
-        *) TYPE="custom" ;;
-    esac
-
-    echo "====== Running all tests with $TYPE umask $U ======="
+    echo "====== Running all tests with umask $U ======="
     umask $U
     for T; do
         TBASE=${T##*/}
