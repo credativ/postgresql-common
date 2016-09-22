@@ -7,6 +7,7 @@ postgresql-common (176) UNRELEASED; urgency=medium
   * debian/postgresql-common.templates: Properly mark not-to-be-translated
     shell code-only chunk as such using flag:translate. Thanks to Rhonda for
     the pointer! (See: #820756, #832282)
+  * t/025_logging.t: Fix tests when grep thinks syslog is a binary file.
   * t/031_errors_disk_full.t: Raise tmpfs size to account for larger cluster
     footprint observed on ppc64el.
   * t/032_ssl_key_permissions.t: Skip tests on 9.0 and earlier.
