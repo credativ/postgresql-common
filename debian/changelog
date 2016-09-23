@@ -1,5 +1,6 @@
-postgresql-common (176) UNRELEASED; urgency=medium
+postgresql-common (176) unstable; urgency=medium
 
+  * Team upload.
   * Bump default PostgreSQL server version to 9.6.
   * Use C.UTF-8 instead of C when the initial main cluster is created and no
     locale is configured explicitly as system default. (Closes: #790507)
@@ -22,7 +23,7 @@ postgresql-common (176) UNRELEASED; urgency=medium
   * pg_upgradecluster: Use data checksums in the new cluster if the old uses
     them. (Closes: #830228)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Tue, 06 Sep 2016 17:56:41 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 23 Sep 2016 12:32:16 +0200
 
 postgresql-common (175) unstable; urgency=medium
 
