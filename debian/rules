@@ -5,11 +5,14 @@ ifneq ($(findstring bpo,$(VERSION)),)
 	FLAVOR := debian-backports
 else ifneq ($(findstring pgdg,$(VERSION)),)
 	FLAVOR := pgdg
+	# for apt.postgresql.org builds, pull in the repository key package
+	PGDG_DEPENDS := pgdg-keyring
 else
 	FLAVOR := default
 endif
 SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions)
 DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
+LIBREADLINE := $(shell dpkg-query -W --showformat '$${Status} $${Package}\n' 'libreadline[0-9]'| sed -n '/ installed / {s/^.* //; p}'|sort -ru | head -n1)
 
 # use dh_systemd_* only on recent dists that have dh-systemd (>= 1.19)
 ifneq ($(wildcard /usr/bin/dh_systemd_start),)
@@ -40,9 +43,6 @@ override_dh_gencontrol:
 	dh_gencontrol -ppostgresql -ppostgresql-client -ppostgresql-doc -ppostgresql-contrib  -- \
 		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
 
-ifeq ($(FLAVOR),pgdg)
-	# for apt.postgresql.org builds, pull in the repository key package
-	dh_gencontrol -ppostgresql-client-common -- -Vpgdg:Depends="pgdg-keyring"
-endif
+	dh_gencontrol -ppostgresql-client-common -- -Vpgdg:Depends="$(PGDG_DEPENDS)" -Vreadline:Recommends=$(LIBREADLINE)
 
 	dh_gencontrol --remaining-packages
