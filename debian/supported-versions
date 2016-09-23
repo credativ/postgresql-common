@@ -120,14 +120,7 @@ debian_backports() {
 }
 
 pgdg() {
-    case $1 in
-        testing | unstable)
-            /bin/echo -e "9.1\n9.2\n9.3\n9.4\n9.5\n9.6" # 9.6 default
-            ;;
-        *)
-            /bin/echo -e "9.1\n9.2\n9.3\n9.4\n9.6\n9.5" # 9.5 default
-            ;;
-    esac
+    /bin/echo -e "9.1\n9.2\n9.3\n9.4\n9.6\n9.5" # 9.5 default
 }
 
 installed() {
