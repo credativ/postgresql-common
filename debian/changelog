@@ -1,9 +1,13 @@
 postgresql-common (177) UNRELEASED; urgency=medium
 
+  [ Martin Pitt ]
   * Replace hardcoded Recommends: libreadline6 with a build-time detection of
     the current ABI.
 
- -- Martin Pitt <mpitt@debian.org>  Fri, 23 Sep 2016 15:48:25 +0200
+  [ Christoph Berg ]
+  * Mark 9.6 as stable for apt.postgresql.org.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Tue, 27 Sep 2016 17:31:11 +0200
 
 postgresql-common (176) unstable; urgency=medium
 
