@@ -12,8 +12,8 @@ Vcs-Browser: https://anonscm.debian.org/cgit/pkg-postgresql/postgresql-common.gi
 Build-Depends:
  debhelper (>= 9),
  dh-systemd (>= 1.19) | sysvinit (<< 2.88dsf-42),
- lsb-release,
  libreadline-dev,
+ lsb-release,
 
 Package: postgresql-common
 Architecture: all
@@ -59,8 +59,8 @@ Depends:
  ${misc:Depends},
  ${pgdg:Depends},
 Recommends:
- ${readline:Recommends},
  lsb-release,
+ ${readline:Recommends},
 Description: manager for multiple PostgreSQL client versions
  The postgresql-client-common package provides a structure under which
  multiple versions of PostgreSQL client programs may be installed at
@@ -162,6 +162,28 @@ Depends:
 Description: additional facilities for PostgreSQL (supported version)
  This metapackage always depends on the currently supported PostgreSQL
  database contrib package.
+ .
+ PostgreSQL is a fully featured object-relational database management
+ system.  It supports a large part of the SQL standard and is designed
+ to be extensible by users in many aspects.  Some of the features are:
+ ACID transactions, foreign keys, views, sequences, subqueries,
+ triggers, user-defined types and functions, outer joins, multiversion
+ concurrency control.  Graphical user interfaces and bindings for many
+ programming languages are available as well.
+
+Package: postgresql-all
+Architecture: all
+Depends:
+ libecpg-dev,
+ libpq-dev,
+ postgresql-server-dev-all,
+ ${postgresql-all-depends},
+ ${misc:Depends},
+Description: metapackage depending on all PostgreSQL server packages
+ This metapackage depends on all PostgreSQL server packages, in all
+ supported versions (excluding documentation and debug symbols). It
+ exists to facilitate depending on the server packages in test
+ environments.
  .
  PostgreSQL is a fully featured object-relational database management
  system.  It supports a large part of the SQL standard and is designed

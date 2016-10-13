@@ -2,6 +2,8 @@ postgresql-common (178) UNRELEASED; urgency=medium
 
   * pg_buildext: Don't ask pg_virtualenv for a new network namespace by
     default.
+  * postgresql-all: New meta package depending on all server packages in all
+    supported versions. Intended to be used for installing test dependencies.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 13 Oct 2016 15:32:49 +0200
 
