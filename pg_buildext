@@ -109,10 +109,6 @@ loop() {
 installcheck() {
     prepare_env $1
 
-    if [ "${PG_VIRTUALENV_UNSHARE-unset}" = "unset" ] && [ $(id -u) = 0 ]; then
-        export PG_VIRTUALENV_UNSHARE="-n" # request new network namespace by default
-    fi
-
     # ask pg_virtualenv to create a non-system cluster
     if [ "${NONROOT-unset}" = "unset" ]; then
         export NONROOT=1
