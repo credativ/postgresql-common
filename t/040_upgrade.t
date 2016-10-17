@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 111 * 3;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 112 * 3;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -239,6 +239,10 @@ is ((exec_as 'nobody', 'psql testro -c "BEGIN READ WRITE; CREATE TABLE test(num 
 # check DB parameter
 is_program_out 'postgres', 'psql -Atc "SHOW DateStyle" test', 0, 'ISO, YMD
 ', 'check database parameter';
+SKIP: {
+    skip "cluster name not supported in $MAJORS[-1]", 1 if ($MAJORS[-1] < 9.5);
+    is (PgCommon::get_conf_value ($MAJORS[-1], 'upgr', 'postgresql.conf', 'cluster_name'), "$MAJORS[-1]/upgr", "cluster_name is updated");
+}
 
 # check tablespace
 is_program_out 'postgres', "psql -Atc 'SELECT spcname FROM pg_tablespace ORDER BY spcname'",

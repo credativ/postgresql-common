@@ -4,6 +4,7 @@ postgresql-common (178) UNRELEASED; urgency=medium
     default.
   * postgresql-all: New meta package depending on all server packages in all
     supported versions. Intended to be used for installing test dependencies.
+  * pg_upgradecluster, pg_renamecluster: Update cluster_name.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 13 Oct 2016 15:32:49 +0200
 

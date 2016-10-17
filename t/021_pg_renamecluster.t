@@ -4,7 +4,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 21;
+use Test::More tests => 22;
 
 my $v = $MAJORS[-1];
 
@@ -26,6 +26,10 @@ ok (-f "/var/run/postgresql/$v-donau.pid", 'external_pid_file exists');
 is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'stats_temp_directory'),
     "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory location updated');
 ok (-d "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory exists');
+SKIP: {
+    skip "cluster name not supported in $v", 1 if ($v < 9.5);
+    is (PgCommon::get_conf_value ($v, 'donau', 'postgresql.conf', 'cluster_name'), "$v/donau", "cluster_name is updated");
+}
 
 # stop server, clean up, check for leftovers
 ok ((system "pg_dropcluster $v donau --stop") == 0,

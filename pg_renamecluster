@@ -2,7 +2,7 @@
 
 # Rename a PostgreSQL cluster
 #
-# (C) 2014-2015 Christoph Berg <myon@debian.org>
+# (C) 2014-2016 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -79,6 +79,13 @@ if ($c{external_pid_file}) {
     PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'external_pid_file',
         strrepl($c{external_pid_file}, $oldcluster, $newcluster);
 }
+
+# update cluster_name
+if ($c{cluster_name}) {
+    PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf', 'cluster_name',
+        strrepl ($c{cluster_name}, $oldcluster, $newcluster);
+}
+
 
 # rename data directory
 if ($info{pgdata}) {

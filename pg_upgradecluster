@@ -178,6 +178,13 @@ sub adapt_conffiles {
             set 'max_wal_size', $max_wal_size;
         }
         deprecate \%c, 'ssl_renegotiation_limit', 'does not exist anymore';
+        # adapt cluster_name
+        my $cluster_name = PgCommon::get_conf_value ($newversion, $newcluster, 'postgresql.conf', 'cluster_name');
+        if ($cluster_name) {
+            $cluster_name =~ s/\Q$version\E/$newversion/g;
+            $cluster_name =~ s/\Q$cluster\E/$newcluster/g;
+            set 'cluster_name', $cluster_name;
+        }
     }
 }
 
