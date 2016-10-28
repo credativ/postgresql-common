@@ -9,6 +9,8 @@ postgresql-common (178) UNRELEASED; urgency=medium
 
   [ Martin Pitt ]
   * debian/supported-versions: Add Ubuntu 17.04.
+  * t/TestLib.pm, check_clean(): Quiesce stderr of netstat, which shows a "Not
+    all processes could be identified" warning in unprivileged containers.
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 13 Oct 2016 15:32:49 +0200
 

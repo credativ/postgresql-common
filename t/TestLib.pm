@@ -242,7 +242,7 @@ sub check_clean {
     # complain about missing directories
     ok_dir '/var/log/postgresql', [], "No files in /var/log/postgresql left behind";
 
-    is_program_out 0, 'netstat -avptn | grep ":543[2-9]\\b"', 1, '',
+    is_program_out 0, 'netstat -avptn 2>/dev/null | grep ":543[2-9]\\b"', 1, '',
 	'PostgreSQL TCP ports are closed';
 }
 
