@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 112 * 3;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 116 * 3;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -19,6 +19,7 @@ if ($#MAJORS == 0) {
 }
 
 foreach my $upgrade_options ('-m dump', '-m upgrade', '-m upgrade --link') {
+next if ($ENV{UPGRADE_METHOD} and $upgrade_options !~ /$ENV{UPGRADE_METHOD}$/); # hack to ease debugging individual methods
 note ("upgrade method \"$upgrade_options\", $MAJORS[0] -> $MAJORS[-1]");
 
 # create cluster
@@ -60,6 +61,10 @@ is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "1\n",
     'check next sequence value';
 is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "3\n",
     'check next sequence value';
+
+# create a large object
+is_program_out 'postgres', 'psql -Atc "SELECT lo_from_bytea(1234, \'Hello world\')"', 0, "1234\n",
+    'create large object';
 
 # create stored procedures
 if ($MAJORS[0] < '9.0') {
@@ -195,6 +200,10 @@ is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "9\n",
     'check next sequence value';
 is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "1\n",
     'check next sequence value (wrap)';
+
+# check large objects
+is_program_out 'postgres', 'psql -Atc "SET bytea_output = \'escape\'; SELECT data FROM pg_largeobject WHERE loid = 1234"', 0, "Hello world\n",
+    'check large object';
 
 # check stored procedures
 is_program_out 'nobody', 'psql -Atc "SELECT inc2(-3)" test', 0, "-1\n", 
