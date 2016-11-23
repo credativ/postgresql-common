@@ -5,6 +5,8 @@ postgresql-common (178) UNRELEASED; urgency=medium
     default.
   * postgresql-all: New meta package depending on all server packages in all
     supported versions. Intended to be used for installing test dependencies.
+  * pg_upgradecluster: Properly upgrade databases with non-login role owners.
+    (Closes: #838812)
   * pg_upgradecluster, pg_renamecluster: Update cluster_name.
   * Rebuild upgrades libreadline to 7 in unstable. (Closes: #845356)
 
