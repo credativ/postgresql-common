@@ -1,3 +1,10 @@
+postgresql-common (165+deb8u2) jessie; urgency=medium
+
+  * pg_upgradecluster: Properly upgrade databases with non-login role owners.
+    (Closes: #614374, #838812)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 13 Oct 2016 15:32:49 +0200
+
 postgresql-common (165+deb8u1) jessie; urgency=medium
 
   * pg_upgradecluster: Set default dynamic_shared_memory_type = mmap.
