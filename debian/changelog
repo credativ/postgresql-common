@@ -1,3 +1,10 @@
+postgresql-common (134wheezy5) wheezy; urgency=medium
+
+  * pg_upgradecluster: Properly upgrade databases with non-login role owners.
+    (Closes: #614374, #838812)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 13 Oct 2016 15:32:49 +0200
+
 postgresql-common (134wheezy4) stable; urgency=low
 
   * debian/supported-versions: Use "7|7.*" to recognize wheezy; point releases
