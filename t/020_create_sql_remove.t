@@ -30,15 +30,15 @@ sub check_major {
         ok_dir '/var/run/postgresql/', ["$v-main.pid", "$v-main.pg_stat_tmp"], 'Pid File is in /var/run/postgresql/';
     }
 
-    # verify that exactly one postmaster is running
-    my @pm_pids = pidof (($v >= '8.2') ? 'postgres' : 'postmaster');
-    is $#pm_pids, 0, 'Exactly one postmaster process running';
+    # verify that exactly one postgres master is running
+    my @pm_pids = pidof ('postgres');
+    is $#pm_pids, 0, 'Exactly one postgres master process running';
 
     # check environment
     my %safe_env = qw/LC_ALL 1 LC_CTYPE 1 LANG 1 PWD 1 PGLOCALEDIR 1 PGSYSCONFDIR 1 PG_GRANDPARENT_PID 1 PG_OOM_ADJUST_FILE 1 PG_OOM_ADJUST_VALUE 1 SHLVL 1 PGDATA 1 _ 1/;
     my %env = pid_env $pm_pids[0];
     foreach (keys %env) {
-        fail "postmaster has unsafe environment variable $_" unless exists $safe_env{$_};
+        fail "postgres has unsafe environment variable $_" unless exists $safe_env{$_};
     }
 
     # activate external_pid_file
@@ -52,8 +52,8 @@ sub check_major {
     is_program_out 0, "pg_ctlcluster $v main restart", 0, '',
         'cluster restarts with new environment file';
 
-    @pm_pids = pidof (($v >= '8.2') ? 'postgres' : 'postmaster');
-    is $#pm_pids, 0, 'Exactly one postmaster process running';
+    @pm_pids = pidof ('postgres');
+    is $#pm_pids, 0, 'Exactly one postgres master process running';
     %env = pid_env $pm_pids[0];
     is $env{'PGEXTRAVAR1'}, '1', 'correct value of PGEXTRAVAR1 in environment';
     is $env{'PGEXTRAVAR2'}, 'foo bar ', 'correct value of PGEXTRAVAR2 in environment';
@@ -144,9 +144,9 @@ sub check_major {
     PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'log_filename', '';
     unlink "/etc/postgresql/$v/main/log";
 
-    # verify that the postmaster does not have an associated terminal
+    # verify that processes do not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,
-        'postmaster processes do not have an associated terminal';
+        'postgres processes do not have an associated terminal';
 
     # verify that SSL is enabled (which should work for user postgres in a
     # default installation)

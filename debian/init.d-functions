@@ -16,7 +16,7 @@ do_ctl_all() {
     [ "$2" ] || { echo "Error: invalid version '$2'" >&2; exit 1; }
     [ -d "/etc/postgresql/$2" ] || return 0
     [ "$(ls /etc/postgresql/$2)" ] || return 0
-    [ -x "$PGBINROOT$2/bin/postmaster" ] || return 0
+    [ -x "$PGBINROOT$2/bin/postgres" ] || return 0
 
     status=0
     log_daemon_msg "$3"

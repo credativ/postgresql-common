@@ -50,7 +50,7 @@ if (cluster_exists $version, $cluster) {
 		    error 'could not stop server, aborting';
 		}
 	    } else {
-		print STDERR "warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postmaster process\n";
+		print STDERR "warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postgres process\n";
 	    }
 	} else {
 	    error 'This cluster is still running. Stop it or supply the --stop option';

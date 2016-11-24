@@ -1,4 +1,4 @@
-# Check that no clusters and postmasters are present for this test.
+# Check that no clusters and postgres processes are present for this test.
 
 use strict;
 use Test::More tests => 10;

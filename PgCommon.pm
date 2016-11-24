@@ -435,7 +435,7 @@ sub get_program_path {
     return '';
 }
 
-# Check whether a postmaster server is running at the specified port.
+# Check whether a postgres server is running at the specified port.
 # Arguments: <version> <cluster> <port>
 sub cluster_port_running {
     die "port_running: invalid port $_[2]" if $_[2] !~ /\d+/;
@@ -560,11 +560,11 @@ sub read_pidfile {
     }
 }
 
-# Check whether a pid file is present and belongs to a running postmaster.
+# Check whether a pid file is present and belongs to a running postgres.
 # Returns undef if it cannot be determined
 # Arguments: <pid file path>
 sub check_pidfile_running {
-    # postmaster does not clean up the PID file when it stops, and it is
+    # postgres does not clean up the PID file when it stops, and it is
     # not world readable, so only its absence is a definitive result; if it
     # is present, we need to read it and check the PID, which will only
     # work as root
@@ -579,7 +579,7 @@ sub check_pidfile_running {
 	    my $process = <PS>;
 	    chomp $process if defined $process;
 	    close PS;
-	    if (defined $process and ($process eq 'postmaster' or $process eq 'postgres')) {
+            if (defined $process and ($process eq 'postgres')) {
                 return 1;
             } else {
 		return 0;

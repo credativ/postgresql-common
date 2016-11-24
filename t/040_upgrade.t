@@ -156,7 +156,7 @@ like_program_out 'nobody', 'pg_lsclusters -h', 0,
 kill 9, $psql;
 waitpid $psql, 0;
 
-# now that the connection went away, postmaster shuts down; so restart it
+# now that the connection went away, postgres shuts down; so restart it
 # properly
 system "pg_ctlcluster $MAJORS[0] upgr stop";
 sleep 5;

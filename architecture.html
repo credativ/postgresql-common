@@ -35,7 +35,7 @@ be a high priority with upstream developers.  </p>
 
 <p>It is possible to run different versions of PostgreSQL simultaneously, and
 indeed to run the same version on separate database clusters simultaneously.
-To do so, each postmaster must listen on a different port, so each client
+To do so, each postgres instance must listen on a different port, so each client
 must specify the correct port.  By having two separate
 versions of the PostgreSQL packages installed simultaneously, it is
 simple to do database upgrades by dumping from the old version and
@@ -95,7 +95,7 @@ default version/cluster and database; overrides
         (<code>pg_ctlcluster</code> is not allowed).</li>
       <li>optionally <code>pg_ctl.conf</code>: options to be passed to pg_ctl.</li>
       <li>optionally a symbolic link <code>log</code> which points to
-      the postmaster log file. Defaults to
+      the postgres log file. Defaults to
       <code>/var/log/postgresql/postgresql-</code><i>version</i><code>-</code><i>cluster</i><code>.conf</code>.  
       Explicitly setting <code>log_directory</code> and/or
       <code>log_filename</code> in <code>postgresql.conf</code>
@@ -120,7 +120,7 @@ default version/cluster and database; overrides
 <tr><td><code>/usr/bin/<i>program</i></code></td>  <td>symbolic links to pg_wrapper, for all client programs</td></tr>
 <tr><td><code>/usr/bin/pg_lsclusters</code></td> <td>list all available clusters with their status and configuration</td></tr>
 <tr><td><code>/usr/bin/pg_createcluster</code></td><td>wrapper for <code>initdb</code>, sets up the necessary configuration structure</td></tr>
-<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postmaster</b> server</td></tr>
+<tr><td><code>/usr/bin/pg_ctlcluster</code></td><td>wrapper for <code>pg_ctl</code>, control the cluster <b>postgres</b> server</td></tr>
 <tr><td><code>/usr/bin/pg_upgradecluster</code></td><td>Upgrade a cluster to a newer major version.</td></tr>
 <tr><td><code>/usr/bin/pg_dropcluster</code></td><td>remove a cluster and its configuration</td></tr>
 </table>
@@ -136,7 +136,7 @@ name, thus reintroducing the default upstream behaviour.</p>
 
 <h3>/etc/init.d/postgresql</h3>
 
-<p>This script now handles the postmaster server processes for each version and
+<p>This script now handles the postgres server processes for each version and
 all their clusters. However, most of the actual work is done by the new
 <code>pg_ctlcluster</code> program.</p>
 

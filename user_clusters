@@ -10,9 +10,8 @@
 # When pg_wrapper scans this file, the first matching line is used.
 # It is a good idea to provide a default explicitly, with a final line
 # where both user and group are set to "*".  If there is no default,
-# the implicit default is to connect to the cluster whose postmaster
-# is listening on port 5432 and to the database matching the user's
-# login name.
+# the implicit default is to connect to the cluster listening on
+# port 5432 and to the database matching the user's login name.
 #
 # In the context of this file, user and group refer to the Unix login
 # or group, not to PostgreSQL users and groups.

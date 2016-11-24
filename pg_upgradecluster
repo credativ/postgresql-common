@@ -211,7 +211,7 @@ sub disable_connections {
     close F;
 }
 
-# Restore original pg_hba.conf, but do not restart postmaster.
+# Restore original pg_hba.conf, but do not restart postgres.
 # Arguments: <version> <cluster>
 sub enable_connections {
     my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
@@ -751,7 +751,7 @@ B<pg_upgradecluster> [B<-v> I<newversion>] I<oldversion> I<name> [I<newdatadir>]
 =head1 DESCRIPTION
 
 B<pg_upgradecluster> upgrades an existing PostgreSQL server cluster (i. e. a
-collection of databases served by a B<postmaster> instance) to a new version
+collection of databases served by a B<postgres> instance) to a new version
 specified by I<newversion> (default: latest available version).  The
 configuration files of the old version are copied to the new cluster and
 adjusted for the new version.  The new cluster is set up to use data page

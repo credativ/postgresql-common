@@ -543,7 +543,7 @@ if ($want_ssl && $newcluster && -e "$PgCommon::common_confdir/root.crl") {
 }
 
 # create default (empty) environment file
-my $defaultenv = "# environment variables for postmaster process
+my $defaultenv = "# environment variables for postgres processes
 # This file has the same syntax as postgresql.conf:
 #  VARIABLE = simple_value
 #  VARIABLE2 = 'any value!'
@@ -622,7 +622,7 @@ B<pg_createcluster> [I<options>] I<version> I<name> [B<--> I<initdb options>]
 =head1 DESCRIPTION
 
 B<pg_createcluster> creates a new PostgreSQL server cluster (i. e. a
-collection of databases served by a L<postmaster(1)> instance) and
+collection of databases served by a L<postgres(1)> instance) and
 integrates it into the multi-version/multi-cluster architecture of the
 B<postgresql-common> package. 
 
@@ -703,7 +703,7 @@ C</var/lib/postgresql/>I<version>C</>I<cluster>.
 
 =item B<-s> I<dir>, B<--socketdir=>I<dir>
 
-Explicitly set the directory where the L<postmaster(1)> server stores the Unix
+Explicitly set the directory where the L<postgres(1)> server stores the Unix
 socket for local connections. Defaults to C</var/run/postgresql/> for clusters
 owned by the user B<postgres>, and C</tmp> for clusters owned by other users.
 Please be aware that C</tmp> is an unsafe directory since everybody can create
@@ -712,7 +712,7 @@ not exist, it is created with appropriate permissions.
 
 =item B<-l> I<path>, B<--logfile=>I<path>
 
-Explicitly set the path for the L<postmaster(1)> server log file. Defaults to
+Explicitly set the path for the L<postgres(1)> server log file. Defaults to
 C</var/log/postgresql/postgresql->I<version>C<->I<cluster>C<.log>.
 
 =item B<--locale=>I<locale>
@@ -798,7 +798,7 @@ will be left untouched.
 =head1 STARTUP CONTROL
 
 The C<start.conf> file in the cluster configuration directory controls the
-start/stop behavior of that cluster's postmaster process. The file can contain
+start/stop behavior of that cluster's postgres process. The file can contain
 comment lines (started with '#'), empty lines, and must have exactly one
 line with one of the following keywords:
 
@@ -806,7 +806,7 @@ line with one of the following keywords:
 
 =item B<auto>
 
-The postmaster process is started/stopped automatically in the init script.
+The postgres process is started/stopped automatically in the init script.
 
 When running from B<systemd>, the cluster is started/stopped when
 B<postgresql.service> is started/stopped.
@@ -814,7 +814,7 @@ This is also the default if the file is missing.
 
 =item B<manual>
 
-The postmaster process is not handled by the init script, but manually
+The postgres process is not handled by the init script, but manually
 controlling the cluster with L<pg_ctlcluster(1)> is permitted.
 
 When running from B<systemd>, the cluster is not started automatically when
@@ -826,7 +826,7 @@ using B<systemctl start postgresql@>I<version>B<->I<cluster>.
 
 Neither the init script, L<pg_ctlcluster(1)>, nor B<postgresql@.service> are permitted to start/stop the
 cluster. Please be aware that this will not stop the cluster owner from calling
-lower level tools to control the postmaster process; this option is only meant
+lower level tools to control the postgres process; this option is only meant
 to prevent accidents during maintenance, not more.
 
 =back

@@ -30,9 +30,8 @@ like_program_out $owner, 'pg_lsclusters -h', 0,
     qr/^$v\s+main\s+5432\s+online\s+$owner/, 
     'pg_lsclusters shows running cluster';
 
-my $master_process = ($v >= '8.2') ? 'postgres' : 'postmaster';
-like ((ps $master_process), qr/^$owner.*bin\/$master_process .*\/var\/lib\/postgresql\/$v\/main/m,
-    "$master_process is running as user $owner");
+like ((ps 'postgres'), qr/^$owner.*bin\/postgres .*\/var\/lib\/postgresql\/$v\/main/m,
+    "postgres is running as user $owner");
 
 is_program_out $owner, 'ls /tmp/.s.PGSQL.*', 0, "/tmp/.s.PGSQL.5432\n/tmp/.s.PGSQL.5432.lock\n", 'socket is in /tmp';
 
@@ -100,7 +99,7 @@ if ($#MAJORS > 0) {
 # Check proper cleanup
 is ((system "pg_dropcluster $v main --stop"), 0, 'pg_dropcluster');
 is_program_out $owner, 'pg_lsclusters -h', 0, '', 'No clusters left';
-is ((ps $master_process), '', "No $master_process processes left");
+is ((ps 'postgres'), '', "No postgres processes left");
 
 check_clean;
 

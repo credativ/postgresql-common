@@ -18,5 +18,5 @@
 
 [ `id -u` = 0 ] || SUDO=sudo
 $SUDO /etc/init.d/postgresql stop
-$SUDO killall pg_autovacuum postmaster postgres
+$SUDO killall pg_autovacuum postgres
 $SUDO rm -rf /etc/postgresql /var/lib/postgresql/ /var/log/postgresql/* /tmp/postgresql-testsuite/ /var/run/postgresql/*

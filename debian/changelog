@@ -9,6 +9,8 @@ postgresql-common (178) UNRELEASED; urgency=medium
     (Closes: #614374, #838812)
   * pg_upgradecluster, pg_renamecluster: Update cluster_name.
   * Rebuild upgrades libreadline to 7 in unstable. (Closes: #845356)
+  * Replace most occurrences of "postmaster" by "postgres". Notable leftover
+    is the postmaster.1.gz leader of the manpages alternatives group.
 
   [ Martin Pitt ]
   * debian/supported-versions: Add Ubuntu 17.04.

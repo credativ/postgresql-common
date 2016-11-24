@@ -26,7 +26,7 @@ use PgCommon;
 use Fcntl 'SEEK_SET';
 
 my ($version, $cluster, $pg_ctl, $force);
-my (@postmaster_auxoptions, @pg_ctl_opts_from_cli);
+my (@postgres_auxoptions, @pg_ctl_opts_from_cli);
 my (%postgresql_conf, %info);
 my $mode = 'smart'; # default shutdown mode
 my $foreground = 0; # don't daemonize, use postgres instead of pg_ctl
@@ -140,18 +140,18 @@ sub start {
         # PG_OOM_ADJUST_VALUE defaults to 0, but can be overridden here
     }
 
-    my $postmaster_opts = '';
+    my $postgres_opts = '';
     my $usd = $version >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory';
     if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', $usd)) {
-	$postmaster_opts .= "-c $usd=\"$info{'socketdir'}\"";
+	$postgres_opts .= "-c $usd=\"$info{'socketdir'}\"";
     }
 
-    $postmaster_opts .= " -c config_file=\"$cdir/postgresql.conf\""; 
+    $postgres_opts .= " -c config_file=\"$cdir/postgresql.conf\"";
     if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'hba_file')) {
-        $postmaster_opts .= " -c hba_file=\"$cdir/pg_hba.conf\"";
+        $postgres_opts .= " -c hba_file=\"$cdir/pg_hba.conf\"";
     }
     if (!(PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'ident_file')) {
-        $postmaster_opts .= " -c ident_file=\"$cdir/pg_ident.conf\""; 
+        $postgres_opts .= " -c ident_file=\"$cdir/pg_ident.conf\"";
     }
 
     if ((-d '/var/run/postgresql') && !defined (PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file')) {
@@ -166,12 +166,12 @@ sub start {
             $vrp_writable = -w '/var/run/postgresql';
         }
         if ($vrp_writable) {
-            $postmaster_opts .= " -c external_pid_file=\"/var/run/postgresql/$version-$cluster.pid\"";
+            $postgres_opts .= " -c external_pid_file=\"/var/run/postgresql/$version-$cluster.pid\"";
         }
     }
 
-    $postmaster_opts .= ' ' . (join ' ', @postmaster_auxoptions);
-    ($postmaster_opts) = $postmaster_opts =~ /(.*)/; # untaint
+    $postgres_opts .= ' ' . (join ' ', @postgres_auxoptions);
+    ($postgres_opts) = $postgres_opts =~ /(.*)/; # untaint
 
     if ($foreground) {
         if ($stdlog and $info{'logfile'}) {
@@ -179,7 +179,7 @@ sub start {
             dup2(POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND), 2);
         }
         my $postgres = get_program_path 'postgres', $version;
-        exec '/bin/sh', '-c', "exec $postgres $postmaster_opts" or
+        exec '/bin/sh', '-c', "exec $postgres $postgres_opts" or
             error "Executing $postgres failed: $!"
     }
 
@@ -199,7 +199,7 @@ sub start {
     push @options, split(' ', $pg_ctl_opts_from_file{'pg_ctl_options'})
 	if defined $pg_ctl_opts_from_file{'pg_ctl_options'} and $pg_ctl_opts_from_file{'pg_ctl_options'} ne '';
 
-    push @options, ('-s', '-o', $postmaster_opts);
+    push @options, ('-s', '-o', $postgres_opts);
 
     if (fork) {
         wait;
@@ -322,7 +322,7 @@ sub promote {
 
 my ($skip_systemctl_redirect, $bindir);
 
-exit 1 unless GetOptions ('o|options=s' => \@postmaster_auxoptions,
+exit 1 unless GetOptions ('o|options=s' => \@postgres_auxoptions,
     'f|force' => \$force,
     'm|mode=s' => \$mode,
     'foreground' => \$foreground,
@@ -403,7 +403,7 @@ if (not $skip_systemctl_redirect and getppid() != 1 and # not run from init
     my $unit_active = $? == 0;
 
     # if extra options are given, proceed with pg_ctlcluster with a warning
-    if (@postmaster_auxoptions != 0 or @pg_ctl_opts_from_cli != 0 or $bindir) { # extra options given
+    if (@postgres_auxoptions != 0 or @pg_ctl_opts_from_cli != 0 or $bindir) { # extra options given
         print "Notice: extra pg_ctl/postgres options given, bypassing systemctl for $action operation\n" if (-t 1);
     # if we are root, redirect to systemctl unless stopping a cluster running outside systemd
     } elsif ($> == 0) {
