@@ -1,6 +1,6 @@
 Name:           postgresql-common
-Version:        174
-Release:        2%{?dist}
+Version:        177
+Release:        1%{?dist}
 BuildArch:      noarch
 Summary:        PostgreSQL database-cluster manager
 Packager:       Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
@@ -142,6 +142,8 @@ update-alternatives --install /usr/bin/ecpg pgsql-ecpg /usr/share/postgresql-com
 update-alternatives --remove pgsql-ecpg /usr/share/postgresql-common/pg_wrapper
 
 %changelog
+* Fri Dec 09 2016 Bernd Helmle <bernd.helmle@credativ.de> 177-1
+- New upstream release 177
 * Fri Jun 03 2016 Bernd Helmle <bernd.helmle@credativ.de> 174-2
 - Fix package dependencies and systemd integration
 * Thu Aug  7 2014 Christoph Berg <christoph.berg@credativ.de> 160-1
