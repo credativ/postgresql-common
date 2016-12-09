@@ -23,11 +23,13 @@ sub check_major {
 	"pg_createcluster $v main");
 
     # check that a /var/run/postgresql/ pid file is created
+    my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid", "$v-main.pg_stat_tmp");
+    pop @contents if ($v < 8.4); # remove pg_stat_tmp
     unless ($PgCommon::rpm) {
-        ok_dir '/var/run/postgresql/', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid", "$v-main.pg_stat_tmp"],
+        ok_dir '/var/run/postgresql/', [@contents],
             'Socket and pid file are in /var/run/postgresql/';
     } else {
-        ok_dir '/var/run/postgresql/', ["$v-main.pid", "$v-main.pg_stat_tmp"], 'Pid File is in /var/run/postgresql/';
+        ok_dir '/var/run/postgresql/', [grep {/main/} @contents], 'Pid File is in /var/run/postgresql/';
     }
 
     # verify that exactly one postgres master is running
@@ -61,7 +63,7 @@ sub check_major {
     # Now there should not be an external PID file any more, since we set it
     # explicitly
     unless ($PgCommon::rpm) {
-        ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pg_stat_tmp"],
+        ok_dir '/var/run/postgresql', [grep {! /pid/} @contents],
             'Socket, but not PID file in /var/run/postgresql/';
     } else {
         ok_dir '/var/run/postgresql', [], '/var/run/postgresql/ is empty';
@@ -136,7 +138,9 @@ sub check_major {
     my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/pg_log/$v#main.log*");
     is $#l, 0, 'exactly one log file';
     ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
+    SKIP: { skip "no logging_collector in $v", 2 if ($v < 8.3);
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$v#main.log\n$/;
+    }
 
     # clean up
     PgCommon::disable_conf_value ($v, 'main', 'postgresql.conf', 

@@ -74,7 +74,9 @@ is ((system "pg_ctlcluster $version main start"), 0,
     'pg_ctlcluster succeeds on valid cluster owner uid/gid');
 
 # check socket
-ok_dir '/var/run/postgresql', ["$version-main.pid", "$version-main.pg_stat_tmp"], 'No sockets in /var/run/postgresql';
+my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid", "$version-main.pg_stat_tmp");
+pop @contents if ($version < 8.4); # remove pg_stat_tmp
+ok_dir '/var/run/postgresql', [grep {/main/} @contents], 'No sockets in /var/run/postgresql';
 ok_dir $socketdir, ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], "Socket is in $socketdir";
 
 # stop cluster, check sockets
@@ -98,7 +100,7 @@ ok ((system "pg_ctlcluster $version main start") == 0,
 if ($PgCommon::rpm) {
     ok ((grep { $_ eq '.s.PGSQL.5432' } @{TestLib::dircontent('/tmp')}) == 1, 'Socket is in /tmp');
 } else {
-    ok_dir '/var/run/postgresql', ['.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid", "$version-main.pg_stat_tmp"],
+    ok_dir '/var/run/postgresql', [@contents],
         'Socket is in default dir /var/run/postgresql';
 }
 ok_dir $socketdir, [], "No sockets in $socketdir";

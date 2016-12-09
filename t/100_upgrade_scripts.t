@@ -44,8 +44,8 @@ my %test_sql_scripts = (
 # create clusters
 foreach my $v (@versions) {
     is ((system "pg_createcluster $v main --start >/dev/null"), 0, "pg_createcluster $v main");
-    is_program_out 'postgres', "createdb --cluster $v/main db1", 0, '';
-    is_program_out 'postgres', "createdb --cluster $v/main db2", 0, '';
+    is_program_out 'postgres', "createdb --cluster $v/main db1", 0, ($v < 8.3 ? "CREATE DATABASE\n" : '');
+    is_program_out 'postgres', "createdb --cluster $v/main db2", 0, ($v < 8.3 ? "CREATE DATABASE\n" : '');
     is_program_out 'postgres', "psql -q --cluster $v/main db1 -c 'CREATE TABLE log (str varchar)'", 0, '';
     my @dbs = get_cluster_databases $v, 'main';
     my @expected = ('template0', 'template1', 'db1', 'db2', 'postgres');

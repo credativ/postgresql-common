@@ -23,9 +23,12 @@ is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'ident_file'),
 is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'external_pid_file'),
     "/var/run/postgresql/$v-donau.pid", 'external_pid_file location updated');
 ok (-f "/var/run/postgresql/$v-donau.pid", 'external_pid_file exists');
-is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'stats_temp_directory'),
-    "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory location updated');
-ok (-d "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory exists');
+SKIP: {
+    skip "no stats_temp_directory in $v", 2 if ($v < 8.4);
+    is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'stats_temp_directory'),
+        "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory location updated');
+    ok (-d "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory exists');
+}
 SKIP: {
     skip "cluster name not supported in $v", 1 if ($v < 9.5);
     is (PgCommon::get_conf_value ($v, 'donau', 'postgresql.conf', 'cluster_name'), "$v/donau", "cluster_name is updated");
