@@ -8,7 +8,7 @@ use PgCommon;
 
 my $version = $MAJORS[-1];
 
-use Test::More tests => ($version < 8.3 or $PgCommon::rpm) ? 1 : 39;
+use Test::More tests => ($MAJORS[-1] < 8.3 or $PgCommon::rpm) ? 1 : 39;
 if ($version < 8.3) {
     pass 'tsearch dictionaries not tested before 8.3';
     exit;
