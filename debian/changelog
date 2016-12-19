@@ -13,7 +13,7 @@ postgresql-common (178) UNRELEASED; urgency=medium
     is the postmaster.1.gz leader of the manpages alternatives group.
 
   [ Martin Pitt ]
-  * debian/supported-versions: Add Ubuntu 17.04.
+  * debian/supported-versions: Add Ubuntu 17.04, drop EOLed releases.
   * t/TestLib.pm, check_clean(): Quiesce stderr of netstat, which shows a "Not
     all processes could be identified" warning in unprivileged containers.
 

@@ -81,7 +81,6 @@ ubuntu() {
     case "$1" in
         12.04) /bin/echo -e "9.1" ;;
         14.04) /bin/echo -e "9.3" ;;
-        14.10|15.04|15.10) /bin/echo -e "9.4" ;;
         16.04|16.10|17.04) /bin/echo -e "9.5" ;;
         *)
             echo "supported-versions: WARNING: Unknown Ubuntu release: $1" >&2
