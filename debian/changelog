@@ -2,6 +2,9 @@ postgresql-common (165+deb8u2) jessie; urgency=medium
 
   * pg_upgradecluster: Properly upgrade databases with non-login role owners.
     (Closes: #614374, #838812)
+  * pg_ctlcluster, t/020_create_sql_remove.t: Protect against symlink in
+    /var/log/postgresql/ allowing the creation of arbitrary files elsewhere.
+    Discovered by Dawid Golunski, thanks! (CVE-2016-1255)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Thu, 13 Oct 2016 15:32:49 +0200
 
