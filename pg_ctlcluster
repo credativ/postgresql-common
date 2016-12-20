@@ -23,7 +23,7 @@ use warnings;
 use Getopt::Long;
 use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
-use Fcntl 'SEEK_SET';
+use Fcntl qw(SEEK_SET O_RDWR O_CREAT O_EXCL);
 
 my ($version, $cluster, $pg_ctl, $force);
 my (@postmaster_auxoptions, @pg_ctl_opts_from_cli);
@@ -394,17 +394,20 @@ if ($> == 0 && ! -e '/var/log/postgresql' &&
 
 # recreate missing log file
 if ($action ne 'stop' && $info{'logfile'} && ! -e $info{'logfile'}) {
-    open L, '>', $info{'logfile'} or 
-	error 'Could not create log file ' . $info{'logfile'};
-    chmod 0640, $info{'logfile'};
-    my $g;
-    if ($info{'owneruid'} < 500) {
-	$g = (getgrnam 'adm')[2];
-    } else {
-	$g = $info{'ownergid'};
+    if ($> == 0) { # drop privileges; this is important if logfile
+        # was determined via an /etc/postgresql/.../log symlink
+        change_ugid $info{'owneruid'}, $info{'ownergid'};
     }
-    chown $info{'owneruid'}, $g, $info{'logfile'};
+    sysopen (L, $info{'logfile'}, O_RDWR|O_CREAT|O_EXCL) or
+	error 'Could not create log file ' . $info{'logfile'};
     close L;
+    chmod 0640, $info{'logfile'};
+    $< = $> = 0; # will silently fail if we were not root before, that's intended
+    $( = $) = 0;
+    if ($info{'owneruid'} < 500) {
+        my $g = (getgrnam 'adm')[2];
+        chown $info{'owneruid'}, $g, $info{'logfile'} if (defined $g);
+    }
 }
 
 # recreate /var/run/postgresql
