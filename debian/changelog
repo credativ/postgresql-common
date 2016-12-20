@@ -11,6 +11,9 @@ postgresql-common (178) UNRELEASED; urgency=medium
   * Rebuild upgrades libreadline to 7 in unstable. (Closes: #845356)
   * Replace most occurrences of "postmaster" by "postgres". Notable leftover
     is the postmaster.1.gz leader of the manpages alternatives group.
+  * pg_ctlcluster, t/020_create_sql_remove.t: Protect against symlink in
+    /var/log/postgresql/ allowing the creation of arbitrary files elsewhere.
+    Discovered by Dawid Golunski, thanks!
 
   [ Martin Pitt ]
   * debian/supported-versions: Add Ubuntu 17.04, drop EOLed releases.

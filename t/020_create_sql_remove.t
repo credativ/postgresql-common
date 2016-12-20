@@ -10,7 +10,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 127 * ($#MAJORS+1);
+use Test::More tests => 131 * ($#MAJORS+1);
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -147,6 +147,15 @@ sub check_major {
         ($v >= '8.3' ? 'logging_collector' : 'redirect_stderr'), '');
     PgCommon::disable_conf_value $v, 'main', 'postgresql.conf', 'log_filename', '';
     unlink "/etc/postgresql/$v/main/log";
+
+    # check that log creation does not escalate privileges
+    program_ok 'root', "pg_ctlcluster $v main stop", 0, 'stopping cluster';
+    unlink $default_log;
+    symlink "/etc/postgres-hack", $default_log;
+    program_ok 'root', "pg_ctlcluster $v main start", 1, 'starting cluster with rouge /var/log/postgresql symlink fails';
+    ok !-f "/etc/postgres-hack", "/etc/postgres-hack was not created";
+    unlink $default_log;
+    program_ok 'root', "pg_ctlcluster $v main start", 0, 'restarting cluster';
 
     # verify that processes do not have an associated terminal
     unlike_program_out 0, 'ps -o tty -U postgres h', 0, qr/tty|pts/,
