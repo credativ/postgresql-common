@@ -13,7 +13,7 @@ postgresql-common (178) unstable; urgency=medium
     is the postmaster.1.gz leader of the manpages alternatives group.
   * pg_ctlcluster, t/020_create_sql_remove.t: Protect against symlink in
     /var/log/postgresql/ allowing the creation of arbitrary files elsewhere.
-    Discovered by Dawid Golunski, thanks!
+    Discovered by Dawid Golunski, thanks! (CVE-2016-1255)
 
   [ Martin Pitt ]
   * debian/supported-versions: Add Ubuntu 17.04, drop EOLed releases.
