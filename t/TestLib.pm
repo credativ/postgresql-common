@@ -20,7 +20,7 @@ use Test::More;
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/ps ok_dir exec_as deb_installed is_program_out
-    like_program_out unlike_program_out pidof pid_env check_clean @MAJORS/;
+    program_ok like_program_out unlike_program_out pidof pid_env check_clean @MAJORS/;
 
 use lib '/usr/share/postgresql-common';
 use PgCommon qw/get_versions change_ugid/;
@@ -136,6 +136,16 @@ sub exec_as {
         fail_debug;
     }
     return $result;
+}
+
+# Execute a command as a particular user, and check the exit code
+# Arguments: <user> <command> [<expected exit code>] [<description>]
+sub program_ok {
+    my ($user, $cmd, $exit, $description) = @_;
+    $exit ||= 0;
+    $description ||= $cmd;
+    my $outref;
+    ok ((exec_as $user, $cmd, \$outref, $exit) == $exit, $description);
 }
 
 # Execute a command as a particular user, and check the exit code and output
