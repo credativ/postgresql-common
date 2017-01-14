@@ -1,9 +1,10 @@
-postgresql-common (179) UNRELEASED; urgency=medium
+postgresql-common (178~bpo8+1) jessie-backports; urgency=medium
 
+  * Backport to jessie-backports.
   * Import new apt.postgresql.org key.
   * Support 9.6 for jessie-backports.
 
- -- Christoph Berg <myon@debian.org>  Wed, 04 Jan 2017 17:29:26 +0100
+ -- Christoph Berg <myon@debian.org>  Sat, 14 Jan 2017 12:59:47 +0100
 
 postgresql-common (178) unstable; urgency=medium
 
