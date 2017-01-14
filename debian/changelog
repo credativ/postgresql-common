@@ -1,6 +1,7 @@
 postgresql-common (179) UNRELEASED; urgency=medium
 
   * Import new apt.postgresql.org key.
+  * Support 9.6 for jessie-backports.
 
  -- Christoph Berg <myon@debian.org>  Wed, 04 Jan 2017 17:29:26 +0100
 
