@@ -1,5 +1,7 @@
 postgresql-common (179) UNRELEASED; urgency=medium
 
+  * Catch all pg_ctl output by redirecting it to /var/log/postgresql.
+    (Closes: #830485)
   * Set default log_line_prefix to '%m [%p] %q%u@%d ' to match upstream
     moving to '%m [%p] ' in PostgreSQL 10.
   * Import new apt.postgresql.org key.
