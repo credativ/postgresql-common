@@ -21,7 +21,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
+use POSIX qw/setsid dup2 :sys_wait_h/;
 use PgCommon;
 use Fcntl qw(SEEK_SET O_RDWR O_CREAT O_EXCL);
 

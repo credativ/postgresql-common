@@ -229,7 +229,10 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
-    error ('The locale requested by the environment is invalid.')
+    my $env = join "\n",
+        map { "  $_: $ENV{$_}" }
+        grep { /^(LC_|LANG)/ } sort keys %ENV;
+    error ("The locale requested by the environment is invalid:\n$env")
 }
 
 if (@ARGV < 2) {
