@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 52;
+use Test::More tests => 52; # 54 if conf.d is present
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
