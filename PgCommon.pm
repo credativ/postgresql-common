@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2016 Christoph Berg <myon@debian.org>
+# (C) 2012-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -101,8 +101,9 @@ sub config_bool {
 # Returns: quoted string
 sub quote_conf_value ($) {
     my $value = shift;
-    return $value if ($value =~ /^-?[\w.]+$/);
-    $value =~ s/'/''/g;
+    return $value if ($value =~ /^-?[\d.]+$/); # integer or float
+    return $value if ($value =~ /^\w+$/); # plain word
+    $value =~ s/'/''/g; # else quote it
     return "'$value'";
 }
 
