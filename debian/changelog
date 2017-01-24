@@ -7,6 +7,9 @@ postgresql-common (179) UNRELEASED; urgency=medium
   * Set default log_line_prefix to '%m [%p] %q%u@%d ' to match upstream
     moving to '%m [%p] ' in PostgreSQL 10.
   * Support include_dir in read_conf_file. Patch by Andreas Dewes, thanks!
+  * Support adding include directives to the new postgresql.conf from
+    createcluster.conf; harness directives with an "add_" prefix, e.g.
+    "add_include_dir".
   * Import new apt.postgresql.org key.
   * Support 9.6 for jessie-backports.
 

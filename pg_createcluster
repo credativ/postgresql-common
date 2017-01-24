@@ -4,7 +4,7 @@
 # the postgresql-common infrastructure.
 #
 # (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2016 Christoph Berg <myon@debian.org>
+# (C) 2012-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -580,6 +580,14 @@ foreach my $guc (sort keys %defaultconf) {
     next if $guc eq 'logging_collector' and $version < 8.3;
     next if $guc eq 'cluster_name' and $version < 9.5;
     my $val = replace_v_c ($defaultconf{$guc}, $version, $cluster);
+    $guc =~ s/^add_include/include/; # remove harness from include directives in createcluster.conf
+    if ($guc eq 'include_dir') {
+        next if ($version < 9.3);
+        if ($val =~ /^[\w.]+$/ and not -e "$confdir/$val") { # create directory relative to new config directory
+            mkdir "$confdir/$val", 0755;
+            chown $owneruid, $ownergid, "$confdir/$val";
+        }
+    }
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $guc, $val;
 }
 
@@ -895,6 +903,30 @@ are readable for the cluster owner as detailed above.
 
 Only added to postgresql.conf if existing, and writable for the cluster owner,
 or else if the parent directory is writable.
+
+=back
+
+=item Include files
+
+=over 4
+
+=item B<include>
+
+=item B<include_if_exists>
+
+=item B<include_dir>
+
+B<createcluster.conf> supports the same include directives as
+B<postgresql.conf>.
+
+=item B<add_include>
+
+=item B<add_include_if_exists>
+
+=item B<add_include_dir>
+
+To add include directives to the new postgresql.conf file, use the B<add_*>
+directives. The B<add_> prefix is removed.
 
 =back
 
