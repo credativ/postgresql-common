@@ -1,4 +1,4 @@
-postgresql-common (179) UNRELEASED; urgency=medium
+postgresql-common (179) unstable; urgency=medium
 
   * Catch all pg_ctl output by redirecting it to /var/log/postgresql.
     (Closes: #830485)
@@ -13,7 +13,7 @@ postgresql-common (179) UNRELEASED; urgency=medium
   * Import new apt.postgresql.org key.
   * Support 9.6 for jessie-backports.
 
- -- Christoph Berg <myon@debian.org>  Wed, 04 Jan 2017 17:29:26 +0100
+ -- Christoph Berg <myon@debian.org>  Tue, 24 Jan 2017 23:03:12 +0100
 
 postgresql-common (178) unstable; urgency=medium
 
