@@ -1,3 +1,9 @@
+postgresql-common (180) UNRELEASED; urgency=medium
+
+  * supported-versions: Retire 9.1 on apt.postgresql.org.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 08 Feb 2017 21:56:06 +0100
+
 postgresql-common (179) unstable; urgency=medium
 
   * Catch all pg_ctl output by redirecting it to /var/log/postgresql.

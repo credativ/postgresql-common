@@ -37,7 +37,7 @@
 # X.Y: consider this version supported
 #
 # (C) 2005-2016 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2016 Christoph Berg <myon@debian.org>
+# (C) 2012-2017 Christoph Berg <myon@debian.org>
 
 set -eu
 
@@ -120,7 +120,7 @@ debian_backports() {
 }
 
 pgdg() {
-    /bin/echo -e "9.1\n9.2\n9.3\n9.4\n9.5\n9.6"
+    /bin/echo -e "9.2\n9.3\n9.4\n9.5\n9.6"
 }
 
 installed() {
