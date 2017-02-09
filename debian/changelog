@@ -1,8 +1,8 @@
-postgresql-common (180) UNRELEASED; urgency=medium
+postgresql-common (180) unstable; urgency=medium
 
   * supported-versions: Retire 9.1 on apt.postgresql.org.
 
- -- Christoph Berg <myon@debian.org>  Wed, 08 Feb 2017 21:56:06 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 09 Feb 2017 15:30:23 +0100
 
 postgresql-common (179) unstable; urgency=medium
 
