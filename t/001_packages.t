@@ -38,7 +38,10 @@ foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-plperl-$v"), "postgresql-plperl-$v installed");
     ok ((deb_installed "postgresql-pltcl-$v"), "postgresql-pltcl-$v installed");
     ok ((deb_installed "postgresql-server-dev-$v"), "postgresql-server-dev-$v installed");
+  SKIP: {
+    skip "No postgresql-contrib-$v package for version $v", 1 if ($v >= 10);
     ok ((deb_installed "postgresql-contrib-$v"), "postgresql-contrib-$v installed");
+  }
 }
 
 ok ((deb_installed 'libecpg-dev'), 'libecpg-dev installed');

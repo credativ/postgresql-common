@@ -1,3 +1,9 @@
+postgresql-common (181) UNRELEASED; urgency=medium
+
+  * t/001_packages.t: PostgreSQL 10 doesn't have a separate contrib package.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 10 Feb 2017 15:13:42 +0100
+
 postgresql-common (180) unstable; urgency=medium
 
   * supported-versions: Retire 9.1 on apt.postgresql.org.
