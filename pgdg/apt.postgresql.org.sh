@@ -40,8 +40,8 @@ EOF
 
 case $CODENAME in
     # known distributions
-    sid|jessie|wheezy|squeeze|lenny|etch) ;;
-    xenial|wily|trusty|precise|lucid) ;;
+    sid|stretch|jessie|wheezy|squeeze|lenny|etch) ;;
+    zesty|xenial|wily|trusty|precise|lucid) ;;
     *) # unknown distribution, verify on the web
 	DISTURL="http://apt.postgresql.org/pub/repos/apt/dists/"
 	if [ -x /usr/bin/curl ]; then
