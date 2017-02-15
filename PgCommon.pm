@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2016 Christoph Berg <myon@debian.org>
+# (C) 2012-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -101,8 +101,9 @@ sub config_bool {
 # Returns: quoted string
 sub quote_conf_value ($) {
     my $value = shift;
-    return $value if ($value =~ /^-?[\w.]+$/);
-    $value =~ s/'/''/g;
+    return $value if ($value =~ /^-?[\d.]+$/); # integer or float
+    return $value if ($value =~ /^\w+$/); # plain word
+    $value =~ s/'/''/g; # else quote it
     return "'$value'";
 }
 
@@ -114,52 +115,70 @@ sub quote_conf_value ($) {
 # Arguments: <path>
 # Returns: hash (empty if file does not exist)
 sub read_conf_file {
+    my ($config_path) = @_;
     my %conf;
     local (*F);
 
-    return %conf unless -e $_[0];
+    sub get_absolute_path {
+        my ($path, $parent_path) = @_;
+        return $path if ($path =~ m!^/!); # path is absolute
+        # else strip filename component from parent path
+        $parent_path =~ s!/[^/]*$!!;
+        return "$parent_path/$path";
+    }
 
-    if (open F, $_[0]) {
+    return %conf unless (-e $config_path);
+
+    if (open F, $config_path) {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-	    } elsif (/^\s*include(?:_if_exists)?\s+'([^']+)'\s*$/i) {
-		my ($k, $v, $path, %include_conf);
-		$path = $1;
-		unless (substr($path, 0, 1) eq '/') {
-		    my @p = split '/', $_[0];
-		    my $dirname = join '/', @p[0..($#p-1)];
-		    $path = "$dirname/$path";
-		}
-
-		# read included file and merge into %conf
-		%include_conf = read_conf_file($path);
-		while ( ($k, $v) = each(%include_conf) ) {
-		    $conf{$k} = $v;
-		}
-
+            } elsif(/^\s*include_dir\s+'([^']+)'\s*$/i) {
+                # read included configuration directory and merge into %conf
+                # files in the directory will be read in ascending order
+                my $path = $1;
+                my $absolute_path = get_absolute_path($path, $config_path);
+                next unless -e $absolute_path && -d $absolute_path;
+                my $dir;
+                opendir($dir, $absolute_path) or next;
+                foreach my $filename (sort readdir($dir) ) {
+                    next if ($filename =~ m/^\./ or not $filename =~/\.conf$/ );
+                    my %include_conf = read_conf_file("$absolute_path/$filename");
+                    while ( my ($k, $v) = each(%include_conf) ) {
+                        $conf{$k} = $v;
+                    }
+                }
+                closedir($dir);
+            } elsif (/^\s*include(?:_if_exists)?\s+'([^']+)'\s*$/i) {
+                # read included file and merge into %conf
+                my $path = $1;
+                my $absolute_path = get_absolute_path($path, $config_path);
+                my %include_conf = read_conf_file($absolute_path);
+                while ( my ($k, $v) = each(%include_conf) ) {
+                    $conf{$k} = $v;
+                }
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*'((?:[^']|''|(?:(?<=\\)'))*)'\s*(?:#.*)?$/i) {
                 # string value
                 my $v = $2;
                 my $k = $1;
-		$k = lc $k if $_[0] =~ /\.conf$/;
+                $k = lc $k if $config_path =~ /\.conf$/;
                 $v =~ s/\\(.)/$1/g;
                 $v =~ s/''/'/g;
                 $conf{$k} = $v;
             } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
                 # simple value
                 my $v = $2;
-		my $k = $1;
-		$k = lc $k if $_[0] =~ /\.conf$/;
+                my $k = $1;
+                $k = lc $k if $config_path =~ /\.conf$/;
                 $conf{$k} = $v;
             } else {
                 chomp;
-                error "Invalid line $. in $_[0]: »$_«";
+                error "Invalid line $. in $config_path: »$_«";
             }
         }
         close F;
     } else {
-        error "could not read $_[0]: $!";
+        error "could not read $config_path: $!";
     }
 
     return %conf;
@@ -360,7 +379,7 @@ sub get_cluster_port {
     return get_conf_value($_[0], $_[1], 'postgresql.conf', 'port');
 }
 
-# Set the port of a particular cluster. 
+# Set the port of a particular cluster.
 # Arguments: <version> <cluster> <port>
 sub set_cluster_port {
     set_conf_value $_[0], $_[1], 'postgresql.conf', 'port', $_[2];
@@ -417,7 +436,7 @@ sub get_cluster_socketdir {
     return $socketdir;
 }
 
-# Set the socket directory of a particular cluster. 
+# Set the socket directory of a particular cluster.
 # Arguments: <version> <cluster> <directory>
 sub set_cluster_socketdir {
     set_conf_value $_[0], $_[1], 'postgresql.conf',
@@ -468,7 +487,7 @@ sub get_cluster_start_conf {
 	}
 	close F;
 
-	error 'Invalid mode in start.conf' unless $start eq 'auto' || 
+	error 'Invalid mode in start.conf' unless $start eq 'auto' ||
 	    $start eq 'manual' || $start eq 'disabled';
     }
 
@@ -481,7 +500,7 @@ sub get_cluster_start_conf {
 sub set_cluster_start_conf {
     my ($v, $c, $val) = @_;
 
-    error "Invalid mode: '$val'" unless $val eq 'auto' || 
+    error "Invalid mode: '$val'" unless $val eq 'auto' ||
 	    $val eq 'manual' || $val eq 'disabled';
 
     my $perms = 0644;
@@ -624,7 +643,7 @@ sub cluster_info {
     }
 
     if ($result{'pgdata'}) {
-        ($result{'owneruid'}, $result{'ownergid'}) = 
+        ($result{'owneruid'}, $result{'ownergid'}) =
             (stat $result{'pgdata'})[4,5];
         $result{'recovery'} = -e "$result{'pgdata'}/recovery.conf";
     }
@@ -843,7 +862,7 @@ sub user_cluster_map {
 # Arguments: <source file> <destination file or dir> <uid> <gid> <permissions>
 sub install_file {
     my ($source, $dest, $uid, $gid, $perm) = @_;
-    
+
     if (system 'install', '-o', $uid, '-g', $gid, '-m', $perm, $source, $dest) {
 	error "install_file: could not install $source to $dest";
     }
@@ -886,8 +905,8 @@ sub get_db_encoding {
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
-        'select getdatabaseencoding()', $db or 
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
+        'select getdatabaseencoding()', $db or
         die "Internal error: could not call $psql to determine db encoding: $!";
     my $out = <PSQL>;
     close PSQL;
@@ -917,14 +936,14 @@ sub get_db_locales {
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
-        'SHOW lc_ctype', $db or 
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
+        'SHOW lc_ctype', $db or
         die "Internal error: could not call $psql to determine db lc_ctype: $!";
     my $out = <PSQL>;
     close PSQL;
     ($ctype) = $out =~ /^([\w.\@-]+)$/; # untaint
-    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc', 
-        'SHOW lc_collate', $db or 
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
+        'SHOW lc_collate', $db or
         die "Internal error: could not call $psql to determine db lc_collate: $!";
     $out = <PSQL>;
     close PSQL;
@@ -940,7 +959,7 @@ sub get_db_locales {
 # Return the CTYPE and COLLATE locales of a cluster. This needs to be called
 # as root or as the cluster owner. (For versions <= 8.3; for >= 8.4, use
 # get_db_locales()).
-# Arguments: <version> <cluster> 
+# Arguments: <version> <cluster>
 # Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
 sub get_cluster_locales {
     my ($version, $cluster) = @_;
@@ -1003,7 +1022,7 @@ sub get_cluster_controldata {
 # Return an array with all databases of a cluster. This requires connection
 # privileges to template1, so this function should be called as the
 # cluster owner.
-# Arguments: <version> <cluster> 
+# Arguments: <version> <cluster>
 # Returns: array of database names or undef on error.
 sub get_cluster_databases {
     my ($version, $cluster) = @_;
@@ -1089,7 +1108,7 @@ sub parse_hba_line {
 	goto error unless $valid_methods{$tok[0]};
 	$$res{'method'} = join (' ', @tok);
 	return $res;
-    } 
+    }
 
     # host connection?
     if ($$res{'type'} =~ /^host((no)?ssl)?$/) {

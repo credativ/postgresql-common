@@ -94,6 +94,7 @@ is_deeply \%conf, {}, 'read_conf_file returns empty dict for nonexisting file';
 
 mkdir "$tdir/8.4";
 mkdir "$tdir/8.4/test" or die "mkdir: $!";
+mkdir "$tdir/conf.d" or die "mkdir: $!";
 my $c = "$tdir/8.4/test/foo.conf";
 open F, ">$c" or die "Could not create $c: $!";
 print F <<EOF;
@@ -142,9 +143,30 @@ print F <<EOF;
 
 intval = -1
 include '8.4/test/foo.conf'
+include_dir 'conf.d'
 strval = 'howdy'
 include_if_exists '/nonexisting.conf'
 include_if_exists '8.4/test/condinc.conf'
+EOF
+close F;
+
+open F, ">$tdir/conf.d/sub.conf" or die "Could not create $tdir/conf.d/sub.conf: $!";
+print F <<EOF;
+subvalue = 1
+include '../relative.conf'
+EOF
+close F;
+
+open F, ">$tdir/relative.conf" or die "Could not create $tdir/relative.conf: $!";
+print F <<EOF;
+relativevalue = 1
+include '$tdir/absolute.conf'
+EOF
+close F;
+
+open F, ">$tdir/absolute.conf" or die "Could not create $tdir/absolute.conf: $!";
+print F <<EOF;
+absolutevalue = 1
 EOF
 close F;
 
@@ -160,6 +182,9 @@ is_deeply (\%conf, {
       'cemptystr' => '',
       'quotestr' => "test ! -f '/tmp/%f' && echo 'yes'",
       'condint' => 42,
+      'subvalue' => 1,
+      'relativevalue' => 1,
+      'absolutevalue' => 1,
     }, 'read_conf_file() parsing with include directives');
 
 

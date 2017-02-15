@@ -4,7 +4,7 @@
 # process attached.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2015 Christoph Berg <myon@debian.org>
+# (C) 2015-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -79,8 +79,9 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
 unlink $c.'/pg_hba.conf', $c.'/pg_ident.conf', $c.'/postgresql.conf',
     $c.'/start.conf', $c.'/log', $c.'/autovacuum_log', $c.'/pgdata',
     $c.'/environment', $c.'/pg_ctl.conf';
+rmdir $_ foreach (map { /(.*)/ && $1 } glob "$c/*"); # remove empty conf.d directories
 unlink $info{'logfile'} if defined ($info{'logfile'});
-if ($info{'socketdir'} !~ /^(\/tmp|\/var\/run\/postgresql)\/?$/) {
+if ($info{'socketdir'} and $info{'socketdir'} !~ /^(\/tmp|\/var\/run\/postgresql)\/?$/) {
     rmdir $info{'socketdir'};
 }
 rmdir $c;
@@ -104,7 +105,7 @@ if ($info{statstempdir}) {
 }
 
 # notify systemd when an autostarted cluster went away
-if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/run/systemd/system') {
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf and $startconf eq 'auto' and -d '/run/systemd/system') {
     if ($> == 0) {
         system 'systemctl daemon-reload';
     } elsif (-t 1) {

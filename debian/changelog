@@ -1,3 +1,26 @@
+postgresql-common (179~bpo8+1) jessie-backports; urgency=medium
+
+  * Rebuild for jessie-backports.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 15 Feb 2017 19:46:48 +0100
+
+postgresql-common (179) unstable; urgency=medium
+
+  * Catch all pg_ctl output by redirecting it to /var/log/postgresql.
+    (Closes: #830485)
+  * Dump locale environment variables if setlocale fails.
+    (Closes: #848869)
+  * Set default log_line_prefix to '%m [%p] %q%u@%d ' to match upstream
+    moving to '%m [%p] ' in PostgreSQL 10.
+  * Support include_dir in read_conf_file. Patch by Andreas Dewes, thanks!
+  * Support adding include directives to the new postgresql.conf from
+    createcluster.conf; harness directives with an "add_" prefix, e.g.
+    "add_include_dir".
+  * Import new apt.postgresql.org key.
+  * Support 9.6 for jessie-backports.
+
+ -- Christoph Berg <myon@debian.org>  Tue, 24 Jan 2017 23:03:12 +0100
+
 postgresql-common (178~bpo8+1) jessie-backports; urgency=medium
 
   * Backport to jessie-backports.

@@ -6,7 +6,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2009 Cyril Bouthors <cyril@bouthors.org>
-# (C) 2013-2015 Christoph Berg <myon@debian.org>
+# (C) 2013-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
+use POSIX qw/setsid dup2 :sys_wait_h/;
 use PgCommon;
 use Fcntl qw(SEEK_SET O_RDWR O_CREAT O_EXCL);
 
@@ -203,12 +203,24 @@ sub start {
 
     if (fork) {
         wait;
-        error "could not exec $pg_ctl @options: $!" if $?;
+        if ($?) {
+            my $exit = $? >> 8;
+            print STDERR "Error: $pg_ctl @options exited with status $exit: $!\n";
+            my $currlogsize = (stat $info{'logfile'})[7] if $info{'logfile'} && -r $info{'logfile'};
+            if ($currlogsize) {
+                open LOG, $info{'logfile'} or
+                    error "Could not open log file " . $info{'logfile'};
+                seek LOG, $logsize, SEEK_SET;
+                print STDERR $_ while <LOG>;
+            }
+            exit $exit;
+        }
     } else {
         setsid or error "could not start session: $!";
-	# without this, you'll get zombies on startup
-        dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
-        dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 2);
+        # without dup2, you'll get zombies on startup
+        my $output = $info{'logfile'} && -r $info{'logfile'} ? $info{'logfile'} : '/dev/null';
+        dup2(POSIX::open($output, POSIX::O_WRONLY | POSIX::O_APPEND | POSIX::O_CREAT), 1);
+        dup2(POSIX::open($output, POSIX::O_WRONLY | POSIX::O_APPEND | POSIX::O_CREAT), 2);
         exec $pg_ctl @options or error "could not exec $pg_ctl @options: $!";
     }
 
