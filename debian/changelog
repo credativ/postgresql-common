@@ -1,3 +1,11 @@
+postgresql-common (181) UNRELEASED; urgency=medium
+
+  * debian/postgresql-common.config: Fix deprecation warning debconf message
+    to use a numerical comparison on the version number.
+  * pgdg/apt.postgresql.org.sh: Add known distributions.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 10 Feb 2017 15:13:42 +0100
+
 postgresql-common (180) unstable; urgency=medium
 
   * supported-versions: Retire 9.1 on apt.postgresql.org.
