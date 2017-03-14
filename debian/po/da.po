@@ -1,14 +1,14 @@
 # Danish translation postgresql-common.
-# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER.
+# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER.
 # This file is distributed under the same license as the postgresql-common package.
-# Joe Hansen (joedalton2@yahoo.dk), 2011, 2014.
+# Joe Hansen (joedalton2@yahoo.dk), 2011, 2014, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2016-03-05 11:47+0100\n"
-"PO-Revision-Date: 2014-07-06 19:25+0200\n"
+"PO-Revision-Date: 2017-03-04 19:25+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
 "Language: da\n"
@@ -114,7 +114,7 @@ msgstr "Hvis usikker, aktiver SSL."
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "PostgreSQL ${version}-katalogversion ændrede sig"
 
 #. Type: note
 #. Description
@@ -126,6 +126,10 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"PostgreSQL-klyngen ${version} ${cluster} blev oprettet med katalogversion "
+"${db_catversion}, men den i øjeblikket installeret pakke postgresql-${version} "
+"bruger katalogversion ${new_catversion}. Du vil ikke være i stand til "
+"at bruge denne klynge indtil den er opgraderet til den nye katalogversion."
 
 #. Type: note
 #. Description
@@ -134,3 +138,6 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"Det nødvendige undersæt af binære filer fra den gamle version blev "
+"gemt i ${vartmpdir}. For at opgradere klyngen, så kør disse kommandoer:"
+
