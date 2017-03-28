@@ -5,7 +5,7 @@ postgresql-common (181) UNRELEASED; urgency=medium
   * pg_buildext: Fix to use a numerical comparison on the version number.
   * t/001_packages.t: PostgreSQL 10 doesn't have a separate contrib package.
   * t/020_create_sql_remove.t: Use CREATE EXTENSION, createlang is being
-    removed.
+    removed; pg_log directory name changed in 10.
   * Updated Danish debconf translation by Joe Dalton, thanks!
     (Closes: #856787)
 

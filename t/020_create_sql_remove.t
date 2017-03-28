@@ -135,7 +135,8 @@ sub check_major {
         'restarting cluster with explicitly configured log file');
     ok -z $default_log, "default log is not used";
     ok !-z $p, "log symlink target is used for startup message";
-    my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/pg_log/$v#main.log*");
+    my $pg_log = $v >= 10 ? 'log' : 'pg_log'; # log directory in PGDATA changed in PG 10
+    my @l = glob ((PgCommon::cluster_data_directory $v, 'main') .  "/$pg_log/$v#main.log*");
     is $#l, 0, 'exactly one log file';
     ok (-e $l[0] && ! -z $l[0], 'custom log is actually used');
     SKIP: { skip "no logging_collector in $v", 2 if ($v < 8.3);
