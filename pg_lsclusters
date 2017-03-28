@@ -26,12 +26,13 @@ push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Lo
     unless ($no_header);
 
 foreach my $v (sort { $a <=> $b } (get_versions())) {
+    my $pg_log = $v >= 10 ? 'log' : 'pg_log'; # log directory in PGDATA changed in PG 10
     my @clusters = get_version_clusters $v;
     foreach my $c (sort @clusters) {
         my %info = cluster_info $v, $c;
         my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
         if (config_bool ($info{logging_collector})) {
-            my $path = $info{log_directory} || 'pg_log';
+            my $path = $info{log_directory} || $pg_log;
             my $file = $info{log_filename} || 'postgresql-%Y-%m-%d_%H%M%S.log';
             $logfile = "$path/$file";
         }
