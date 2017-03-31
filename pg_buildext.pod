@@ -234,12 +234,6 @@ which has C<debian/> as subdirectory), use the I<src-dir> argument. Example:
   override_dh_auto_build:
 	  +pg_buildext build $(CURDIR)/postgresql-module build-%v
 
-=head1 ENVIRONMENT
-
-B<pg_buildext> sets B<PG_VIRTUALENV_UNSHARE=-n> for the installcheck actions by
-default to request a new network namespace, enabling several instances running
-in parallel to share port 5432. Override by setting to a different value.
-
 =head1 COMPATIBILITY
 
 B<pg_buildext loop> was introduced in postgresql-server-dev-all (>= 141~).
