@@ -4,7 +4,7 @@ pg_buildext - Build and install a PostgreSQL extension
 
 =head1 SYNOPSIS
 
-B<pg_buildext> [I<options>] I<action> [I<options>]
+B<pg_buildext> [I<options>] I<action> [I<src-dir>] [I<arguments>]
 
 =head1 DESCRIPTION
 
@@ -82,27 +82,27 @@ B<updatecontrol> needs to be run manually.
 Update C<debian/control> from C<debian/control.in>, and C<debian/tests/control>
 from C<debian/tests/control.in> if the latter exists.
 
-=item B<configure> I<build-dir> [I<extra-configure-options>]
+=item B<configure> [I<src-dir>] I<build-dir> [I<extra-configure-options>]
 
 For every supported version, call B<../configure> from the I<build-dir>
 directory. (Most PostgreSQL extensions do not have a configure script.)
 
-=item B<build> I<build-dir> [I<extra-cflags>]
+=item B<build> [I<src-dir>] I<build-dir> [I<extra-cflags>]
 
 Build the extension in the I<build-dir> directory.
 
-=item B<install> I<build-dir> I<package-pattern>
+=item B<install> [I<src-dir>] I<build-dir> I<package-pattern>
 
 Invoke B<make install> from the I<build-dir> directory.
 The third parameter specifies the package name to use. Most packages
 use B<postgresql-%v-pkgname>. Make will be
 called with DESTDIR="$(CURDIR)/debian/I<package>".
 
-=item B<clean> I<build-dir>
+=item B<clean> [I<src-dir>] I<build-dir>
 
 Clean the build directory.
 
-=item B<loop> I<package-pattern>
+=item B<loop> [I<src-dir>] I<package-pattern>
 
 As a variant to calling B<build> and B<install> separately for VPATH builds,
 loop over the supported PostgreSQL versions in the top source directory. This
@@ -110,7 +110,7 @@ should be used if the package does not support VPATH builds. As it also invokes
 B<make install>, it should be placed were installation happens in debian/rules,
 rather than where build would normally be called.
 
-=item B<installcheck> [I<build-dir>]
+=item B<installcheck> [I<src-dir>] [I<build-dir>]
 
 Use B<pg_virtualenv make installcheck> to run the extension regression tests.
 This is meant to be run from C<debian/tests/control> using B<autopkgtest>. If
@@ -226,6 +226,14 @@ configure the list of supported versions on your system.
 
 =back
 
+=head1 SOURCE DIRECTORY
+
+If the package source code is not in the top level directory (i.e. the directory
+which has C<debian/> as subdirectory), use the I<src-dir> argument. Example:
+
+  override_dh_auto_build:
+	  +pg_buildext build $(CURDIR)/postgresql-module build-%v
+
 =head1 ENVIRONMENT
 
 B<pg_buildext> sets B<PG_VIRTUALENV_UNSHARE=-n> for the installcheck actions by
@@ -233,9 +241,6 @@ default to request a new network namespace, enabling several instances running
 in parallel to share port 5432. Override by setting to a different value.
 
 =head1 COMPATIBILITY
-
-Earlier B<pg_buildext> versions required a "source dir" argument after the
-action. This is now deprecated, but still accepted (and ignored).
 
 B<pg_buildext loop> was introduced in postgresql-server-dev-all (>= 141~).
 

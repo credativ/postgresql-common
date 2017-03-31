@@ -36,7 +36,7 @@ shift $(($OPTIND - 1))
 
 [ "${1:-}" ] || die "no action given"
 action="$1"
-if [ -d "${2:-}" ] && [ "${3:-}" ]; then # compat mode: $2 is source directory
+if [ -d "${2:-}" ] && [ "${3:-}" ]; then # optional: $2 is source directory
     srcdir="${2:-}"
     shift
 else
@@ -80,7 +80,7 @@ install() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} install DESTDIR="$srcdir/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
+    make -C $vtarget ${makefile:-} install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" srcdir="$srcdir" USE_PGXS=1
 }
 
 clean() {
@@ -98,11 +98,11 @@ loop() {
     package=$(echo $target | sed -e "s:%v:$1:g")
 
     echo "# $1: make clean"
-    make clean   PG_CONFIG="$pgc" USE_PGXS=1
+    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1
     echo "# $1: make"
-    make         PG_CONFIG="$pgc" USE_PGXS=1
+    make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1
     echo "# $1: make install"
-    make install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
     echo "### done $1 ###"
 }
 
@@ -249,7 +249,7 @@ do
 	    ;;
 
 	configure|build|install|clean|loop)
-	    [ "$target" ] || die "syntax: pg_buildext $action <target> [<opt>]"
+	    [ "$target" ] || die "syntax: pg_buildext $action <target> [<srcdir>] [<opt>]"
 	    echo "### $action $v ###"
 	    $action $v
 	    ;;
