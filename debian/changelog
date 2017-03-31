@@ -3,6 +3,7 @@ postgresql-common (181) UNRELEASED; urgency=medium
   * debian/postgresql-common.config: Fix deprecation warning debconf message
     to use a numerical comparison on the version number.
   * pg_buildext: Fix to use a numerical comparison on the version number.
+  * pg_buildext.pod: Drop outdated PG_VIRTUALENV_UNSHARE=-n documentation.
   * pgdg/apt.postgresql.org.sh: Add known distributions.
   * Updated Danish debconf translation by Joe Dalton, thanks!
     (Closes: #856787)
