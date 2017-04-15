@@ -97,9 +97,8 @@ sub init_db {
         wait;
         error 'initdb failed' if $?;
     } else{
-        close STDOUT;
         change_ugid $owneruid, $ownergid;
-        open STDOUT, ">/dev/null";
+        print "@initdb\n";
         exec @initdb;
     }
 }
@@ -370,11 +369,7 @@ if (-f "$datadir/PG_VERSION") {
         error "$datadir already contains a version $existingver cluster";
     }
 } else {
-    my $loc = $locale || setlocale (LC_CTYPE);
-    print "Creating new cluster $version/$cluster ...\n";
-    print "  config $confdir\n";
-    print "  data   $datadir\n";
-    print "  locale $loc\n";
+    print "Creating new PostgreSQL cluster $version/$cluster ...\n";
     init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
@@ -419,12 +414,10 @@ unless ($socketdir) {
         $socketdir='/tmp';
     }
 }
-print "  socket $socketdir\n";
 set_cluster_socketdir $version, $cluster, $socketdir;
 $> = $orig_euid;
 $) = $orig_egid;
 
-print "  port   $port\n";
 set_cluster_port $version, $cluster, $port;
 
 # create log file
@@ -611,6 +604,9 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/ru
 if ($start) {
     system 'pg_ctlcluster', $version, $cluster, 'start';
 }
+
+# finally, show the cluster we created
+system 'pg_lsclusters', $version, $cluster;
 
 END {
     # clean up cruft if something went wrong
