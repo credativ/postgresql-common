@@ -9,6 +9,8 @@ postgresql-common (181) UNRELEASED; urgency=medium
   * t/020_create_sql_remove.t: Use CREATE EXTENSION, createlang is being
     removed.
   * pg_lsclusters, t: pg_log directory name changed in 10.
+  * pg_createcluster, createcluster.conf: Update for --waldir rename.
+  * Symlink /usr/bin/pg_receivewal to pg_wrapper.
   * Updated Danish debconf translation by Joe Dalton, thanks!
     (Closes: #856787)
 

@@ -10,6 +10,7 @@ postgresql-client-common: binary-without-manpage usr/bin/pg_basebackup
 postgresql-client-common: binary-without-manpage usr/bin/pg_dump
 postgresql-client-common: binary-without-manpage usr/bin/pg_dumpall
 postgresql-client-common: binary-without-manpage usr/bin/pg_isready
+postgresql-client-common: binary-without-manpage usr/bin/pg_receivewal
 postgresql-client-common: binary-without-manpage usr/bin/pg_receivexlog
 postgresql-client-common: binary-without-manpage usr/bin/pg_recvlogical
 postgresql-client-common: binary-without-manpage usr/bin/pg_restore

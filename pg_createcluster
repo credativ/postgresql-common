@@ -65,8 +65,9 @@ sub init_db {
 	push @initdb, split (/\s+/, replace_v_c ($options, $version, $cluster));
     }
     push @initdb, ('-D', $datadir);
-    if (my $xlogdir = $defaultconf{'xlogdir'}) {
-	push @initdb, ('--xlogdir', replace_v_c ($xlogdir, $version, $cluster));
+    if (my $waldir = $defaultconf{'waldir'} || $defaultconf{'xlogdir'}) {
+        my $wal = $version >= 10 ? 'wal' : 'xlog'; # renamed in PG 10
+	push @initdb, ("--${wal}dir", replace_v_c ($waldir, $version, $cluster));
     }
     if ($explicit_auth_config) {
 	# do nothing
@@ -576,7 +577,7 @@ if ($socketdir eq '/var/run/postgresql') {
 
 # handle other createcluster.conf parameters
 foreach my $guc (sort keys %defaultconf) {
-    next if $guc =~ /^(create_main_cluster|start_conf|data_directory|xlogdir|initdb_options|ssl)$/;
+    next if $guc =~ /^(create_main_cluster|start_conf|data_directory|waldir|xlogdir|initdb_options|ssl)$/;
     next if $guc eq 'logging_collector' and $version < 8.3;
     next if $guc eq 'cluster_name' and $version < 9.5;
     my $val = replace_v_c ($defaultconf{$guc}, $version, $cluster);
@@ -873,11 +874,13 @@ Default C<start.conf> value to use.
 
 Default data directory.
 
-=item B<xlogdir> (Default: unset)
+=item B<waldir|xlogdir> (Default: unset)
 
 Default directory for transaction logs. When used, B<initdb> will create a
-symlink from C<pg_xlog> in the data directory to this location. Unset by
-default, i.e. pg_xlog is remains in the data directory.
+symlink from C<pg_wal> (PostgreSQL 9.6 and earlier: C<pg_xlog>) in the data
+directory to this location. Unset by default, i.e. transaction logs remain in
+the data directory. Both spellings of this option are accepted, and translated
+to the correct initdb invocation depending on the cluster version.
 
 =item B<initdb_options> (Default: unset)
 

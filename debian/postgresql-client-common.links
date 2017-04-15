@@ -10,6 +10,7 @@ usr/share/postgresql-common/pg_wrapper usr/bin/pg_basebackup
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_dump
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_dumpall
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_isready
+usr/share/postgresql-common/pg_wrapper usr/bin/pg_receivewal
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_receivexlog
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_recvlogical
 usr/share/postgresql-common/pg_wrapper usr/bin/pg_restore
