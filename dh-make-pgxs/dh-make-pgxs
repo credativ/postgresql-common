@@ -74,6 +74,8 @@ install_template ()
     fi
 }
 
+mkdir -p debian
+
 for template in $(find $template_dir -mindepth 1 | sort); do
     case $template in
         *.swp|*~) continue ;; # skip vim stuff
