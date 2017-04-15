@@ -10,6 +10,7 @@ postgresql-common (181) UNRELEASED; urgency=medium
     removed.
   * pg_lsclusters, t: pg_log directory name changed in 10.
   * pg_lsclusters: Allow listing one version or one cluster only.
+  * pg_lsclusters: Support JSON output, suggest libjson-perl for that.
   * pg_createcluster, createcluster.conf: Update for --waldir rename.
   * pg_createcluster: Do not suppress initdb output, and use pg_lsclusters to
     show created cluster info.

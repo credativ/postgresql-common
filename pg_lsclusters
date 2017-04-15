@@ -20,7 +20,11 @@ use Getopt::Long;
 
 # option handling
 my $no_header;
-exit 1 unless GetOptions ('h|no-header' => \$no_header);
+my $json;
+exit 1 unless GetOptions (
+    'h|no-header' => \$no_header,
+    'j|json' => \$json,
+);
 
 my @versions;
 if (@ARGV >= 1) {
@@ -39,6 +43,7 @@ if (@ARGV >= 2 and $ARGV[1] =~ /^([-.\w]+)$/) {
 my @lines;
 push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Log file']
     unless ($no_header);
+my $jsoninfo = [];
 
 foreach my $v (@versions) {
     my $pg_log = $v >= 10 ? 'log' : 'pg_log'; # log directory in PGDATA changed in PG 10
@@ -61,10 +66,21 @@ foreach my $v (@versions) {
             ($info{'running'} ? "online" : "down") . ($info{'recovery'} ? ",recovery" : ""),
             defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>',
             $info{'pgdata'} || '<not set>', $destination];
+        $info{version} = $v;
+        $info{cluster} = $c;
+        push @$jsoninfo, \%info;
     }
 }
 
 # output
+if ($json) {
+    eval { require JSON; };
+    error 'Please install JSON.pm for JSON output (Debian: libjson-perl)'
+        if ($@);
+    print JSON::encode_json($jsoninfo) . "\n";
+    exit 0;
+}
+
 my @colwidth = qw(1 1 1 1 1 1 1);
 foreach my $line (@lines) {
     for (my $i = 0; $i < @$line - 1; $i++) { # skip adjustment for last column
@@ -110,6 +126,11 @@ This command shows a list about the configuration and status of all clusters.
 =item B<-h>, B<--no-header>
 
 Do not print the column header line.
+
+=item B<-j>, B<--json>
+
+Output information in JSON format. Needs JSON.pm installed.
+(Debian package: libjson-perl)
 
 =back
 
