@@ -87,12 +87,6 @@ sub init_db {
     push @initdb, ('--lc-time', $lc_time) if $lc_time;
     push @initdb, @$initdb_opts_from_cli;
 
-    # pre-8.2 servers do not ignore LANG when LC_ALL is set; work around this
-    # bug
-    if ($version <= '8.2' && $ENV{'LC_ALL'}) {
-        $ENV{'LANG'} = $ENV{'LC_ALL'};
-    }
-
     if (fork) {
         wait;
         error 'initdb failed' if $?;
@@ -123,21 +117,6 @@ sub move_conffile {
         error "move_conffile: required configuration file $realfile does not exist";
     }
 }
-
-#
-# Version specific default configuration
-#
-
-sub configure_8_1 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
-}
-
-sub configure_8_2 {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'stats_row_level', 'on';
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'autovacuum', 'on';
-}
-# >= 8.3 enables autovacuum by default
 
 # Set up the default pg_hba.conf file:
 # - Add a "local all" entry to pg_hba.conf for the db superuser before all
@@ -446,11 +425,6 @@ if ($custom_logfile) {
     symlink $real_logfile, "$confdir/log";
     chown $owneruid, $ownergid, "$confdir/log";
 }
-
-# version specific default configuration tweaking
-$conf_fn = "configure_$version";
-$conf_fn =~tr/./_/;
-&$conf_fn if defined &$conf_fn and $newcluster;
 
 # SSL configuration
 my $want_ssl = PgCommon::config_bool($defaultconf{ssl} || 'true');
