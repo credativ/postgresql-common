@@ -2,7 +2,7 @@
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2016 Christoph Berg <myon@debian.org>
+# (C) 2013-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,16 +18,31 @@ use strict;
 use PgCommon;
 use Getopt::Long;
 
+# option handling
 my $no_header;
 exit 1 unless GetOptions ('h|no-header' => \$no_header);
 
+my @versions;
+if (@ARGV >= 1) {
+    $ARGV[0] =~ /^(\d+(\.\d+)?)$/ or error "Invalid version number \"$ARGV[0]\"";
+    push @versions, $1;
+} else {
+    @versions = sort { $a <=> $b } (get_versions());
+}
+
+my $ls_cluster;
+if (@ARGV >= 2 and $ARGV[1] =~ /^([-.\w]+)$/) {
+    $ls_cluster = $1;
+}
+
+# data collection
 my @lines;
 push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Log file']
     unless ($no_header);
 
-foreach my $v (sort { $a <=> $b } (get_versions())) {
+foreach my $v (@versions) {
     my $pg_log = $v >= 10 ? 'log' : 'pg_log'; # log directory in PGDATA changed in PG 10
-    my @clusters = get_version_clusters $v;
+    my @clusters = $ls_cluster ? $ls_cluster : get_version_clusters $v;
     foreach my $c (sort @clusters) {
         my %info = cluster_info $v, $c;
         my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
@@ -49,6 +64,7 @@ foreach my $v (sort { $a <=> $b } (get_versions())) {
     }
 }
 
+# output
 my @colwidth = qw(1 1 1 1 1 1 1);
 foreach my $line (@lines) {
     for (my $i = 0; $i < @$line - 1; $i++) { # skip adjustment for last column
@@ -81,7 +97,7 @@ pg_lsclusters - show information about all PostgreSQL clusters
 
 =head1 SYNOPSIS
 
-B<pg_lsclusters> [I<options>]
+B<pg_lsclusters> [I<options>] [I<version> [I<cluster>]]
 
 =head1 DESCRIPTION
 
