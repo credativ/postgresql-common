@@ -427,7 +427,7 @@ if ($custom_logfile) {
 }
 
 # SSL configuration
-my $want_ssl = PgCommon::config_bool($defaultconf{ssl} || 'true');
+my $want_ssl = PgCommon::config_bool($defaultconf{ssl} || 'on');
 
 # Check whether we can access the SSL private key as the cluster owner
 my $ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key';
@@ -484,7 +484,7 @@ if ($want_ssl && $newcluster && -e $ssl_cert_file && $ssl_key_access) {
         symlink $ssl_key_file, "$datadir/server.key";
     }
 
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'true';
+    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'ssl', 'on';
 }
 
 # SSL client certificate CA
