@@ -26,15 +26,16 @@ exit 1 unless GetOptions (
     'j|json' => \$json,
 );
 
-my @versions;
-if (@ARGV >= 1) {
-    $ARGV[0] =~ /^(\d+(\.\d+)?)$/ or error "Invalid version number \"$ARGV[0]\"";
+my (@versions, $ls_cluster);
+if (@ARGV == 1 and $ARGV[0] =~ m{^(\d+(?:\.\d+)?)[-/]([-.\w]+)$}) {
+    push @versions, $1;
+    $ls_cluster = $2;
+} elsif (@ARGV >= 1) {
+    $ARGV[0] =~ /^(\d+(?:\.\d+)?)$/ or error "Invalid version number \"$ARGV[0]\"";
     push @versions, $1;
 } else {
     @versions = sort { $a <=> $b } (get_versions());
 }
-
-my $ls_cluster;
 if (@ARGV >= 2 and $ARGV[1] =~ /^([-.\w]+)$/) {
     $ls_cluster = $1;
 }
@@ -117,7 +118,8 @@ B<pg_lsclusters> [I<options>] [I<version> [I<cluster>]]
 
 =head1 DESCRIPTION
 
-This command shows a list about the configuration and status of all clusters.
+This command list the status and some configuration details of all clusters.
+If a version and optionally a cluster name are given, only these are shown.
 
 =head1 OPTIONS
 
