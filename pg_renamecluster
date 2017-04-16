@@ -99,14 +99,15 @@ if ($info{pgdata}) {
 }
 
 # rename stats_temp_directory
-if ($info{statstempdir}) {
-    my $newstatstempdir = strrepl ($info{statstempdir}, $oldcluster, $newcluster);
-    if ($info{statstempdir} ne $newstatstempdir) {
+my $statstempdir = $info{config}->{stats_temp_directory};
+if ($statstempdir) {
+    my $newstatstempdir = strrepl ($statstempdir, $oldcluster, $newcluster);
+    if ($statstempdir ne $newstatstempdir) {
         PgCommon::set_conf_value $version, $newcluster, 'postgresql.conf',
             'stats_temp_directory', $newstatstempdir;
-        if (-d $info{statstempdir}) {
-            rename $info{statstempdir}, $newstatstempdir or
-                error "Could not rename stats temp directory $info{statstempdir}: $!";
+        if (-d $statstempdir) {
+            rename $statstempdir, $newstatstempdir or
+                error "Could not rename stats temp directory $statstempdir}: $!";
         }
     }
 }

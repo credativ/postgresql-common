@@ -52,12 +52,12 @@ foreach my $v (@versions) {
     foreach my $c (sort @clusters) {
         my %info = cluster_info $v, $c;
         my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
-        if (config_bool ($info{logging_collector})) {
-            my $path = $info{log_directory} || $pg_log;
-            my $file = $info{log_filename} || 'postgresql-%Y-%m-%d_%H%M%S.log';
+        if (config_bool ($info{config}->{logging_collector})) {
+            my $path = $info{config}->{log_directory} || $pg_log;
+            my $file = $info{config}->{log_filename} || 'postgresql-%Y-%m-%d_%H%M%S.log';
             $logfile = "$path/$file";
         }
-        my $destination = $info{log_destination} || 'stderr';
+        my $destination = $info{config}->{log_destination} || 'stderr';
         $destination =~ s/stderr/$logfile/;
         my $csvlog = $logfile;
         $csvlog =~ s/(?:\.log)?$/.csv/;

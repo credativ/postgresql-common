@@ -473,9 +473,9 @@ if ($action ne 'stop' && ! -d $info{'socketdir'}) {
 }
 
 # recreate stats_temp_directory
-if ($action ne 'stop' && $info{'statstempdir'} && ! -d $info{'statstempdir'}) {
+if ($action ne 'stop' && $info{config}->{stats_temp_directory} && ! -d $info{config}->{stats_temp_directory}) {
     system 'install', '-d', '-m', 750,
-	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{'statstempdir'};
+	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{config}->{stats_temp_directory};
 }
 
 if ($> == 0) {

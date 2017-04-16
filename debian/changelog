@@ -12,7 +12,8 @@ postgresql-common (182) UNRELEASED; urgency=medium
   * pg_createcluster: Do not suppress initdb output, and use pg_lsclusters to
     show created cluster info.
   * Symlink /usr/bin/pg_receivewal to pg_wrapper.
-  * PgCommon.pm: Remove avac_enable, unused since 2009 (ca67430359).
+  * PgCommon.pm: Include postgresql.conf in cluster_info and remove variables
+    directly copied from config; adjust callers.
 
  -- Christoph Berg <myon@debian.org>  Sat, 15 Apr 2017 18:56:38 +0200
 

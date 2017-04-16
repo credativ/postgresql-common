@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2016 Christoph Berg <myon@debian.org>
+# (C) 2013-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ sub adapt_conffiles {
         deprecate \%c, 'krb_srvname', 'native krb5 authentication deprecated in favor of GSSAPI';
         # grab dsmt from the new config just written by initdb
         unless ($c{dynamic_shared_memory_type}) {
-            set 'dynamic_shared_memory_type', ($newinfo{dynamic_shared_memory_type} || 'mmap');
+            set 'dynamic_shared_memory_type', ($newinfo{config}->{dynamic_shared_memory_type} || 'mmap');
         }
     }
 
