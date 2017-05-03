@@ -422,7 +422,7 @@ if (not $skip_systemctl_redirect and getppid() != 1 and # not run from init
         if ($action eq 'stop' and not $unit_active) {
             # proceed with pg_ctlcluster
         } else {
-            print "Redirecting $action request to systemctl\n" if (-t 1);
+            #print "Redirecting $action request to systemctl\n" if (-t 1);
             system 'systemctl', $action, "postgresql\@$version-$cluster";
             exit $? >> 8;
             # program end
