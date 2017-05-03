@@ -4,7 +4,7 @@
 # This does not interfere with existing clusters.
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2015 Christoph Berg <myon@debian.org>
+# (C) 2012-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -186,11 +186,10 @@ for v in $PG_VERSIONS; do
 	    ${PGPORT:+-p "$PGPORT"} \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
-	    ${CREATE_OPTS:-} "${PGCONF_OPTS[@]}" $v regress -- \
+            ${CREATE_OPTS:-} --pgoption fsync=off "${PGCONF_OPTS[@]}" --start $v regress -- \
 	    --username="$PGUSER" --pwfile="$PWFILE" $NOSYNC ${INITDB_OPTS:-}
 	# in fakeroot, the username will likely default to "postgres" otherwise
         echo "This is a temporary throw-away cluster" > ${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/.by_pg_virtualenv
-	pg_ctlcluster -o '-F' $v regress start
     )
     port=$(pg_conftool -s $v regress show port)
 
