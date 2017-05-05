@@ -1,0 +1,31 @@
+=head1 NAME
+
+dh_make_pgxs - Create a new Debian source package for a PGXS PostgreSQL extension
+
+=head1 SYNOPSIS
+
+B<dh_make_pgxs> [B<-f>]
+
+=head1 DESCRIPTION
+
+B<dh_make_pgxs> creates a F<debian/> directory tree for PostgreSQL extension
+packages using the PGXS build system. The B<pg_buildext> tool is used for the
+build process.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-f>
+
+Overwrite existing files.
+
+=back
+
+=head1 SEE ALSO
+
+dh_make(1), pg_buildext(1).
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) 2015 Christoph Berg <myon@debian.org>
+# (C) 2015-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ shift $((OPTIND - 1)) # shift away args
 
 # variables
 
-template_dir="/usr/share/postgresql-common/dh-make-pgxs/debian"
+template_dir="/usr/share/postgresql-common/dh_make_pgxs/debian"
 DIRECTORY="$(basename $PWD)"
 NAME="${DIRECTORY%-*}" # Upstream name
 SOURCE="${NAME//_/-}"  # Debian name
