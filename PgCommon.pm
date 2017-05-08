@@ -102,7 +102,7 @@ sub config_bool {
 sub quote_conf_value ($) {
     my $value = shift;
     return $value if ($value =~ /^-?[\d.]+$/); # integer or float
-    return $value if ($value =~ /^\w+$/); # plain word
+    return $value if ($value =~ m{^[[:alpha:]][[:alnum:]._:/-]*$}); # plain word (UNQUOTED_STRING in guc-file.l)
     $value =~ s/'/''/g; # else quote it
     return "'$value'";
 }
@@ -165,7 +165,7 @@ sub read_conf_file {
                 $v =~ s/\\(.)/$1/g;
                 $v =~ s/''/'/g;
                 $conf{$k} = $v;
-            } elsif (/^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[\w.]+)\s*(?:#.*)?$/i) {
+            } elsif (m{^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[[:alnum:]][[:alnum:]._:/-]*)\s*(?:\#.*)?$}i) {
                 # simple value
                 my $v = $2;
                 my $k = $1;
@@ -173,7 +173,7 @@ sub read_conf_file {
                 $conf{$k} = $v;
             } else {
                 chomp;
-                error "Invalid line $. in $config_path: »$_«";
+                error "invalid line $. in $config_path: $_";
             }
         }
         close F;
