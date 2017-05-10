@@ -186,6 +186,11 @@ sub adapt_conffiles {
             set 'cluster_name', $cluster_name;
         }
     }
+
+    if ($newversion >= '10') {
+        rename_ \%c, 'min_parallel_relation_size', 'min_parallel_table_scan_size';
+        deprecate \%c, 'sql_inheritance', 'does not exist anymore';
+    }
 }
 
 # Save original pg_hba.conf, replace it with one that only allows local access

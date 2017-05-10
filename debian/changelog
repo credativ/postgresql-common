@@ -12,6 +12,8 @@ postgresql-common (182) UNRELEASED; urgency=medium
   * pg_createcluster: Do not suppress initdb output, and use pg_lsclusters to
     show created cluster info.
   * pg_ctlcluster: Suppress "Redirecting to systemctl message".
+  * pg_upgradecluster: Deprecate min_parallel_relation_size and
+    sql_inheritance in 10.
   * Symlink /usr/bin/pg_receivewal to pg_wrapper.
   * PgCommon.pm: Include postgresql.conf in cluster_info and remove variables
     directly copied from config; adjust callers.
