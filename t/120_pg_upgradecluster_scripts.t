@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => ($#MAJORS == 0) ? 1 : 35;
+use Test::More tests => ($#MAJORS == 0) ? 1 : 33;
 
 if ($#MAJORS == 0) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -29,19 +29,17 @@ is_program_out 'postgres',
     'psql test -qc "create schema s; create table s.auxdata (x varchar(10)); insert into s.auxdata values (\'schema1\')"',
     0, '', 'adding schema s and s.auxdata to test and fill in some values';
 
-# move current pg_upgradecluster.d aside for the test
-if (-d '/etc/postgresql-common/pg_upgradecluster.d' and not -d '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite') {
-    ok ((rename '/etc/postgresql-common/pg_upgradecluster.d',
-    '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite'),
-    'Temporarily moving away /etc/postgresql-common/pg_upgradecluster.d');
-} else {
-    pass '/etc/postgresql-common/pg_upgradecluster.d does not exist';
-}
-
-# create test scripts
 if (not -d '/etc/postgresql-common/pg_upgradecluster.d') {
     mkdir '/etc/postgresql-common/pg_upgradecluster.d' or die "mkdir: $!";
 }
+
+# move existing files away
+for my $f (glob("/etc/postgresql-common/pg_upgradecluster.d/*")) {
+    next if ($f =~ /\.disabled$/);
+    rename $f, "$f.disabled";
+}
+
+# create test scripts
 chmod 0755, '/etc/postgresql-common/pg_upgradecluster.d' or die "chmod: $!";
 open F, '>/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "open: $!";
 print F <<EOS;
@@ -101,15 +99,12 @@ is_program_out 'postgres', 'psql test -Atc "select * from s.auxdata"', 0,
 
 # remove test script
 unlink '/etc/postgresql-common/pg_upgradecluster.d/auxdata' or die "unlink: $!";
-rmdir '/etc/postgresql-common/pg_upgradecluster.d' or die "rmdir: $!";
 
-# restore original pg_upgradecluster.d
-if (-d '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite') {
-    ok ((rename '/etc/postgresql-common/pg_upgradecluster.d.psqltestsuite',
-    '/etc/postgresql-common/pg_upgradecluster.d'),
-    'Restoring original /etc/postgresql-common/pg_upgradecluster.d');
-} else {
-    pass '/etc/postgresql-common/pg_upgradecluster.d did not exist, not restoring';
+# restore original contents
+for my $f (glob("/etc/postgresql-common/pg_upgradecluster.d/*.disabled")) {
+    my $f2 = $f;
+    $f2 =~ s/\.disabled$//;
+    rename $f, $f2;
 }
 
 # clean up

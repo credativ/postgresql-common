@@ -5,6 +5,8 @@ postgresql-common (182) UNRELEASED; urgency=medium
   * t/001_packages.t: PostgreSQL 10 doesn't have a separate contrib package.
   * t/020_create_sql_remove.t: Use CREATE EXTENSION, createlang is being
     removed.
+  * t/120_pg_upgradecluster_scripts.t: Don't try to rename
+    pg_upgradecluster.d, fails on overlayfs.
   * pg_lsclusters, t: pg_log directory name changed in 10.
   * pg_lsclusters: Allow listing one version or one cluster only.
   * pg_lsclusters: Support JSON output, suggest libjson-perl for that.
