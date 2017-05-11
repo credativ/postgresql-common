@@ -1,5 +1,6 @@
-postgresql-common (182) UNRELEASED; urgency=medium
+postgresql-common (182) experimental; urgency=medium
 
+  * Team upload.
   * pg_buildext: Resurrect the previously deprecated "srcdir" mode to allow
     building packages from a subdirectory, and make "loop" support it as well.
   * t/001_packages.t: PostgreSQL 10 doesn't have a separate contrib package.
@@ -24,7 +25,7 @@ postgresql-common (182) UNRELEASED; urgency=medium
   * postgresql-server-dev-all: dh_make_pgxs: Template mechanism for new
     Debian packages based on PGXS Makefiles.
 
- -- Christoph Berg <myon@debian.org>  Sat, 15 Apr 2017 18:56:38 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 11 May 2017 14:01:59 +0200
 
 postgresql-common (181) unstable; urgency=medium
 
