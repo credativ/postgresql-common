@@ -1,3 +1,9 @@
+postgresql-common (181~bpo8+1) jessie-backports; urgency=medium
+
+  * Rebuild for jessie-backports.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 14 May 2017 18:00:57 +0200
+
 postgresql-common (181) unstable; urgency=medium
 
   * debian/postgresql-common.config: Fix deprecation warning debconf message
