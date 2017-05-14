@@ -1,3 +1,9 @@
+postgresql-common (165+deb8u2~bpo7+1) wheezy-backports; urgency=medium
+
+  * Rebuild for wheezy-backports.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 14 May 2017 18:20:22 +0200
+
 postgresql-common (165+deb8u2) jessie; urgency=medium
 
   * pg_upgradecluster: Properly upgrade databases with non-login role owners.
