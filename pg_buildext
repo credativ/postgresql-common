@@ -4,7 +4,7 @@
 # versions
 #
 # (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
-# (C) 2011-2016 Christoph Berg <myon@debian.org>
+# (C) 2011-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ versions() {
 	    all) echo "$supported_versions" ;;
 	    [1-9]*+)
 		for sup_version in $supported_versions; do
-		    if expr $(echo "$version" | tr -d +) '<=' $sup_version > /dev/null; then echo "$sup_version"; fi
+                    if dpkg --compare-versions "${version%+}" le "$sup_version"; then echo "$sup_version"; fi
 		done ;;
 	    [1-9]*)
 		for sup_version in $supported_versions; do
