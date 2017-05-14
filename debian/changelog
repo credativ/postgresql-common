@@ -1,3 +1,15 @@
+postgresql-common (165+deb8u2) jessie; urgency=medium
+
+  * pg_upgradecluster: Properly upgrade databases with non-login role owners.
+    (Closes: #614374, #838812)
+  * pg_ctlcluster, t/020_create_sql_remove.t: Protect against symlink in
+    /var/log/postgresql/ allowing the creation of arbitrary files elsewhere.
+    Discovered by Dawid Golunski, thanks! (CVE-2016-1255)
+  * t/TestLib.pm: Cherry-pick program_ok() from master for use in
+    t/020_create_sql_remove.t.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 01 Jan 2017 18:48:30 +0100
+
 postgresql-common (165+deb8u1~bpo7+1) wheezy-backports; urgency=medium
 
   * Rebuild for wheezy-backports.

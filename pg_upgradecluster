@@ -433,18 +433,16 @@ if (!fork) {
 	    error 'automatic upgrade of tablespaces is not supported';
 	}
 
-	# get list of databases, owners, and allowed connections
+	# get list of databases (value = datallowconn)
 	my %databases;
 	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
 	    '-F|', '-d', 'template1', '-Atc', 
-	    'SELECT datname, datallowconn, pg_catalog.pg_encoding_to_char(encoding), usename FROM pg_database, pg_user WHERE datdba = usesysid' or 
+	    'SELECT datname, datallowconn FROM pg_database' or
 	    error 'Could not get pg_database list';
 	while (<F>) {
 	    chomp;
-	    my ($n, $a, $e, $o) = split '\|';
-	    ($o) = $o =~ /^(.*)$/; # untaint
-	    ($e) = $e =~ /^([\w_]+)$/; # untaint
-	    $databases{$n} = [$a eq 't', $o, $e];
+	    my ($n, $a) = split '\|';
+	    $databases{$n} = ($a eq 't');
 	}
 	close F;
 	error 'could not get list of databases' if $?;
@@ -453,7 +451,7 @@ if (!fork) {
 	for my $db (keys %databases) {
 	    next if $db eq 'template0';
 
-	    unless (${$databases{$db}}[0]) {
+	    unless ($databases{$db}) {
 		print "Temporarily enabling access to database $db\n";
 		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
 		    '-d', 'template1', '-c', 
@@ -546,8 +544,8 @@ if (!fork) {
 		'-d', $db, '-c', 'ANALYZE') == 0 or
 		error 'Could not ANALZYE database';
 
-	    unless (${$databases{$db}}[0]) {
-		print "Disabling access to database $db\n";
+	    unless ($databases{$db}) {
+		print "Disabling access to database $db again\n";
 		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
 		    '-d', 'template1', '-c', 
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
