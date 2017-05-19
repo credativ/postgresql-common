@@ -34,7 +34,7 @@ if (@ARGV == 1 and $ARGV[0] =~ m{^(\d+(?:\.\d+)?)[-/]([-.\w]+)$}) {
     $ARGV[0] =~ /^(\d+(?:\.\d+)?)$/ or error "Invalid version number \"$ARGV[0]\"";
     push @versions, $1;
 } else {
-    @versions = sort { $a <=> $b } (get_versions());
+    @versions = get_versions();
 }
 if (@ARGV >= 2 and $ARGV[1] =~ /^([-.\w]+)$/) {
     $ls_cluster = $1;
@@ -49,7 +49,7 @@ my $jsoninfo = [];
 foreach my $v (@versions) {
     my $pg_log = $v >= 10 ? 'log' : 'pg_log'; # log directory in PGDATA changed in PG 10
     my @clusters = $ls_cluster ? $ls_cluster : get_version_clusters $v;
-    foreach my $c (sort @clusters) {
+    foreach my $c (@clusters) {
         my %info = cluster_info $v, $c;
         my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
         if (config_bool ($info{config}->{logging_collector})) {

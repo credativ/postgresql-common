@@ -677,14 +677,14 @@ sub get_versions {
         }
         closedir D;
     }
-    return @versions;
+    return sort { $a <=> $b } @versions;
 }
 
 # Return the newest available version
 sub get_newest_version {
-    my $newest = 0;
-    map { $newest = $_ if $newest < $_ } get_versions;
-    return $newest;
+    my @versions = get_versions;
+    return undef unless (@versions);
+    return $versions[-1];
 }
 
 # Check whether a version exists
@@ -708,7 +708,7 @@ sub get_version_clusters {
         }
         closedir D;
     }
-    return @clusters;
+    return sort @clusters;
 }
 
 # Check if a cluster exists.

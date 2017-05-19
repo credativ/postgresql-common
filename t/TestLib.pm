@@ -26,7 +26,7 @@ our @EXPORT = qw/ps ok_dir exec_as deb_installed rpm_installed package_version
     pidof pid_env check_clean
     @ALL_MAJORS @MAJORS $delay/;
 
-our @ALL_MAJORS = sort { $a <=> $b } (get_versions()); # not affected by PG_VERSIONS/-v
+our @ALL_MAJORS = get_versions(); # not affected by PG_VERSIONS/-v
 our @MAJORS = $ENV{PG_VERSIONS} ? split (/\s+/, $ENV{PG_VERSIONS}) : @ALL_MAJORS;
 our $delay = 500_000; # 500ms
 
