@@ -102,7 +102,7 @@ sub config_bool {
 sub quote_conf_value ($) {
     my $value = shift;
     return $value if ($value =~ /^-?[\d.]+$/); # integer or float
-    return $value if ($value =~ m{^[[:alpha:]][[:alnum:]._:/-]*$}); # plain word (UNQUOTED_STRING in guc-file.l)
+    return $value if ($value =~ /^\w+$/); # plain word
     $value =~ s/'/''/g; # else quote it
     return "'$value'";
 }

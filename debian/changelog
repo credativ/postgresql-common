@@ -8,6 +8,8 @@ postgresql-common (183) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
   * PgCommon.pm: Sort get_versions and get_version_clusters output.
+  * PgCommon.pm: Revert to old quote_conf_value behavior, the new regexp was
+    too liberal. The new input behavior is retained, though.
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 
