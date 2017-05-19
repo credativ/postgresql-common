@@ -30,6 +30,7 @@ delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 my ($version, $newversion, $cluster, $newcluster);
 my (%info, %newinfo);
 my ($encoding, $old_lc_ctype, $old_lc_collate); # old cluster encoding
+my $maintenance_db = 'template1';
 
 # do not trip over cwd not being accessible to postgres superuser
 chdir '/';
@@ -229,11 +230,11 @@ sub enable_connections {
 # Arguments: <version> <cluster>
 sub get_encoding {
     my ($version, $cluster) = @_;
-    $encoding = get_db_encoding $version, $cluster, 'template1';
+    $encoding = get_db_encoding $version, $cluster, $maintenance_db;
     if ($version <= '8.3') {
 	($old_lc_ctype, $old_lc_collate) = get_cluster_locales $version, $cluster;
     } else {
-	($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, 'template1';
+	($old_lc_ctype, $old_lc_collate) = get_db_locales $version, $cluster, $maintenance_db;
     }
     unless ($encoding && $old_lc_ctype && $old_lc_collate) {
 	error 'could not get cluster locales';
@@ -280,6 +281,7 @@ GetOptions ('v|version=s' => \$newversion,
 	    'k|link' => \$link,
             'rename=s' => \$newcluster,
             'old-bindir=s' => \$old_bindir,
+            'maintenance-db=s' => \$maintenance_db,
     ) or exit 1;
 
 $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
@@ -296,6 +298,7 @@ $link and $method eq 'dump' and error 'cannot use --link with --method=dump';
 ($lc_time) = $lc_time =~ /^([\w@._-]+)$/ if $lc_time;
 ($logfile) = $logfile =~ /^([^\n]+)$/ if $logfile;
 ($old_bindir) = $old_bindir =~ /^(\/.*)$/ if $old_bindir;
+($maintenance_db) = $maintenance_db =~ /^([\w-]+)$/ if $maintenance_db;
 
 if ($#ARGV < 1) {
     print "Usage: $0 [OPTIONS] <old version> <cluster name> [<new data directory>]\n";
@@ -430,7 +433,7 @@ if ($upgrade_scripts) {
         exit 0;
     }
     wait;
-    if ($?) {
+    if ($? > 0) {
         print STDERR "Error during running upgrade hooks, removing new cluster\n";
         system 'pg_dropcluster', '--stop', $newversion, $newcluster;
         exit 1;
@@ -450,7 +453,7 @@ if (!fork) {
 	# get list of databases (value = datallowconn)
 	my %databases;
 	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
-	    '-F|', '-d', 'template1', '-Atc', 
+	    '-F|', '-d', $maintenance_db, '-Atc',
 	    'SELECT datname, datallowconn FROM pg_database' or
 	    error 'Could not get pg_database list';
 	while (<F>) {
@@ -468,7 +471,7 @@ if (!fork) {
 	    unless ($databases{$db}) {
 		print "Temporarily enabling access to database $db\n";
 		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
-		    '-d', 'template1', '-c', 
+		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 't' WHERE datname = '$db'; COMMIT") == 0 or
 		    error 'Could not enable access to database';
 	    }
@@ -491,7 +494,7 @@ if (!fork) {
 
 	# create global objects in target cluster
 	open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
-	    '-q', '-d', 'template1' or 
+	    '-q', '-d', $maintenance_db or
 	    error 'Could not execute psql for new cluster';
 
 	# ensure that we can upgrade tables for DBs with default read-only
@@ -563,18 +566,18 @@ if (!fork) {
 	    unless ($databases{$db}) {
 		print "Disabling access to database $db again\n";
 		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
-		    '-d', 'template1', '-c', 
+		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
 		    error 'Could not disable access to database in old cluster';
 		(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
-		    '-d', 'template1', '-c', 
+		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
 		    error 'Could not disable access to database in new cluster';
 	    }
 	}
 
 	# reset owner specific override for default read-only transactions
-	(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 'template1', '-c', 
+	(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', $maintenance_db, '-c',
 	    "BEGIN READ WRITE; ALTER USER $owner RESET default_transaction_read_only; COMMIT;\n") == 0 or
 	    error 'Could not reset default_transaction_read_only value for superuser';
     } else {
@@ -819,13 +822,17 @@ In pg_upgrade mode, use hard links instead of copying files to the new
 cluster.  This option is merely passed on to pg_upgrade.  See
 L<pg_upgrade(1)> for details.
 
-=item B<--rename> I<new cluster name>
+=item B<--rename=>I<new cluster name>
 
 Use a different name for the upgraded cluster.
 
-=item B<--old-bindir> I<directory>
+=item B<--old-bindir=>I<directory>
 
 Passed to B<pg_upgrade>.
+
+=item B<--maintenance-db=>I<database>
+
+Database to connect to for maintenance queries.  The default is B<template1>.
 
 =back
 
@@ -850,7 +857,7 @@ Phases:
 =item B<init>
 
 A virgin cluster of version I<new version> has been created, i. e.  this new
-cluster will already have B<template1>, but no user databases. Please note that
+cluster will already have B<template1> and B<postgres>, but no user databases. Please note that
 you should not create tables in this phase, since they will be overwritten by
 the dump/restore or B<pg_upgrade> operation.
 

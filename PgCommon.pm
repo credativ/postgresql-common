@@ -930,13 +930,13 @@ sub get_db_locales {
     open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
         'SHOW lc_ctype', $db or
         die "Internal error: could not call $psql to determine db lc_ctype: $!";
-    my $out = <PSQL>;
+    my $out = <PSQL> // error 'could not determine db lc_ctype';
     close PSQL;
     ($ctype) = $out =~ /^([\w.\@-]+)$/; # untaint
     open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
         'SHOW lc_collate', $db or
         die "Internal error: could not call $psql to determine db lc_collate: $!";
-    $out = <PSQL>;
+    $out = <PSQL> // error 'could not determine db lc_collate';
     close PSQL;
     ($collate) = $out =~ /^([\w.\@-]+)$/; # untaint
     $> = $orig_euid;
