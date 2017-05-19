@@ -1,5 +1,5 @@
 Name:           postgresql-common
-Version:        177
+Version:        183
 Release:        1%{?dist}
 BuildArch:      noarch
 Summary:        PostgreSQL database-cluster manager
@@ -68,7 +68,7 @@ for manpages in debian/*.manpages; do
         mkdir -p $mandir
         for f in $file; do # expand wildcards
             cp $f $mandir
-            echo "%doc %{_mandir}/man$section/$f.gz" >> files-$pkg
+            echo "%doc %{_mandir}/man$section/$(basename $f).gz" >> files-$pkg
         done
     done < $manpages
 done

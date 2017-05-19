@@ -3,6 +3,9 @@ postgresql-common (183) UNRELEASED; urgency=medium
   [ Nishanth Aravamudan ]
   * debian/supported-versions: add Ubuntu 17.10. (Closes: #862420)
 
+  [ Bernd Helmle ]
+  * postgresql-common.spec: Fix installation path of manpages.
+
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 
 postgresql-common (182) experimental; urgency=medium
