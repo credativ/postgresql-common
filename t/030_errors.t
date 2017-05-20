@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 158;
+use Test::More tests => 154;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -124,6 +124,15 @@ like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 2,
     "Cluster is not running.\n", 'pg_ctlcluster stop fails on stopped cluster';
 
+# recovery.conf in wrong location
+open F, '>', "/etc/postgresql/$version/main/recovery.conf";
+print F "\n";
+close F;
+like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
+    qr/recovery.conf file found in config directory/,
+    'pg_ctlcluster start fails with recovery.conf in config directory';
+unlink "/etc/postgresql/$version/main/recovery.conf";
+
 # simulate crashed server
 rename "/var/lib/postgresql/$version/main/postmaster.pid.orig",
     "/var/lib/postgresql/$version/main/postmaster.pid" or die "rename: $!";
@@ -175,23 +184,7 @@ like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is onli
 # start running server
 is_program_out 'postgres', "pg_ctlcluster $version main start", 2,
     "Cluster is already running.\n", 'pg_ctlcluster start fails on running cluster';
-
-# stop server, test invalid configuration
 is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 'pg_ctlcluster stop');
-PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
-    'log_statement_stats', 'true';
-PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
-    'log_planner_stats', 'true';
-like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
-    qr/Error: invalid postgresql.conf.*log_.*mutually exclusive/,
-    'pg_ctlcluster start fails with invalid configuration';
-
-# repair configuration
-PgCommon::set_conf_value $version, 'main', 'postgresql.conf',
-    'log_planner_stats', 'false';
-is_program_out 'postgres', "pg_ctlcluster $version main start", 0, '',
-    'pg_ctlcluster start succeeds again with valid configuration';
-is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
 
 # backup pg_hba.conf
 rename "/etc/postgresql/$version/main/pg_hba.conf",
