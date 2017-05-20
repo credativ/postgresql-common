@@ -196,6 +196,7 @@ PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'cintval', '5';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'strval', 'Howdy';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'newval', 'NEW!';
 PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'testpath', '/bin/new';
+PgCommon::set_conf_value '8.4', 'test', 'foo.conf', 'include_dir', 'conf.d';
 
 open F, "$c";
 my $conf;
@@ -219,6 +220,7 @@ cemptystr = '' # moo!
 testpath = '/bin/new'
 QuoteStr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
+include_dir = 'conf.d'
 EOF
 
 # test disable_conf_value()
@@ -248,6 +250,7 @@ cemptystr = '' # moo!
 #testpath = '/bin/new' #now 2 comments
 QuoteStr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
+include_dir = 'conf.d'
 EOF
 
 # test replace_conf_value()
@@ -278,6 +281,7 @@ cemptystr = '' # moo!
 #testpath = '/bin/new' #now 2 comments
 QuoteStr = 'test ! -f \\'/tmp/%f\\' && echo \\'yes\\''
 newval = 'NEW!'
+include_dir = 'conf.d'
 EOF
 
 # vim: filetype=perl
