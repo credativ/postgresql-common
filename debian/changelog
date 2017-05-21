@@ -14,6 +14,7 @@ postgresql-common (183) UNRELEASED; urgency=medium
     /etc/postgresql to catch a common mistake. (Closes: #853868)
   * pg_upgradecluster: Allow configuring the maintenance database.
     (Closes: #851874)
+  * pg_dropcluster: Remove custom xlog directory. (Closes: #830789)
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 

@@ -3,6 +3,7 @@
 
 use strict; 
 
+use File::Temp;
 use POSIX qw/dup2/;
 use Time::HiRes qw/usleep/;
 
@@ -10,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 131 * ($#MAJORS+1);
+use Test::More tests => 133 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -19,7 +20,8 @@ sub check_major {
     note "Running tests for $v";
 
     # create cluster
-    ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
+    my $xlogdir = mktemp("/tmp/$v.xlog.XXXXXX");
+    ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
 	"pg_createcluster $v main");
 
     # check that a /var/run/postgresql/ pid file is created
@@ -31,6 +33,10 @@ sub check_major {
     } else {
         ok_dir '/var/run/postgresql/', [grep {/main/} @contents], 'Pid File is in /var/run/postgresql/';
     }
+
+    # check that the xlog/wal symlink was created
+    ok_dir $xlogdir, [qw(000000010000000000000001 archive_status)],
+        "xlog/wal symlink was created";
 
     # verify that exactly one postgres master is running
     my @pm_pids = pidof ('postgres');
@@ -368,6 +374,7 @@ tel|2
     ok ((system "pg_dropcluster $v main --stop") == 0,
 	'pg_dropcluster removes cluster');
 
+    is (-e $xlogdir, undef, "xlog/wal directory was deleted");
     check_clean;
 }
 

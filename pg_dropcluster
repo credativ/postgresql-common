@@ -50,7 +50,7 @@ if (cluster_exists $version, $cluster) {
 		    error 'could not stop server, aborting';
 		}
 	    } else {
-		print STDERR "warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postgres process\n";
+		print STDERR "Warning: corrupted cluster: data directory does not exist any more, but server is still running; you have to manually kill the postgres process\n";
 	    }
 	} else {
 	    error 'This cluster is still running. Stop it or supply the --stop option';
@@ -66,6 +66,23 @@ if (cluster_exists $version, $cluster) {
 }
 
 if ($info{'pgdata'} && -d $info{'pgdata'}) {
+    # remove custom xlog directory
+    my $xlogname = $version >= 10 ? 'pg_wal' : 'pg_xlog';
+    if (-l "$info{pgdata}/$xlogname") {
+        my ($xlog) = readlink("$info{pgdata}/$xlogname")=~ /(.*)/; # untaint
+        error "$xlogname symlink $xlog is not a directory" unless (-d $xlog);
+        my $xlogowner = (stat($xlog))[4];
+        if (defined $xlogowner and $xlogowner == $info{owneruid}) {
+            $result = system 'rm', '-r', '--', $xlog;
+            if ($result) {
+                exit $result;
+            }
+        } else {
+            print STDERR "Warning: $xlogname directory $xlog is not owned by uid $info{owneruid}, not removing\n";
+        }
+    }
+
+    # remove pgdata
     $result = system 'rm', '-r', $info{'pgdata'}; 
     if ($result) {
         if (! -w ($info{'pgdata'} . '/..')) {
@@ -74,12 +91,15 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
         exit $result;
     }
 } else {
-    print STDERR "warning: corrupted cluster: data directory does not exist\n";
+    print STDERR "Warning: corrupted cluster: data directory does not exist\n";
 }
+
+# remove config
 unlink $c.'/pg_hba.conf', $c.'/pg_ident.conf', $c.'/postgresql.conf',
     $c.'/start.conf', $c.'/log', $c.'/autovacuum_log', $c.'/pgdata',
     $c.'/environment', $c.'/pg_ctl.conf';
 rmdir $_ foreach (map { /(.*)/ && $1 } glob "$c/*"); # remove empty conf.d directories
+
 unlink $info{'logfile'} if defined ($info{'logfile'});
 if ($info{'socketdir'} and $info{'socketdir'} !~ /^(\/tmp|\/var\/run\/postgresql)\/?$/) {
     rmdir $info{'socketdir'};
@@ -93,6 +113,7 @@ unlink "/var/log/postgresql/postgresql-$version-$cluster.log";
 foreach my $f (</var/log/postgresql/postgresql-$version-$cluster.log.[1-9]*>) {
     unlink ($f =~ /(.*)/); # untaint
 }
+
 # remove stats_temp_directory
 my $statstempdir = $info{config}->{stats_temp_directory};
 if ($statstempdir) {
@@ -110,7 +131,7 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf and $startconf eq 'au
     if ($> == 0) {
         system 'systemctl daemon-reload';
     } elsif (-t 1) {
-        print "Warning: systemd was not informed about the removed yet. Operations like \"service postgresql start\" might fail. To fix, run:\n";
+        print "Warning: systemd was not informed about the removed cluster yet. Operations like \"service postgresql start\" might fail. To fix, run:\n";
         print "  sudo systemctl daemon-reload\n";
     }
 }
