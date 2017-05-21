@@ -665,7 +665,7 @@ sub cluster_info {
     return %result;
 }
 
-# Return an array of all available PostgreSQL versions
+# Return an array of all available psql versions
 sub get_versions {
     my @versions = ();
     my $dir = $binroot;
@@ -782,7 +782,7 @@ sub user_cluster_map {
     my $homemapfile = $home . '/.postgresqlrc';
     if (open MAP, $homemapfile) {
 	while (<MAP>) {
-	    s/(.*?)#.*/$1/;
+	    s/#.*//;
 	    next if /^\s*$/;
 	    my ($v,$c,$db) = split;
 	    if (!version_exists $v) {
@@ -807,7 +807,7 @@ sub user_cluster_map {
     # check global map file
     if (open MAP, $mapfile) {
         while (<MAP>) {
-            s/(.*?)#.*/$1/;
+            s/#.*//;
             next if /^\s*$/;
             my ($u,$g,$v,$c,$db) = split;
             if (!$db) {

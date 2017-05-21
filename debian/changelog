@@ -17,6 +17,8 @@ postgresql-common (183) UNRELEASED; urgency=medium
   * pg_dropcluster: Remove custom xlog directory. (Closes: #830789)
   * pg_createcluster, pg_ctlcluster: cd / to prevent warnings from PostgreSQL
     tools. (Closes: #834264)
+  * pg_wrapper: Don't fail if no local cluster exists on port 5432.
+    Code cleanup. (Closes: #777623)
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 

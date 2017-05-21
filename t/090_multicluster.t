@@ -66,7 +66,7 @@ like_program_out 0, "createdb --cluster $new1 --version", 0,
     qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper --cluster works';
 like_program_out 0, "createdb --cluster $MAJORS[-1]/foo --version", 1, 
-    qr/Specified cluster does not exist/,
+    qr/Cluster .* does not exist/,
     'pg_wrapper --cluster errors out for invalid cluster';
 
 # create a database in new1 and check that it doesn't appear in new2
@@ -95,9 +95,9 @@ unlike_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5440",
 like_program_out 'postgres', "LC_MESSAGES=C psql -Atl --cluster $MAJORS[-1]/localhost:5435", 2, 
     qr/could not connect/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
 like_program_out 'postgres', "LC_MESSAGES=C psql -Atl --cluster $MAJORS[-1]/localhost:a", 1, 
-    qr/Specified cluster does not exist/, "psql --cluster $MAJORS[-1]/localhost:a fails due to invalid syntax";
+    qr/Cluster .* does not exist/, "psql --cluster $MAJORS[-1]/localhost:a fails due to invalid syntax";
 like_program_out 'postgres', "LC_MESSAGES=C psql -Atl --cluster $MAJORS[-1]/doesnotexi.st", 1, 
-    qr/Specified cluster does not exist/, "psql --cluster $MAJORS[-1]/doesnotexi.st fails due to invalid syntax";
+    qr/Cluster .* does not exist/, "psql --cluster $MAJORS[-1]/doesnotexi.st fails due to invalid syntax";
 like_program_out 'postgres', "psql -Atl --cluster 6.4/localhost:", 1, 
     qr/Invalid version/, "psql --cluster 6.4/localhost: fails due to invalid version";
 
@@ -110,7 +110,7 @@ unlike_program_out 'postgres', "psql -Atl", 0, qr/test\|postgres\|/,
     'PGCLUSTER selection (2)';
 $ENV{'PGCLUSTER'} = 'foo';
 like_program_out 'postgres', "psql -l", 1, 
-    qr/Invalid version specified with \$PGCLUSTER/, 
+    qr/Invalid version .* specified in PGCLUSTER/,
     'invalid PGCLUSTER value';
 $ENV{'PGCLUSTER'} = "$MAJORS[-1]/127.0.0.1:";
 like_program_out 0, 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
@@ -189,8 +189,8 @@ like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\
     'pg_wrapper selects correct cluster with per-user user_clusters';
 like_program_out 'nobody', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[0]/, 
     'pg_wrapper selects correct cluster with per-user user_clusters';
-like_program_out 0, 'createdb --version', 1, qr/user_clusters.*line 3.*version.*not exist/i, 
-    'pg_wrapper error for invalid per-user user_clusters line';
+like_program_out 0, 'createdb --version', 0, qr/user_clusters.*line 3.*version.*not exist/i,
+    'pg_wrapper warning for invalid per-user user_clusters line';
 
 # check by-user network cluster selection with user_clusters
 # (also check invalid cluster reporting)
@@ -202,8 +202,8 @@ like_program_out 'postgres', 'createdb --version', 0, qr/^createdb \(PostgreSQL\
     'pg_wrapper selects correct version with per-user user_clusters';
 like_program_out 'nobody', 'createdb --version', 0, qr/^createdb \(PostgreSQL\) $MAJORS[-1]/, 
     'pg_wrapper selects correct version with per-user user_clusters';
-like_program_out 0, 'createdb --version', 1, qr/user_clusters.*line 3.*cluster.*not exist/i, 
-    'pg_wrapper error for invalid per-user user_clusters line';
+like_program_out 0, 'createdb --version', 0, qr/user_clusters.*line 3.*cluster.*not exist/i,
+    'pg_wrapper warning for invalid per-user user_clusters line';
 # check PGHOST environment variable precedence
 $ENV{'PGHOST'} = '127.0.0.2';
 like_program_out 'postgres', 'psql -Atl', 2, qr/127.0.0.2/, '$PGHOST overrides user_clusters';
@@ -263,9 +263,9 @@ PgCommon::set_conf_value $MAJORS[0], 'old', 'postgresql.conf', 'port', '5435';
 is ((system "pg_ctlcluster $MAJORS[0] old start >/dev/null"), 0, "restarting cluster $old");
 like_program_out 'postgres', 'pg_lsclusters -h | sort -k3', 0, qr/.*5434.*5435.*5440.*/s,
     'port of first cluster was successfully changed';
-like_program_out 'postgres', "psql -l", 1, 
-    qr/no.*default.*man pg_wrapper/i,
-    'proper pg_wrapper error message if no cluster is suitable as target';
+like_program_out 'postgres', "psql -l", 2,
+    qr/no.*default.*man pg_wrapper.*psql:.*\.s\.PGSQL.5432/is,
+    'proper pg_wrapper warning and psql error if no cluster is suitable as default target';
 like_program_out 'postgres', "psql -Atl --cluster $new1", 0, 
     qr/test\|postgres\|/,
     '--cluster selects appropriate cluster';
