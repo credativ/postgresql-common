@@ -3,7 +3,7 @@
 
 use strict; 
 
-use File::Temp;
+use File::Temp qw(tempdir);
 use POSIX qw/dup2/;
 use Time::HiRes qw/usleep/;
 
@@ -20,7 +20,8 @@ sub check_major {
     note "Running tests for $v";
 
     # create cluster
-    my $xlogdir = mktemp("/tmp/$v.xlog.XXXXXX");
+    my $xlogdir = tempdir("/tmp/$v.xlog.XXXXXX", CLEANUP => 1);
+    rmdir $xlogdir; # recreated by initdb
     ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
 	"pg_createcluster $v main");
 
@@ -36,7 +37,7 @@ sub check_major {
 
     # check that the xlog/wal symlink was created
     ok_dir $xlogdir, [qw(000000010000000000000001 archive_status)],
-        "xlog/wal symlink was created";
+        "xlog/wal directory $xlogdir was created";
 
     # verify that exactly one postgres master is running
     my @pm_pids = pidof ('postgres');
@@ -374,7 +375,7 @@ tel|2
     ok ((system "pg_dropcluster $v main --stop") == 0,
 	'pg_dropcluster removes cluster');
 
-    is (-e $xlogdir, undef, "xlog/wal directory was deleted");
+    is (-e $xlogdir, undef, "xlog/wal directory $xlogdir was deleted");
     check_clean;
 }
 
