@@ -786,10 +786,12 @@ sub user_cluster_map {
 	    next if /^\s*$/;
 	    my ($v,$c,$db) = split;
 	    if (!version_exists $v) {
-		error "$homemapfile line $.: version $v does not exist";
+                print "Warning: $homemapfile line $.: version $v does not exist\n";
+                next;
 	    }
 	    if (!cluster_exists $v, $c and $c !~ /^(\S+):(\d*)$/) {
-		error "$homemapfile line $.: cluster $v/$c does not exist";
+                print "Warning: $homemapfile line $.: cluster $v/$c does not exist\n";
+                next;
 	    }
 	    if ($db) {
 		close MAP;
@@ -813,10 +815,12 @@ sub user_cluster_map {
                 next;
             }
 	    if (!version_exists $v) {
-		error "$mapfile line $.: version $v does not exist";
+                print "Warning: $mapfile line $.: version $v does not exist\n";
+                next;
 	    }
 	    if (!cluster_exists $v, $c and $c !~ /^(\S+):(\d*)$/) {
-		error "$mapfile line $.: cluster $v/$c does not exist";
+                print "Warning: $mapfile line $.: cluster $v/$c does not exist\n";
+                next;
 	    }
             if (($u eq "*" || $u eq $user) && ($g eq "*" || $g eq $group)) {
                 close MAP;
