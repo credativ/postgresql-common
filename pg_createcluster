@@ -26,6 +26,8 @@ my @postgres_user = getpwnam 'postgres';
 my %defaultconf;
 my $explicit_auth_config = 0;
 
+chdir '/';
+
 # replace placeholders
 # Arguments: <string> <version> <cluster>
 sub replace_v_c ($$$) {

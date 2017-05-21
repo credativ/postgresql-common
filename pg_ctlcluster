@@ -32,6 +32,11 @@ my $mode = 'smart'; # default shutdown mode
 my $foreground = 0; # don't daemonize, use postgres instead of pg_ctl
 my $stdlog = 0; # when run in foreground, still log to the default logfile
 
+# untaint environment
+$ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
+chdir '/';
+
 # Putting recovery.conf into /etc/postgresql is a common mistake, error out
 sub start_check_wrong_recovery_conf {
     if (-f "$info{configdir}/recovery.conf" and # recovery.conf in config dir
@@ -371,10 +376,6 @@ unless ($action eq 'stop') {
     error 'Cluster is disabled' if $info{'start'} eq 'disabled';
 }
 
-# untaint environment
-$ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
-delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
-
 unless (-d $info{'pgdata'} && defined $info{'owneruid'}) {
     error $info{'pgdata'} . ' is not accessible or does not exist';
 }
@@ -479,7 +480,6 @@ if ($> == 0) {
 	} 
     }
 
-    chdir ('/var/lib/postgresql');
     change_ugid $info{'owneruid'}, $info{'ownergid'};
 }
 
