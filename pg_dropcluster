@@ -66,19 +66,16 @@ if (cluster_exists $version, $cluster) {
 }
 
 if ($info{'pgdata'} && -d $info{'pgdata'}) {
-    # remove custom xlog directory
-    my $xlogname = $version >= 10 ? 'pg_wal' : 'pg_xlog';
-    if (-l "$info{pgdata}/$xlogname") {
-        my ($xlog) = readlink("$info{pgdata}/$xlogname")=~ /(.*)/; # untaint
-        error "$xlogname symlink $xlog is not a directory" unless (-d $xlog);
-        my $xlogowner = (stat($xlog))[4];
-        if (defined $xlogowner and $xlogowner == $info{owneruid}) {
-            $result = system 'rm', '-r', '--', $xlog;
+    # remove custom wal directory
+    if ($info{waldir} and -d $info{waldir}) {
+        my $walowner = (stat($info{waldir}))[4];
+        if (defined $walowner and $walowner == $info{owneruid}) {
+            $result = system 'rm', '-r', '--', $info{waldir};
             if ($result) {
                 exit $result;
             }
         } else {
-            print STDERR "Warning: $xlogname directory $xlog is not owned by uid $info{owneruid}, not removing\n";
+            print STDERR "Warning: wal directory $info{waldir} is not owned by uid $info{owneruid}, not removing\n";
         }
     }
 

@@ -613,7 +613,7 @@ sub check_pidfile_running {
 # Return a hash with information about a specific cluster (which needs to exist).
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile [unless it
-#          has a custom one], configdir, owneruid, ownergid, socketdir,
+#          has a custom one], configdir, owneruid, ownergid, waldir, socketdir,
 #          config->postgresql.conf)
 sub cluster_info {
     my ($v, $c) = @_;
@@ -647,6 +647,10 @@ sub cluster_info {
         ($result{'owneruid'}, $result{'ownergid'}) =
             (stat $result{'pgdata'})[4,5];
         $result{'recovery'} = 1 if (-e "$result{'pgdata'}/recovery.conf");
+        my $waldirname = $v >= 10 ? 'pg_wal' : 'pg_xlog';
+        if (-l "$result{pgdata}/$waldirname") { # custom wal directory
+            ($result{waldir}) = readlink("$result{pgdata}/$waldirname") =~ /(.*)/; # untaint
+        }
     }
     $result{'start'} = get_cluster_start_conf $v, $c;
 
