@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 52; # 54 if conf.d is present
+use Test::More tests => 42;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -44,13 +44,23 @@ my ($owneruid, $ownergid) = (getpwnam $owner)[2,3];
 @st = stat $confdir;
 is $st[4], $owneruid, 'conf dir is owned by user';
 is $st[5], $ownergid, 'conf dir is owned by user\'s primary group';
+my ($ok_uid, $ok_gid) = (1, 1);
 opendir D, $confdir or die "opendir: $!";
 for my $f (readdir D) {
     next if $f eq '.' or $f eq '..';
     @st = stat "$confdir/$f" or die "stat: $!";
-    is $st[4], $owneruid, "$f is owned by user";
-    is $st[5], $ownergid, "$f is owned by user\'s primary group";
+    if ($st[4] != $owneruid) {
+        note "$f is not owned by user";
+        $ok_uid = 0;
+    }
+    if ($st[5] != $ownergid) {
+        note "$f is not owned by user's primary group";
+        $ok_gid = 0;
+    }
 }
+closedir D;
+is $ok_uid, 1, "files are owned by user";
+is $ok_gid, 1, "files are owned by user's primary group";
 
 # verify log file properties
 @st = stat "/var/log/postgresql/postgresql-$v-main.log";
