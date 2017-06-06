@@ -176,6 +176,20 @@ sub setup_pg_hba {
     close F;
 }
 
+sub run_scripts ($$$)
+{
+    my ($version, $cluster, $stage) = @_;
+    my $hookdir = "$PgCommon::common_confdir/hooks.d";
+    return unless (-d $hookdir);
+    my ($uid, $euid, $gid, $egid) = ($<, $>, $(, $));
+    for my $script (<$hookdir/*>) {
+        my ($s) = $script =~ /(.*)/; # untaint
+        next unless ($s =~ m!/[a-zA-Z0-9_-]+$!);
+        system ($s, @_);
+        error "$s @_ failed: $?" if ($?);
+    }
+}
+
 #
 # Execution starts here
 #
@@ -331,6 +345,14 @@ $cleanup_cruft = 1;
 
 error 'could not create configuration directory; you might ' .
     'need to run this program with root privileges' if system ('install', '-d', $confdir);
+
+# set variables for hook scripts
+$ENV{PGCLUSTER} = "$version/$cluster";
+$ENV{PGHOST} = $socketdir if ($socketdir);
+$ENV{PGPORT} = $port;
+$ENV{PGCONFDIR} = $confdir;
+$ENV{PGDATA} = $datadir;
+run_scripts ($version, $cluster, 'pre-create');
 
 # check whether we have an already existing cluster; check version and
 # determine owner in this case
@@ -576,9 +598,12 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/ru
     }
 }
 
+run_scripts ($version, $cluster, 'post-create');
+
 # start it if requested
 if ($start) {
     system 'pg_ctlcluster', $version, $cluster, 'start';
+    run_scripts ($version, $cluster, 'post-create-start');
 }
 
 # finally, show the cluster we created
