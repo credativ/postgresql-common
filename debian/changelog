@@ -23,6 +23,8 @@ postgresql-common (183) UNRELEASED; urgency=medium
     config snippets in /etc/postgresql/version/cluster/conf.d/ and
     include_dir='/etc/postgresql-common/createcluster.d' for pg_createcluster
     config snippets.
+  * pg_upgradecluster, pg_renamecluster: Use default pg_ctl timeout when
+    stopping cluster.
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 

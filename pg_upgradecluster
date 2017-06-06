@@ -337,8 +337,7 @@ my $old_hba_modified;
 if ($info{'running'}) {
     get_encoding $version, $cluster;
     print "Stopping old cluster...\n";
-    my @argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
-    push @argv, ('-t', '5') if $version >= '8.4';
+    my @argv = ('pg_ctlcluster', $version, $cluster, 'stop');
     error "Could not stop old cluster" if system @argv;
 }
 
@@ -358,8 +357,7 @@ if ($method eq 'dump' or ($method eq 'upgrade' and not $info{'running'})) {
 
     if ($method eq 'upgrade') {
 	print "Stopping old cluster...\n";
-	@argv = ('pg_ctlcluster', $version, $cluster, 'stop', '--');
-	push @argv, ('-t', '5') if $version >= '8.4';
+        @argv = ('pg_ctlcluster', $version, $cluster, 'stop');
 	error "Could not stop old cluster" if system @argv;
     }
 }

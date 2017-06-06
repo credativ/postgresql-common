@@ -48,8 +48,7 @@ my %info = cluster_info ($version, $oldcluster);
 # connections
 if ($info{'running'}) {
     print "Stopping cluster $version $oldcluster ...\n";
-    my @argv = ('pg_ctlcluster', $version, $oldcluster, 'stop', '--');
-    push @argv, ('-t', '5') if $version >= '8.4';
+    my @argv = ('pg_ctlcluster', $version, $oldcluster, 'stop');
     error "Could not stop cluster" if system @argv;
 }
 
