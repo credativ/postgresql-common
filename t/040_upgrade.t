@@ -3,7 +3,7 @@
 
 use strict; 
 
-use File::Temp qw/tempdir/;
+use File::Temp qw/tempfile tempdir/;
 use POSIX qw/dup2/;
 use Time::HiRes qw/usleep/;
 
@@ -63,11 +63,15 @@ is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "3\n",
     'check next sequence value';
 
 # create a large object
-is_program_out 'postgres', 'psql -Atc "SELECT lo_from_bytea(1234, \'Hello world\')"', 0, "1234\n",
+my ($fh, $filename) = tempfile("lo_import.XXXXXX", TMPDIR => 1, UNLINK => 1);
+print $fh "Hello world";
+close $fh;
+chmod 0644, $filename;
+is_program_out 'postgres', "psql -Atc \"SELECT lo_import('$filename', 1234)\"", 0, "1234\n",
     'create large object';
 
 # create stored procedures
-if ($MAJORS[0] < '9.0') {
+if ($MAJORS[0] < 9.0) {
     is_program_out 'postgres', 'createlang plpgsql test', 0, '', 'createlang plpgsql test';
 } else {
     pass '>= 9.0 enables PL/pgsql by default';
