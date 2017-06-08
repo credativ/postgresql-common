@@ -385,6 +385,7 @@ push @argv, ('--lc-time', $lc_time) if $lc_time;
 delete $ENV{'LC_ALL'};
 push @argv, ('--', '--data-checksums') if $oldcontrol->{'Data page checksum version'}; # 0 = off
 error "Could not create target cluster" if system @argv;
+print "\n";
 
 %newinfo = cluster_info($newversion, $newcluster);
 
@@ -588,11 +589,15 @@ if (!fork) {
 	my @argv = ($pg_upgrade,
 		 '-b', ($old_bindir || "$PgCommon::binroot$version/bin"),
 		 '-B', "$PgCommon::binroot$newversion/bin",
-		 '-d', $info{'pgdata'},
-		 '-D', $newinfo{'pgdata'},
 		 '-p', $info{'port'},
 		 '-P', $newinfo{'port'},
 	    );
+        if ($version <= 9.1) {
+            push @argv, '-d', $info{pgdata}, '-o', "-D $info{configdir}"; # -o and -D configdir require $newversion >= 9.2
+        } else {
+            push @argv, '-d', $info{configdir};
+        }
+        push @argv, '-D', $newinfo{configdir};
 	push @argv, "--link" if $link;
 
 	# Make a directory for pg_upgrade to store its reports and log
@@ -600,25 +605,10 @@ if (!fork) {
 	my $logdir = tempdir("/var/log/postgresql/pg_upgradecluster-$version-$newversion-$newcluster.XXXX");
 	chdir $logdir;
 
-	# pg_upgrade doesn't support separate configuration and data
-	# directories, so we must fix this up temporarily.  (In 9.2+,
-	# this could be done with the pg_upgrade -o/-O options (see
-	# man page), but we want to support some earlier versions as
-	# well for a while.)
-	foreach my $file ('postgresql.conf', 'pg_hba.conf', 'pg_ident.conf') {
-	    -l "$info{pgdata}/$file" or
-		symlink("$info{configdir}/$file", "$info{pgdata}/$file") or
-		error "could not create symlink $info{pgdata}/$file";
-	    -l "$newinfo{pgdata}/$file" or
-		symlink("$newinfo{configdir}/$file", "$newinfo{pgdata}/$file") or
-		error "could not create symlink $newinfo{pgdata}/$file";
-	}
 	# Run pg_upgrade.
+        print "@argv\n";
 	my $status = system @argv;
-	# And remove the temporary configuration files again.
-	foreach my $file ('postgresql.conf', 'pg_hba.conf', 'pg_ident.conf') {
-	    unlink($newinfo{'pgdata'}."/$file");
-	}
+
 	# Remove the PID file of the old cluster (normally removed by
 	# pg_ctlcluster, but not by pg_upgrade).
 	unlink "/var/run/postgresql/$version-$cluster.pid";
@@ -740,9 +730,10 @@ if ($upgrade_scripts) {
 
 print "Success. Please check that the upgraded cluster works. If it does,
 you can remove the old cluster with
+    pg_dropcluster $version $cluster\n\n";
 
-  pg_dropcluster $version $cluster
-"
+system 'pg_lsclusters', $version, $cluster;
+system 'pg_lsclusters', $newversion, $newcluster;
 
 __END__
 

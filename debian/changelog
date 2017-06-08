@@ -14,6 +14,11 @@ postgresql-common (183) UNRELEASED; urgency=medium
     /etc/postgresql to catch a common mistake. (Closes: #853868)
   * pg_upgradecluster: Allow configuring the maintenance database.
     (Closes: #851874)
+  * pg_upgradecluster: Pass config directory to pg_upgrade instead of
+    symlinking the config files. This breaks using "-m upgrade" for upgrades
+    *to* versions before 9.2; upgrades from older versions are unaffected.
+  * pg_upgradecluster, pg_renamecluster: Use default pg_ctl timeout when
+    stopping cluster.
   * pg_dropcluster: Remove custom xlog directory. (Closes: #830789)
   * pg_createcluster, pg_ctlcluster: cd / to prevent warnings from PostgreSQL
     tools. (Closes: #834264)
@@ -23,8 +28,6 @@ postgresql-common (183) UNRELEASED; urgency=medium
     config snippets in /etc/postgresql/version/cluster/conf.d/ and
     include_dir='/etc/postgresql-common/createcluster.d' for pg_createcluster
     config snippets.
-  * pg_upgradecluster, pg_renamecluster: Use default pg_ctl timeout when
-    stopping cluster.
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 
