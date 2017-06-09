@@ -26,28 +26,6 @@ setup_createclusterconf ()
     rm -f $CCTMP
 }
 
-setup_logrotate ()
-{
-    [ "$DPKG_MAINTSCRIPT_PACKAGE" ] || return 0
-    LRVERSION=$(dpkg-query -f '${Version}' --show logrotate 2> /dev/null) || return
-    [ "$LRVERSION" ] || return 0
-    LRTEMPLATE="/usr/share/postgresql-common/logrotate.template"
-    LRCONFIG="/etc/logrotate.d/postgresql-common"
-    if dpkg --compare-versions "$LRVERSION" ge 3.8; then
-	LRCONFSRC=$LRTEMPLATE
-    else
-	LRCONFSRC=`mktemp --tmpdir postgresql-common.XXXXXX`
-	trap "rm -f $LRCONFSRC" 0 2 3 15
-	sed -e '/ su /d' $LRTEMPLATE > $LRCONFSRC
-	chmod 644 $LRCONFSRC
-    fi
-    ucf --debconf-ok $LRCONFSRC $LRCONFIG
-    ucfr postgresql-common $LRCONFIG
-    if [ $LRCONFSRC != $LRTEMPLATE ]; then
-        rm -f $LRCONFSRC
-    fi
-}
-
 if [ "$1" = configure ]; then
     [ "$DPKG_MAINTSCRIPT_PACKAGE" ] && quiet="--quiet" # RedHat doesn't have this
     # Make sure the administrative user exists
@@ -115,11 +93,6 @@ EOF
 	fi
     fi
 
-    # clean /usr/share/postgresql/*/tsearch_data/system_* stuff
-    if dpkg --compare-versions "$2" lt-nl 105; then
-	find /usr/share/postgresql/*/tsearch_data -type l \( -name 'system_*.dict' -o -name 'system_*.affix' \) -exec rm '{}' \; && pg_updatedicts || true
-    fi
-
     if [ "$2" ]; then
         /usr/share/postgresql-common/run-upgrade-scripts "$2" || true
     fi
@@ -129,16 +102,15 @@ EOF
     # Create createcluster.conf from debconf
     setup_createclusterconf
 
-    # Create logrotate config
-    setup_logrotate
-
-    if dpkg --compare-versions "$2" lt 94; then
-        pg_updatedicts || true
+    # Forget about ucf logrotate config handling
+    if dpkg --compare-versions "$2" lt 183~; then
+        LRCONFIG="/etc/logrotate.d/postgresql-common"
+        ucf --purge $LRCONFIG
+        ucfr --purge postgresql-common $LRCONFIG
     fi
 fi
 
 if [ "$1" = triggered ]; then
-    setup_logrotate
     pg_updatedicts || true
     db_stop
     exit 0  # skip daemon restart below

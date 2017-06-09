@@ -18,17 +18,14 @@ if [ "$1" = purge ]; then
     rm -rf /var/cache/postgresql
 
     # unregister and remove files maintained by ucf
-    LRCONFIG="/etc/logrotate.d/postgresql-common"
     CCCONFIG="/etc/postgresql-common/createcluster.conf"
     if which ucf >/dev/null; then
-	ucf --purge $LRCONFIG
 	ucf --purge $CCCONFIG
     fi
     if which ucfr >/dev/null; then
-	ucfr --purge postgresql-common $LRCONFIG
 	ucfr --purge postgresql-common $CCCONFIG
     fi
-    rm -f $LRCONFIG $LRCONFIG.ucf-* $CCCONFIG $CCCONFIG.ucf-*
+    rm -f $CCCONFIG $CCCONFIG.ucf-*
 fi
 
 #DEBHELPER#

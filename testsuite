@@ -70,7 +70,6 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
     done
     apt-get install -y libecpg-dev \
         locales \
-        logrotate \
         procps \
         netcat-openbsd \
         hunspell-en-us
