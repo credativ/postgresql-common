@@ -100,16 +100,13 @@ my $color = -t 1; # color output if stdout is a terminal
 my $fmtstring = join ' ', map { "%-${_}s" } @colwidth;
 
 foreach my $line (@lines) {
-    if ($color and $line->[3] =~ /online/) {
-        print "\033[32m"; # green
-    } elsif ($color and $line->[3] =~ /down/) {
-        print "\033[31m"; # red
+    if ($color and $line->[0] ne 'Ver') { # don't color header
+        printf "\033[%dm$fmtstring\033[0m\n",
+            ($line->[3] =~ /^online/ ? 32 : 31), # green, red
+            @$line;
+    } else {
+        printf "$fmtstring\n", @$line;
     }
-    printf "$fmtstring\n", @$line;
-}
-
-if ($color) {
-    print "\033[0m"; # reset terminal
 }
 
 __END__
