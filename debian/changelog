@@ -24,6 +24,7 @@ postgresql-common (183) UNRELEASED; urgency=medium
     tools. (Closes: #834264)
   * pg_wrapper: Don't fail if no local cluster exists on port 5432.
     Code cleanup. (Closes: #777623)
+  * pg_lsclusters: --start-conf shows start.conf information.
   * createcluster.conf: Add add_include_dir='conf.d' for drop-in PostgreSQL
     config snippets in /etc/postgresql/version/cluster/conf.d/ and
     include_dir='/etc/postgresql-common/createcluster.d' for pg_createcluster

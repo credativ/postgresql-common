@@ -21,9 +21,11 @@ use Getopt::Long;
 # option handling
 my $no_header;
 my $json;
+my $start_conf;
 exit 1 unless GetOptions (
     'h|no-header' => \$no_header,
     'j|json' => \$json,
+    's|start-conf' => \$start_conf,
 );
 
 my (@versions, $ls_cluster);
@@ -51,6 +53,11 @@ foreach my $v (@versions) {
     my @clusters = $ls_cluster ? $ls_cluster : get_version_clusters $v;
     foreach my $c (@clusters) {
         my %info = cluster_info $v, $c;
+
+        my $status = $info{'running'} ? "online" : "down";
+        $status .= ",recovery" if ($info{'recovery'});
+        $status .= ",$info{start}" if ($start_conf);
+
         my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
         if (config_bool ($info{config}->{logging_collector})) {
             my $path = $info{config}->{log_directory} || $pg_log;
@@ -63,8 +70,7 @@ foreach my $v (@versions) {
         $csvlog =~ s/(?:\.log)?$/.csv/;
         $destination =~ s/csvlog/$csvlog/;
 
-        push @lines, [$v, $c, $info{'port'},
-            ($info{'running'} ? "online" : "down") . ($info{'recovery'} ? ",recovery" : ""),
+        push @lines, [$v, $c, $info{'port'}, $status,
             defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>',
             $info{'pgdata'} || '<not set>', $destination];
         $info{version} = $v;
@@ -133,6 +139,10 @@ Do not print the column header line.
 
 Output information in JSON format. Needs JSON.pm installed.
 (Debian package: libjson-perl)
+
+=item B<-s>, B<--start-conf>
+
+Include F<start.conf> information in status column.
 
 =back
 
