@@ -99,11 +99,15 @@ or a similar command (see 'man pg_createcluster')." >&2
     if [ -d /run/systemd/system ]; then
         systemctl daemon-reload
     fi
-    invoke-rc.d postgresql start $VERSION || exit $?
+    invoke-rc.d postgresql start $VERSION # systemd: argument ignored, starts all versions
 }
 
 stop_version() {
-    invoke-rc.d postgresql stop $1 || exit $?
+    if [ -d /run/systemd/system ]; then
+        invoke-rc.d "postgresql@$1-*" stop
+    else
+        invoke-rc.d postgresql stop $1
+    fi
 }
 
 remove_version() {

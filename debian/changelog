@@ -35,6 +35,9 @@ postgresql-common (183) UNRELEASED; urgency=medium
     debian/maintscripts-functions.
   * debian/maintscripts-functions: Unconditionally call invoke-rc.d, and drop
     path names from program invocations (Standards-Version 4.0.0).
+  * debian/maintscripts-functions: Use 'invoke-rc.d "postgresql@$ver-*" stop'
+    to prevent upgrading/removing server packages from stopping other major
+    version clusters when running systemd. (Closes: #809811)
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 
