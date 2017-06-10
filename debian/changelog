@@ -31,6 +31,8 @@ postgresql-common (183) UNRELEASED; urgency=medium
     config snippets.
   * t/051_inconsistent_encoding_upgrade.t: Remove, only relevant for <= 8.2.
   * logrotate config: Ship as static conffile again and remove ucf handling.
+  * pg_conftool: --boolean normalizes boolean variable in output; use this in
+    debian/maintscripts-functions.
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 

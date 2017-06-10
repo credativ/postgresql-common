@@ -2,7 +2,7 @@
 # Read and edit PostgreSQL config files
 # vim:sw=4:et:
 #
-# (C) 2014-2016 Christoph Berg <myon@debian.org>
+# (C) 2014-2017 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ use warnings;
 use Getopt::Long;
 use PgCommon qw(quote_conf_value user_cluster_map read_cluster_conf_file
     read_conf_file set_conffile_value set_conf_value disable_conffile_value
-    disable_conf_value cluster_exists error);
+    disable_conf_value cluster_exists error config_bool);
 
 ## option parsing
 
@@ -31,6 +31,7 @@ sub help ($;$)
   $0 [options] [<version> <cluster name>] [<configfile>] <command>
 
 Options:
+  -b --boolean  Format output as boolean
   -s --short    Print only value
   -v --verbose  Verbose output
   --help        This help
@@ -39,15 +40,19 @@ Commands:
   show <parameter>|all
   set <parameter> <value>
   remove <parameter>
+  edit
 ";
     exit $exit;
 }
 
+my $boolean = 0;
 my $short = 0;
 my $verbose = 0;
 
+Getopt::Long::Configure ("bundling");
 help(1) unless GetOptions (
     'help' => sub { help(0); },
+    'b|boolean' => \$boolean,
     's|short' => \$short,
     'v|verbose' => \$verbose,
 );
@@ -112,6 +117,7 @@ if ($cmd eq 'show') {
             printf "%s = %s\n", $k, quote_conf_value($conf{$k});
         }
     } elsif (exists $conf{$key}) {
+        $conf{$key} = config_bool($conf{$key}) ? 'on' : 'off' if ($boolean); # normalize boolean output on request
         if ($short) {
             printf "%s\n", $conf{$key};
         } else {
@@ -171,6 +177,10 @@ I<version> I<cluster> is ignored.
 =head1 OPTIONS
 
 =over 4
+
+=item B<-b>, B<--boolean>
+
+Format boolean value as B<on> or B<off> (not for "show all").
 
 =item B<-s>, B<--short>
 

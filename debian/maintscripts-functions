@@ -74,9 +74,9 @@ configure_version() {
     if [ ! -d "/etc/postgresql/$VERSION" ] || [ -z "$(ls /etc/postgresql/$VERSION)" ] || \
        [ -z "$(ls /etc/postgresql/$VERSION/*/postgresql.conf 2>/dev/null)" ]; then
         # skip creating the main cluster when this is not the first install, or
-        # when explicitely disabled ($create is 1/0/"")
-        create=$(perl -I/usr/share/postgresql-common -mPgCommon -e 'print PgCommon::config_bool(PgCommon::get_conf_value 0, 0, "createcluster.conf", "create_main_cluster")')
-        if [ -z "$2" ] && [ "$create" != "0" ]; then
+        # when explicitly disabled ($create is on/off/"")
+        create=$(pg_conftool /etc/postgresql-common/createcluster.conf show -bs create_main_cluster || :)
+        if [ -z "$2" ] && [ "$create" != "off" ]; then
             set_system_locale
             /usr/bin/pg_createcluster -u postgres $VERSION main || 
                 echo "Error: could not create default cluster. Please create it manually with
