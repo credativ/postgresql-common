@@ -78,7 +78,7 @@ configure_version() {
         create=$(pg_conftool /etc/postgresql-common/createcluster.conf show -bs create_main_cluster || :)
         if [ -z "$2" ] && [ "$create" != "off" ]; then
             set_system_locale
-            /usr/bin/pg_createcluster -u postgres $VERSION main || 
+            pg_createcluster -u postgres $VERSION main ||
                 echo "Error: could not create default cluster. Please create it manually with
 
   pg_createcluster $VERSION main --start
@@ -95,28 +95,15 @@ or a similar command (see 'man pg_createcluster')." >&2
     # done with debconf
     db_stop
 
-    if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$VERSION ]; then
-       # reload systemd to let the generator pick up the new unit
-       if [ -d /run/systemd/system ]; then
-           systemctl daemon-reload
-       fi
-       if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-           invoke-rc.d postgresql start $VERSION || exit $?
-       else
-           /etc/init.d/postgresql start $VERSION || exit $?
-       fi
+    # reload systemd to let the generator pick up the new unit
+    if [ -d /run/systemd/system ]; then
+        systemctl daemon-reload
     fi
+    invoke-rc.d postgresql start $VERSION || exit $?
 }
 
 stop_version() {
-    if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$1 ]; then
-       if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-                invoke-rc.d postgresql stop $1 || exit $?
-        else
-                /etc/init.d/postgresql stop $1 || exit $?
-        fi
-
-    fi
+    invoke-rc.d postgresql stop $1 || exit $?
 }
 
 remove_version() {

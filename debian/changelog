@@ -33,6 +33,8 @@ postgresql-common (183) UNRELEASED; urgency=medium
   * logrotate config: Ship as static conffile again and remove ucf handling.
   * pg_conftool: --boolean normalizes boolean variable in output; use this in
     debian/maintscripts-functions.
+  * debian/maintscripts-functions: Unconditionally call invoke-rc.d, and drop
+    path names from program invocations (Standards-Version 4.0.0).
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 
