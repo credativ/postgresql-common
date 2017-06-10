@@ -472,8 +472,6 @@ sub cluster_port_running {
 # Arguments: <version> <cluster>
 # Returns: auto | manual | disabled
 sub get_cluster_start_conf {
-    # start.conf setting
-    my $start = 'auto';
     my $start_conf = "$confroot/$_[0]/$_[1]/start.conf";
     if (-e $start_conf) {
 	open F, $start_conf or error "Could not open $start_conf: $!";
@@ -482,16 +480,13 @@ sub get_cluster_start_conf {
 	    s/^\s*//;
 	    s/\s*$//;
 	    next unless $_;
-	    $start = $_;
-	    last;
+            close F;
+            return $1 if (/^(auto|manual|disabled)/);
+            error "Invalid mode in $start_conf, must be one of auto, manual, disabled";
 	}
 	close F;
-
-	error 'Invalid mode in start.conf' unless $start eq 'auto' ||
-	    $start eq 'manual' || $start eq 'disabled';
     }
-
-    return $start;
+    return 'auto'; # default
 }
 
 # Change start.conf setting.
