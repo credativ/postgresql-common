@@ -32,8 +32,8 @@ sub check_major {
     # default log setup
     my $default_log = "/var/log/postgresql/postgresql-$v-main.log";
     check_logging qr($v main 5432 online postgres $pgdata $default_log), "pg_lscluster reports logfile $default_log";
-    like_program_out 'postgres', "psql -qc \"foobar$$\"", 1, qr/syntax error.*foobar$$/, 'log an error';
-    like_program_out 'postgres', "grep --binary-files=text foobar$$ $default_log", 0, qr/syntax error.*foobar$$/, 'error appears in logfile';
+    like_program_out 'postgres', "psql -qc \"'foobar_${v}_$$'\"", 1, qr/syntax error.*foobar_${v}_$$/, 'log an error';
+    like_program_out 'postgres', "grep --binary-files=text foobar_${v}_$$ $default_log", 0, qr/syntax error.*foobar_${v}_$$/, 'error appears in logfile';
 
     # syslog
     is_program_out 0, "pg_conftool $v main set log_destination syslog", 0, "", "set log_destination syslog";
@@ -56,22 +56,22 @@ sub check_major {
     is_program_out 'postgres', "psql -Atc \"show logging_collector\"", 0, "on\n", 'logging_collector is on';
     is_program_out 'postgres', "psql -Atc \"show log_destination\"", 0, "csvlog\n", 'log_destination is csvlog';
     check_logging qr($v main 5432 online postgres $pgdata $pg_log/.*\.csv), "pg_lscluster reports csvlog";
-    like_program_out 'postgres', "psql -qc \"barbaz$$\"", 1, qr/syntax error.*barbaz$$/, 'log an error';
-    like_program_out 'postgres', "grep --binary-files=text barbaz$$ $pgdata/$pg_log/*.csv", 0, qr/syntax error.*barbaz$$/, "error appears in $pg_log/*.csv";
+    like_program_out 'postgres', "psql -qc \"'barbaz_${v}_$$'\"", 1, qr/syntax error.*barbaz_${v}_$$/, 'log an error';
+    like_program_out 'postgres', "grep --binary-files=text barbaz_${v}_$$ $pgdata/$pg_log/*.csv", 0, qr/syntax error.*barbaz_${v}_$$/, "error appears in $pg_log/*.csv";
 
     # stderr,syslog,csvlog
     is_program_out 0, "pg_conftool $v main set log_destination stderr,syslog,csvlog", 0, "", "set log_destination stderr,syslog,csvlog";
     is_program_out 0, "pg_ctlcluster $v main reload", 0, "", "$v main reload";
     is_program_out 'postgres', "psql -Atc \"show log_destination\"", 0, "stderr,syslog,csvlog\n", 'log_destination is stderr,syslog,csvlog';
     check_logging qr($v main 5432 online postgres $pgdata $pg_log/.*\.log,syslog,$pg_log/.*\.csv), "pg_lscluster reports stderr,syslog,csvlog";
-    like_program_out 'postgres', "psql -qc \"moo$$\"", 1, qr/syntax error.*moo$$/, 'log an error';
-    like_program_out 'postgres', "grep --binary-files=text moo$$ $pgdata/$pg_log/*.log", 0, qr/syntax error.*moo$$/, "error appears in $pg_log/*.log";
+    like_program_out 'postgres', "psql -qc \"'moo_${v}_$$'\"", 1, qr/syntax error.*moo_${v}_$$/, 'log an error';
+    like_program_out 'postgres', "grep --binary-files=text moo_${v}_$$ $pgdata/$pg_log/*.log", 0, qr/syntax error.*moo_${v}_$$/, "error appears in $pg_log/*.log";
     SKIP: {
         skip "/var/log/syslog not available", 2 unless ($syslog_works);
         usleep $delay;
-        like_program_out 0, "grep --binary-files=text 'postgres.*moo$$' /var/log/syslog", 0, qr/moo$$/, 'error appears in /var/log/syslog';
+        like_program_out 0, "grep --binary-files=text 'postgres.*moo_${v}_$$' /var/log/syslog", 0, qr/moo_${v}_$$/, 'error appears in /var/log/syslog';
     }
-    like_program_out 'postgres', "grep --binary-files=text moo$$ $pgdata/$pg_log/*.csv", 0, qr/syntax error.*moo$$/, "error appears in $pg_log/*.csv";
+    like_program_out 'postgres', "grep --binary-files=text moo_${v}_$$ $pgdata/$pg_log/*.csv", 0, qr/syntax error.*moo_${v}_$$/, "error appears in $pg_log/*.csv";
     }
 
     # stop server, clean up, check for leftovers
@@ -80,9 +80,9 @@ sub check_major {
     check_clean;
 }
 
-system "logger -t '$0' 'test$$'";
+system "logger -t '$0' 'test-logging-$$'";
 usleep $delay;
-if (system ("grep --binary-files=text -q 'test$$' /var/log/syslog 2> /dev/null") == 0) {
+if (system ("grep --binary-files=text -q 'test-logging-$$' /var/log/syslog 2> /dev/null") == 0) {
     note 'Logging to /var/log/syslog works';
     $syslog_works = 1;
 } else {
