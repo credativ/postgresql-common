@@ -1,7 +1,7 @@
 # Check that no clusters and postgres processes are present for this test.
 
 use strict;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 use lib 't';
 use TestLib;

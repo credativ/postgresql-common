@@ -7,7 +7,7 @@ use TestLib;
 use Socket;
 use PgCommon;
 
-use Test::More tests => 127;
+use Test::More tests => 125;
 
 # Replace all md5 and password authentication methods with 'trust' in given
 # pg_hba.conf file.

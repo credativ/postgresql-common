@@ -224,10 +224,8 @@ sub unlike_program_out {
 # postgres processes are running. Should be called at the end
 # of all tests. Does 10 tests.
 sub check_clean {
-    is (`pg_lsclusters -h`, '', 'No existing clusters');
-    pass ''; # was postmaster
+    is (`pg_lsclusters -h`, '', 'Cleanup: No clusters left behind');
     is ((ps 'postgres'), '', 'No postgres processes left behind');
-    pass ''; # this was pg_autovacuum in the past, which is obsolete
 
     my @check_dirs = ('/etc/postgresql', '/var/lib/postgresql',
         '/var/run/postgresql');

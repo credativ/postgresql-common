@@ -6,7 +6,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 75;
+use Test::More tests => 73;
 
 my $systemd = -d '/var/run/systemd/system';
 

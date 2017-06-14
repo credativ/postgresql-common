@@ -8,7 +8,7 @@ use File::Temp qw/tempdir/;
 
 my $version = $MAJORS[-1];
 
-use Test::More tests => 34;
+use Test::More tests => 32;
 use PgCommon;
 
 delete $ENV{'LANG'};

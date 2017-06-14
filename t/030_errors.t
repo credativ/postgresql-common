@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 154;
+use Test::More tests => 148;
 use PgCommon;
 
 my $version = $MAJORS[-1];

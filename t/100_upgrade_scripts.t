@@ -7,7 +7,7 @@ use TestLib;
 
 my @versions = ($MAJORS[-1]);
 
-use Test::More tests => 29;
+use Test::More tests => 27;
 use PgCommon;
 
 # get_cluster_databases here and indirectly in run-upgrade-scripts is

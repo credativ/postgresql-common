@@ -4,7 +4,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 73 * ($#MAJORS+1);
+use Test::More tests => 71 * @MAJORS;
 
 my $systemd = (-d "/var/run/systemd/system" and not $ENV{_SYSTEMCTL_SKIP_REDIRECT});
 note $systemd ? "We are running systemd" : "We are not running systemd";

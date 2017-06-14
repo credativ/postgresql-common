@@ -6,7 +6,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => 42;
+use Test::More tests => 40;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 

@@ -5,9 +5,9 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => ($#MAJORS == 0) ? 1 : 30;
+use Test::More tests => (@MAJORS == 1) ? 1 : 28;
 
-if ($#MAJORS == 0) {
+if (@MAJORS == 1) {
     pass 'only one major version installed, skipping upgrade tests';
     exit 0;
 }

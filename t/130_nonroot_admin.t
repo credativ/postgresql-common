@@ -9,7 +9,7 @@ use TestLib;
 my $ownver = $MAJORS[-1];
 my $grpver = $MAJORS[0];
 
-use Test::More tests => 36;
+use Test::More tests => 32;
 use PgCommon;
 
 my $testuser = 'postgres';

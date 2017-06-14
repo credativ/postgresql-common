@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => ($#MAJORS+1) * 52 + 10;
+use Test::More tests => @MAJORS * 52 + 8;
 
 # create a test cluster with given locale, check the locale/encoding, and
 # remove it

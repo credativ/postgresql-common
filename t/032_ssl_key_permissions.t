@@ -3,7 +3,7 @@ use warnings;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 3 + 21 * (@MAJORS);
+use Test::More tests => 3 + 19 * @MAJORS;
 use PgCommon;
 
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];

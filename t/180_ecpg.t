@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => 19;
+use Test::More tests => 17;
 
 my $v = $MAJORS[-1];
 

@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 26;
+use Test::More tests => 22;
 
 # we are using unshare here, won't work with systemd
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1;

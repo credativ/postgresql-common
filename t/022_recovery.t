@@ -9,7 +9,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 19 * ($#MAJORS+1);
+use Test::More tests => 17 * @MAJORS;
 
 sub check_major {
     my $v = $_[0];

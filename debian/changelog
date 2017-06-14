@@ -41,6 +41,8 @@ postgresql-common (183) UNRELEASED; urgency=medium
   * debian/maintscripts-functions: Use 'invoke-rc.d "postgresql@$ver-*" stop'
     to prevent upgrading/removing server packages from stopping other major
     version clusters when running systemd. (Closes: #809811)
+  * t/TestLib.pm: Vacuum tests left behind when postmaster and pg_autovacuum
+    were removed. Update test counts in *.t.
 
  -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
 

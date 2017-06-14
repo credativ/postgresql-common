@@ -6,7 +6,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => $MAJORS[-1] >= '8.3' ? 31 : 1;
+use Test::More tests => $MAJORS[-1] >= '8.3' ? 29 : 1;
 
 # Do test with newest version
 my $v = $MAJORS[-1];

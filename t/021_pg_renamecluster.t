@@ -4,7 +4,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 22;
+use Test::More tests => 20;
 
 my $v = $MAJORS[-1];
 

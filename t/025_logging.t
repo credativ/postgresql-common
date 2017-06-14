@@ -7,7 +7,7 @@ use TestLib;
 use PgCommon;
 use Time::HiRes qw/usleep/;
 
-use Test::More tests => 57 * ($#MAJORS+1);
+use Test::More tests => 55 * @MAJORS;
 
 my $syslog_works = 0;
 

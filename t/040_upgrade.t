@@ -11,9 +11,9 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => ($#MAJORS == 0) ? 1 : 109 * 3;
+use Test::More tests => (@MAJORS == 1) ? 1 : 107 * 3;
 
-if ($#MAJORS == 0) {
+if (@MAJORS == 1) {
     pass 'only one major version installed, skipping upgrade tests';
     exit 0;
 }

@@ -5,9 +5,9 @@ use File::Temp qw/tempdir/;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => ($#MAJORS == 0 or $PgCommon::rpm) ? 1 : 24;
+use Test::More tests => (@MAJORS == 1 or $PgCommon::rpm) ? 1 : 22;
 
-if ($#MAJORS == 0) {
+if (@MAJORS == 1) {
     pass 'only one major version installed, skipping upgrade tests';
     exit 0;
 }
