@@ -515,7 +515,7 @@ pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
 
 =head1 SYNOPSIS
 
-B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action> B<--> [I<pg_ctl options>]
+B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action> [B<--> I<pg_ctl options>]
 
 where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<status>|B<promote>
 
@@ -541,7 +541,7 @@ To ease integration with B<systemd> operation, the alternative syntax
 A log file for this specific cluster is created if it does not exist yet (by
 default,
 C</var/log/postgresql/postgresql->I<cluster-version>C<->I<cluster-name>C<.log>),
-and a PostreSQL server process (L<postgres(1)>) is started on it. Exits with
+and a PostgreSQL server process (L<postgres(1)>) is started on it. Exits with
 0 on success, with 2 if the server is already running, and with 1 on other
 failure conditions.
 
