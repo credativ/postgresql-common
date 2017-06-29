@@ -14,10 +14,7 @@ SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported
 DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
 LIBREADLINE := $(shell dpkg-query -W --showformat '$${Status} $${Package}\n' 'libreadline[0-9]'| sed -n '/ installed / {s/^.* //; p}'|sort -ru | head -n1)
 
-# use dh_systemd_* only on recent dists that have dh-systemd (>= 1.19)
-ifneq ($(wildcard /usr/bin/dh_systemd_start),)
 WITH_SYSTEMD=--with systemd
-endif
 
 %:
 	dh $@ $(WITH_SYSTEMD)
