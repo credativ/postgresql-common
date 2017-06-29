@@ -68,22 +68,28 @@ for (my $i = 0; $i < @ARGV; $i++) {
 help(1, 'No command given') unless (defined $cmdidx);
 
 my ($version, $cluster, $conffile);
-if ($cmdidx == 0) {
+if ($cmdidx == 0) { # operate on postgresql.conf in default cluster
     ($version, $cluster) = user_cluster_map();
+    error "No default cluster found" unless ($cluster);
     $conffile = 'postgresql.conf';
-} elsif ($cmdidx == 1) {
-    ($version, $cluster) = user_cluster_map();
+} elsif ($cmdidx == 1) { # operate on given file; default cluster must exist if file is relative
     $conffile = $ARGV[0];
-} elsif ($cmdidx == 2) {
+    unless ($conffile =~ m!^/!) {
+        ($version, $cluster) = user_cluster_map();
+        error "No default cluster found" unless ($cluster);
+    }
+} elsif ($cmdidx == 2) { # version cluster, postgresql.conf
     ($version, $cluster, $conffile) = ($ARGV[0], $ARGV[1], 'postgresql.conf');
-} elsif ($cmdidx == 3) {
+} elsif ($cmdidx == 3) { # version cluster conffile
     ($version, $cluster, $conffile) = ($ARGV[0], $ARGV[1], $ARGV[2]);
 } else {
     help(1, 'Too many arguments before command');
 }
 
-error "Cluster $version $cluster does not exist"
-    unless (cluster_exists $version, $cluster);
+if ($cluster) { # the cluster needs to exist unless an absolute conffile was given
+    error "Cluster $version $cluster does not exist"
+        unless (cluster_exists $version, $cluster);
+}
 
 splice @ARGV, 0, $cmdidx; # remove everything before the command
 $ARGV[0] = 'show' if ($ARGV[0] eq 'get'); # accept alternative variants of some commands
@@ -106,7 +112,7 @@ if ($ARGV[0] =~ /^(edit)$/) {
 
 if ($cmd eq 'show') {
     my %conf;
-    if ($conffile =~ m!/!) {
+    if ($conffile =~ m!^/!) {
         %conf = read_conf_file ($conffile);
     } else {
         %conf = read_cluster_conf_file ($version, $cluster, $conffile);
@@ -129,14 +135,14 @@ if ($cmd eq 'show') {
     }
 
 } elsif ($cmd eq 'set') {
-    if ($conffile =~ m!/!) {
+    if ($conffile =~ m!^/!) {
         set_conffile_value ($conffile, $key, $value);
     } else {
         set_conf_value ($version, $cluster, $conffile, $key, $value);
     }
 
 } elsif ($cmd eq 'remove') {
-    if ($conffile =~ m!/!) {
+    if ($conffile =~ m!^/!) {
         disable_conffile_value ($conffile, $key);
     } else {
         disable_conf_value ($version, $cluster, $conffile, $key);
@@ -147,7 +153,7 @@ if ($cmd eq 'show') {
     if ($ENV{EDITOR}) {
         ($editor) = $ENV{EDITOR} =~ /(.*)/; # untaint
     }
-    if ($conffile =~ m!/!) {
+    if ($conffile =~ m!^/!) {
         system $editor, $conffile;
     } else {
         system $editor, "$PgCommon::confroot/$version/$cluster/$conffile";

@@ -34,6 +34,7 @@ postgresql-common (183) UNRELEASED; urgency=medium
     config snippets.
   * t/051_inconsistent_encoding_upgrade.t: Remove, only relevant for <= 8.2.
   * logrotate config: Ship as static conffile again and remove ucf handling.
+  * pg_conftool: Fix operation when no cluster exists yet.
   * pg_conftool: --boolean normalizes boolean variable in output; use this in
     debian/maintscripts-functions.
   * debian/maintscripts-functions: Unconditionally call invoke-rc.d, and drop
