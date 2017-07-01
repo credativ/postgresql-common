@@ -28,6 +28,8 @@ _link_manpages() {
 	fi
     fi
 
+    # user might have removed the directories, allow u-a to succeed
+    mkdir -p /usr/share/man/man1 /usr/share/man/man3 /usr/share/man/man7
     section=$(echo "$2" | sed -e 's/.*\.\(.*\)\..*/man\1/')
     update-alternatives --install /usr/share/man/$section/$2 \
 	$2 /usr/share/postgresql/$1/man/$section/$2 \
@@ -36,6 +38,8 @@ _link_manpages() {
 
 # arguments: version master
 _unlink_manpages() {
+    # user might have removed the directories, allow u-a to succeed
+    mkdir -p /usr/share/man/man1 /usr/share/man/man3 /usr/share/man/man7
     section=$(echo "$2" | sed -e 's/.*\.\(.*\)\..*/man\1/')
     update-alternatives --remove $2 /usr/share/postgresql/$1/man/$section/$2
 }
