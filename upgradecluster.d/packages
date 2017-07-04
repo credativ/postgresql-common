@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -u
+
+OLDMAJOR="$1"
+NEWMAJOR="$3"
+
+OLDPACKAGES=$(dpkg -l "*postgres*-$OLDMAJOR*" | grep ^ii | awk '{ print $2 }')
+NEWPACKAGES=$(dpkg -l "*postgres*-$NEWMAJOR*" | grep ^ii | awk '{ print $2 }')
+UPDPACKAGES=$(echo "$OLDPACKAGES" | sed -e "s/$OLDMAJOR/$NEWMAJOR/g")
+MISPACKAGES=$(echo "$UPDPACKAGES" | grep -Fxv "$NEWPACKAGES")
+
+if [ "$MISPACKAGES" ]; then
+    cat <<EOF
+The following list of PostgreSQL packages is installed only as
+version $OLDMAJOR, but is missing for version $NEWMAJOR:
+
+$MISPACKAGES
+
+Abort?
+EOF
+    exit 1
+fi
+
+exit 0
