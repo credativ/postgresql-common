@@ -1,4 +1,6 @@
-postgresql-common (183) UNRELEASED; urgency=medium
+postgresql-common (183) unstable; urgency=medium
+
+  * Team upload.
 
   [ Nishanth Aravamudan ]
   * debian/supported-versions: add Ubuntu 17.10. (Closes: #862420)
@@ -49,7 +51,7 @@ postgresql-common (183) UNRELEASED; urgency=medium
   * B-D on debhelper (>= 10.1) | dh-systemd (>= 1.19) to pick up
     dh_systemd_start.
 
- -- Christoph Berg <myon@debian.org>  Fri, 12 May 2017 21:18:03 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 05 Jul 2017 16:15:48 +0200
 
 postgresql-common (182) experimental; urgency=medium
 
