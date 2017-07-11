@@ -108,7 +108,8 @@ or a similar command (see 'man pg_createcluster')." >&2
 
 stop_version() {
     if [ -d /run/systemd/system ]; then
-        invoke-rc.d "postgresql@$1-*" stop
+        # cannot use invoke-rc.d here because jessie's version doesn't like patterns
+        deb-systemd-invoke stop "postgresql@$1-*"
     else
         invoke-rc.d postgresql stop $1
     fi
