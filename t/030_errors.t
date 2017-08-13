@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 148;
+use Test::More tests => 146;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -123,15 +123,6 @@ like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
 # stop stopped server
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 2,
     "Cluster is not running.\n", 'pg_ctlcluster stop fails on stopped cluster';
-
-# recovery.conf in wrong location
-open F, '>', "/etc/postgresql/$version/main/recovery.conf";
-print F "\n";
-close F;
-like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
-    qr/recovery.conf file found in config directory/,
-    'pg_ctlcluster start fails with recovery.conf in config directory';
-unlink "/etc/postgresql/$version/main/recovery.conf";
 
 # simulate crashed server
 rename "/var/lib/postgresql/$version/main/postmaster.pid.orig",

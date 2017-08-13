@@ -1,3 +1,11 @@
+postgresql-common (185) UNRELEASED; urgency=medium
+
+  * Revert "Error out if a recovery.conf file is found in /etc/postgresql".
+    It caused too many false positives for setups where a recovery.conf
+    template is located in the etc directory. (Closes: #868367)
+
+ -- Christoph Berg <myon@debian.org>  Sun, 13 Aug 2017 17:36:36 +0200
+
 postgresql-common (184) unstable; urgency=high
 
   * debian/maintscripts-functions: Use deb-systemd-invoke instead of

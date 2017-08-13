@@ -37,14 +37,6 @@ $ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 chdir '/';
 
-# Putting recovery.conf into /etc/postgresql is a common mistake, error out
-sub start_check_wrong_recovery_conf {
-    if (-f "$info{configdir}/recovery.conf" and # recovery.conf in config dir
-        not -f "$info{configdir}/PG_VERSION") { # config dir is not PGDATA (could be symlinked)
-        error "recovery.conf file found in config directory $info{configdir}, it should be in data directory $info{pgdata} instead";
-    }
-}
-
 # If a pid file is already present, delete it if it is stale/invalid, or exit
 # with a notice if it belongs to an already running postgres.
 sub start_check_pid_file {
@@ -112,7 +104,6 @@ sub cluster_port_ready {
 }
 
 sub start {
-    start_check_wrong_recovery_conf;
     start_check_pid_file;
 
     # check conflicting port
