@@ -33,8 +33,8 @@
 # ubuntu [release]: use Ubuntu defaults
 # pgdg [release]: use defaults for apt.postgresql.org
 # installed: consider all installed versions supported (determined by
-#            postgresql-server-dev-X.Y packages)
-# X.Y: consider this version supported
+#            postgresql-server-dev-X packages)
+# X: consider this version supported
 #
 # (C) 2005-2016 Martin Pitt <mpitt@debian.org>
 # (C) 2012-2017 Christoph Berg <myon@debian.org>
@@ -124,8 +124,9 @@ pgdg() {
 }
 
 installed() {
-    dpkg -l 'postgresql-server-dev-[1-9].*' | \
-        sed -ne 's/^ii *postgresql-server-dev-\([^ ]*\).*/\1/p'
+    dpkg -l 'postgresql-server-dev-[1-9]*' | \
+        sed -ne 's/^ii *postgresql-server-dev-\([^ ]*\).*/\1/p' | \
+        sort -V
 }
 
 # main
