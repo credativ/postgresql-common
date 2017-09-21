@@ -6,7 +6,7 @@ Uploaders:
  Martin Pitt <mpitt@debian.org>,
  Christoph Berg <myon@debian.org>,
  Peter Eisentraut <petere@debian.org>,
-Standards-Version: 4.0.0
+Standards-Version: 4.1.0
 Vcs-Git: git://anonscm.debian.org/pkg-postgresql/postgresql-common.git
 Vcs-Browser: https://anonscm.debian.org/cgit/pkg-postgresql/postgresql-common.git
 Build-Depends:

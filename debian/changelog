@@ -1,14 +1,17 @@
-postgresql-common (185) UNRELEASED; urgency=medium
+postgresql-common (185) unstable; urgency=medium
+
+  * Team upload.
 
   [ Christoph Berg ]
   * Revert "Error out if a recovery.conf file is found in /etc/postgresql".
     It caused too many false positives for setups where a recovery.conf
     template is located in the etc directory. (Closes: #868367)
+  * Bump default PostgreSQL version to 10.
 
   [ Marco Nenciarini ]
   * supported-versions: correctly detect version 10 when using 'installed'.
 
- -- Christoph Berg <myon@debian.org>  Sun, 13 Aug 2017 17:36:36 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 21 Sep 2017 12:07:30 +0200
 
 postgresql-common (184) unstable; urgency=high
 
