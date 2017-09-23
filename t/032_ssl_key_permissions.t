@@ -18,7 +18,7 @@ is ((stat $snakekey)[2], 0100640, "$snakekey mode is 0640");
 foreach my $version (@MAJORS) {
     note "$version";
 SKIP: {
-    skip "Skip SSL key check on <= 9.0", 21 if ($version <= 9.0);
+    skip "No SSL key check on <= 9.0", 19 if ($version <= 9.0);
     program_ok (0, "pg_createcluster $version main");
 
     my $nobody_uid = (getpwnam 'nobody')[2];
