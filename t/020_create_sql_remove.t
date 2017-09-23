@@ -23,7 +23,7 @@ sub check_major {
     my $xlogdir = tempdir("/tmp/$v.xlog.XXXXXX", CLEANUP => 1);
     rmdir $xlogdir; # recreated by initdb
     ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
-	"pg_createcluster $v main");
+	"pg_createcluster $v main"); # -X needs 8.3+
 
     # check that a /var/run/postgresql/ pid file is created
     my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid", "$v-main.pg_stat_tmp");
@@ -36,7 +36,8 @@ sub check_major {
     }
 
     # check that the xlog/wal symlink was created
-    ok_dir $xlogdir, [qw(000000010000000000000001 archive_status)],
+    my $first_xlog = $v >= 9.0 ? "000000010000000000000001" : "000000010000000000000000";
+    ok_dir $xlogdir, [$first_xlog, "archive_status"],
         "xlog/wal directory $xlogdir was created";
 
     # verify that exactly one postgres master is running
