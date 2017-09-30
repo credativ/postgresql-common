@@ -2,22 +2,21 @@
 # Copyright (C) 2006 Software in the Public Interest, SPI Inc.
 # This file is distributed under the same license as the postgresql-common
 # package.
-# Innocent De Marchi <tangram.peces@gmail.com>, 2011.
+# Innocent De Marchi <tangram.peces@gmail.com>, 2011, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 114\n"
+"Project-Id-Version: postgresql-common 184\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2016-03-05 11:47+0100\n"
-"PO-Revision-Date: 2011-06-01 18:32+0100\n"
+"PO-Revision-Date: 2017-09-07 18:59+0200\n"
 "Last-Translator: Innocent De Marchi <tangram.peces@gmail.com>\n"
 "Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Catalan\n"
-"X-Poedit-Country: SPAIN\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #. Type: error
 #. Description
@@ -37,7 +36,7 @@ msgstr ""
 "La versió de «PostgreSQL» ${old} és obsoleta, però el paquet del client o "
 "del servidor encara estan instal·lats. Heu d'instal·lar les darreres "
 "versions dels paquets (postgresql-${latest} i postgresql-client-${latest}) i "
-"actualitzar els clusters de la versió ${oldversion} amb l'ordre "
+"actualitzar els clústers de la versió ${oldversion} amb l'ordre "
 "«pg_upgradecluster» (consulteu la pàgina del manual)."
 
 #. Type: error
@@ -51,9 +50,9 @@ msgid ""
 "details)."
 msgstr ""
 "Tingueu en present que la instal lació de postgresql-${latest} generarà "
-"automàticament un «cluster» pre-determinat ${latest}/main. Heu d'eliminar el "
-"«cluster» ${latest} existent («pg_dropcluster --stop ${latest}) si desitjau "
-"actualitzar el «cluster» ${old}/main, consulteu la pàgina de manual per "
+"automàticament un clúster pre-determinat ${latest}/main. Heu d'eliminar el "
+"clúster ${latest} existent («pg_dropcluster --stop ${latest}) si desitjau "
+"actualitzar el clúster ${old}/main, consulteu la pàgina de manual per "
 "conèixer els detalls."
 
 #. Type: error
@@ -66,7 +65,7 @@ msgid ""
 msgstr ""
 "Ja no se dona suport als paquets antics de client i servidor. Haureu "
 "d'eliminar els paquets postgresql-${old} i postgresql-client-${old} després "
-"d'actualitzar els «clusters» que tingui."
+"d'actualitzar els clústers que tingui."
 
 #. Type: error
 #. Description
@@ -80,7 +79,7 @@ msgstr ""
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "Enable SSL by default in new PostgreSQL clusters?"
-msgstr ""
+msgstr "Permet SSL de forma predeterminada en clústers PostgreSQL nous?"
 
 #. Type: boolean
 #. Description
@@ -90,6 +89,9 @@ msgid ""
 "However, if the database is solely accessed using TCP connections on "
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
+"PostgreSQL admet connexions SSL encriptades. És una opció adequada. "
+"Tanmateix, si l'accés a la base de dades es fa només amb connexions TCP amb "
+"el servidor local, desactivar SSL no afecta a la seguretat."
 
 #. Type: boolean
 #. Description
@@ -100,18 +102,23 @@ msgid ""
 "created during package install, or by using the pg_createcluster command. It "
 "does not reconfigure existing clusters."
 msgstr ""
+"Les connexions de sòcol de domini UNIX (anomenades «locals» al fitxer "
+"«pg_hba.conf») no es veuen afectades per aquesta configuració. Aquesta "
+"configuració afecta els clústers PostgreSQL nous generats en al instal·lació "
+"del paquet o mitjançant l'ordre «pg_createcluster». No configura els "
+"clústers existents."
 
 #. Type: boolean
 #. Description
 #: ../postgresql-common.templates:2001
 msgid "If unsure, enable SSL."
-msgstr ""
+msgstr "En cas de dubte, activau SSL."
 
 #. Type: note
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "S'ha canviat la versió del catàleg de PostgreSQL ${version}"
 
 #. Type: note
 #. Description
@@ -123,6 +130,11 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"El clúster ${cluster} de PostgreSQL ${version} es va generar amb la versió "
+"${db_catversion} dels catàleg, però el paquet postgresql-${version} "
+"instal·lat actualment fa servir la versió ${new_catversion} del catàleg. No "
+"podreu fer servir aquest clúster fins que no s'hagi actualitzat a la nova "
+"versió del catàleg."
 
 #. Type: note
 #. Description
@@ -131,3 +143,5 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"El subconjunt de binaris necessari de la versió anterior es va desar a "
+"${vartmpdir}. Per actualitzar el clúster, executeu aquestes ordres:"
