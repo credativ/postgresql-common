@@ -587,7 +587,7 @@ sub check_pidfile_running {
     my $pid = read_pidfile $_[0];
     if (defined $pid) {
 	prepare_exec;
-	my $res = open PS, '-|', '/bin/ps', '-o', 'comm', 'h', 'p', $pid;
+        my $res = open PS, '-|', '/bin/ps', '-o', 'comm=', '-p', $pid;
 	restore_exec;
 	if ($res) {
 	    my $process = <PS>;
