@@ -1,11 +1,12 @@
-postgresql-common (186) UNRELEASED; urgency=medium
+postgresql-common (186) unstable; urgency=medium
 
+  * Team upload.
   * Bump default apt.postgresql.org version to 10.
   * t/020_create_sql_remove.t: Support 8.x xlog filenames.
   * Update ca translation, thanks Innocent De Marchi! (Closes: #876472)
   * PgCommon.pm: Use BSD ps syntax in check_pidfile_running.
 
- -- Christoph Berg <myon@debian.org>  Sat, 23 Sep 2017 18:23:50 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 05 Oct 2017 16:04:18 +0200
 
 postgresql-common (185) unstable; urgency=medium
 
