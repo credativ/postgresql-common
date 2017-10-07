@@ -51,17 +51,17 @@ sub call_sql {
     $< = $> = (stat (PgCommon::cluster_data_directory $version, $cluster))[4];
 
     # temporarily enable connections
-    my $conallow = `/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc "select datallowconn from pg_database where datname='$db'"`;
+    my $conallow = `psql --cluster '$version/$cluster' template1 -AXtqc "select datallowconn from pg_database where datname='$db'"`;
     chomp $conallow;
     if ($conallow eq 'f') {
-        system "/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc \"update pg_database set datallowconn = 't' where datname='$db'\"";
+        system "psql --cluster '$version/$cluster' template1 -AXtqc \"update pg_database set datallowconn = 't' where datname='$db'\"";
     }
 
-    my $out = `ON_ERROR_STOP=1 /usr/bin/psql --cluster '$version/$cluster' -f '$script' '$db' 2>&1`;
+    my $out = `ON_ERROR_STOP=1 psql --cluster '$version/$cluster' -f '$script' '$db' 2>&1`;
 
     # reset allowconn
     if ($conallow eq 'f') {
-        system "/usr/bin/psql --cluster '$version/$cluster' template1 -Atqc \"update pg_database set datallowconn = 'f' where datname='$db'\"";
+        system "psql --cluster '$version/$cluster' template1 -AXtqc \"update pg_database set datallowconn = 'f' where datname='$db'\"";
     }
     print "[FAIL]\n$out" if $?;
 

@@ -452,7 +452,7 @@ if (!fork) {
 	# get list of databases (value = datallowconn)
 	my %databases;
 	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
-	    '-F|', '-d', $maintenance_db, '-Atc',
+	    '-F|', '-d', $maintenance_db, '-AXtc',
 	    'SELECT datname, datallowconn FROM pg_database' or
 	    error 'Could not get pg_database list';
 	while (<F>) {
@@ -469,7 +469,7 @@ if (!fork) {
 
 	    unless ($databases{$db}) {
 		print "Temporarily enabling access to database $db\n";
-		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-qX',
 		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 't' WHERE datname = '$db'; COMMIT") == 0 or
 		    error 'Could not enable access to database';
@@ -493,7 +493,7 @@ if (!fork) {
 
 	# create global objects in target cluster
 	open SINK, '|-', $psql, '-h', $newsocket, '-p', $newinfo{'port'},
-	    '-q', '-d', $maintenance_db or
+	    '-qX', '-d', $maintenance_db or
 	    error 'Could not execute psql for new cluster';
 
 	# ensure that we can upgrade tables for DBs with default read-only
@@ -514,14 +514,14 @@ if (!fork) {
 	    # starting from 9.0, replace() works on strings; for earlier versions it
 	    # works on bytea
 	    if ($version >= '9.0') {
-		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
+		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-qX', '-d',
 		    $db, '-c', "BEGIN READ WRITE; \
 			UPDATE pg_proc SET probin = replace(\
 			replace(probin, '/usr/lib/postgresql/lib', '\$libdir'), \
 			'/usr/lib/postgresql/$version/lib', '\$libdir'); COMMIT") == 0 or
 		    error 'Could not fix library paths';
 	    } else {
-		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-q', '-d',
+		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-qX', '-d',
 		    $db, '-c', "BEGIN READ WRITE; \
 			UPDATE pg_proc SET probin = decode(replace(\
 		       replace(encode(probin, 'escape'), '/usr/lib/postgresql/lib', '\$libdir'), \
@@ -558,17 +558,17 @@ if (!fork) {
 
 	    # clean up
 	    print 'Analyzing database ', $db, "...\n";
-	    (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
+	    (system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-qX',
 		'-d', $db, '-c', 'ANALYZE') == 0 or
 		error 'Could not ANALYZE database';
 
 	    unless ($databases{$db}) {
 		print "Disabling access to database $db again\n";
-		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-q', 
+		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-qX',
 		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
 		    error 'Could not disable access to database in old cluster';
-		(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', 
+		(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-qX',
 		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
 		    error 'Could not disable access to database in new cluster';
@@ -576,7 +576,7 @@ if (!fork) {
 	}
 
 	# reset owner specific override for default read-only transactions
-	(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-q', $maintenance_db, '-c',
+	(system $psql, '-h', $newsocket, '-p', $newinfo{'port'}, '-qX', $maintenance_db, '-c',
 	    "BEGIN READ WRITE; ALTER USER $owner RESET default_transaction_read_only; COMMIT;\n") == 0 or
 	    error 'Could not reset default_transaction_read_only value for superuser';
     } else {

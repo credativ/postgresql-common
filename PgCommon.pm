@@ -899,7 +899,7 @@ sub get_db_encoding {
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-AXtc',
         'select getdatabaseencoding()', $db or
         die "Internal error: could not call $psql to determine db encoding: $!";
     my $out = <PSQL>;
@@ -925,18 +925,18 @@ sub get_db_locales {
     return undef unless ($port && $socketdir && $psql);
     my ($ctype, $collate);
 
-    # try to swich to cluster owner
+    # try to switch to cluster owner
     prepare_exec 'LC_ALL';
     $ENV{'LC_ALL'} = 'C';
     my $orig_euid = $>;
     $> = (stat (cluster_data_directory $version, $cluster))[4];
-    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-AXtc',
         'SHOW lc_ctype', $db or
         die "Internal error: could not call $psql to determine db lc_ctype: $!";
     my $out = <PSQL> // error 'could not determine db lc_ctype';
     close PSQL;
     ($ctype) = $out =~ /^([\w.\@-]+)$/; # untaint
-    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atc',
+    open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-AXtc',
         'SHOW lc_collate', $db or
         die "Internal error: could not call $psql to determine db lc_collate: $!";
     $out = <PSQL> // error 'could not determine db lc_collate';
@@ -1033,7 +1033,7 @@ sub get_cluster_databases {
 
     my @dbs;
     my @fields;
-    if (open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-Atl') {
+    if (open PSQL, '-|', $psql, '-h', $socketdir, '-p', $port, '-AXtl') {
         while (<PSQL>) {
             chomp;
             @fields = split '\|';
