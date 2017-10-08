@@ -1,14 +1,14 @@
 # Portuguese translation of postgresql-common debconf messages.
 # This file is distributed under the same license as the postgresql-common package.
-# Ricardo Silva <ardoric@gmail.com>, 2006.
+# Ricardo Silva <ardoric@gmail.com>, 2006,2017.
 #
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 163\n"
+"Project-Id-Version: postgresql-common 184\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2016-03-05 11:47+0100\n"
-"PO-Revision-Date: 2014-10-28 10:32-0000\n"
+"PO-Revision-Date: 2017-08-17 11:35-0000\n"
 "Last-Translator: Ricardo Silva <ardoric@gmail.com>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "Language: pt\n"
@@ -117,7 +117,7 @@ msgstr "Se não tiver a certeza, active o SSL."
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "A versão do catálogo mudou no PostgreSQL {version}"
 
 #. Type: note
 #. Description
@@ -129,6 +129,10 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"O cluster PostgreSQL ${version} ${cluster} foi criado usando o catálogo na "
+"versão ${db_catversion}, mas o pacote que está a ser instalado postgresql-${version} "
+"usa a versão de catálogo ${new_catversion}. Não será possível usar este "
+"cluster até que seja actualizado para a nova versão de catálogo."
 
 #. Type: note
 #. Description
@@ -137,3 +141,5 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"O subconjunto de binários da versão antiga foi guardado em "
+"${vartmpdir}. Para actualizar o cluster, execute os seguintes comandos:"

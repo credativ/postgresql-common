@@ -1,8 +1,9 @@
 postgresql-common (187) UNRELEASED; urgency=medium
 
   * Consistently call psql -X. (Closes: #877920)
+  * Update pt translation, thanks Ricardo Silva! (Closes: #872430)
 
- -- Christoph Berg <myon@debian.org>  Sat, 07 Oct 2017 14:24:15 +0200
+ -- Christoph Berg <myon@debian.org>  Sun, 08 Oct 2017 17:15:21 +0200
 
 postgresql-common (186) unstable; urgency=medium
 
