@@ -2,6 +2,8 @@ postgresql-common (187) UNRELEASED; urgency=medium
 
   * Consistently call psql -X. (Closes: #877920)
   * Update pt translation, thanks Ricardo Silva! (Closes: #872430)
+  * pg_virtualenv: Drop "BUG" message that really just means that
+    pg_createcluster threw an error.
 
  -- Christoph Berg <myon@debian.org>  Sun, 08 Oct 2017 17:15:21 +0200
 

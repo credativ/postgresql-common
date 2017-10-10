@@ -114,10 +114,8 @@ if [ "${NONROOT:-}" ]; then
     cleanup () {
 	set +e
 	for v in $PG_VERSIONS; do
-            if [ ! -f $PG_CLUSTER_CONF_ROOT/$v/regress/.by_pg_virtualenv ]; then
-                echo "BUG: Cluster $v/regress was not created by me (PGSYSCONFDIR=${PGSYSCONFDIR:-}, PG_CLUSTER_CONF_ROOT=${PG_CLUSTER_CONF_ROOT:-})" >&2
-                continue
-            fi
+            # don't drop existing clusters named "regress"
+            [ -f $PG_CLUSTER_CONF_ROOT/$v/regress/.by_pg_virtualenv ] || continue
             echo "Dropping cluster $v/regress ..."
 	    pg_ctlcluster --mode immediate $v regress stop
 	done
@@ -148,10 +146,8 @@ else
             mv -f $pg_service.pg_virtualenv-save.$$ $pg_service
         fi
 	for v in $PG_VERSIONS; do
-            if [ ! -f /etc/postgresql/$v/regress/.by_pg_virtualenv ]; then
-                echo "BUG: Cluster $v/regress was not created by me (PGSYSCONFDIR=${PGSYSCONFDIR:-}, PG_CLUSTER_CONF_ROOT=${PG_CLUSTER_CONF_ROOT:-})" >&2
-                continue
-            fi
+            # don't drop existing clusters named "regress"
+            [ -f /etc/postgresql/$v/regress/.by_pg_virtualenv ] || continue
             echo "Dropping cluster $v/regress ..."
             rm -f /etc/postgresql/$v/regress/.by_pg_virtualenv
 	    pg_ctlcluster --mode immediate $v regress stop
