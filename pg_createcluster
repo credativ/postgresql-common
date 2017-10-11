@@ -579,7 +579,7 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/ru
 # start it if requested
 if ($start) {
     system 'pg_ctlcluster', $version, $cluster, 'start';
-    error 'could not start new cluster';
+    die "Could not start cluster\n" if ($?);
 }
 
 # finally, show the cluster we created
