@@ -213,6 +213,7 @@ case $PG_VERSIONS in
 esac
 
 # run program
+echo
 "$@" || EXIT="$?"
 if [ ${EXIT:-0} -gt 0 ]; then
     for log in ${LOGDIR:-/var/log/postgresql}/*.log; do
