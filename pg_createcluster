@@ -295,7 +295,9 @@ if (!defined $datadir) {
     # ensure that the version data dir is owned by postgres as well, so that
     # it can be administrated without root permissions
     if (!stat $pd) {
-        system 'install', '-d', '-o', $postgres_user[2], '-g', $postgres_user[3], $pd;
+        my @install = qw(install -d);
+        push @install, '-o', $postgres_user[2], '-g', $postgres_user[3] if ($> == 0);
+        system @install, $pd;
         $datadirp_created = $pd; # clean up in case of error
     }
 }
@@ -323,7 +325,9 @@ if (defined $port) {
 
 # create configuration directory
 if (!stat $confdirp) {
-    system 'install', '-d', '-o', $postgres_user[2], '-g', $postgres_user[3], $confdirp;
+    my @install = qw(install -d);
+    push @install, '-o', $postgres_user[2], '-g', $postgres_user[3] if ($> == 0);
+    system @install, $confdirp;
 }
 # now we created the first new directory for this cluster and start to rollback
 # on error

@@ -6,6 +6,8 @@ postgresql-common (187) UNRELEASED; urgency=medium
     pg_createcluster threw an error.
   * pg_createcluster: Drop new cluster if --start was requested and starting
     fails.
+  * pg_createcluster: If not running as postgres or root, don't attempt to
+    install config and data parent directories with owner postgres.
 
  -- Christoph Berg <myon@debian.org>  Sun, 08 Oct 2017 17:15:21 +0200
 
