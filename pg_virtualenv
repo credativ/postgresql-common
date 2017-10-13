@@ -78,7 +78,7 @@ while getopts "ac:i:ho:stv:" opt ; do
 done
 if [ -z "$PG_VERSIONS" ]; then
     # use latest version
-    d=$(ls $PGBINROOT*/bin/pg_ctl | tail -1)
+    d=$(ls -v $PGBINROOT*/bin/pg_ctl | tail -1)
     dir=${d%%/bin/pg_ctl}
     PG_VERSIONS="${dir#$PGBINROOT}"
 fi

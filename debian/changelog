@@ -11,6 +11,7 @@ postgresql-common (187) UNRELEASED; urgency=medium
   * pg_lsclusters, postgresql-generator, get_version_clusters, cluster_info,
     read_conf_file: Accept dead postgresql.conf symlinks, filesystem might not
     be mounted yet.
+  * pg_virtualenv: Fix version comparison when determining newest PG major.
 
  -- Christoph Berg <myon@debian.org>  Sun, 08 Oct 2017 17:15:21 +0200
 
