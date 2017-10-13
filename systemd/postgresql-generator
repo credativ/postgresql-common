@@ -13,7 +13,9 @@ pgservice="/lib/systemd/system/postgresql@.service"
 mkdir -p "$wantdir"
 
 for conf in /etc/postgresql/*/*/postgresql.conf; do
-	test -e "$conf" || continue
+	# abort loop if glob was not expanded (but accept dead symlinks)
+	if ! test -e "$conf" && ! test -L "$conf"; then continue; fi
+
 	dir="${conf%/*}"
 
 	# evaluate start.conf

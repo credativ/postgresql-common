@@ -58,7 +58,7 @@ foreach my $v (@versions) {
         $status .= ",recovery" if ($info{'recovery'});
         $status .= ",$info{start}" if ($start_conf);
 
-        my $logfile = $info{logfile}; # default logfile in /var/log/postgresql
+        my $logfile = $info{logfile} // '<unknown>'; # default logfile in /var/log/postgresql
         if (config_bool ($info{config}->{logging_collector})) {
             my $path = $info{config}->{log_directory} || $pg_log;
             my $file = $info{config}->{log_filename} || 'postgresql-%Y-%m-%d_%H%M%S.log';
@@ -70,9 +70,9 @@ foreach my $v (@versions) {
         $csvlog =~ s/(?:\.log)?$/.csv/;
         $destination =~ s/csvlog/$csvlog/;
 
-        push @lines, [$v, $c, $info{'port'}, $status,
+        push @lines, [$v, $c, $info{'port'} // '<unknown>', $status,
             defined $info{'owneruid'} ? (getpwuid $info{'owneruid'})[0] : '<unknown>',
-            $info{'pgdata'} || '<not set>', $destination];
+            $info{'pgdata'} || '<unknown>', $destination];
         $info{version} = $v;
         $info{cluster} = $c;
         push @$jsoninfo, \%info;

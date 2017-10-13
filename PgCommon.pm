@@ -127,8 +127,6 @@ sub read_conf_file {
         return "$parent_path/$path";
     }
 
-    return %conf unless (-e $config_path);
-
     if (open F, $config_path) {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
@@ -177,8 +175,6 @@ sub read_conf_file {
             }
         }
         close F;
-    } else {
-        error "could not read $config_path: $!";
     }
 
     return %conf;
@@ -616,13 +612,12 @@ sub cluster_info {
 
     my %result;
     $result{'configdir'} = "$confroot/$v/$c";
-    error "cluster_info called on non-existing cluster $v $c"
-        unless (-e "$result{configdir}/postgresql.conf");
     $result{'configuid'} = (stat "$result{configdir}/postgresql.conf")[4];
 
     my %postgresql_conf = read_cluster_conf_file $v, $c, 'postgresql.conf';
     $result{'config'} = \%postgresql_conf;
     $result{'pgdata'} = cluster_data_directory $v, $c, \%postgresql_conf;
+    return %result unless (keys %postgresql_conf);
     $result{'port'} = $postgresql_conf{'port'} || $defaultport;
     $result{'socketdir'} = get_cluster_socketdir  $v, $c;
 
@@ -701,7 +696,8 @@ sub get_version_clusters {
         while (defined ($entry = readdir D)) {
             next if $entry eq '.' || $entry eq '..';
 	    ($entry) = $entry =~ /^(.*)$/; # untaint
-            if (-r $vdir.$entry.'/postgresql.conf') {
+            my $conf = "$vdir$entry/postgresql.conf";
+            if (-e $conf or -l $conf) { # existing file, or dead symlink
                 push @clusters, $entry;
             }
         }
