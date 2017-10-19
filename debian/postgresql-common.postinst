@@ -108,6 +108,11 @@ EOF
         ucf --purge $LRCONFIG
         ucfr --purge postgresql-common $LRCONFIG
     fi
+
+    # Create tsearch dictionaries on first install
+    if [ -z "$2" ]; then
+        pg_updatedicts
+    fi
 fi
 
 if [ "$1" = triggered ]; then

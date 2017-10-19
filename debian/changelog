@@ -12,6 +12,9 @@ postgresql-common (187) UNRELEASED; urgency=medium
     read_conf_file: Accept dead postgresql.conf symlinks, filesystem might not
     be mounted yet.
   * pg_virtualenv: Fix version comparison when determining newest PG major.
+  * pg_updatedicts, postgresql-common.postinst: Create tsearch dictionaries on
+    first install and set umask for correct permissions. (Closes: #868232)
+    Thanks to Christian Ehrhardt for the analysis!
 
  -- Christoph Berg <myon@debian.org>  Sun, 08 Oct 2017 17:15:21 +0200
 
