@@ -1,3 +1,5 @@
-interest /usr/share/myspell/dicts
-interest /usr/share/hunspell
-interest /usr/share/postgresql
+# trigger pg_updatedicts on installation of new myspell/hunspell dictionaries
+interest-noawait /usr/share/myspell/dicts
+interest-noawait /usr/share/hunspell
+# also trigger on installation of new server versions so pg_updatedicts can update the symlinks
+interest-noawait /usr/share/postgresql

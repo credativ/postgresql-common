@@ -1,4 +1,4 @@
-postgresql-common (187) UNRELEASED; urgency=medium
+postgresql-common (187) unstable; urgency=medium
 
   * Consistently call psql -X. (Closes: #877920)
   * Update pt translation, thanks Ricardo Silva! (Closes: #872430)
@@ -15,8 +15,9 @@ postgresql-common (187) UNRELEASED; urgency=medium
   * pg_updatedicts, postgresql-common.postinst: Create tsearch dictionaries on
     first install and set umask for correct permissions. (Closes: #868232)
     Thanks to Christian Ehrhardt for the analysis!
+  * Demote postgresql-common hunspell/myspell triggers to noawait.
 
- -- Christoph Berg <myon@debian.org>  Sun, 08 Oct 2017 17:15:21 +0200
+ -- Christoph Berg <myon@debian.org>  Sun, 22 Oct 2017 20:44:38 +0200
 
 postgresql-common (186) unstable; urgency=medium
 
