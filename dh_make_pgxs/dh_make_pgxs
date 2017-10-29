@@ -14,33 +14,44 @@
 
 set -eu
 
+# basic variables
+
+template_dir="/usr/share/postgresql-common/dh_make_pgxs/debian"
+DIRECTORY="$(basename $PWD)"
+NAME="${DIRECTORY%-*}" # Upstream name
+VERSION="${DIRECTORY##*-}"
+
 # options
 
-while getopts "f" opt ; do
+while getopts "fn:v:" opt ; do
     case $opt in
         f) FORCE=yes ;;
+        n) NAME="$OPTARG" ;;
+        v) VERSION="$OPTARG" ;;
         *) exit 5 ;;
     esac
 done
 shift $((OPTIND - 1)) # shift away args
 
-# variables
+# more variables
 
-template_dir="/usr/share/postgresql-common/dh_make_pgxs/debian"
-DIRECTORY="$(basename $PWD)"
-NAME="${DIRECTORY%-*}" # Upstream name
-SOURCE="${NAME//_/-}"  # Debian name
-VERSION="${DIRECTORY##*-}"
-
-echo "Upstream: $NAME ($VERSION)"
-echo "Debian:   $SOURCE ($VERSION-1)"
-echo
-
+SOURCE="${NAME//_/-}" # Debian name
+EXTNAME="$(echo $SOURCE | sed -e 's/^\(postgresql\|pgsql\)-//')" # binary package name suffix
 COMPAT="$(apt-cache show debhelper | sed -n 's/Version: \([0-9]*\)\..*/\1/p' | head -n1)"
 STANDARDS_VERSION="$(apt-cache show debian-policy | sed -n 's/Version: \(.*\)\..*/\1/p' | head -n1)"
 USERNAME=${LOGNAME:-${USER:-root}}
 MAINTAINER_NAME=$(getent passwd $USERNAME | cut -d : -f 5 | sed -e 's/,.*//')
 : ${DEBEMAIL:=$USERNAME@localhost}
+
+echo "Upstream: $NAME ($VERSION)"
+echo "Debian:   $SOURCE ($VERSION-1)"
+echo "Binaries: postgresql-PGVERSION-$EXTNAME ($VERSION-1)"
+echo "Uploader: $MAINTAINER_NAME <$DEBEMAIL>"
+echo
+if [ -t 0 ]; then
+    echo -n "Press Enter to continue, ^C to abort "
+    read
+fi
 
 # install files
 
@@ -60,6 +71,7 @@ install_template ()
     if [ "${FORCE:-}" ] || ! [ -e debian/$template ]; then
         echo "Installing debian/$template"
         sed -e "s/@COMPAT@/$COMPAT/g" \
+            -e "s/@EXTNAME@/$EXTNAME/g" \
             -e "s/@NAME@/$NAME/g" \
             -e "s/@STANDARDS_VERSION@/$STANDARDS_VERSION/g" \
             -e "s/@SOURCE@/$SOURCE/g" \

@@ -1,3 +1,9 @@
+postgresql-common (188) UNRELEASED; urgency=medium
+
+  * dh_make_pgxs: Add options to set package name and version.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 29 Oct 2017 18:38:33 +0100
+
 postgresql-common (187) unstable; urgency=medium
 
   * Consistently call psql -X. (Closes: #877920)

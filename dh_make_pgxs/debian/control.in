@@ -10,6 +10,6 @@ Vcs-Git: https://anonscm.debian.org/git/pkg-postgresql/@SOURCE@.git
 
 Package: postgresql-PGVERSION-@SOURCE@
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, postgresql-PGVERSION
+Depends: postgresql-PGVERSION, ${misc:Depends}, ${shlibs:Depends}
 Description: FIXME PostgreSQL extension @SOURCE@
  FIXME long description here
