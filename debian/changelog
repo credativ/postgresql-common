@@ -1,6 +1,9 @@
 postgresql-common (188) UNRELEASED; urgency=medium
 
   * dh_make_pgxs: Add options to set package name and version.
+  * pg_lsclusters: Raise error when called on a specific cluster that does not
+    exist. This was the behavior before the "accept dead postgresql.conf
+    symlinks" change, but not coded explicitly.
 
  -- Christoph Berg <myon@debian.org>  Sun, 29 Oct 2017 18:38:33 +0100
 

@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 146;
+use Test::More tests => 149;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -278,6 +278,7 @@ ok_dir $socketdir, [], 'No sockets any more';
 rmdir $socketdir or die "rmdir: $!";
 
 # ensure sane error messages for nonexisting clusters
+check_nonexisting_cluster_error 'pg_lsclusters 4.5 foo';
 check_nonexisting_cluster_error 'psql --cluster 4.5/foo';
 check_nonexisting_cluster_error "psql --cluster $MAJORS[0]/foo";
 check_nonexisting_cluster_error "pg_dropcluster 4.5 foo";

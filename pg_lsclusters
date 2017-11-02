@@ -42,6 +42,9 @@ if (@ARGV >= 2 and $ARGV[1] =~ /^([-.\w]+)$/) {
     $ls_cluster = $1;
 }
 
+error "Cluster @versions $ls_cluster does not exist"
+    if ($ls_cluster and not cluster_exists(@versions, $ls_cluster));
+
 # data collection
 my @lines;
 push @lines, ['Ver', 'Cluster', 'Port', 'Status', 'Owner', 'Data directory', 'Log file']
