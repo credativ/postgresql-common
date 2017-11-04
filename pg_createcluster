@@ -18,7 +18,7 @@
 
 use PgCommon;
 use Getopt::Long;
-use POSIX qw/setlocale LC_ALL LC_CTYPE/;
+use POSIX qw/lchown setlocale LC_ALL LC_CTYPE/;
 
 $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 
@@ -379,8 +379,9 @@ set_cluster_pg_ctl_conf $version, $cluster, '';
 move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, '644';
 move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, '640', 'hba_file';
 move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, '640', 'ident_file';
-chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/start.conf" or die "chown: $!";
-chown $owneruid, $ownergid, $datadir, $confdir, "$confdir/pg_ctl.conf" or die "chown: $!";
+foreach my $f ($datadir, $confdir, "$confdir/start.conf", "$confdir/pg_ctl.conf") {
+    lchown $owneruid, $ownergid, $f or error "lchown $f: $!";
+}
 
 PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
 
@@ -426,7 +427,7 @@ if (! -d '/var/log/postgresql') {
     mkdir '/var/log/postgresql' or
 	error "could not create log directory; you might need to run this program with root privileges";
     chmod 01775, '/var/log/postgresql';
-    chown 0, $postgres_user[3], '/var/log/postgresql';
+    lchown 0, $postgres_user[3], '/var/log/postgresql';
 }
 $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 if (! -e $real_logfile) {
@@ -440,11 +441,11 @@ if ($owneruid < 500) {
 } else {
     $g = $ownergid;
 }
-chown $owneruid, $g, $real_logfile;
+lchown $owneruid, $g, $real_logfile;
 # if we are using a non-default log file, create a log symlink
 if ($custom_logfile) {
     symlink $real_logfile, "$confdir/log";
-    chown $owneruid, $ownergid, "$confdir/log";
+    lchown $owneruid, $ownergid, "$confdir/log";
 }
 
 # version specific default configuration tweaking
@@ -558,7 +559,7 @@ open ENV, ">$confdir/environment" or error "could not create environment file $c
 print ENV $defaultenv;
 close ENV;
 chmod 0644, "$confdir/environment";
-chown $owneruid, $ownergid, "$confdir/environment";
+lchown $owneruid, $ownergid, "$confdir/environment";
 
 $cleanup_cruft = 0;
 

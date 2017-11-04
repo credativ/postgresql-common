@@ -19,7 +19,7 @@
 use strict;
 use PgCommon;
 use Getopt::Long;
-use POSIX;
+use POSIX qw(lchown);
 
 # untaint environment
 $ENV{'PATH'} = '/bin:/usr/bin';
@@ -130,7 +130,7 @@ sub adapt_conffiles {
 	}
 	close O;
 	close N;
-	chown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
+	lchown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
 	chmod 0640, "$hba.new";
 	rename "$hba.new", $hba or error "rename: $!";
     }
@@ -192,7 +192,7 @@ sub disable_connections {
         error "could not create $hba";
     }
     chmod 0400, $hba;
-    chown $_[3], 0, $hba;
+    lchown $_[3], 0, $hba;
     if ($_[0] >= '8.4') {
 	print F "local all $_[2] ident\n";
     } else {

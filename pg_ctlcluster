@@ -24,6 +24,7 @@ use Getopt::Long;
 use POSIX qw/setsid dup2 setlocale LC_ALL :sys_wait_h/;
 use PgCommon;
 use Fcntl qw(SEEK_SET O_RDWR O_CREAT O_EXCL);
+use POSIX qw(lchown);
 
 my ($version, $cluster, $pg_ctl, $force);
 my (@postmaster_auxoptions, @pg_ctl_opts_from_cli);
@@ -406,7 +407,7 @@ if ($action ne 'stop' && $info{'logfile'} && ! -e $info{'logfile'}) {
     $( = $) = 0;
     if ($info{'owneruid'} < 500) {
         my $g = (getgrnam 'adm')[2];
-        chown $info{'owneruid'}, $g, $info{'logfile'} if (defined $g);
+        lchown $info{'owneruid'}, $g, $info{'logfile'} if (defined $g);
     }
 }
 
