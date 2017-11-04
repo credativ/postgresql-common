@@ -1,5 +1,8 @@
 postgresql-common (188) UNRELEASED; urgency=medium
 
+  * pg_ctlcluster, pg_createcluster, pg_upgradecluster: Use lchown instead
+    of chown to mitigate privilege escalation via symlinks. (Related to
+    CVE-2017-12172 in PostgreSQL; extends our earlier fix for CVE-2016-1255.)
   * dh_make_pgxs: Add options to set package name and version.
   * pg_lsclusters: Raise error when called on a specific cluster that does not
     exist. This was the behavior before the "accept dead postgresql.conf
