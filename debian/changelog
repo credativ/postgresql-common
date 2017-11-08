@@ -1,8 +1,9 @@
 postgresql-common (134wheezy6) wheezy-security; urgency=medium
 
   * pg_ctlcluster, pg_createcluster, pg_upgradecluster: Use lchown instead
-    of chown to mitigate privilege escalation via symlinks. (Related to
-    CVE-2017-12172 in PostgreSQL; extends our earlier fix for CVE-2016-1255).
+    of chown to mitigate privilege escalation via symlinks. (CVE-2017-8806.
+    Related to CVE-2017-12172 in PostgreSQL; extends our earlier fix for
+    CVE-2016-1255).
 
  -- Christoph Berg <myon@debian.org>  Tue, 07 Nov 2017 20:54:52 +0100
 
