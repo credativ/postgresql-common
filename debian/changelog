@@ -1,14 +1,15 @@
-postgresql-common (188) UNRELEASED; urgency=medium
+postgresql-common (188) unstable; urgency=medium
 
   * pg_ctlcluster, pg_createcluster, pg_upgradecluster: Use lchown instead
-    of chown to mitigate privilege escalation via symlinks. (Related to
-    CVE-2017-12172 in PostgreSQL; extends our earlier fix for CVE-2016-1255.)
+    of chown to mitigate privilege escalation via symlinks. (CVE-2017-8806.
+    Related to CVE-2017-12172 in PostgreSQL; extends our earlier fix for
+    CVE-2016-1255.)
   * dh_make_pgxs: Add options to set package name and version.
   * pg_lsclusters: Raise error when called on a specific cluster that does not
     exist. This was the behavior before the "accept dead postgresql.conf
     symlinks" change, but not coded explicitly.
 
- -- Christoph Berg <myon@debian.org>  Sun, 29 Oct 2017 18:38:33 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 08 Nov 2017 16:03:19 +0100
 
 postgresql-common (187) unstable; urgency=medium
 
