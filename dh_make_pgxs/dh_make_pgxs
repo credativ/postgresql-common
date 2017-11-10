@@ -36,7 +36,7 @@ shift $((OPTIND - 1)) # shift away args
 # more variables
 
 SOURCE="${NAME//_/-}" # Debian name
-EXTNAME="$(echo $SOURCE | sed -e 's/^\(postgresql\|pgsql\)-//')" # binary package name suffix
+EXTNAME="$(echo $SOURCE | sed -e 's/^\(postgresql\|pgsql\|pg\)-//')" # binary package name suffix
 COMPAT="$(apt-cache show debhelper | sed -n 's/Version: \([0-9]*\)\..*/\1/p' | head -n1)"
 STANDARDS_VERSION="$(apt-cache show debian-policy | sed -n 's/Version: \(.*\)\..*/\1/p' | head -n1)"
 USERNAME=${LOGNAME:-${USER:-root}}

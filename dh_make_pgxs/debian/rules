@@ -9,7 +9,7 @@ override_dh_auto_test:
 	# nothing to do here, see debian/tests/* instead
 
 override_dh_auto_install:
-	+pg_buildext install build-%v postgresql-%v-@SOURCE@
+	+pg_buildext install build-%v postgresql-%v-@EXTNAME@
 
 override_dh_installdocs:
 	dh_installdocs --all README.*
