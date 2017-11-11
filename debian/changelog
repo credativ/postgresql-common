@@ -1,6 +1,11 @@
 postgresql-common (189) UNRELEASED; urgency=medium
 
+  [ Chris Lamb ]
+  * Update README.Debian for postgresql-10. (Closes: #876438)
+
+  [ Christoph Berg ]
   * dh_make_pgxs: Use PostgreSQL license as default, fix extension name.
+  * Modernize README.Debian's version numbers and SSL instructions.
 
  -- Christoph Berg <myon@debian.org>  Fri, 10 Nov 2017 17:45:10 +0100
 
