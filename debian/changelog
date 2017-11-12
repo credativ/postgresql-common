@@ -6,6 +6,10 @@ postgresql-common (189) UNRELEASED; urgency=medium
   [ Christoph Berg ]
   * dh_make_pgxs: Use PostgreSQL license as default, fix extension name.
   * Modernize README.Debian's version numbers and SSL instructions.
+  * postgresql@.service: Ignore startup failure, recovery might take
+    arbitrarily long to finish. The actual service status still correctly
+    reflects if the postmaster process is running.
+    https://www.postgresql.org/message-id/20171111205316.u56lkmkakdmcx6zm%40msg.df7cb.de
 
  -- Christoph Berg <myon@debian.org>  Fri, 10 Nov 2017 17:45:10 +0100
 

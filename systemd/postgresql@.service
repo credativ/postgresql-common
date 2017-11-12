@@ -12,9 +12,12 @@ Before=postgresql.service
 
 [Service]
 Type=forking
-# @: use "postgresql@%i" as process name
-ExecStart=@/usr/bin/pg_ctlcluster postgresql@%i --skip-systemctl-redirect %i start
+# -: ignore startup failure (recovery might take arbitrarily long)
+# the actual pg_ctl timeout is configured in pg_ctl.conf
+ExecStart=-/usr/bin/pg_ctlcluster --skip-systemctl-redirect %i start
+TimeoutStartSec=infinity
 ExecStop=/usr/bin/pg_ctlcluster --skip-systemctl-redirect -m fast %i stop
+TimeoutStopSec=1h
 ExecReload=/usr/bin/pg_ctlcluster --skip-systemctl-redirect %i reload
 PIDFile=/var/run/postgresql/%i.pid
 SyslogIdentifier=postgresql@%i
