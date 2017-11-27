@@ -31,9 +31,13 @@ _link_manpages() {
     # user might have removed the directories, allow u-a to succeed
     mkdir -p /usr/share/man/man1 /usr/share/man/man3 /usr/share/man/man7
     section=$(echo "$2" | sed -e 's/.*\.\(.*\)\..*/man\1/')
+    case $1 in
+        [89]*) priority=$(echo "$1" | tr -cd 0-9) ;;
+        *) priority="${1}0" ;;
+    esac
     update-alternatives --install /usr/share/man/$section/$2 \
 	$2 /usr/share/postgresql/$1/man/$section/$2 \
-	$(echo "$1" | tr -cd 0-9) $SLAVES
+	$priority $SLAVES
 }
 
 # arguments: version master

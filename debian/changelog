@@ -11,6 +11,8 @@ postgresql-common (189) UNRELEASED; urgency=medium
     reflects if the postmaster process is running.
     https://www.postgresql.org/message-id/20171111205316.u56lkmkakdmcx6zm%40msg.df7cb.de
   * supported-versions: Version 10 on Ubuntu 18.04 (bionic). (Closes: #881501)
+  * debian/maintscripts-functions: bump update-alternatives priority of
+    version 1x to 1x0.
 
  -- Christoph Berg <myon@debian.org>  Fri, 10 Nov 2017 17:45:10 +0100
 
