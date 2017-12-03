@@ -354,7 +354,7 @@ tel|2
     print WH "BEGIN;\n";
     usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/idle in transaction/, 'process title is idle in transaction';
-    print WH "SELECT pg_sleep(1);\n";
+    print WH "SELECT pg_sleep(2); COMMIT;\n";
     usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
 
