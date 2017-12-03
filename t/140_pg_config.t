@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => 8 * (@MAJORS + 1);
+use Test::More tests => 8 * @MAJORS + 2 * 12;
 
 my $multiarch = '';
 unless ($PgCommon::rpm) {
@@ -36,13 +36,18 @@ foreach $version (@MAJORS) {
 
 # check client-side output (should behave like latest server-side one)
 $version = $ALL_MAJORS[-1];
-is_program_out 'postgres', "pg_config --pgxs", 0, 
-    "$PgCommon::binroot$version/lib/pgxs/src/makefiles/pgxs.mk\n";
-my $libdir = "/usr/lib" . ($version >= 9.3 and $multiarch ? "/$multiarch" : "") . "\n";
-$libdir = "$PgCommon::binroot$version/lib\n" if ($PgCommon::rpm);
-is_program_out 'postgres', "pg_config --libdir", 0, 
-    $libdir;
-is_program_out 'postgres', "pg_config --pkglibdir", 0, 
-    "$PgCommon::binroot$version/lib\n";
-is_program_out 'postgres', "pg_config --bindir", 0, 
-    "$PgCommon::binroot$version/bin\n";
+my $full_output = `$PgCommon::binroot$version/bin/pg_config`;
+for my $pg_config (qw(pg_config pg_config.libpq-dev)) {
+    is_program_out 'postgres', "$pg_config", 0, $full_output;
+    like_program_out 'postgres', "$pg_config --help", 0, qr/--includedir-server/;
+    is_program_out 'postgres', "$pg_config --pgxs", 0,
+        "$PgCommon::binroot$version/lib/pgxs/src/makefiles/pgxs.mk\n";
+    my $libdir = "/usr/lib" . ($version >= 9.3 and $multiarch ? "/$multiarch" : "") . "\n";
+    $libdir = "$PgCommon::binroot$version/lib\n" if ($PgCommon::rpm);
+    is_program_out 'postgres', "$pg_config --libdir", 0,
+        $libdir;
+    is_program_out 'postgres', "$pg_config --pkglibdir", 0,
+        "$PgCommon::binroot$version/lib\n";
+    is_program_out 'postgres', "$pg_config --bindir", 0,
+        "$PgCommon::binroot$version/bin\n";
+}
