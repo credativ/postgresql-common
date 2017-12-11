@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => 8 * @MAJORS + 2 * 12;
+use Test::More tests => 14 * @MAJORS + 2 * 12;
 
 my $multiarch = '';
 unless ($PgCommon::rpm) {
@@ -19,7 +19,7 @@ my $version;
 foreach $version (@MAJORS) {
     if ($version < '8.2') {
         pass "Skipping known-broken pg_config check for version $version";
-        for (my $i = 0; $i < 7; ++$i) { pass '...'; }
+        for (my $i = 0; $i < 13; ++$i) { pass '...'; }
         next;
     }
     is_program_out 'postgres', "$PgCommon::binroot$version/bin/pg_config --pgxs", 0, 
@@ -32,6 +32,17 @@ foreach $version (@MAJORS) {
         "$PgCommon::binroot$version/lib\n";
     is_program_out 'postgres', "$PgCommon::binroot$version/bin/pg_config --bindir", 0, 
         "$PgCommon::binroot$version/bin\n";
+    # mkdir should be in /bin. If /bin was linked to /usr/bin at build time, this is wrong
+    is_program_out 'postgres', "grep ^MKDIR_P $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0, 
+        "MKDIR_P = /bin/mkdir -p\n";
+    SKIP: {
+        skip 'build path not canonicalized on RedHat', 4 if ($PgCommon::rpm);
+        # check that we correctly canonicalized the build paths
+        is_program_out 'postgres', "grep ^abs_top_builddir $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0, 
+            "abs_top_builddir = /build/postgresql-$version/build\n";
+        is_program_out 'postgres', "grep ^abs_top_srcdir $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0, 
+            "abs_top_srcdir = /build/postgresql-$version/build/..\n";
+    }
 }
 
 # check client-side output (should behave like latest server-side one)
