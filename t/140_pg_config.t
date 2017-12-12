@@ -38,8 +38,11 @@ foreach $version (@MAJORS) {
     SKIP: {
         skip 'build path not canonicalized on RedHat', 4 if ($PgCommon::rpm);
         # check that we correctly canonicalized the build paths
-        is_program_out 'postgres', "grep ^abs_top_builddir $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0, 
-            "abs_top_builddir = /build/postgresql-$version/build\n";
+        SKIP: {
+            skip 'abs_top_builddir introduced in 9.5', 2 if ($version < 9.5);
+            is_program_out 'postgres', "grep ^abs_top_builddir $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0,
+                "abs_top_builddir = /build/postgresql-$version/build\n";
+        }
         is_program_out 'postgres', "grep ^abs_top_srcdir $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0, 
             "abs_top_srcdir = /build/postgresql-$version/build/..\n";
     }
