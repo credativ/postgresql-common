@@ -54,6 +54,9 @@ locale_gen ()
                    ;;
             esac
             ;;
+        redhat|centos)
+            return 0 # not yet implemented
+            ;;
     esac
 
     case $METHOD in
