@@ -1,0 +1,46 @@
+# run the testsuite on travis-ci.com
+---
+# versions to run on
+env:
+  - PG_SUPPORTED_VERSIONS=pgdg
+  - PG_SUPPORTED_VERSIONS=11
+
+language: C
+dist: trusty
+sudo: required
+
+before_install:
+  # remove the travis-provided clusters
+  - sudo service postgresql stop && sudo apt-get remove --purge postgresql-client-common
+  - |
+    sudo tee /etc/apt/preferences.d/pgdg.pref <<EOF
+    Package: *
+    Pin: release o=apt.postgresql.org
+    Pin-Priority: 800
+    EOF
+  # apt.postgresql.org is already configured, add devel
+  - |
+    case $PG_SUPPORTED_VERSIONS in
+      1*) sudo sed -i -e "s/-pgdg.*/-pgdg-testing main $PG_SUPPORTED_VERSIONS/" /etc/apt/sources.list.d/pgdg*.list ;;
+    esac
+  - sudo apt-get update
+
+install:
+  - export DEBIAN_FRONTEND=noninteractive # suppress warnings about deprecated PostgreSQL versions
+  - sudo apt-get install debhelper fakeroot libreadline-dev lsb-release
+  # make PWD readable for postgres/nobody
+  - dir=$PWD; while [ "$dir" ]; do sudo chmod --changes a+rx $dir; dir=${dir%/*}; done
+
+script:
+  # remove systemd dependency
+  - sed -i -e '/dh-systemd/d' debian/control && sed -i -e '/^WITH_SYSTEMD/d' debian/rules
+  # pretend we are building for pgdg
+  - sed -i -e '1s/)/.pgdgtravis)/' debian/changelog
+  - dpkg-buildpackage -us -uc -rfakeroot
+  - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )
+  - ( set -x; sudo dpkg --force-confmiss --force-confnew -i ../*.deb || { sudo apt-get install -f; sudo dpkg --force-confmiss --force-confnew -i ../*.deb; } )
+  - dpkg -l postgresql\* | cat
+  - pg_lsclusters
+  - PG_VERSIONS=$(debian/supported-versions)
+  - sudo SKIP_IPV6=1 ./testsuite -v "$PG_VERSIONS" -i
+
