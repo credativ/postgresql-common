@@ -57,31 +57,49 @@ if [ "$(id -u)" != 0 ]; then
     exit 1
 fi
 
+# use the local pgcommon.sh (either in the build tree or /usr/share/postgresql-common)
+. ./pgcommon.sh
+get_release
+
 # install packages for versions specified by -v
 # needs network for apt, so run before unshare
 if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
-    for v in $PG_VERSIONS; do
-        apt-get install -y postgresql-contrib-$v \
-            postgresql-plperl-$v \
-            postgresql-plpython-$v \
-            postgresql-plpython3-$v \
-            postgresql-pltcl-$v \
-            postgresql-server-dev-$v
-    done
-    apt-get install -y libecpg-dev \
-        locales \
-        procps \
-        netcat-openbsd \
-        hunspell-en-us
+    case $DISTRO in
+        debian|ubuntu)
+            for v in $PG_VERSIONS; do
+                apt-get install -y \
+                    postgresql-contrib-$v \
+                    postgresql-plperl-$v \
+                    postgresql-plpython-$v \
+                    postgresql-plpython3-$v \
+                    postgresql-pltcl-$v \
+                    postgresql-server-dev-$v
+            done
+            apt-get install -y libecpg-dev \
+                locales \
+                procps \
+                netcat-openbsd \
+                hunspell-en-us
+        ;;
+        redhat|centos)
+            for v in $PG_VERSIONS; do
+                vv=$(echo $v | tr -d .)
+                yum install -y \
+                    postgresql$vv-contrib \
+                    postgresql$vv-plperl \
+                    postgresql$vv-plpython \
+                    postgresql$vv-pltcl \
+                    postgresql$vv-devel
+            done
+            yum install -y \
+                nmap-ncat \
+                perl-Test-Simple perl-Time-HiRes
+        ;;
+    esac
 fi
-# requirements on RedHat:
-# perl-Test-Simple perl-Time-HiRes
 
 # shift away args
 shift $(($OPTIND - 1))
-
-# use the local pgcommon.sh (either in the build tree or /usr/share/postgresql-common)
-. ./pgcommon.sh
 
 # install locales
 locale_gen \
