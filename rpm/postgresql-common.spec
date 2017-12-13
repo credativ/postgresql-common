@@ -1,5 +1,5 @@
 Name:           postgresql-common
-Version:        183
+Version:        189
 Release:        1%{?dist}
 BuildArch:      noarch
 Summary:        PostgreSQL database-cluster manager
@@ -91,7 +91,7 @@ cp debian/postgresql-common.postgresql.init %{buildroot}/etc/init.d/postgresql
 cp rpm/init-functions-compat %{buildroot}/usr/share/postgresql-common
 # ssl defaults to 'off' here because we don't have pregenerated snakeoil certs
 sed -e 's/__SSL__/off/' createcluster.conf > %{buildroot}/etc/postgresql-common/createcluster.conf
-cp debian/logrotate.template %{buildroot}/etc/logrotate.d/postgresql-common
+cp debian/postgresql-common.logrotate %{buildroot}/etc/logrotate.d/postgresql-common
 
 %if 0%{?rhel} >= 7
 # Prepare systemd unit files, but only for RHEL/CentOS 7 and above...
