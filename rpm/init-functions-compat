@@ -8,4 +8,5 @@ function_exists log_daemon_msg   || log_daemon_msg () { echo -n "$1:${2:+ $2}"; 
 function_exists log_progress_msg || log_progress_msg () { echo -n " $1"; }
 function_exists log_end_msg      || log_end_msg () { if [ $1 -eq 0 ]; then echo "."; else echo "failed!"; fi; }
 # this one exists, but we provide it anyway so we don't need to depend on redhat-lsb-core:
+function_exists log_warning_msg  || log_warning_msg () { echo "$1"; }
 function_exists log_failure_msg  || log_failure_msg () { echo "$1"; }
