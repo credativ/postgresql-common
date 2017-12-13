@@ -27,3 +27,23 @@ man: $(POD1PROGS) $(POD1PROGS_POD) $(POD8PROGS)
 
 clean:
 	rm -f *.1 *.8 dh_make_pgxs/*.1
+
+# rpm
+
+DPKG_VERSION=$(shell sed -ne '1s/.*(//; 1s/).*//p' debian/changelog)
+RPM_VERSION=$(shell awk '/^Version:/ { print $$2 }' rpm/postgresql-common.spec)
+RPMDIR=$(HOME)/rpmbuild
+TARBALL=$(RPMDIR)/SOURCES/postgresql-common_$(DPKG_VERSION).tar.xz
+
+rpm: $(TARBALL)
+	[ "$(DPKG_VERSION)" = "$(RPM_VERSION)" ]
+	rpmbuild -ba rpm/postgresql-common.spec
+
+$(TARBALL):
+	git archive --prefix=postgresql-common-$(DPKG_VERSION)/ HEAD | xz > $(TARBALL)
+
+rpminstall:
+	sudo rpm --upgrade --replacefiles --replacepkgs -v $(RPMDIR)/RPMS/noarch/*-$(DPKG_VERSION)-*.rpm
+
+rpmclean:
+	rm -rf $(TARBALL) $(RPMDIR)/BUILD
