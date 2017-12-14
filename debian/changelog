@@ -1,4 +1,4 @@
-postgresql-common (189) UNRELEASED; urgency=medium
+postgresql-common (189) unstable; urgency=medium
 
   [ Chris Lamb ]
   * Update README.Debian for postgresql-10. (Closes: #876438)
@@ -17,7 +17,7 @@ postgresql-common (189) UNRELEASED; urgency=medium
   * t/140_pg_config.t: Also test /usr/bin/pg_config.libpq-dev, and check
     MKDIR_P and abs_top_build/srcdir in Makefile.global.
 
- -- Christoph Berg <myon@debian.org>  Fri, 10 Nov 2017 17:45:10 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 14 Dec 2017 21:13:24 +0100
 
 postgresql-common (188) unstable; urgency=medium
 
