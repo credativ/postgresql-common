@@ -40,6 +40,7 @@ rpm: $(TARBALL)
 	rpmbuild -ba rpm/postgresql-common.spec
 
 $(TARBALL):
+	mkdir -p $(dir $(TARBALL))
 	git archive --prefix=postgresql-common-$(DPKG_VERSION)/ HEAD | xz > $(TARBALL)
 
 rpminstall:
