@@ -78,7 +78,11 @@ while getopts "ac:i:ho:stv:" opt ; do
 done
 if [ -z "$PG_VERSIONS" ]; then
     # use latest version
-    d=$(ls -v $PGBINROOT*/bin/pg_ctl | tail -1)
+    d=$(ls -v $PGBINROOT*/bin/pg_ctl 2> /dev/null | tail -1)
+    if [ -z "$d" ]; then
+        echo "Could not determine PostgreSQL version, are any PostgreSQL server packages installed?" >&2
+        exit 2
+    fi
     dir=${d%%/bin/pg_ctl}
     PG_VERSIONS="${dir#$PGBINROOT}"
 fi
