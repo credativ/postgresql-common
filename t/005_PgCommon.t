@@ -142,18 +142,18 @@ print F <<EOF;
 # commented_str = 'notme'
 
 intval = -1
-include '8.4/test/foo.conf'
-include_dir 'conf.d'
+include '8.4/test/foo.conf' # foo
+include_dir 'conf.d' # bar
 strval = 'howdy'
 include_if_exists '/nonexisting.conf'
-include_if_exists '8.4/test/condinc.conf'
+include_if_exists = '8.4/test/condinc.conf'
 EOF
 close F;
 
 open F, ">$tdir/conf.d/sub.conf" or die "Could not create $tdir/conf.d/sub.conf: $!";
 print F <<EOF;
 subvalue = 1
-include '../relative.conf'
+include = '../relative.conf'
 EOF
 close F;
 

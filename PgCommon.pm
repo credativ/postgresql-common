@@ -131,7 +131,7 @@ sub read_conf_file {
         while (<F>) {
             if (/^\s*(?:#.*)?$/) {
                 next;
-            } elsif(/^\s*include_dir\s+'([^']+)'\s*$/i) {
+            } elsif(/^\s*include_dir\s*=?\s*'([^']+)'\s*(?:#.*)?$/i) {
                 # read included configuration directory and merge into %conf
                 # files in the directory will be read in ascending order
                 my $path = $1;
@@ -147,7 +147,7 @@ sub read_conf_file {
                     }
                 }
                 closedir($dir);
-            } elsif (/^\s*include(?:_if_exists)?\s+'([^']+)'\s*$/i) {
+            } elsif (/^\s*include(?:_if_exists)?\s*=?\s*'([^']+)'\s*(?:#.*)?$/i) {
                 # read included file and merge into %conf
                 my $path = $1;
                 my $absolute_path = get_absolute_path($path, $config_path);

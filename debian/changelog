@@ -4,6 +4,7 @@ postgresql-common (190) UNRELEASED; urgency=medium
   * pg_virtualenv: Error out if no server packages are installed.
   * postgresql-common recommends e2fsprogs, we are using chattr in
     pg_createcluster. (Closes: #887251)
+  * PgCommon.pm: Fix include directives parser, spotted by ironhalik, thanks!
 
  -- Christoph Berg <myon@debian.org>  Mon, 25 Dec 2017 18:03:38 +0100
 
