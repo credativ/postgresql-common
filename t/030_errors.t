@@ -260,7 +260,7 @@ is ((exec_as 'postgres', "pg_ctlcluster $version other start"), 0,
 is ((exec_as 'postgres', "pg_ctlcluster $version other stop"), 0);
 
 # ... but will give an error when running on the same port
-set_cluster_socketdir $version, 'other', $PgCommon::rpm ? '/tmp' : '/var/run/postgresql';
+set_cluster_socketdir $version, 'other', ($PgCommon::rpm and $version < 9.4) ? '/tmp' : '/var/run/postgresql';
 like_program_out 'postgres', "pg_ctlcluster $version other start", 1,
     qr/Port conflict:.*port 5432/,
     'pg_ctlcluster other cluster fails on conflicting port and same socket dir';

@@ -3,8 +3,10 @@ use warnings;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 3 + 19 * @MAJORS;
 use PgCommon;
+use Test::More tests => $PgCommon::rpm ? 1 : 3 + 19 * @MAJORS;
+
+if ($PgCommon::rpm) { pass 'No ssl key checks on RedHat'; exit; }
 
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
 my $ssl_cert_gid = (getgrnam 'ssl-cert')[2]; # reset permissions
