@@ -16,7 +16,8 @@ is ((stat $snakekey)[5], $ssl_cert_gid, "$snakekey group is ssl-cert");
 is ((stat $snakekey)[2], 0100640, "$snakekey mode is 0640");
 
 foreach my $version (@MAJORS) {
-    note "$version";
+    my $pkgversion = `dpkg-query -f '\${Version}' -W postgresql-$version`;
+    note "$version ($pkgversion)";
 SKIP: {
     skip "No SSL key check on <= 9.0", 19 if ($version <= 9.0);
     program_ok (0, "pg_createcluster $version main");
@@ -24,9 +25,11 @@ SKIP: {
     my $nobody_uid = (getpwnam 'nobody')[2];
     chown $nobody_uid, 0, $snakekey;
     like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
-        qr/private key file.*must be owned by the database user or root/,
+        qr/private key file.*must be owned by the database user or root/s,
         'ssl key owned by nobody refused';
 
+SKIP: {
+    skip "SSL key group check skipped on Debian oldstable packages", 4 if ($version <= 9.4 and $pkgversion !~ /pgdg/);
     chown 0, 0, $snakekey;
     chmod 0644, $snakekey;
     like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
@@ -38,6 +41,7 @@ SKIP: {
     like_program_out 'postgres', "pg_ctlcluster $version main start", 1,
         qr/private key file.*has group or world access/,
         'ssl key with permissions postgres:postgres 0640 refused';
+}
 
     chown 0, $ssl_cert_gid, $snakekey;
 

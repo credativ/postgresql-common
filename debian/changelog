@@ -6,6 +6,8 @@ postgresql-common (190) UNRELEASED; urgency=medium
     pg_createcluster. (Closes: #887251)
   * PgCommon.pm: Fix include directives parser, spotted by ironhalik, thanks!
   * Rewrite architecture.html as README.md.
+  * t/032_ssl_key_permissions.t: Adjust for 9.4 in oldstable which still has
+    the old permissions check.
 
  -- Christoph Berg <myon@debian.org>  Mon, 25 Dec 2017 18:03:38 +0100
 
