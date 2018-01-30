@@ -79,7 +79,8 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
                 locales \
                 procps \
                 netcat-openbsd \
-                hunspell-en-us
+                hunspell-en-us \
+                gcc
         ;;
         redhat|centos)
             for v in $PG_VERSIONS; do
@@ -93,7 +94,8 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
             done
             yum install -y \
                 nmap-ncat \
-                perl-Test-Simple perl-Time-HiRes
+                perl-Test-Simple perl-Time-HiRes \
+                gcc
         ;;
     esac
 fi
