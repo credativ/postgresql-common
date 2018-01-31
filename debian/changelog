@@ -5,6 +5,8 @@ postgresql-common (190) UNRELEASED; urgency=medium
   * postgresql-common recommends e2fsprogs, we are using chattr in
     pg_createcluster. (Closes: #887251)
   * PgCommon.pm: Fix include directives parser, spotted by ironhalik, thanks!
+  * postgresql@.service: Set Timeoutstart=0, which is the same as infinity,
+    but works on older systemd versions as well.
   * Rewrite architecture.html as README.md.
   * t/006_next_free_port.t: Drop -q argument from netcat, nmap-ncat.rpm
     doesn't have it.
