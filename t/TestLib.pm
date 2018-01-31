@@ -123,9 +123,10 @@ sub dircontent {
 
 # Return environment of given PID
 sub pid_env {
-    my $path = "/proc/$_[0]/environ";
+    my ($user, $pid) = @_;
+    my $path = "/proc/$pid/environ";
     my @lines;
-    open E, $path or die "open $path: $!";
+    open E, "su -c 'cat $path' $user |" or warn "open $path: $!";
     {
         local $/;
         @lines = split '\0', <E>;
