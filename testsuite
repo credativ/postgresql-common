@@ -77,7 +77,7 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
             done
             apt-get install -y libecpg-dev \
                 locales \
-                procps \
+                procps systemd \
                 netcat-openbsd \
                 hunspell-en-us \
                 gcc

@@ -329,7 +329,7 @@ tel|2
     # 9.0, but client backends stay at default; this might not work in
     # containers with restricted privileges, so skip the check there
     my $adj;
-    my $detect_virt = system 'systemd-detect-virt --container --quiet';
+    my $detect_virt = system 'systemd-detect-virt --container --quiet'; # from systemd
     open F, "/proc/$master_pid/oom_score_adj";
     $adj = <F>;
     chomp $adj;
