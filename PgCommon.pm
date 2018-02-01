@@ -28,7 +28,7 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
-    get_cluster_databases read_cluster_conf_file read_pg_hba read_pidfile/;
+    get_cluster_databases read_cluster_conf_file read_pg_hba read_pidfile valid_hba_method/;
 our @EXPORT_OK = qw/$confroot $binroot $rpm quote_conf_value read_conf_file get_conf_value
     set_conf_value set_conffile_value disable_conffile_value disable_conf_value
     replace_conf_value cluster_data_directory get_file_device
@@ -1076,7 +1076,6 @@ sub get_file_device {
 # method -> trust, reject, md5, crypt, password, krb5, ident, pam
 # ip -> ip address
 # mask -> network mask (either a single number as number of bits, or bit mask)
-my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
 sub parse_hba_line {
     my $l = $_[0];
     chomp $l;
@@ -1095,7 +1094,7 @@ sub parse_hba_line {
     # local connection?
     if ($$res{'type'} eq 'local') {
 	goto error if $#tok > 1;
-	goto error unless $valid_methods{$tok[0]};
+	goto error unless valid_hba_method($tok[0]);
 	$$res{'method'} = join (' ', @tok);
 	return $res;
     }
@@ -1115,7 +1114,7 @@ sub parse_hba_line {
 	}
 
 	goto error if $#tok > 1;
-	goto error unless $valid_methods{$tok[0]};
+	goto error unless valid_hba_method($tok[0]);
 	$$res{'method'} = join (' ', @tok);
 	return $res;
     }
@@ -1137,6 +1136,17 @@ sub read_pg_hba {
     }
     close HBA;
     return @hba;
+}
+
+# Check if hba method is known
+# Argument: hba method
+# Returns: True if method is valid
+sub valid_hba_method {
+    my $method = $_[0];
+
+    my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
+
+    return exists($valid_methods{$method});
 }
 
 1;
