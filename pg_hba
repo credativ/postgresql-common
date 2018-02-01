@@ -19,7 +19,7 @@ use PgCommon;
 use Getopt::Long;
 use Net::CIDR;
 
-my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1 peer 1/;
+my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
 
 # global variables
 
@@ -51,13 +51,6 @@ sub match_ip {
     return 0 if ((index $ip, ':') < 0) ^ ((index $$hba{'ip'}, ':') < 0);
 
     return Net::CIDR::cidrlookup ($ip, $$hba{'ip'});
-}
-
-# Print hba conf.
-sub mode_print {
-    foreach my $hbarec (@hba) {
-        print "$$hbarec{'line'}\n";
-    }
 }
 
 # Check if arguments match any line 
@@ -126,20 +119,16 @@ error2 'Invalid --method argument' unless $valid_methods{(split /\s+/, $method)[
 # parse file
 
 my $hbafile = "/etc/postgresql/$version/$cluster/pg_hba.conf";
-@hba = read_pg_hba($hbafile);
+@hba = read_pg_hba $hbafile;
 error2 "Could not read $hbafile" unless $#hba;
 
-if ($mode eq 'pg_print_hba') {
-     mode_print();
-}
-
 if ($mode eq 'pg_test_hba') { 
-    if (mode_test()) {
+    if (mode_test) {
 	exit 0;
     } else {
 	print create_hba_line();
 	exit 1;
     }
-} elif {
+} else {
     error2 "Unknown mode: $mode";
 }
