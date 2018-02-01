@@ -3,7 +3,7 @@
 # Run integration tests (on the installed packages).
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2017 Christoph Berg <myon@debian.org>
+# (C) 2012-2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ while getopts "Dhf:iMsu:v:V" opt ; do
         f) FROM="$OPTARG" ;;
         i) INSTALL=1 ;;
         h) help ;;
-        M) NO_TMPFS=1 ;;
+        M) export NO_TMPFS=1 ;;
         s) export FAILURE="shell" ;;
         u) PG_UMASKS="$OPTARG" ;;
         v) export PG_VERSIONS="$OPTARG" ;; # used in t/TestLib.pm

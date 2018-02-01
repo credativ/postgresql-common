@@ -6,7 +6,13 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 22;
+use Test::More tests => $ENV{NO_TMPFS} ? 1 : 22;
+
+# skip tests if NO_TMPFS is set
+if ($ENV{NO_TMPFS}) {
+    pass 'Skipping disk full tests, NO_TMPFS is set';
+    exit;
+}
 
 # we are using unshare here, won't work with systemd
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1;
