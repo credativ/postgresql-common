@@ -19,7 +19,7 @@ use PgCommon;
 use Getopt::Long;
 use Net::CIDR;
 
-my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1/;
+my %valid_methods = qw/trust 1 reject 1 md5 1 crypt 1 password 1 krb5 1 ident 1 pam 1 peer 1/;
 
 # global variables
 
@@ -33,63 +33,6 @@ my @hba;
 sub error2 {
     print STDERR 'Error: ', $_[0], "\n";
     exit 2;
-}
-
-# Parse a single pg_hba.conf line.
-# Arguments: <line>
-# Returns: Hash reference; 'type' key (comment, local, host, hostssl,
-#   hostnossl) is always present, other keys depend on type.
-sub parse_hba_line {
-    my $l = $_[0];
-
-    # comment line?
-    return { 'type' => 'comment', 'line' => $l } if ($l =~ /^\s*($|#)/);
-
-    # not yet supported features
-    return undef if $l =~ /("|\+|@)/;
-
-    my @tok = split /\s+/, $l;
-    return undef if $#tok < 3;
-    my $res = { 
-	'type' => shift @tok,
-	'database' => shift @tok,
-	'user' => shift @tok,
-	'line' => $l
-    };
-
-    # local connection?
-    if ($$res{'type'} eq 'local') {
-	return undef if $#tok > 1;
-	return undef unless $valid_methods{$tok[0]};
-	$$res{'method'} = join (' ', @tok);
-	return $res;
-    } 
-
-    # host connection?
-    if ($$res{'type'} =~ /^host((no)?ssl)?$/) {
-	my ($i, $c) = split '/', (shift @tok);
-	$i = Net::CIDR::cidrvalidate $i;
-	return undef unless $i;
-
-	# CIDR mask given?
-	if (defined $c) {
-	    return undef if $c !~ /^(\d+)$/;
-	    $$res{'ip'} = "$i/$c";
-	} else {
-	    my $m = Net::CIDR::cidrvalidate (shift @tok);
-	    return undef unless $m;
-	    $$res{'ip'} = Net::CIDR::addrandmask2cidr ($i, $m);
-	    return undef unless $$res{'ip'};
-	}
-
-	return undef if $#tok > 1;
-	return undef unless $valid_methods{$tok[0]};
-	$$res{'method'} = join (' ', @tok);
-	return $res;
-    }
-
-    print "Parse error: invalid line: $l";
-    return undef;
 }
 
 # Check if s1 is equal to s2 or s2 is 'all'.
@@ -108,6 +51,13 @@ sub match_ip {
     return 0 if ((index $ip, ':') < 0) ^ ((index $$hba{'ip'}, ':') < 0);
 
     return Net::CIDR::cidrlookup ($ip, $$hba{'ip'});
+}
+
+# Print hba conf.
+sub mode_print {
+    foreach my $hbarec (@hba) {
+        print "$$hbarec{'line'}\n";
+    }
 }
 
 # Check if arguments match any line 
@@ -130,21 +80,6 @@ sub mode_test {
     }
 
     return 0;
-}
-
-# Parse given pg_hba.conf file.
-# Arguments: <pg_hba.conf path>
-# Returns: Array with hash refs; for hash contents, see parse_hba_line().
-sub read_pg_hba {
-    open HBA, $_[0] or return undef;
-    my @hba;
-    while (<HBA>) {
-	my $r = parse_hba_line $_;
-	return undef unless defined $r;
-	push @hba, $r;
-    }
-    close HBA;
-    return @hba;
 }
 
 # Generate a pg_hba.conf line that matches the command line args.
@@ -191,16 +126,20 @@ error2 'Invalid --method argument' unless $valid_methods{(split /\s+/, $method)[
 # parse file
 
 my $hbafile = "/etc/postgresql/$version/$cluster/pg_hba.conf";
-@hba = read_pg_hba $hbafile;
+@hba = read_pg_hba($hbafile);
 error2 "Could not read $hbafile" unless $#hba;
 
+if ($mode eq 'pg_print_hba') {
+     mode_print();
+}
+
 if ($mode eq 'pg_test_hba') { 
-    if (mode_test) {
+    if (mode_test()) {
 	exit 0;
     } else {
 	print create_hba_line();
 	exit 1;
     }
-} else {
+} elif {
     error2 "Unknown mode: $mode";
 }
