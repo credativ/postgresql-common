@@ -59,7 +59,7 @@ sub mode_test {
     foreach my $hbarec (@hba) {
 	next if $$hbarec{'type'} eq 'comment';
 	next unless match_all ($user, $$hbarec{'user'}) &&
-		match_all ($db, $$hbarec{'database'}) &&
+		match_all ($db, $$hbarec{'db'}) &&
 		$$hbarec{'method'} eq $method;
 
 	if ($ip) {
