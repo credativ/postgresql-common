@@ -76,6 +76,13 @@ sub mode_test {
     return 0;
 }
 
+# Print hba conf.
+sub mode_print {
+    foreach my $hbarec (@hba) {
+        print "$$hbarec{'line'}\n";
+    }
+}
+
 # Generate a pg_hba.conf line that matches the command line args.
 sub create_hba_line {
     if ($ip) {
@@ -130,6 +137,8 @@ if ($mode eq 'pg_test_hba') {
 	print create_hba_line();
 	exit 1;
     }
+} elsif ($mode eq 'pg_print_hba') {
+    mode_print();
 } else {
     error2 "Unknown mode: $mode";
 }
