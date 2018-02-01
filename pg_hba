@@ -55,6 +55,9 @@ sub match_ip {
 # Return: 1 if match was found, 0 otherwise.
 sub mode_test {
     foreach my $hbarec (@hba) {
+	if (!defined($$hbarec{'type'})) {
+	    next;
+	}
 	next if $$hbarec{'type'} eq 'comment';
 	next unless match_all ($user, $$hbarec{'user'}) &&
 		match_all ($db, $$hbarec{'db'}) &&
