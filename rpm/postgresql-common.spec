@@ -1,5 +1,5 @@
 Name:           postgresql-common
-Version:        189
+Version:        %{version}
 Release:        1%{?dist}
 BuildArch:      noarch
 Summary:        PostgreSQL database-cluster manager
