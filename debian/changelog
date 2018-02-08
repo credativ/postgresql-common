@@ -1,4 +1,4 @@
-postgresql-common (190) UNRELEASED; urgency=medium
+postgresql-common (190) unstable; urgency=medium
 
   * Move packaging repository to salsa.debian.org
   * pg_lsclusters: Add --help.
@@ -14,7 +14,7 @@ postgresql-common (190) UNRELEASED; urgency=medium
   * t/032_ssl_key_permissions.t: Adjust for 9.4 in oldstable which still has
     the old permissions check.
 
- -- Christoph Berg <myon@debian.org>  Mon, 25 Dec 2017 18:03:38 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 08 Feb 2018 13:26:44 +0100
 
 postgresql-common (189) unstable; urgency=medium
 
