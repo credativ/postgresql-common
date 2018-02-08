@@ -1,6 +1,7 @@
 postgresql-common (190) UNRELEASED; urgency=medium
 
   * Move packaging repository to salsa.debian.org
+  * pg_lsclusters: Add --help.
   * pg_virtualenv: Error out if no server packages are installed.
   * postgresql-common recommends e2fsprogs, we are using chattr in
     pg_createcluster. (Closes: #887251)

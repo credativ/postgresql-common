@@ -2,7 +2,7 @@
 # Show all PostgreSQL clusters in a list
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2017 Christoph Berg <myon@debian.org>
+# (C) 2013-2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,11 +18,26 @@ use strict;
 use PgCommon;
 use Getopt::Long;
 
+sub help ($)
+{
+    my $exit = shift;
+    print "Usage: $0 [-hjs]
+
+Options:
+  -h --no-header   Omit column headers in output
+  -j --json        JSON output
+  -s --start-conf  Include start.conf information in status column
+     --help        Print help\n";
+
+     exit $exit;
+}
+
 # option handling
 my $no_header;
 my $json;
 my $start_conf;
-exit 1 unless GetOptions (
+help(1) unless GetOptions (
+    'help' => sub { help(0); },
     'h|no-header' => \$no_header,
     'j|json' => \$json,
     's|start-conf' => \$start_conf,
@@ -143,6 +158,10 @@ Output information in JSON format. Needs JSON.pm installed.
 =item B<-s>, B<--start-conf>
 
 Include F<start.conf> information in status column.
+
+=item B<--help>
+
+Print usage help.
 
 =back
 
