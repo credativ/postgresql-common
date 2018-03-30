@@ -1,0 +1,232 @@
+#!/usr/bin/perl -wT
+
+# multiversion/cluster aware pg_ctl wrapper; this also supplies the correct
+# configuration parameters to 'start', and makes sure that postgres really
+# stops on 'stop'.
+#
+# (C) 2005-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2009 Cyril Bouthors <cyril@bouthors.org>
+# (C) 2013-2018 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+use strict;
+use warnings;
+use Getopt::Long;
+use POSIX qw/setsid dup2 :sys_wait_h/;
+use PgCommon;
+use Fcntl qw(SEEK_SET O_RDWR O_CREAT O_EXCL);
+use POSIX qw(lchown);
+
+my ($version, $cluster, $pg_ctl, $force);
+my (@postgres_auxoptions, @pg_ctl_opts_from_cli);
+my (%postgresql_conf, %info);
+
+# untaint environment
+$ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
+
+#
+# main
+#
+
+exit 1 unless GetOptions (
+    'user-cluster' => sub {
+        #$usercluster = 1;
+        $PgCommon::confroot = $ENV{PG_CLUSTER_CONF_ROOT} = "$ENV{HOME}/.config/postgresql";
+    },
+);
+
+if (@ARGV != 1) {
+    error "Usage: $0 <version>-<cluster>\n";
+    exit 1;
+}
+
+if ($ARGV[0] =~ m!^(\d+\.?\d)[-/](.+)!) {
+    ($version, $cluster) = ($1, $2);
+}
+
+($version) = $version =~ /^(\d+\.?\d+)$/; # untaint
+($cluster) = $cluster =~ /^([^'"\s]+)$/; # untaint
+error 'specified cluster does not exist' unless $version && $cluster && cluster_exists $version, $cluster;
+%info = cluster_info ($version, $cluster);
+
+unless (-d $info{'pgdata'} && defined $info{'owneruid'}) {
+    error "$info{pgdata} is not accessible or does not exist";
+}
+
+# check that owner uid/gid is valid
+unless (getpwuid $info{'owneruid'}) {
+    error "The cluster is owned by user id $info{owneruid} which does not exist";
+}
+unless (getgrgid $info{'ownergid'}) {
+    error "The cluster is owned by group id $info{ownergid} which does not exist";
+}
+# owneruid and configuid need to match, unless configuid is root
+if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
+        $info{'configuid'} != $info{'owneruid'}) {
+    my $configowner = (getpwuid $info{'configuid'})[0] || "(unknown)";
+    my $dataowner = (getpwuid $info{'owneruid'})[0];
+    error "Config owner ($configowner:$info{configuid}) and data owner ($dataowner:$info{owneruid}) do not match, and config owner is not root";
+}
+
+# recreate /var/run/postgresql
+if (! -d $info{socketdir}) {
+    system 'install', '-d', '-m', 2775,
+	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{'socketdir'};
+}
+
+# recreate stats_temp_directory
+if ($info{config}->{stats_temp_directory} && ! -d $info{config}->{stats_temp_directory}) {
+    system 'install', '-d', '-m', 750,
+	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{config}->{stats_temp_directory};
+}
+
+__END__
+
+=head1 NAME
+
+pg_ctlcluster - start/stop/restart/reload a PostgreSQL cluster
+
+=head1 SYNOPSIS
+
+B<pg_ctlcluster> [I<options>] I<cluster-version> I<cluster-name> I<action> [B<--> I<pg_ctl options>]
+
+where I<action> = B<start>|B<stop>|B<restart>|B<reload>|B<status>|B<promote>
+
+=head1 DESCRIPTION
+
+This program controls the B<postgres> server for a particular cluster. It
+essentially wraps the L<pg_ctl(1)> command. It determines the cluster version
+and data path and calls the right version of B<pg_ctl> with appropriate
+configuration parameters and paths.
+
+You have to start this program as the user who owns the database cluster or as
+root.
+
+To ease integration with B<systemd> operation, the alternative syntax
+"B<pg_ctlcluster> I<version>B<->I<cluster> I<action>" is also supported.
+
+=head1 ACTIONS
+
+=over 4
+
+=item B<start>
+
+A log file for this specific cluster is created if it does not exist yet (by
+default,
+C</var/log/postgresql/postgresql->I<cluster-version>C<->I<cluster-name>C<.log>),
+and a PostgreSQL server process (L<postgres(1)>) is started on it. Exits with
+0 on success, with 2 if the server is already running, and with 1 on other
+failure conditions.
+
+=item B<stop>
+
+Stops the L<postgres(1)> server of the given cluster. By default, "smart"
+shutdown mode is used, which waits until all clients disconnected.
+
+=item B<restart>
+
+Stops the server if it is running and starts it (again).
+
+=item B<reload>
+
+Causes the configuration files to be re-read without a full shutdown of the
+server.
+
+=item B<status>
+
+Checks whether a server is running. If it is, the PID and the command line
+options that were used to invoke it are displayed.
+
+=item B<promote>
+
+Commands a running standby server to exit recovery and begin read-write
+operations.
+
+=back
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-f>|B<--force>
+
+For B<stop> and B<restart>, the "fast" mode is used which rolls back all active
+transactions, disconnects clients immediately and thus shuts down cleanly. If
+that does not work, shutdown is attempted again in "immediate" mode, which can
+leave the cluster in an inconsistent state and thus will lead to a recovery run
+at the next start. If this still does not help, the B<postgres> process is
+killed.  Exits with 0 on success, with 2 if the server is not running, and with
+1 on other failure conditions. This mode should only be used when the machine
+is about to be shut down.
+
+=item B<-m>|B<--mode> [B<smart>|B<fast>|B<immediate>]
+
+Shutdown mode to use for B<stop> and B<restart> actions, default is B<smart>.
+See pg_ctl(1) for documentation.
+
+=item B<--foreground>
+
+Start B<postgres> in foreground, without daemonizing via B<pg_ctl>.
+
+=item B<--stdlog>
+
+When B<--foreground> is in use, redirect stderr to the standard logfile in
+C</var/log/postgresql/>.  (Default when not run in foreground.)
+
+=item B<--bindir> I<directory>
+
+Path to B<pg_ctl>.  (Default is C</usr/lib/postgresql/>I<version>C</bin>.)
+
+=item B<-o>|B<--options> I<option>
+
+Pass given I<option> as command line option to the C<postgres> process. It is
+possible to specify B<-o> multiple times. See L<postgres(1)> for a
+description of valid options.
+
+=item I<pg_ctl options>
+
+Pass given I<pg_ctl options> as command line options to B<pg_ctl>. See L<pg_ctl(1)>
+for a description of valid options.
+
+=back
+
+=head1 FILES
+
+=over 4
+
+=item C</etc/postgresql/>I<cluster-version>C</>I<cluster-name>C</pg_ctl.conf>
+
+This configuration file contains cluster specific options to be passed to
+L<pg_ctl(1)>.
+
+=item C</etc/postgresql/>I<cluster-version>C</>I<cluster-name>C</start.conf>
+
+This configuration file controls the start/stop behavior of the cluster. See
+section "STARTUP CONTROL" in L<pg_createcluster(8)> for details.
+
+=back
+
+=head1 BUGS
+
+Changing the port number on startup using B<-o -p> will not work as it breaks
+the checks for running clusters.
+
+=head1 SEE ALSO
+
+L<pg_createcluster(8)>, L<pg_ctl(1)>, L<pg_wrapper(1)>, L<pg_lsclusters(1)>,
+L<postgres(1)>
+
+=head1 AUTHOR
+
+Martin Pitt L<E<lt>mpitt@debian.orgE<gt>>
+

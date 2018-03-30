@@ -425,7 +425,7 @@ sub get_cluster_socketdir {
 
     if ($_[0] && $_[1]) {
         my $datadir = cluster_data_directory $_[0], $_[1];
-        error "Invalid data directory for cluster $_[0] $_[1]" unless $datadir;
+        error "Could not determine data directory of cluster $_[0] $_[1]" unless $datadir;
         my @datadirstat = stat $datadir;
         unless (@datadirstat) {
             my @p = split '/', $datadir;

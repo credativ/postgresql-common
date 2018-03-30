@@ -4,7 +4,7 @@
 # the postgresql-common infrastructure.
 #
 # (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2017 Christoph Berg <myon@debian.org>
+# (C) 2012-2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -190,6 +190,7 @@ my $startconf = '';
 my $pgoptions = [];
 my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 my $environmentfile = "$PgCommon::common_confdir/environment";
+my $usercluster = 0;
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
@@ -203,7 +204,12 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     'p|port=i' => \$port, 'locale=s' => \$locale,
     'lc-collate=s' => \$lc_collate, 'lc-ctype=s' => \$lc_ctype,
     'lc-messages=s' => \$lc_messages, 'lc-monetary=s' => \$lc_monetary,
-    'lc-numeric=s' => \$lc_numeric, 'lc-time=s' => \$lc_time);
+    'lc-numeric=s' => \$lc_numeric, 'lc-time=s' => \$lc_time,
+    'user-cluster' => sub {
+        $usercluster = 1;
+        $PgCommon::confroot = $ENV{PG_CLUSTER_CONF_ROOT} = "$ENV{HOME}/.config/postgresql";
+    },
+);
 
 # read defaults from /etc/postgresql-common/createcluster.conf
 %defaultconf = PgCommon::read_conf_file ($createclusterconf);
@@ -287,7 +293,9 @@ foreach my $argv (@ARGV) {
 
 my $datadirp_created;
 if (!defined $datadir) {
-    $datadir = replace_v_c ($defaultconf{'data_directory'} || "/var/lib/postgresql/%v/%c", $version, $cluster);
+    my $default_datadir = $usercluster ? "$ENV{HOME}/.config/postgresql/%v/%c" :
+        $defaultconf{'data_directory'} || "/var/lib/postgresql/%v/%c";
+    $datadir = replace_v_c ($default_datadir, $version, $cluster);
     $datadir =~ s!/+$!!;
     my $pd = $datadir;
     $pd =~ s!/[^/]*$!!;

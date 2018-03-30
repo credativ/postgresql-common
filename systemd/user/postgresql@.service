@@ -4,27 +4,24 @@
 
 [Unit]
 Description=PostgreSQL Cluster %i
-AssertPathExists=/etc/postgresql/%I/postgresql.conf
 PartOf=postgresql.service
 ReloadPropagatedFrom=postgresql.service
 Before=postgresql.service
 
 [Service]
-Type=forking
-ExecStartPre=/usr/bin/pg_lsclusters %i
-# -: ignore startup failure (recovery might take arbitrarily long)
-# the actual pg_ctl timeout is configured in pg_ctl.conf
-ExecStart=-/usr/bin/pg_ctlcluster --skip-systemctl-redirect %i start
+Type=notify
+ExecStartPre=/usr/bin/pg_preparecluster --user-cluster %i
+ExecStart=/usr/bin/pg_launchcluster --user-cluster %i
 # 0 is the same as infinity, but "infinity" needs systemd 229
 TimeoutStartSec=0
-ExecStop=/usr/bin/pg_ctlcluster --skip-systemctl-redirect -m fast %i stop
+ExecStop=/bin/kill -INT $MAINPID
 TimeoutStopSec=1h
-ExecReload=/usr/bin/pg_ctlcluster --skip-systemctl-redirect %i reload
-PIDFile=/var/run/postgresql/%i.pid
+ExecReload=/bin/kill -HUP $MAINPID
 SyslogIdentifier=postgresql@%i
 # prevent OOM killer from choosing the postmaster (individual backends will
 # reset the score to 0)
 OOMScoreAdjust=-900
+Environment="PG_OOM_ADJUST_FILE=/proc/self/oom_score_adj"
 # restarting automatically will prevent "pg_ctlcluster ... stop" from working,
 # so we disable it here. Also, the postmaster will restart by itself on most
 # problems anyway, so it is questionable if one wants to enable external

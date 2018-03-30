@@ -41,6 +41,9 @@ help(1) unless GetOptions (
     'h|no-header' => \$no_header,
     'j|json' => \$json,
     's|start-conf' => \$start_conf,
+    'u|user-clusters' => sub {
+        $PgCommon::confroot = $ENV{PG_CLUSTER_CONF_ROOT} = "$ENV{HOME}/.config/postgresql";
+    },
 );
 
 my (@versions, $ls_cluster);
