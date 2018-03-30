@@ -1,3 +1,9 @@
+postgresql-common (191) UNRELEASED; urgency=medium
+
+  * t/170_extensions.t: Add dependencies of jsonb_plpython.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 30 Mar 2018 18:16:37 +0200
+
 postgresql-common (190) unstable; urgency=medium
 
   * Move packaging repository to salsa.debian.org
