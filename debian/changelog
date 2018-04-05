@@ -1,6 +1,6 @@
 postgresql-common (191) UNRELEASED; urgency=medium
 
-  * t/170_extensions.t: Add dependencies of jsonb_plpython.
+  * t/170_extensions.t: Add dependencies of jsonb_pl{perl,python}.
 
  -- Christoph Berg <myon@debian.org>  Fri, 30 Mar 2018 18:16:37 +0200
 
