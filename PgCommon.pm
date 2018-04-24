@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2017 Christoph Berg <myon@debian.org>
+# (C) 2012-2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -390,9 +390,16 @@ sub cluster_data_directory {
     } else {
         $d = get_conf_value($_[0], $_[1], 'postgresql.conf', 'data_directory');
     }
+    my $confdir = "$confroot/$_[0]/$_[1]";
     if (!$d) {
         # fall back to /pgdata symlink (supported by earlier p-common releases)
-        $d = readlink "$confroot/$_[0]/$_[1]/pgdata";
+        $d = readlink "$confdir/pgdata";
+    }
+    if (!$d and -l $confdir and -f "$confdir/PG_VERSION") { # symlink from /etc/postgresql
+        $d = readlink $confdir;
+    }
+    if (!$d and -f "$confdir/PG_VERSION") { # PGDATA in /etc/postgresql
+        $d = $confdir;
     }
     ($d) = $d =~ /(.*)/ if defined $d; #untaint
     return $d;
@@ -418,7 +425,7 @@ sub get_cluster_socketdir {
 
     if ($_[0] && $_[1]) {
         my $datadir = cluster_data_directory $_[0], $_[1];
-        error "Invalid data directory" unless $datadir;
+        error "Invalid data directory for cluster $_[0] $_[1]" unless $datadir;
         my @datadirstat = stat $datadir;
         unless (@datadirstat) {
             my @p = split '/', $datadir;
