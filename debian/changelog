@@ -1,8 +1,12 @@
 postgresql-common (191) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * PgCommon cluster_data_directory: Support clusters in and symlinked from
     /etc/postgresql/.
   * t/170_extensions.t: Add dependencies of jsonb_pl{perl,python}.
+
+  [ Christian Ehrhardt ]
+  * supported-versions: Add Ubuntu 18.10. (Closes: #898166)
 
  -- Christoph Berg <myon@debian.org>  Fri, 30 Mar 2018 18:16:37 +0200
 
