@@ -1,4 +1,4 @@
-postgresql-common (191) UNRELEASED; urgency=medium
+postgresql-common (191) unstable; urgency=medium
 
   [ Christoph Berg ]
   * PgCommon cluster_data_directory: Support clusters in and symlinked from
@@ -8,7 +8,7 @@ postgresql-common (191) UNRELEASED; urgency=medium
   [ Christian Ehrhardt ]
   * supported-versions: Add Ubuntu 18.10. (Closes: #898166)
 
- -- Christoph Berg <myon@debian.org>  Fri, 30 Mar 2018 18:16:37 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 10 May 2018 16:44:19 +0200
 
 postgresql-common (190) unstable; urgency=medium
 
