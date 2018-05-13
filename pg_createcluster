@@ -344,14 +344,15 @@ if (-f "$datadir/PG_VERSION") {
     if (open F, "$datadir/PG_VERSION") {
         $existingver = <F>;
         close F;
+        chomp $existingver;
     } else {
         error "could not open $datadir/PG_VERSION";
     }
     ($owneruid, $ownergid) = (stat "$datadir/PG_VERSION")[4,5];
-    if ($existingver = $version) {
+    if ($existingver == $version) {
         print "Configuring already existing cluster (configuration: $confdir, data: $datadir, owner: $owneruid:$ownergid)\n";
     } else {
-        error "$datadir already contains a version $existingver cluster";
+        error "$datadir contains a version $existingver cluster, but $version was requested";
     }
 } else {
     print "Creating new PostgreSQL cluster $version/$cluster ...\n";
