@@ -5,7 +5,7 @@
 
 [Unit]
 Description=PostgreSQL Cluster %i
-ConditionPathExists=/etc/postgresql/%I/postgresql.conf
+AssertPathExists=/etc/postgresql/%I/postgresql.conf
 PartOf=postgresql.service
 ReloadPropagatedFrom=postgresql.service
 Before=postgresql.service

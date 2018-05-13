@@ -39,7 +39,7 @@ sub check_major {
 
     # try to start specific cluster
     if ($systemd) {
-        program_ok (0, "systemctl start postgresql\@$v-main");
+        program_ok (0, "systemctl start postgresql\@$v-main", 1);
     } else {
         program_ok (0, "/etc/init.d/postgresql start $v");
     }

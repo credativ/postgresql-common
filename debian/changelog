@@ -1,3 +1,11 @@
+postgresql-common (192) UNRELEASED; urgency=medium
+
+  * postgresql@.service: Use AssertPathExists instead of ConditionPathExists
+    so trying to operate on non-existing clusters fails loudly.
+    (Closes: #891836)
+
+ -- Christoph Berg <myon@debian.org>  Sun, 13 May 2018 16:49:51 +0200
+
 postgresql-common (191) unstable; urgency=medium
 
   [ Christoph Berg ]
