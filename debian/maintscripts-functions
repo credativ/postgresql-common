@@ -213,7 +213,7 @@ postinst_check_catversion()
     [ -x "$PGCONTROLDATA" ] || return 0
 
     for cluster in $(pg_lsclusters -h | awk "/^$MAJOR_VER / { print \$2 }"); do
-        pgdata=$(pg_conftool -s $MAJOR_VER $cluster show data_directory)
+        pgdata=$(pg_conftool -s $MAJOR_VER $cluster show data_directory) || continue
         [ -d "$pgdata" ] || continue
 
         DB_CATVERSION=$(LC_ALL=C $PGCONTROLDATA $pgdata | sed -ne 's/^Catalog version number: *\([0-9]\+\)/\1/p')

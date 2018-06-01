@@ -5,6 +5,7 @@ postgresql-common (192) UNRELEASED; urgency=medium
     (Closes: #891836)
   * pg_createcluster: Fix error on importing existing clusters, spotted by
     Mark Eichin, thanks! (Closes: #886871)
+  * postinst_check_catversion: Ignore errors while determining PGDATA.
 
  -- Christoph Berg <myon@debian.org>  Sun, 13 May 2018 16:49:51 +0200
 
