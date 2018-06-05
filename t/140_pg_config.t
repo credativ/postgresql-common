@@ -14,9 +14,9 @@ unless ($PgCommon::rpm) {
 }
 note "Multiarch is " . ($multiarch ? 'enabled' : 'disabled');
 
-# check version specific output
 my $version;
 foreach $version (@MAJORS) {
+    note "checking version specific output for $version";
     if ($version < '8.2') {
         pass "Skipping known-broken pg_config check for version $version";
         for (my $i = 0; $i < 13; ++$i) { pass '...'; }
@@ -58,12 +58,23 @@ foreach $version (@MAJORS) {
     }
 }
 
-# check client-side output (should behave like latest server-side one)
-$version = $ALL_MAJORS[-1];
-my $full_output = `$PgCommon::binroot$version/bin/pg_config`;
 my @pg_configs = $PgCommon::rpm ? qw(pg_config) : qw(pg_config pg_config.libpq-dev);
 for my $pg_config (@pg_configs) {
-    is_program_out 'postgres', "$pg_config", 0, $full_output;
+    if ($pg_config eq 'pg_config' or $PgCommon::rpm) { # pg_config should point at newest installed postgresql-server-dev-$version
+        $version = $ALL_MAJORS[-1];
+    } else { # pg_config.libpq-dev should point at postgresql-server-dev-$(version of libpq-dev)
+        my $libpqdev_version = `dpkg-query --showformat '\${Version}' --show libpq-dev`;
+        $libpqdev_version =~ /^([\d.]+)/ or die "could not determine libpq-dev version";
+        $version = $1;
+    }
+    note "checking $pg_config output (should behave like version $version)";
+
+    SKIP: {
+        my $pgc = "$PgCommon::binroot$version/bin/pg_config";
+        skip "$pgc not installed, can't check full $pg_config output", 2 unless (-x $pgc);
+        my $full_output = `$pgc`;
+        is_program_out 'postgres', "$pg_config", 0, $full_output;
+    }
     like_program_out 'postgres', "$pg_config --help", 0, qr/--includedir-server/;
     is_program_out 'postgres', "$pg_config --pgxs", 0,
         "$PgCommon::binroot$version/lib/pgxs/src/makefiles/pgxs.mk\n";
