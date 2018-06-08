@@ -111,7 +111,11 @@ or a similar command (see 'man pg_createcluster')." >&2
 stop_version() {
     if [ -x /etc/init.d/postgresql ] && [ ! -x /etc/init.d/postgresql-$1 ]; then
        if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+            if [ -d /run/systemd/system ]; then
+                deb-systemd-invoke stop "postgresql@$1-*" || exit $?
+            else
                 invoke-rc.d postgresql stop $1 || exit $?
+            fi
         else
                 /etc/init.d/postgresql stop $1 || exit $?
         fi

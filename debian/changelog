@@ -1,3 +1,13 @@
+postgresql-common (181+deb9u2) stretch; urgency=medium
+
+  * maintscripts-functions: Use 'deb-systemd-invoke stop "postgresql@$ver-*"'
+    to prevent upgrading/removing server packages from stopping other major
+    version clusters when running systemd. (Closes: #809811)
+    (Use deb-systemd-invoke instead of invoke-rc.d; jessie's invoke-rc.d does
+    not support service patterns.)
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Fri, 08 Jun 2018 11:16:28 +0200
+
 postgresql-common (181+deb9u1) stretch-security; urgency=medium
 
   * pg_ctlcluster, pg_createcluster, pg_upgradecluster: Use lchown instead
