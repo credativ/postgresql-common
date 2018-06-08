@@ -3,6 +3,8 @@ postgresql-common (192) UNRELEASED; urgency=medium
   * postgresql@.service: Use AssertPathExists instead of ConditionPathExists
     so trying to operate on non-existing clusters fails loudly.
     (Closes: #891836)
+  * postgresql@.service: Add "RequiresMountsFor /etc/postgresql/%I
+    /var/lib/postgresql/%I" to depend on mounts.
   * pg_createcluster: Fix error on importing existing clusters, spotted by
     Mark Eichin, thanks! (Closes: #886871)
   * postinst_check_catversion: Ignore errors while determining PGDATA.

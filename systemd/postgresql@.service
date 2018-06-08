@@ -6,6 +6,7 @@
 [Unit]
 Description=PostgreSQL Cluster %i
 AssertPathExists=/etc/postgresql/%I/postgresql.conf
+RequiresMountsFor=/etc/postgresql/%I /var/lib/postgresql/%I
 PartOf=postgresql.service
 ReloadPropagatedFrom=postgresql.service
 Before=postgresql.service
