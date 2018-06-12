@@ -22,8 +22,15 @@ sub check_major {
     # create cluster
     my $xlogdir = tempdir("/tmp/$v.xlog.XXXXXX", CLEANUP => 1);
     rmdir $xlogdir; # recreated by initdb
-    ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
-	"pg_createcluster $v main"); # -X needs 8.3+
+    if ($v > 8.2) {
+        ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
+            "pg_createcluster $v main");
+    } else { # 8.2 does not have -X yet
+        ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
+            "pg_createcluster $v main");
+        system "mv /var/lib/postgresql/$v/main/pg_xlog $xlogdir";
+        system "ln -s $xlogdir /var/lib/postgresql/$v/main/pg_xlog";
+    }
 
     # check that a /var/run/postgresql/ pid file is created
     my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid", "$v-main.pg_stat_tmp");
