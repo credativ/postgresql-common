@@ -1,7 +1,7 @@
 Source: postgresql-common
 Section: database
 Priority: optional
-Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
+Maintainer: Debian PostgreSQL Maintainers <team+postgresql@tracker.debian.org>
 Uploaders:
  Martin Pitt <mpitt@debian.org>,
  Christoph Berg <myon@debian.org>,
