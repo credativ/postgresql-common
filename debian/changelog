@@ -1,4 +1,4 @@
-postgresql-common (192) UNRELEASED; urgency=medium
+postgresql-common (192) unstable; urgency=medium
 
   * postgresql@.service: Use AssertPathExists instead of ConditionPathExists
     so trying to operate on non-existing clusters fails loudly.
@@ -10,7 +10,7 @@ postgresql-common (192) UNRELEASED; urgency=medium
   * postinst_check_catversion: Ignore errors while determining PGDATA.
   * Move maintainer address to team+postgresql@tracker.debian.org.
 
- -- Christoph Berg <myon@debian.org>  Sun, 13 May 2018 16:49:51 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 08 Aug 2018 16:21:59 +0200
 
 postgresql-common (191) unstable; urgency=medium
 
