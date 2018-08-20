@@ -6,6 +6,9 @@ postgresql-common (193) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
   * pg_buildext: Stop passing srcdir to make invocations.
+  * pg_buildext: Copy CFLAGS from environment to COPT so Makefile.global
+    picks it up. Notably this will make extension builds use
+    -f{debug,file}-prefix-map from dpkg-buildflags.
 
  -- Christoph Berg <myon@debian.org>  Wed, 15 Aug 2018 17:59:38 +0200
 
