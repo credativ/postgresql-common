@@ -4,6 +4,9 @@ postgresql-common (193) UNRELEASED; urgency=medium
   * Use /run in /usr/lib/tmpfiles.d/postgresql.conf to avoid deprecation
     warning. (Closes: #902875)
 
+  [ Christoph Berg ]
+  * pg_buildext: Stop passing srcdir to make invocations.
+
  -- Christoph Berg <myon@debian.org>  Wed, 15 Aug 2018 17:59:38 +0200
 
 postgresql-common (192) unstable; urgency=medium
