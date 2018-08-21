@@ -50,7 +50,7 @@ prepare_env() {
     vtarget=`echo $target | sed -e "s:%v:$version:g"`
     pgc="/usr/lib/postgresql/$version/bin/pg_config"
     [ -e "$pgc" ] || die "$pgc does not exist"
-    if [ "$CFLAGS" ]; then
+    if [ "${CFLAGS:-}" ]; then
         export COPT="$CFLAGS"
     fi
 }
