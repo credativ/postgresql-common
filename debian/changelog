@@ -1,4 +1,4 @@
-postgresql-common (193) UNRELEASED; urgency=medium
+postgresql-common (193) unstable; urgency=medium
 
   [ Francois Marier ]
   * Use /run in /usr/lib/tmpfiles.d/postgresql.conf to avoid deprecation
@@ -10,7 +10,7 @@ postgresql-common (193) UNRELEASED; urgency=medium
     picks it up. Notably this will make extension builds use
     -f{debug,file}-prefix-map from dpkg-buildflags.
 
- -- Christoph Berg <myon@debian.org>  Wed, 15 Aug 2018 17:59:38 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 23 Aug 2018 12:57:46 +0200
 
 postgresql-common (192) unstable; urgency=medium
 
