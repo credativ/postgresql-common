@@ -83,7 +83,6 @@ Package: postgresql-server-dev-all
 Architecture: all
 Depends:
  dctrl-tools,
- iproute2 | net-tools,
  lsb-release,
  make,
  postgresql-common (>= 117~),
