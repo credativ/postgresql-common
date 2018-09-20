@@ -2,6 +2,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
 
   * Remove iproute2 | net-tools dependency from postgresql-server-dev-all,
     obsolete in pg_buildext since 178.
+  * Also save pg_controldata on catversion changes, pg_upgrade needs it.
+    Spotted by Dagfinn Ilmari Mannsåker, thanks!
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 
