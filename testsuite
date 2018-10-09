@@ -139,7 +139,7 @@ if [ -z "${NO_TMPFS:-}" ]; then
         mount -t tmpfs tmpfs $d
     done
 
-    chown     root:root         /etc/postgresql ; chmod  755     /etc/postgresql
+    chown postgres:postgres     /etc/postgresql ; chmod  755     /etc/postgresql
     chown postgres:postgres /var/lib/postgresql ; chmod  755 /var/lib/postgresql
     chown     root:postgres /var/log/postgresql ; chmod 1775 /var/log/postgresql
     chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql

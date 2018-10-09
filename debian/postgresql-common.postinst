@@ -60,6 +60,9 @@ Please fix this and reinstall this package." >&2
             test -G /var/lib/postgresql" || \
         chown postgres:postgres /var/lib/postgresql
 
+    # config directory permissions
+    chown postgres:postgres /etc/postgresql
+
     # nicer log directory permissions
     mkdir -p /var/log/postgresql
     chmod 1775 /var/log/postgresql

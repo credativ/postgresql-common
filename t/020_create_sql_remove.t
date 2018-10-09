@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 131 * @MAJORS;
+use Test::More tests => 132 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -106,6 +106,8 @@ sub check_major {
 
     # verify configuration file permissions
     my $postgres_uid = (getpwnam 'postgres')[2];
+    my @st = stat "/etc/postgresql";
+    is $st[4], $postgres_uid, '/etc/postgresql is owned by user "postgres"';
     my @st = stat "/etc/postgresql/$v";
     is $st[4], $postgres_uid, 'version configuration directory file is owned by user "postgres"';
     my @st = stat "/etc/postgresql/$v/main";
