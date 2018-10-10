@@ -7,9 +7,8 @@ unstable:
     - dpkg-buildpackage -uc -us -rfakeroot
     - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )
     - ( set -x; dpkg --force-confmiss --force-confnew -i ../*.deb || { apt-get install -fy; dpkg --force-confmiss --force-confnew -i ../*.deb; } )
-    - ./cleanpg
     - dpkg -l postgresql\* | cat
-    - pg_lsclusters
+    - ./cleanpg
     - SKIP_IPV6=1 ./testsuite -v "$(debian/supported-versions)" -i -M
 
 jessie:
@@ -22,7 +21,7 @@ jessie:
     - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )
     - ( set -x; sudo dpkg --force-confmiss --force-confnew -i ../*.deb || { sudo apt-get install -fy; sudo dpkg --force-confmiss --force-confnew -i ../*.deb; } )
     - dpkg -l postgresql\* | cat
-    - pg_lsclusters
+    - sudo ./cleanpg
     - sudo ./testsuite -v "$(debian/supported-versions)" -i
 
 centos7:
@@ -35,5 +34,5 @@ centos7:
     - make rpmbuild
     - rpm -ql pgdg-centos10 > /dev/null || sudo yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
     - make rpminstall
-    - pg_lsclusters
+    - sudo ./cleanpg
     - sudo ./testsuite -v "$(debian/supported-versions)" -i
