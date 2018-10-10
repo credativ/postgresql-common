@@ -5,6 +5,7 @@
 # packages.)
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
+# (C) 2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,7 +17,8 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-[ `id -u` = 0 ] || SUDO=sudo
-$SUDO /etc/init.d/postgresql stop
-$SUDO killall pg_autovacuum postgres
-$SUDO rm -rf /etc/postgresql /var/lib/postgresql/ /var/log/postgresql/* /tmp/postgresql-testsuite/ /var/run/postgresql/*
+set -ux
+
+/etc/init.d/postgresql stop
+killall postgres
+rm -rf /etc/postgresql/* /var/lib/postgresql/* /var/log/postgresql/* /tmp/postgresql-testsuite/ /var/run/postgresql/*
