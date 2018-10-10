@@ -7,7 +7,7 @@ unstable:
     - dpkg-buildpackage -uc -us -rfakeroot
     - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )
     - ( set -x; dpkg --force-confmiss --force-confnew -i ../*.deb || { apt-get install -fy; dpkg --force-confmiss --force-confnew -i ../*.deb; } )
-    - sudo ./cleanpg
+    - ./cleanpg
     - dpkg -l postgresql\* | cat
     - pg_lsclusters
     - SKIP_IPV6=1 ./testsuite -v "$(debian/supported-versions)" -i -M
