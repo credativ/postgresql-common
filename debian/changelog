@@ -5,6 +5,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
   * Also save pg_controldata on catversion changes, pg_upgrade needs it.
     Spotted by Dagfinn Ilmari Mannsåker, thanks!
   * Chown /etc/postgresql to user postgres.
+  * pg_ctlcluster: Use "fast" shutdown by default, and remove code to kill -9
+    the server if it doesn't react to a --force stop. (Closes: #756008)
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 
