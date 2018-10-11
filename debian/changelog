@@ -17,7 +17,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
   * pg_createcluster: Create stats_temp_directory, so pg_upgrade(cluster) can
     use it even without invoking pg_ctlcluster before. (Closes: #827469)
   * pg_upgradecluster: Drop check for pg_restore --no-data-for-failed-tables,
-    switch was introduced in 8.2. (Closes: #876282)
+    switch was introduced in 8.2; use it always and not only when upgrade
+    scripts are present. (Closes: #876282)
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 

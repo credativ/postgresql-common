@@ -535,15 +535,8 @@ if (!fork) {
 
 	    # start pg_restore and copy over everything
 	    my @restore_argv = ($pg_restore, '-h', $newsocket, '-p',
-		$newinfo{'port'}, '--data-only', '-d', $db);
-
-	    if ($newversion >= '8.3') {
-		push @restore_argv, '--disable-triggers';
-	    }
-
-	    if ($upgrade_scripts) {
-		push @restore_argv, '--no-data-for-failed-tables';
-	    }
+		$newinfo{'port'}, '--data-only', '-d', $db,
+                '--disable-triggers', '--no-data-for-failed-tables');
 	    open SINK, '|-', @restore_argv or
 		error 'Could not execute pg_restore for new cluster';
 
@@ -872,9 +865,6 @@ one. The old cluster still exists, but is not running.
 
 Failing scripts will abort the upgrade.
 The scripts are called as the user who owns the database.
-
-When B<--mode=dump> and upgrade hook scripts are used, pg_restore is invoked
-with B<--no-data-for-failed-tables>.
 
 =head1 SEE ALSO
 
