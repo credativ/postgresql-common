@@ -7,6 +7,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
   * Chown /etc/postgresql to user postgres.
   * pg_ctlcluster: Use "fast" shutdown by default, and remove code to kill -9
     the server if it doesn't react to a --force stop. (Closes: #756008)
+  * pg_upgradecluster: Start upgraded cluster only if it was running before,
+    override with new --[no-]start option. (Closes: #876281)
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 

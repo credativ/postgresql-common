@@ -12,7 +12,7 @@ if (@MAJORS == 1) {
     exit 0;
 }
 
-ok ((system "pg_createcluster --datadir /tmp/postgresql-test -l /tmp/postgresql-test.log $MAJORS[0] upgr >/dev/null") == 0);
+ok ((system "pg_createcluster --start --datadir /tmp/postgresql-test -l /tmp/postgresql-test.log $MAJORS[0] upgr >/dev/null") == 0);
 
 # Upgrade to latest version
 my $outref;

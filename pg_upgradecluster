@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2017 Christoph Berg <myon@debian.org>
+# (C) 2013-2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -265,6 +265,7 @@ $newversion = $newest_version;
 
 my $method = 'dump';
 my $link = 0;
+my $start = -1;
 
 my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
     $lc_time, $logfile, $old_bindir);
@@ -282,6 +283,7 @@ GetOptions ('v|version=s' => \$newversion,
             'rename=s' => \$newcluster,
             'old-bindir=s' => \$old_bindir,
             'maintenance-db=s' => \$maintenance_db,
+            'start!' => \$start,
     ) or exit 1;
 
 $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
@@ -332,8 +334,7 @@ my $owner = getpwuid $info{'owneruid'};
 error 'could not get name of cluster owner' unless $owner;
 my $old_hba_modified;
 
-# stopping old cluster, so that we notice early when there are still
-# connections
+# stop old cluster
 if ($info{'running'}) {
     get_encoding $version, $cluster;
     print "Stopping old cluster...\n";
@@ -702,9 +703,13 @@ my $oldport = next_free_port;
 print "Configuring old cluster to use a different port ($oldport)...\n";
 set_cluster_port $version, $cluster, $oldport;
 
-print "Starting target cluster on the original port...\n";
-@argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
-error "Could not start target cluster; please check configuration and log files" if system @argv;
+# start cluster if it was running before, or upgrade scripts are present
+$start = ($info{running} or $upgrade_scripts) if ($start == -1);
+if ($start) {
+    print "Starting target cluster on the original port...\n";
+    @argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
+    error "Could not start target cluster; please check configuration and log files" if system @argv;
+}
 
 # Run upgrade scripts in finish phase
 if ($upgrade_scripts) {
@@ -822,6 +827,11 @@ Passed to B<pg_upgrade>.
 =item B<--maintenance-db=>I<database>
 
 Database to connect to for maintenance queries.  The default is B<template1>.
+
+=item B<--[no-]start>
+
+Start the new database cluster after upgrading. The default is to start the new
+cluster if the old cluster was running, or if upgrade hook scripts are present.
 
 =back
 
