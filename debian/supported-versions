@@ -37,7 +37,7 @@
 # X: consider this version supported
 #
 # (C) 2005-2016 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2017 Christoph Berg <myon@debian.org>
+# (C) 2012-2018 Christoph Berg <myon@debian.org>
 
 set -eu
 
@@ -49,7 +49,7 @@ else
     . /usr/share/postgresql-common/pgcommon.sh
 fi
 
-DEFAULT="10"
+DEFAULT="11"
 
 # functions
 
@@ -97,7 +97,7 @@ debian() {
         7|7.*) /bin/echo -e "9.1" ;; # Wheezy
         8|8.*) /bin/echo -e "9.4" ;; # Jessie
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
-        10|10.*) /bin/echo -e "10" ;; # Buster
+        10|10.*) /bin/echo -e "11" ;; # Buster
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)

@@ -19,6 +19,7 @@ postgresql-common (194) UNRELEASED; urgency=medium
   * pg_upgradecluster: Drop check for pg_restore --no-data-for-failed-tables,
     switch was introduced in 8.2; use it always and not only when upgrade
     scripts are present. (Closes: #876282)
+  * Debian: Default PostgreSQL version in buster is 11.
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 
