@@ -12,6 +12,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
   * pg_upgradecluster: With pg_upgrade, set wal_level early so standby servers
     can be upgraded via the instructions from pg_upgrade(1). (Closes: #876293)
   * pg_upgradecluster: Notify systemd about disabling the old cluster.
+  * pg_upgradecluster: Drop sleep(4) that had been there since the first
+    version.
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 

@@ -405,8 +405,6 @@ if ($method eq 'dump') {
     error "Could not start target cluster" if system @argv;
 }
 
-sleep(4);
-
 my $pg_restore = get_program_path 'pg_restore', $newversion;
 
 # check whether upgrade scripts exist; if so, verify that pg_restore supports
