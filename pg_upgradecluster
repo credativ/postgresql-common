@@ -407,17 +407,10 @@ if ($method eq 'dump') {
 
 my $pg_restore = get_program_path 'pg_restore', $newversion;
 
-# check whether upgrade scripts exist; if so, verify that pg_restore supports
-# -X no-data-for-failed-tables.
+# check whether upgrade scripts exist
 my $upgrade_scripts = (-d "$PgCommon::common_confdir/pg_upgradecluster.d" &&
      ($PgCommon::rpm ? `ls $PgCommon::common_confdir/pg_upgradecluster.d` :
          `run-parts --test $PgCommon::common_confdir/pg_upgradecluster.d`));
-
-if ($upgrade_scripts) {
-    if (`$pg_restore --help` !~ qr/no-data-for-failed-tables/) {
-	error "$PgCommon::common_confdir/pg_upgradecluster.d has upgrade scripts, but $pg_restore does not support the \"-X no-data-for-failed-tables\" option."
-    }
-}
 
 # Run upgrade scripts in init phase
 if ($upgrade_scripts) {
