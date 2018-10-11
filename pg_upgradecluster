@@ -710,6 +710,11 @@ my $oldport = next_free_port;
 print "Configuring old cluster to use a different port ($oldport)...\n";
 set_cluster_port $version, $cluster, $oldport;
 
+# notify systemd that we modified the old start.conf
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and -d '/run/systemd/system' and $> == 0) {
+    system 'systemctl daemon-reload';
+}
+
 # start cluster if it was running before, or upgrade scripts are present
 $start = ($info{running} or $upgrade_scripts) if ($start == -1);
 if ($start) {
