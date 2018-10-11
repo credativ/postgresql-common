@@ -265,7 +265,7 @@ $newversion = $newest_version;
 
 my $method = 'dump';
 my $link = 0;
-my $start = -1;
+my $start = -1; # -1 = auto
 
 my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
     $lc_time, $logfile, $old_bindir);
@@ -387,6 +387,13 @@ delete $ENV{'LC_ALL'};
 push @argv, ('--', '--data-checksums') if $oldcontrol->{'Data page checksum version'}; # 0 = off
 error "Could not create target cluster" if system @argv;
 print "\n";
+
+# if pg_upgrade is used, wal_level needs to be set early so standby servers can
+# be upgraded with the instructions outlined in pg_upgrade(1)
+if ($method eq 'upgrade' and $info{config}->{wal_level}) {
+    PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
+        'wal_level', $info{config}->{wal_level};
+}
 
 %newinfo = cluster_info($newversion, $newcluster);
 

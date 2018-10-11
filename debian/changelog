@@ -9,6 +9,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
     the server if it doesn't react to a --force stop. (Closes: #756008)
   * pg_upgradecluster: Start upgraded cluster only if it was running before,
     override with new --[no-]start option. (Closes: #876281)
+  * pg_upgradecluster: With pg_upgrade, set wal_level early so standby servers
+    can be upgraded via the instructions from pg_upgrade(1). (Closes: #876293)
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 
