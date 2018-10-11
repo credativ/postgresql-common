@@ -14,6 +14,8 @@ postgresql-common (194) UNRELEASED; urgency=medium
   * pg_upgradecluster: Notify systemd about disabling the old cluster.
   * pg_upgradecluster: Drop sleep(4) that had been there since the first
     version.
+  * pg_createcluster: Create stats_temp_directory, so pg_upgrade(cluster) can
+    use it even without invoking pg_ctlcluster before. (Closes: #827469)
 
  -- Christoph Berg <myon@debian.org>  Sun, 02 Sep 2018 21:23:33 +0200
 

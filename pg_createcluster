@@ -471,6 +471,12 @@ stats_temp_directory is not writable for the cluster owner. Not adding this
 setting in postgresql.conf.\n";
         delete $defaultconf{stats_temp_directory};
     }
+    # create the stats directory now. pg_ctlcluster would create it anyway, but
+    # when using pg_upgradecluster -m upgrade, it is not run before the cluster
+    # is started for the first time
+    if ($defaultconf{stats_temp_directory}) {
+        system 'install', '-d', '-m', '750', '-o', $owneruid, '-g', $ownergid, $stats_temp_directory;
+    }
 }
 
 $> = $euid;
