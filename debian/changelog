@@ -1,8 +1,8 @@
-postgresql-common (195) UNRELEASED; urgency=medium
+postgresql-common (195) unstable; urgency=medium
 
   * apt.postgresql.org: Add 11 as default to supported versions.
 
- -- Christoph Berg <myon@debian.org>  Mon, 15 Oct 2018 22:39:50 +0200
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 18 Oct 2018 13:53:47 +0200
 
 postgresql-common (194) unstable; urgency=medium
 
