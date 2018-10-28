@@ -135,11 +135,11 @@ line, in the following formats:
 
 Support all versions. This is recommended unless there are known incompatibilities.
 
-=item I<X.Y>
+=item I<NN>
 
 Support this version.
 
-=item I<X.Y>B<+>
+=item I<NN>B<+>
 
 Support this and all greater versions.
 
@@ -169,6 +169,10 @@ configure the list of supported versions on your system.
 =item B<debian/pgversions:>
 
   all
+
+  # alternatives:
+  #9.6
+  #11+
 
 =item B<debian/rules:>
 
@@ -238,7 +242,7 @@ which has C<debian/> as subdirectory), use the I<src-dir> argument. Example:
 
 B<pg_buildext loop> was introduced in postgresql-server-dev-all (>= 141~).
 
-The usage of "all" or "X.Y+" in debian/pgversions was introduced in
+The usage of "all" or "NN+" in debian/pgversions was introduced in
 postgresql-server-dev-all (>= 148~).
 
 B<pg_buildext installcheck> was introduced in postgresql-server-dev-all (>=

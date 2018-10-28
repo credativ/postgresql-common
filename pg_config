@@ -4,7 +4,7 @@
 # available one. Otherwise fall back to libpq-dev's version.
 #
 # (C) 2011 Martin Pitt <mpitt@debian.org>
-# (C) 2014-2016 Christoph Berg <myon@debian.org>
+# (C) 2014-2018 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ else
     if [ -x /usr/bin/pg_config.libpq-dev ]; then
 	exec /usr/bin/pg_config.libpq-dev "$@"
     else
-	echo "You need to install postgresql-server-dev-X.Y for building a server-side extension or libpq-dev for building a client-side application." >&2
+	echo "You need to install postgresql-server-dev-NN for building a server-side extension or libpq-dev for building a client-side application." >&2
 	exit 1
     fi
 fi

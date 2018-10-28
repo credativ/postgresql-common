@@ -845,7 +845,7 @@ literal B<%>.
 
 =item B<create_main_cluster> (Default: B<true>)
 
-Create a B<main> cluster when a new postgresql-x.y server package is installed.
+Create a B<main> cluster when a new postgresql-NN server package is installed.
 
 =item B<start_conf> (Default: B<auto>)
 

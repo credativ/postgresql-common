@@ -8,7 +8,7 @@ views, sequences, subqueries, triggers, outer joins, multiversion concurrency
 control, and user-defined types and functions.
 
 Since the on-disk data format of all major PostgreSQL versions (like 9.6,
-10, etc.) is incompatible to each other, Debian's PostgreSQL packaging
+11, etc.) is incompatible to each other, Debian's PostgreSQL packaging
 architecture is designed to maintain clusters of different major versions in
 parallel.
 
@@ -27,7 +27,7 @@ but if you want to get straight into playing SQL, here are the steps to create
 a database user and a database for the Unix user 'joe':
 
 1. Install a database server with the major version of your choice
-   ('postgresql-XY', e. g. 'postgresql-10').  Preferably the latest
+   ('postgresql-XY', e. g. 'postgresql-11').  Preferably the latest
    version, which you can get by installing the metapackage
    'postgresql'. This will automatically create a default cluster
    'main' with the database superuser 'postgres'.
@@ -79,9 +79,9 @@ creating clusters, such as initdb(1). However, please note that in
 this case you cannot expect *any* of above pg_* tools to work, since
 they use different configuration settings (SSL, data directories,
 etc.) and file locations (e. g.
-/etc/postgresql/10/main/postgresql.conf). If in doubt, then do *not*
+/etc/postgresql/11/main/postgresql.conf). If in doubt, then do *not*
 use initdb, but only pg_createcluster. Since merely installing
-postgresql-X.Y will already set up a default cluster which is ready to
+postgresql-NN will already set up a default cluster which is ready to
 work, most people do not need to bother about initdb or
 pg_createcluster at all.
 
@@ -92,9 +92,9 @@ unless you specify them manually. The first cluster which is ever
 created (by any major version) will run on the default port 5432, and
 each new cluster will use the next higher free one. 
 
-E. g. if you first install "postgresql-10" on a clean system, the
-default 10/main cluster will run on port 5432. If you then create
-another 10 cluster, or install the "postgresql-11" package, that new
+E. g. if you first install "postgresql-11" on a clean system, the
+default 11/main cluster will run on port 5432. If you then create
+another 11 cluster, or install the "postgresql-12" package, that new
 one will run on 5433.
 
 Please use "pg_lsclusters" for displaying the cluster <-> port
@@ -103,23 +103,23 @@ mapping, and please have a look at the pg_createcluster manpage (the
 
 Default clusters and upgrading
 ------------------------------
-When installing a postgresql-X.Y package from scratch, a default
+When installing a postgresql-NN package from scratch, a default
 cluster 'main' will automatically be created. This operation is
-equivalent to doing 'pg_createcluster X.Y main --start'.
+equivalent to doing 'pg_createcluster NN main --start'.
 
 Due to this default cluster, an immediate attempt to upgrade an
 earlier 'main' cluster to a new version will fail and you need to
 remove the newer default cluster first. E. g., if you have
-postgresql-9.6 installed and want to upgrade to 10, you first install
-postgresql-10:
+postgresql-9.6 installed and want to upgrade to 11, you first install
+postgresql-11:
 
-  apt-get install postgresql-10
+  apt-get install postgresql-11
 
-Then drop the default 10 cluster that was just created:
+Then drop the default 11 cluster that was just created:
 
-  pg_dropcluster 10 main --stop
+  pg_dropcluster 11 main --stop
 
-And then upgrade the 9.6 cluster to the latest installed version (e. g. 10):
+And then upgrade the 9.6 cluster to the latest installed version (e. g. 11):
 
   pg_upgradecluster 9.6 main
 
@@ -143,7 +143,7 @@ symlink the file to /etc/ssl/certs/ssl-cert-snakeoil.pem; in this
 case, client certificates need to be signed by the snakeoil
 certificate, which might be desirable in many cases. See
 
-  /usr/share/doc/postgresql-doc-10/html/ssl-tcp.html
+  /usr/share/doc/postgresql-doc-11/html/ssl-tcp.html
 
 for details (in package postgresql-doc).
 

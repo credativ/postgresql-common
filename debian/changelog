@@ -1,3 +1,10 @@
+postgresql-common (196) UNRELEASED; urgency=medium
+
+  * Replace version 10 in examples by version 11. (Closes: #911391)
+  * Replace -X.Y version number template in examples by -NN.
+
+ -- Christoph Berg <myon@debian.org>  Sun, 28 Oct 2018 22:21:31 +0100
+
 postgresql-common (195) unstable; urgency=medium
 
   * apt.postgresql.org: Add 11 as default to supported versions.
