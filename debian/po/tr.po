@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Mert Dirik <mertdirik@gmail.com>, 2008.
-# Atila KOÇ <koc@artielektronik.com.tr>, 2015.
+# Atila KOÇ <koc@artielektronik.com.tr>, 2015, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2016-03-05 11:47+0100\n"
-"PO-Revision-Date: 2015-09-08 10:08+0200\n"
+"PO-Revision-Date: 2018-10-22 13:54+0300\n"
 "Last-Translator: Atila KOÇ <koc@artielektronik.com.tr>\n"
 "Language-Team: Debian L10n Turkish <debian-l10n-turkish@lists.debian.org>\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #. Type: error
 #. Description
@@ -53,8 +53,8 @@ msgstr ""
 "postgresql-${latest} kurulumunun öntanımlı ${latest}/main kümesini "
 "oluşturacağını unutmayın. Eğer ${old}/main kümesini yükseltmek istiyorsanız "
 "mevcut ${latest} sürüm kümesini kaldırmalısınız. Bu işi pg_dropcluster --"
-"stop ${latest} main komutuyla yapabilirsiniz. Ayrıntılar için kılavuz "
-"sayfasına bakın."
+"stop ${latest} main komutuyla yapabilirsiniz (ayrıntılar için kılavuz "
+"sayfasına bakın)."
 
 #. Type: error
 #. Description
@@ -92,9 +92,9 @@ msgid ""
 "localhost, SSL can be turned off without introducing security issues."
 msgstr ""
 "PostgreSQL SSL ile şifrelenmiş bağlantıları destekler. SSL kullanmak "
-"genellikle iyidir. Bununla beraber, veritabanına yalnızca yerel makineden ve "
-"TCP bağlantıları kullanılarak erişiliyorsa, SSL'in devre dışı bırakılması "
-"güvenlik açığına neden olmaz."
+"genellikle iyidir. Bununla beraber, veritabanına yalnızca yerel makineden "
+"TCP bağlantıları ile erişiliyorsa, SSL'in devre dışı bırakılması güvenlik "
+"açığına neden olmaz."
 
 #. Type: boolean
 #. Description
@@ -120,7 +120,7 @@ msgstr "Emin değilseniz, SSL'i etkinleştirin."
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "PostgreSQL ${version} katalog sürümü değişti"
 
 #. Type: note
 #. Description
@@ -132,6 +132,10 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"${version} ${cluster} PostgreSQL kümesi ${db_catversion} katalog sürümü ile "
+"oluşturulmuş, kullanmakta olduğunuz postgresql-${version} sürümü ise "
+"${new_catversion} katalog sürümünü kullanıyor. Yeni katalog sürümüne "
+"yükseltmedikçe bu kümeyi kullanamayacaksınız."
 
 #. Type: note
 #. Description
@@ -140,3 +144,6 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"Eski sürümdeki program dosyalarının yükseltme için gerekli olanları "
+"${vartmpdir} dizinine kaydedildi. Kümenizi yükseltmek için şu komutları "
+"çalıştırın:"
