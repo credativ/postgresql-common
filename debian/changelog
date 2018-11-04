@@ -1,8 +1,12 @@
 postgresql-common (196) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * Replace version 10 in examples by version 11. (Closes: #911391)
   * Replace -X.Y version number template in examples by -NN.
   * Updated Turkish translation by Atila Koç, thanks! (Closes: #912322)
+
+  [ Jeremy Bicha ]
+  * Add Ubuntu 19.04 aka disco.
 
  -- Christoph Berg <myon@debian.org>  Sun, 28 Oct 2018 22:21:31 +0100
 
