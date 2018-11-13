@@ -35,7 +35,7 @@ foreach $version (@MAJORS) {
     # mkdir should be in /bin on Debian. If /bin was linked to /usr/bin at build time, usrmerge was installed
     SKIP: {
         skip 'MKDIR_P not present before 9.0', 2 if ($version < 9.0);
-        my $mkdir_path = ($PgCommon::rpm and $version <= 10) ? '/usr/bin' : '/bin';
+        my $mkdir_path = $PgCommon::rpm ? '/usr/bin' : '/bin';
         is_program_out 'postgres', "grep ^MKDIR_P $PgCommon::binroot$version/lib/pgxs/src/Makefile.global", 0, 
             "MKDIR_P = $mkdir_path/mkdir -p\n";
     }
