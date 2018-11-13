@@ -163,8 +163,8 @@ sub read_conf_file {
                 $v =~ s/\\(.)/$1/g;
                 $v =~ s/''/'/g;
                 $conf{$k} = $v;
-            } elsif (m{^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[[:alnum:]][[:alnum:]._:/-]*)\s*(?:\#.*)?$}i) {
-                # simple value
+            } elsif (m{^\s*([a-zA-Z0-9_.-]+)\s*(?:=|\s)\s*(-?[[:alnum:]][[:alnum:]._:/+-]*)\s*(?:\#.*)?$}i) {
+                # simple value (string/float)
                 my $v = $2;
                 my $k = $1;
                 $k = lc $k if $config_path =~ /\.conf$/;

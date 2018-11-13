@@ -106,6 +106,7 @@ print F <<EOF;
 #intval = 1
 Intval = 42
 cintval=1 # blabla
+floatval = 1.5e+3
 strval 'hello'
 strval2 'world'
 cstrval = 'bye' # comment
@@ -120,6 +121,7 @@ close F;
 is_deeply (\%conf, {
       'intval' => 42, 
       'cintval' => 1, 
+      'floatval' => '1.5e+3',
       'strval' => 'hello', 
       'strval2' => 'world', 
       'cstrval' => 'bye', 
@@ -174,6 +176,7 @@ close F;
 is_deeply (\%conf, {
       'intval' => 42, 
       'cintval' => 1, 
+      'floatval' => '1.5e+3',
       'strval' => 'howdy', 
       'strval2' => 'world', 
       'cstrval' => 'bye', 
@@ -211,6 +214,7 @@ commented_str='new foo'
 #intval = 1
 Intval = 39
 cintval=5 # blabla
+floatval = 1.5e+3
 strval Howdy
 strval2 'world'
 cstrval = 'bye' # comment
@@ -241,6 +245,7 @@ commented_str='new foo'
 #intval = 1
 #Intval = 39 #ints are out of fashion
 cintval=5 # blabla
+floatval = 1.5e+3
 strval Howdy
 strval2 'world'
 #cstrval = 'bye' # comment #not used any more
@@ -271,6 +276,7 @@ commented_str='new foo'
 #intval = 1
 #Intval = 39 #ints are out of fashion
 cintval=5 # blabla
+floatval = 1.5e+3
 #strval Howdy #renamedstrval
 newstrval = goodbye
 strval2 'world'

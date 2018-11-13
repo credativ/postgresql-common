@@ -4,6 +4,8 @@ postgresql-common (196) UNRELEASED; urgency=medium
   * Replace version 10 in examples by version 11. (Closes: #911391)
   * Replace -X.Y version number template in examples by -NN.
   * Updated Turkish translation by Atila Koç, thanks! (Closes: #912322)
+  * read_conf_file: Accept '+' in unquoted values for floats like 1.5+e3.
+    Thanks to David Barbion for spotting!
 
   [ Jeremy Bicha ]
   * Add Ubuntu 19.04 aka disco.
