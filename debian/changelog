@@ -1,4 +1,4 @@
-postgresql-common (196) UNRELEASED; urgency=medium
+postgresql-common (196) unstable; urgency=medium
 
   [ Christoph Berg ]
   * Replace version 10 in examples by version 11. (Closes: #911391)
@@ -12,7 +12,7 @@ postgresql-common (196) UNRELEASED; urgency=medium
   [ Jeremy Bicha ]
   * Add Ubuntu 19.04 aka disco.
 
- -- Christoph Berg <myon@debian.org>  Sun, 28 Oct 2018 22:21:31 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 21 Nov 2018 12:32:11 +0100
 
 postgresql-common (195) unstable; urgency=medium
 
