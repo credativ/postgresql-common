@@ -1,3 +1,9 @@
+postgresql-common (197) UNRELEASED; urgency=medium
+
+  * dh_make_pgxs: Update Maintainer address and package URLs.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 21 Nov 2018 12:58:20 +0100
+
 postgresql-common (196) unstable; urgency=medium
 
   [ Christoph Berg ]
