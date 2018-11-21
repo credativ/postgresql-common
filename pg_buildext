@@ -188,7 +188,8 @@ gencontrol() {
                 repl="${repl:+$repl, }$(echo $pkgpattern | sed -e "s/PGVERSION/$v/g")"
             done
             # put array into control file
-            sed -i -e "s/$pkgpattern/$repl/g" $tmptestscontrol
+            grep -q "$pkgpattern" $tmptestscontrol # assert the pattern didn't get already removed by an earlier replacement
+            sed -i -e "s/$pkgpattern/$repl/" $tmptestscontrol
         done
     fi
 }

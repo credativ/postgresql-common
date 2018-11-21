@@ -6,6 +6,8 @@ postgresql-common (196) UNRELEASED; urgency=medium
   * Updated Turkish translation by Atila Koç, thanks! (Closes: #912322)
   * read_conf_file: Accept '+' in unquoted values for floats like 1.5+e3.
     Thanks to David Barbion for spotting!
+  * pg_buildext: Handle multiple overlapping substitutions in
+    debian/tests/control.in better.
 
   [ Jeremy Bicha ]
   * Add Ubuntu 19.04 aka disco.
