@@ -1,11 +1,11 @@
-postgresql-common (197) UNRELEASED; urgency=medium
+postgresql-common (197) unstable; urgency=medium
 
   * dh_make_pgxs: Update Maintainer address and package URLs.
   * pg_buildext: Fix problem with substitution pattern occurring multiple
     times.
   * pg_buildext: Set PG_REGRESS_DIFF_OPTS for unified diffs from pg_regress.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Wed, 21 Nov 2018 12:58:20 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Thu, 22 Nov 2018 11:59:06 +0100
 
 postgresql-common (196) unstable; urgency=medium
 
