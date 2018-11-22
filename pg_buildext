@@ -181,7 +181,7 @@ gencontrol() {
         cp debian/tests/control.in $tmptestscontrol
         # find words (package names) containing PGVERSION
         REGEXP='[[:alnum:]-]*PGVERSION[[:alnum:]-]*'
-        for pkgpattern in $(egrep -wo "$REGEXP" debian/tests/control.in); do
+        for pkgpattern in $(egrep -wo "$REGEXP" debian/tests/control.in | sort -u); do
             repl=""
             # build an array of replacements separated by ,
             for v in $(versions); do
