@@ -112,6 +112,9 @@ loop() {
 installcheck() {
     prepare_env $1
 
+    # ask pg_regress to output unified diffs
+    export PG_REGRESS_DIFF_OPTS="-U3"
+
     # ask pg_virtualenv to create a non-system cluster
     if [ "${NONROOT-unset}" = "unset" ]; then
         export NONROOT=1
