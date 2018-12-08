@@ -1,0 +1,60 @@
+# gitlab-ci.yml file for the Debian PostgreSQL packages
+# to be used in debian/gitlab-ci.yml:
+# include: https://salsa.debian.org/postgresql/postgresql-hll/raw/master/gitlab/gitlab-ci.yml
+
+stages:
+  - build
+  - lintian
+  - autopkgtest
+
+.build: &build
+  stage: build
+  before_script:
+    # allow origtargz to use 'apt-get source'
+    - sed -e 's/^deb /deb-src /' /etc/apt/sources.list > /etc/apt/sources.list.d/src.list
+    - apt-get -q update
+    - apt-get -y --no-install-recommends install devscripts fakeroot liblwp-protocol-https-perl libwww-perl lintian
+    - apt-get -y --no-install-recommends build-dep .
+    # create user for building
+    - useradd buildd
+    - chown -R buildd:buildd .
+    - chown buildd:buildd ..
+  script:
+    - su -c 'origtargz' buildd
+    - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; end
+    - su -c 'dpkg-buildpackage --no-sign -sa -rfakeroot' buildd
+    - su -c 'lintian --info --display-info ../*.changes' buildd
+  after_script:
+    - rm -rf deb && mkdir deb
+    - dcmd mv ../*.changes deb
+  artifacts:
+    paths:
+      - deb
+
+build:testing:  { <<: *build, image: 'debian:testing' }
+build:unstable: { <<: *build, image: 'debian:sid' }
+
+.lintian: &lintian
+  stage: lintian
+  before_script:
+    - apt-get -q update -q
+    - apt-get -y --no-install-recommends install lintian
+  script:
+    - lintian deb/*.changes 2>&1 | tee lintian.log
+  artifacts:
+    paths:
+      - lintian.log
+
+lintian:testing:  { <<: *lintian, dependencies: ['build:testing'], image: 'debian:testing' }
+lintian:unstable: { <<: *lintian, dependencies: ['build:unstable'], image: 'debian:sid' }
+
+.autopkgtest: &autopkgtest
+  stage: autopkgtest
+  before_script:
+    - apt-get -q update -q
+    - apt-get -y --no-install-recommends install autopkgtest autodep8
+  script:
+    - autopkgtest deb/*.changes -- null
+
+autopkgtest:testing:  { <<: *autopkgtest, dependencies: ['build:testing'], image: 'debian:testing' }
+autopkgtest:unstable: { <<: *autopkgtest, dependencies: ['build:unstable'], image: 'debian:sid' }

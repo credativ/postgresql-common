@@ -1,3 +1,9 @@
+postgresql-common (198) UNRELEASED; urgency=medium
+
+  * Add gitlab-ci.yml file to be included in all PostgreSQL team packages.
+
+ -- Christoph Berg <myon@debian.org>  Sat, 08 Dec 2018 11:34:08 +0100
+
 postgresql-common (197) unstable; urgency=medium
 
   * dh_make_pgxs: Update Maintainer address and package URLs.
