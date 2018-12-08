@@ -24,9 +24,11 @@ die() {
 }
 
 VENVARGS=""
-while getopts "c:i:o:s" opt ; do
+MAKEVARS=""
+while getopts "c:i:m:o:s" opt ; do
     case $opt in
 	c|i|o) VENVARGS="$VENVARGS -$opt $OPTARG" ;;
+	m) MAKEVARS="$OPTARG" ;;
 	s) VENVARGS="$VENVARGS -$opt" ;;
 	*) exit 1 ;;
     esac
@@ -73,7 +75,7 @@ build() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1
+    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS
 }
 
 install() {
@@ -83,7 +85,7 @@ install() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1
+    make -C $vtarget ${makefile:-} install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS
 }
 
 clean() {
@@ -91,7 +93,7 @@ clean() {
 
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    [ -d $vtarget ] && make -C $vtarget clean ${makefile:-} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1
+    [ -d $vtarget ] && make -C $vtarget clean ${makefile:-} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS
     rm -rf $vtarget
 }
 
@@ -101,11 +103,11 @@ loop() {
     package=$(echo $target | sed -e "s:%v:$1:g")
 
     echo "# $1: make clean"
-    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1
+    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     echo "# $1: make"
-    make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1
+    make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     echo "# $1: make install"
-    make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1
+    make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     echo "### done $1 ###"
 }
 
@@ -125,7 +127,7 @@ installcheck() {
 	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
 	if ! pg_virtualenv $VENVARGS -v $1 \
 	    make -C $vtarget ${makefile:-} installcheck \
-		PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1; then
+		PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS; then
 	    if [ -r $vtarget/regression.diffs ]; then
 		echo "**** $vtarget/regression.diffs ****"
 		cat $vtarget/regression.diffs
@@ -134,7 +136,7 @@ installcheck() {
 	fi
     else
 	if ! pg_virtualenv $VENVARGS -v $1 \
-	    make installcheck PG_CONFIG="$pgc" USE_PGXS=1; then
+	    make installcheck PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS; then
 	    if [ -r regression.diffs ]; then
 		echo "**** regression.diffs ****"
 		cat regression.diffs
