@@ -32,7 +32,8 @@ run a check at build time if updating debian/control is required.
 
 As B<pg_buildext> invokes B<make> for the B<build>, B<install>, and B<clean>
 actions, invocations from C<debian/rules> (which is a makefile) should be prefixed
-with B<+> so the sub-makes can talk with the make jobserver.
+with B<+> so the sub-makes can talk with the make jobserver. Additional makefile
+variables can be passed to B<make> via the B<-m> option.
 
 Many extensions support B<make installcheck> testing using B<pg_regress>. As
 this needs the package to be installed, it cannot be run at build time.
@@ -52,6 +53,10 @@ is fine to provide the tests control file directly.)
 =item B<-s>
 
 Passed to B<pg_virtualenv> when running B<installcheck>.
+
+=item B<-m> I<arg>
+
+Passed to B<make>.
 
 =back
 
@@ -233,7 +238,8 @@ configure the list of supported versions on your system.
 =head1 SOURCE DIRECTORY
 
 If the package source code is not in the top level directory (i.e. the directory
-which has C<debian/> as subdirectory), use the I<src-dir> argument. Example:
+which has C<debian/> as subdirectory), use the I<src-dir> argument, where
+I<src-dir> must be an absolute path. Example:
 
   override_dh_auto_build:
 	  +pg_buildext build $(CURDIR)/postgresql-module build-%v
