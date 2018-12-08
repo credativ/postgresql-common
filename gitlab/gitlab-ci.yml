@@ -1,11 +1,10 @@
 # gitlab-ci.yml file for the Debian PostgreSQL packages
 # to be used in debian/gitlab-ci.yml:
-# include: https://salsa.debian.org/postgresql/postgresql-hll/raw/master/gitlab/gitlab-ci.yml
+# include: https://salsa.debian.org/postgresql/postgresql-common/raw/master/gitlab/gitlab-ci.yml
 
 stages:
   - build
-  - lintian
-  - autopkgtest
+  - test
 
 .build: &build
   stage: build
@@ -21,7 +20,7 @@ stages:
     - chown buildd:buildd ..
   script:
     - su -c 'origtargz' buildd
-    - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; end
+    - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; fi
     - su -c 'dpkg-buildpackage --no-sign -sa -rfakeroot' buildd
     - su -c 'lintian --info --display-info ../*.changes' buildd
   after_script:
@@ -35,10 +34,10 @@ build:testing:  { <<: *build, image: 'debian:testing' }
 build:unstable: { <<: *build, image: 'debian:sid' }
 
 .lintian: &lintian
-  stage: lintian
+  stage: test
   before_script:
-    - apt-get -q update -q
-    - apt-get -y --no-install-recommends install lintian
+    - apt-get -q update
+    - apt-get -y --no-install-recommends install
   script:
     - lintian deb/*.changes 2>&1 | tee lintian.log
   artifacts:
@@ -49,9 +48,9 @@ lintian:testing:  { <<: *lintian, dependencies: ['build:testing'], image: 'debia
 lintian:unstable: { <<: *lintian, dependencies: ['build:unstable'], image: 'debian:sid' }
 
 .autopkgtest: &autopkgtest
-  stage: autopkgtest
+  stage: test
   before_script:
-    - apt-get -q update -q
+    - apt-get -q update
     - apt-get -y --no-install-recommends install autopkgtest autodep8
   script:
     - autopkgtest deb/*.changes -- null
