@@ -12,7 +12,7 @@ stages:
     # allow origtargz to use 'apt-get source'
     - sed -e 's/^deb /deb-src /' /etc/apt/sources.list > /etc/apt/sources.list.d/src.list
     - apt-get -q update
-    - apt-get -y --no-install-recommends install devscripts fakeroot liblwp-protocol-https-perl libwww-perl lintian
+    - apt-get -y --no-install-recommends install devscripts fakeroot liblwp-protocol-https-perl libwww-perl
     - apt-get -y --no-install-recommends build-dep .
     # create user for building
     - useradd buildd
@@ -22,13 +22,11 @@ stages:
     - su -c 'origtargz' buildd
     - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; fi
     - su -c 'dpkg-buildpackage --no-sign -sa -rfakeroot' buildd
-    - su -c 'lintian --info --display-info ../*.changes' buildd
   after_script:
     - rm -rf deb && mkdir deb
     - dcmd mv ../*.changes deb
   artifacts:
-    paths:
-      - deb
+    paths: ['deb']
 
 build:testing:  { <<: *build, image: 'debian:testing' }
 build:unstable: { <<: *build, image: 'debian:sid' }
@@ -37,12 +35,11 @@ build:unstable: { <<: *build, image: 'debian:sid' }
   stage: test
   before_script:
     - apt-get -q update
-    - apt-get -y --no-install-recommends install
+    - apt-get -y --no-install-recommends install lintian
   script:
-    - lintian deb/*.changes 2>&1 | tee lintian.log
+    - lintian --info --display-info deb/*.changes 2>&1 | tee lintian.log
   artifacts:
-    paths:
-      - lintian.log
+    paths: ['lintian.log']
 
 lintian:testing:  { <<: *lintian, dependencies: ['build:testing'], image: 'debian:testing' }
 lintian:unstable: { <<: *lintian, dependencies: ['build:unstable'], image: 'debian:sid' }
