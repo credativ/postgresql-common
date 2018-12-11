@@ -1,0 +1,300 @@
+#!/usr/bin/perl -wT
+
+# pg_restorecluster: restore from a pg_backupcluster backup
+#
+# (C) 2021 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+use strict;
+use warnings;
+use Getopt::Long;
+use PgCommon;
+
+my ($version, $cluster);
+
+# untaint environment
+$ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
+umask 022;
+
+sub help () {
+    print "Syntax: $0 [options] <version> <cluster> <backup>
+Options:
+  -s --start    Start cluster after restoring (default for restore from dump)
+";
+}
+
+my ($start);
+
+exit 1 unless GetOptions (
+    's|start' => \$start,
+);
+
+# accept both "version cluster" and "version[-/]cluster"
+if (@ARGV >= 2 and $ARGV[0] =~ m!^(\d+\.?\d)[-/]([^/]+)$!) {
+    ($version, $cluster) = ($1, $2);
+    shift @ARGV;
+} elsif (@ARGV >= 3 and $ARGV[0] =~ /^(\d+\.?\d)$/) {
+    $version = $1;
+    ($cluster) = ($ARGV[1]) =~ m!^([^/]+)$!;
+    shift @ARGV;
+    shift @ARGV;
+} else {
+    help();
+    exit 1;
+}
+
+error "cluster $version $cluster already exists" if cluster_exists $version, $cluster;
+
+my $rootdir = "/var/backups/postgresql";
+my $clusterdir = "$rootdir/$version-$cluster";
+my $waldir = "$clusterdir/wal";
+
+# functions to be run as root
+
+sub create_cluster_directories($$$$) {
+    my ($owneruid, $ownergid, $configdir, $datadir) = @_;
+    my @postgres_user = getpwnam 'postgres';
+    my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2, 3];
+
+    for my $pgdir ("/etc/postgresql", "/etc/postgresql/$version", "/var/lib/postgresql", "/var/lib/postgresql/$version") {
+        if (! -e $pgdir) {
+            mkdir $pgdir or error "mkdir $pgdir: $!";
+            chown $pg_uid, $pg_gid, $pgdir or error "chown $pgdir: $!";
+        }
+    }
+    mkdir $configdir or error "mkdir $configdir: $!";
+    chown $owneruid, $ownergid, $configdir or error "chown $configdir: $!";
+    mkdir $datadir, 0700 or error "mkdir $datadir: $!";
+    chown $owneruid, $ownergid, $datadir or error "chown $datadir: $!";
+}
+
+sub create_cluster($$$$$) {
+    my ($backup, $owneruid, $ownergid, $configdir, $datadir) = @_;
+
+    my @createclusteropts = ();
+    if (-f "$backup/createcluster.opts") {
+        open my $fh, "$backup/createcluster.opts" or error "$backup/createcluster.opts: $!";
+        local $/; # slurp mode
+        my ($opts) = <$fh> =~ /(.*)/; # untaint
+        @createclusteropts = split /\s+/, $opts;
+        close $fh;
+    }
+
+    system_or_error "pg_createcluster",
+        "--datadir", $datadir,
+        "--user", $owneruid, "--group", $ownergid,
+        $version, $cluster,
+        @createclusteropts;
+}
+
+sub start_cluster() {
+    system_or_error "pg_ctlcluster", $version, $cluster, "start";
+}
+
+sub switch_to_cluster_owner($$) {
+    my ($owneruid, $ownergid) = @_;
+    change_ugid $owneruid, $ownergid;
+}
+
+# restore functions
+
+sub restore_config($$) {
+    my ($backup, $configdir) = @_;
+    -f "$backup/config.tar.gz" or error "$backup/config.tar.gz is missing";
+    print "Restoring $backup/config.tar.gz to $configdir ...\n";
+    system_or_error "tar", "-C", $configdir, "-xf", "$backup/config.tar.gz";
+}
+
+sub update_config($$) {
+    my ($configdir, $datadir) = @_;
+    my %settings = (
+        data_directory => $datadir,
+        hba_file => "$configdir/pg_hba.conf",
+        ident_file => "$configdir/pg_ident.conf",
+        external_pid_file => "/var/run/postgresql/$version-$cluster.pid",
+        cluster_name => "$version/$cluster",
+        stats_temp_directory => "/var/run/postgresql/$version-$cluster.pg_stat_tmp",
+        port => next_free_port(),
+    );
+    my %config = PgCommon::read_conf_file("$configdir/postgresql.conf");
+    for my $guc (sort keys %settings) {
+        if (not exists $config{$guc} or $config{$guc} ne $settings{$guc}) {
+            print "Setting $guc to $settings{$guc} ...\n";
+            PgCommon::set_conffile_value("$configdir/postgresql.conf", $guc, $settings{$guc});
+        }
+    }
+}
+
+sub restore_basebackup($$) {
+    my ($backup, $datadir) = @_;
+
+    -f "$backup/base.tar.gz" or error "$backup/base.tar.gz is missing";
+    print "Restoring $backup/base.tar.gz to $datadir ...\n";
+    system_or_error "tar", "-C", $datadir, "-xf", "$backup/base.tar.gz";
+
+    -f "$backup/pg_wal.tar.gz" or error "$backup/pg_wal.tar.gz is missing";
+    my $waldir = "$datadir/pg_wal";
+    print "Restoring $backup/pg_wal.tar.gz to $waldir ...\n";
+    system_or_error "tar", "-C", $waldir, "-xf", "$backup/pg_wal.tar.gz";
+}
+
+sub restore_globals($$) {
+    my ($backup, $owneruid) = @_;
+    my $owner = (getpwuid $owneruid)[0] or error "UID $owneruid has no name";
+
+    print "Restoring $backup/globals.sql ...\n";
+    open my $globals, "$backup/globals.sql" or error "$backup/globals.sql: $!";
+    open my $psql, "|-", "psql", "--cluster", "$version/$cluster", "-vON_ERROR_STOP=1", "-Xq" or error "psql: $!";
+    while (my $line = <$globals>) {
+        next if ($line eq "CREATE ROLE $owner;\n");
+        print $psql $line or error "psql: $!";
+    }
+    close $globals;
+    close $psql;
+    error "psql failed" if ($?);
+}
+
+sub create_databases($) {
+    my ($backup) = @_;
+
+    print "Creating databases from $backup/databases.sql ...\n";
+    system_or_error "psql", "--cluster", "$version/$cluster", "-vON_ERROR_STOP=1", "-Xqf", "$backup/databases.sql";
+}
+
+sub restore_dumps($) {
+    my ($backup) = @_;
+
+    for my $dump (sort glob "$backup/*.dump") {
+        $dump =~ m!(.*/([^/]*).dump)$!;
+        $dump = $1; # untaint
+        my $db = $2;
+        print "Restoring $dump to database $db ...\n";
+        system_or_error "pg_restore", "--cluster", "$version/$cluster", "-d", $db, $dump;
+    }
+}
+
+sub analyze() {
+    system_or_error "vacuumdb", "--cluster", "$version/$cluster", "--analyze-only", "--analyze-in-stages", "--all";
+}
+
+sub lscluster() {
+    system_or_error "pg_lsclusters", $version, $cluster;
+}
+
+# main
+
+my ($backup) = $ARGV[0] =~ /(.*)/; # untaint
+error "$backup is not a directory" unless (-d $backup);
+my ($owneruid, $ownergid) = (stat $backup)[4, 5];
+my $configdir = "/etc/postgresql/$version/$cluster";
+my $datadir = "/var/lib/postgresql/$version/$cluster";
+
+if ($backup =~ /\.backup\/?$/) {
+    create_cluster_directories($owneruid, $ownergid, $configdir, $datadir);
+    if (fork == 0) {
+        switch_to_cluster_owner($owneruid, $ownergid);
+        restore_config($backup, $configdir);
+        update_config($configdir, $datadir);
+        restore_basebackup($backup, $datadir);
+        exit(0);
+    }
+    wait;
+    exit($?) if ($?);
+    if ($start) {
+        start_cluster();
+        switch_to_cluster_owner($owneruid, $ownergid);
+        analyze();
+    }
+    lscluster();
+
+} elsif ($backup =~ /\.dump\/?$/) {
+    create_cluster($backup, $owneruid, $ownergid, $configdir, $datadir);
+    print "\n";
+    if (fork == 0) {
+        switch_to_cluster_owner($owneruid, $ownergid);
+        restore_config($backup, $configdir);
+        update_config($configdir, $datadir);
+        exit(0);
+    }
+    wait;
+    exit($?) if ($?);
+    start_cluster();
+    switch_to_cluster_owner($owneruid, $ownergid);
+    restore_globals($backup, $owneruid);
+    create_databases($backup);
+    restore_dumps($backup);
+    analyze();
+    print "\n";
+    lscluster();
+
+} else {
+    error "$backup must end in either .backup or .dump";
+}
+
+__END__
+
+=head1 NAME
+
+pg_restorecluster - Restore from a pg_backupcluster backup
+
+=head1 SYNOPSIS
+
+B<pg_restorecluster> [I<options>] I<version> I<cluster> I<backup>
+
+=head1 DESCRIPTION
+
+B<pg_restorecluster> restores a PostgreSQL cluster from a backup created by
+B<pg_backupcluster>. The cluster will be newly created in the system using the
+name provided on the command line; this allows renaming a cluster on restore.
+The restored cluster configuration will be updated to reflect the new name and
+location.
+
+The I<backup> name passed must end in either B<.basebackup> or B<.dump>;
+usually this will be the full path to a backup directory in
+C</var/backups/postgresql/version-cluster/>.
+
+Basebackups are restored as-is. For dumps, B<pg_createcluster> is used to
+create a new cluster, and schema and data are restored via B<pg_restore>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-s --start>
+
+Start cluster after restoring (default for restore from dump; off for
+basebackup restores).
+
+After the cluster has been started, B<ANALYZE> is run on all databases.
+
+=back
+
+=head1 FILES
+
+=over 4
+
+=item /var/backups
+
+Default root directory for cluster backup directories.
+
+See L<pg_backupcluster(1)> for a description of files.
+
+=back
+
+=head1 SEE ALSO
+
+L<pg_backupcluster(1)>, L<pg_restore(1)>, L<vacuumdb(1)>.
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>

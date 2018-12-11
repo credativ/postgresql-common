@@ -1,0 +1,14 @@
+[Unit]
+Description=Basebackup of PostgreSQL Cluster %i
+AssertPathExists=/etc/postgresql/%I/postgresql.conf
+Wants=postgresql@%i.service
+After=postgresql@%i.service
+RequiresMountsFor=/var/backups/postgresql
+
+[Service]
+Type=oneshot
+User=postgres
+Environment="KEEP=3"
+ExecStartPre=+/usr/bin/pg_backupcluster %i createdirectory
+ExecStart=/usr/bin/pg_backupcluster %i basebackup
+ExecStart=/usr/bin/pg_backupcluster %i expirebasebackups $KEEP

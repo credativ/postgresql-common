@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily Compress WAL of PostgreSQL Cluster %i
+AssertPathExists=/etc/postgresql/%I/postgresql.conf
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1h
+FixedRandomDelay=true
+
+[Install]
+# when enabled, start along with pg_receivewal@%i
+WantedBy=pg_receivewal@%i.service

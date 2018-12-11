@@ -1,5 +1,6 @@
 createcluster.conf usr/share/postgresql-common
 debian/init.d-functions usr/share/postgresql-common
+pg_backupcluster usr/bin
 pg_buildext usr/bin
 pg_checksystem usr/share/postgresql-common
 pg_config usr/bin
@@ -9,6 +10,7 @@ pg_ctlcluster usr/bin
 pg_dropcluster usr/bin
 pg_lsclusters usr/bin
 pg_renamecluster usr/bin
+pg_restorecluster usr/bin
 pg_updateaptconfig usr/share/postgresql-common
 pg_updatedicts usr/sbin
 pg_upgradecluster usr/bin

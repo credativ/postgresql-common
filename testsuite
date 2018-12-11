@@ -3,7 +3,7 @@
 # Run integration tests (on the installed packages).
 #
 # (C) 2005-2012 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2020 Christoph Berg <myon@debian.org>
+# (C) 2012-2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -131,7 +131,7 @@ if [ "${DROP_ALL_CLUSTERS:-}" ]; then
 fi
 
 # set up test directories
-dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql"
+dirs="/etc/postgresql /var/lib/postgresql /var/log/postgresql /var/run/postgresql /var/backups/postgresql"
 
 if [ -z "${NO_TMPFS:-}" ]; then
     # clean up after us
@@ -152,7 +152,7 @@ if [ -z "${NO_TMPFS:-}" ]; then
     chown postgres:postgres     /etc/postgresql ; chmod  755     /etc/postgresql
     chown postgres:postgres /var/lib/postgresql ; chmod  755 /var/lib/postgresql
     chown     root:postgres /var/log/postgresql ; chmod 1775 /var/log/postgresql
-    chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql
+    chown postgres:postgres /var/run/postgresql ; chmod 2775 /var/run/postgresql /var/backups/postgresql
 fi
 
 if [ -d /run/systemd/system ]; then

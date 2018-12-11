@@ -1,0 +1,19 @@
+[Unit]
+Description=WAL archival of PostgreSQL Cluster %i
+AssertPathExists=/etc/postgresql/%I/postgresql.conf
+Wants=postgresql@%i.service
+After=postgresql@%i.service
+RequiresMountsFor=/var/backups/postgresql
+
+[Service]
+Type=simple
+User=postgres
+ExecStartPre=+/usr/bin/pg_backupcluster %i createdirectory
+ExecStart=/usr/bin/pg_backupcluster %i receivewal
+ExecStopPost=/usr/bin/pg_backupcluster %i compresswal
+Restart=on-failure
+RestartSec=1min
+
+[Install]
+# when enabled, start along with postgresql@%i
+WantedBy=postgresql@%i.service

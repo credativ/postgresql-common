@@ -1,7 +1,7 @@
 systemd unit files for PostgreSQL on Debian/Ubuntu
 --------------------------------------------------
 
-Each cluster is run as a separate service, called postgresql@version/name.
+Each cluster is run as a separate service, called postgresql@version-cluster.
 pg_ctlcluster is invoked with --skip-systemctl-redirect. Logging still goes to
 /var/log/postgresql.
 
@@ -13,4 +13,43 @@ The link between start.conf and postgresql.service is established by
 postgresql-generator, which creates symlinks in
 /run/systemd/generator/postgresql.service.wants/.
 
- -- Christoph Berg <myon@debian.org>  Fri, 18 Jul 2014 23:52:09 +0300
+Backup
+------
+
+Two backup mechanisms are being offered as systemd services: basebackups
+capable of point in time recovery (PITR, the preferred method), and SQL-level
+dumps.
+
+pg_basebackup@version-cluster.service
+pg_basebackup@version-cluster.timer
+
+  Weekly basebackup in /var/backups/postgresql/version/cluster.
+  By default, 3 copies are being kept.
+
+  To enable, run
+  systemctl enable --now pg_basebackup@version-cluster.timer
+  systemctl start pg_basebackup@version-cluster.service
+
+pg_receivewal@version-cluster.service
+
+  WAL archival to be used with pg_basebackup@.service for PITR.
+
+  To enable, run
+  systemctl enable --now pg_basebackup@version-cluster.timer pg_receivewal@version-cluster.service
+  systemctl start pg_basebackup@version-cluster.service
+
+pg_dump@version-cluster.service
+pg_dump@version-cluster.timer
+
+  Weekly SQL dump in /var/backups/postgresql/version/cluster.
+  By default, 3 copies are being kept.
+
+  To enable, run
+  systemctl enable --now pg_dump@version-cluster.timer
+  systemctl start pg_dump@version-cluster.service
+
+The mechanisms provided are meant to be used with low to medium size databases.
+For larger databases, or databases with high write volume, we advise to use a
+full-size backup solution such as pgbackrest or barman.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 08 Mar 2021 13:45:26 +0100

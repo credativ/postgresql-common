@@ -1,0 +1,12 @@
+[Unit]
+Description=Weekly Basebackup of PostgreSQL Cluster %i
+AssertPathExists=/etc/postgresql/%I/postgresql.conf
+
+[Timer]
+OnCalendar=weekly
+RandomizedDelaySec=1h
+FixedRandomDelay=true
+
+[Install]
+# when enabled, start along with postgresql@%i
+WantedBy=postgresql@%i.service

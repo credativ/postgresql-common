@@ -1,0 +1,9 @@
+[Unit]
+Description=Compress WAL of PostgreSQL Cluster %i
+AssertPathExists=/etc/postgresql/%I/postgresql.conf
+RequiresMountsFor=/var/backups/postgresql
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/usr/bin/pg_backupcluster %i compresswal
