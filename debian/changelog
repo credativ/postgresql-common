@@ -1,4 +1,4 @@
-postgresql-common (198) UNRELEASED; urgency=medium
+postgresql-common (198) unstable; urgency=medium
 
   [ Christoph Berg ]
   * Add gitlab-ci.yml file to be included in all PostgreSQL team packages.
@@ -8,7 +8,7 @@ postgresql-common (198) UNRELEASED; urgency=medium
   * pg_buildext: Add support for passing Makefile variables via the new -m
     option. (Closes: #915953)
 
- -- Christoph Berg <myon@debian.org>  Sat, 08 Dec 2018 11:34:08 +0100
+ -- Christoph Berg <myon@debian.org>  Sun, 16 Dec 2018 11:55:10 +0100
 
 postgresql-common (197) unstable; urgency=medium
 
