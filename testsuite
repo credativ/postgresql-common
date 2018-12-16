@@ -110,8 +110,11 @@ locale_gen \
     ru_RU.UTF-8 UTF-8
 
 # stop currently running clusters
-if [ -x "/etc/init.d/postgresql" ]; then
-    /etc/init.d/postgresql stop
+if [ -d /run/systemd/system ] ; then
+    # stop postgresql@* explicitly (#759725)
+    systemctl stop postgresql "postgresql@*"
+else
+    service postgresql stop
 fi
 
 # drop all existing clusters if the user requested it

@@ -2,6 +2,7 @@ postgresql-common (198) UNRELEASED; urgency=medium
 
   [ Christoph Berg ]
   * Add gitlab-ci.yml file to be included in all PostgreSQL team packages.
+  * testsuite: Stop postgresql@* explicitly. (Workaround for #759725)
 
   [ Michael Banck ]
   * pg_buildext: Add support for passing Makefile variables via the new -m
