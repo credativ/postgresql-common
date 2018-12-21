@@ -32,7 +32,7 @@ centos7:
     - rm -rf $HOME/rpmbuild
     - make rpmremove
     - make rpmbuild
-    - rpm -ql pgdg-centos10 > /dev/null || sudo yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
+    - rpm -ql pgdg-centos11 > /dev/null || sudo yum install -y https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
     - make rpminstall
     - sudo ./cleanpg
     - sudo ./testsuite -v "$(debian/supported-versions)" -i
