@@ -1,3 +1,10 @@
+postgresql-common (199) UNRELEASED; urgency=medium
+
+  [ Antti Salmela ]
+  * pg_upgradecluster: Pass --jobs to pg_upgrade when using upgrade method.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Mon, 07 Jan 2019 15:38:32 +0100
+
 postgresql-common (198) unstable; urgency=medium
 
   [ Christoph Berg ]
