@@ -8,7 +8,7 @@ use PgCommon;
 use lib 't';
 use TestLib;
 
-use Test::More tests => $PgCommon::rpm ? 1 : 5;
+use Test::More tests => 5;
 
 # test next_free_port(). We are intentionally using nc as an external tool,
 # using perl would replicate what next_free_port is doing, and that would
