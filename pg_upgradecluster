@@ -268,7 +268,7 @@ my $link = 0;
 my $start = -1; # -1 = auto
 
 my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
-    $lc_time, $logfile, $old_bindir);
+    $lc_time, $logfile, $old_bindir, $jobs);
 GetOptions ('v|version=s' => \$newversion,
 	    'locale=s' => \$locale,
 	    'lc-collate=s' => \$lc_collate,
@@ -279,6 +279,7 @@ GetOptions ('v|version=s' => \$newversion,
 	    'lc-time=s' => \$lc_time,
 	    'logfile=s' => \$logfile,
 	    'm|method=s' => \$method,
+	    'j|jobs=s', => \$jobs,
 	    'k|link' => \$link,
             'rename=s' => \$newcluster,
             'old-bindir=s' => \$old_bindir,
@@ -288,6 +289,7 @@ GetOptions ('v|version=s' => \$newversion,
 
 $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
 $link and $method eq 'dump' and error 'cannot use --link with --method=dump';
+$jobs and $method eq 'dump' and error 'cannot use --jobs with --method=dump';
 
 # untaint
 ($newversion) = $newversion =~ /^(\d+\.?\d+)$/;
@@ -301,6 +303,7 @@ $link and $method eq 'dump' and error 'cannot use --link with --method=dump';
 ($logfile) = $logfile =~ /^([^\n]+)$/ if $logfile;
 ($old_bindir) = $old_bindir =~ /^(\/.*)$/ if $old_bindir;
 ($maintenance_db) = $maintenance_db =~ /^([\w-]+)$/ if $maintenance_db;
+($jobs) = $jobs =~ /^(\d+)$/ if $jobs;
 
 if ($#ARGV < 1) {
     print "Usage: $0 [OPTIONS] <old version> <cluster name> [<new data directory>]\n";
@@ -591,6 +594,7 @@ if (!fork) {
         }
         push @argv, '-D', $newinfo{configdir};
 	push @argv, "--link" if $link;
+	push @argv, '-j', $jobs if $jobs;
 
 	# Make a directory for pg_upgrade to store its reports and log
 	# files.  It will not be removed.
@@ -811,6 +815,12 @@ L<pg_restore(1)>, "upgrade" uses L<pg_upgrade(1)>.  The default is
 In pg_upgrade mode, use hard links instead of copying files to the new
 cluster.  This option is merely passed on to pg_upgrade.  See
 L<pg_upgrade(1)> for details.
+
+=item B<-j>, B<--jobs>
+
+In pg_upgrade mode, number of simultaneous processes to use. This
+option is merely passed on to pg_upgrade. See L<pg_upgrade(1)>
+for details.
 
 =item B<--rename=>I<new cluster name>
 
