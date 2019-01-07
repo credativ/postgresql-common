@@ -31,11 +31,11 @@ clean:
 # rpm
 
 DPKG_VERSION=$(shell sed -ne '1s/.*(//; 1s/).*//p' debian/changelog)
-RPMDIR=$(HOME)/rpmbuild
+RPMDIR=$(CURDIR)/rpm
 TARBALL=$(RPMDIR)/SOURCES/postgresql-common_$(DPKG_VERSION).tar.xz
 
 rpmbuild: $(TARBALL)
-	rpmbuild --define='version $(DPKG_VERSION)' -ba rpm/postgresql-common.spec
+	rpmbuild -D"%_topdir $(RPMDIR)" --define='version $(DPKG_VERSION)' -ba rpm/postgresql-common.spec
 
 $(TARBALL):
 	mkdir -p $(dir $(TARBALL))
