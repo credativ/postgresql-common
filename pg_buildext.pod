@@ -166,7 +166,6 @@ configure the list of supported versions on your system.
 
   Source: postgresql-foobar
   Build-Depends: debhelper, postgresql-server-dev-all (>= 153~)
-  XS-Testsuite: autopkgtest
 
   Package: postgresql-PGVERSION-foobar
   Depends: ${misc:Depends}, ${shlibs:Depends}, postgresql-PGVERSION
