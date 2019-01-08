@@ -1,1 +1,7 @@
 tags
+rpm/BUILD/
+rpm/BUILDROOT/
+rpm/RPMS/
+rpm/SOURCES/
+rpm/SPECS/
+rpm/SRPMS/
