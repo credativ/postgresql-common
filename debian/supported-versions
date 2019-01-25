@@ -124,7 +124,7 @@ debian_backports() {
 }
 
 pgdg() {
-    /bin/echo -e "9.3\n9.4\n9.5\n9.6\n10\n11"
+    /bin/echo -e "9.4\n9.5\n9.6\n10\n11"
 }
 
 installed() {
