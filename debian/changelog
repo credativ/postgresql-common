@@ -1,4 +1,4 @@
-postgresql-common (199) UNRELEASED; urgency=medium
+postgresql-common (199) unstable; urgency=medium
 
   [ Antti Salmela ]
   * pg_upgradecluster: Pass --jobs to pg_upgrade when using upgrade method.
@@ -6,7 +6,7 @@ postgresql-common (199) UNRELEASED; urgency=medium
   [ Christoph Berg ]
   * supported-versions: Drop support for 9.3 on apt.postgresql.org.
 
- -- Christoph Berg <christoph.berg@credativ.de>  Mon, 07 Jan 2019 15:38:32 +0100
+ -- Christoph Berg <christoph.berg@credativ.de>  Mon, 28 Jan 2019 16:27:27 +0100
 
 postgresql-common (198) unstable; urgency=medium
 
