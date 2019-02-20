@@ -790,6 +790,10 @@ Set a custom log file path for the upgraded database cluster.
 Set the default locale for the upgraded database cluster. If this option is not
 specified, the locale is inherited from the old cluster.
 
+When upgrading to PostgreSQL 11 or newer, this option no longer allows to
+switch the encoding of individual databases. (L<pg_dumpall(1)> was changed to
+retain database encodings.)
+
 =item B<--lc-collate=>I<locale>
 
 =item B<--lc-ctype=>I<locale>

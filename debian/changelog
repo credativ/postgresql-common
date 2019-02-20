@@ -1,3 +1,11 @@
+postgresql-common (200) UNRELEASED; urgency=medium
+
+  * pg_upgradecluster, t/052_upgrade_encodings.t: pg_dumpall 11 retains the
+    database encoding, so switching encodings via dump-restore does not work
+    anymore.
+
+ -- Christoph Berg <christoph.berg@credativ.de>  Wed, 20 Feb 2019 12:32:38 +0100
+
 postgresql-common (199) unstable; urgency=medium
 
   [ Antti Salmela ]
