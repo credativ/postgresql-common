@@ -61,9 +61,9 @@ is ((system "pg_ctlcluster $oldv main start"), 0, 'restarting old cluster');
 like_program_out 0, "pg_upgradecluster --locale ru_RU.UTF-8 -v $newv $oldv main", 0, qr/^Success/im;
 
 is ((exec_as 'postgres', "psql --cluster $newv/main -Atl", $outref), 0, 'psql -Atl on upgraded cluster');
-ok (($$outref =~ 'latintest|postgres|(UTF8|UNICODE)') >= 0, 'latintest is UTF8 encoded');
+like $$outref, qr/latintest\|postgres\|(UTF8|UNICODE)/, 'latintest is UTF8 encoded';
 ok ((index $$outref, 'asctest|postgres|SQL_ASCII') >= 0, 'asctest is ASCII encoded');
-ok (($$outref =~ 'template1|postgres|(UTF8|UNICODE)') >= 0, 'template1 is UTF8 encoded');
+like $$outref, qr/template1\|postgres\|(UTF8|UNICODE)/, 'template1 is UTF8 encoded';
 is_program_out 'postgres', "echo \"select * from t\" | psql --cluster $newv/main -Atq latintest",
     0, "AдB\n", 'new latintest DB has correctly encoded string';
 # ASCII databases don't do automatic encoding conversion, so this remains LATIN
