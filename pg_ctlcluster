@@ -6,7 +6,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2009 Cyril Bouthors <cyril@bouthors.org>
-# (C) 2013-2017 Christoph Berg <myon@debian.org>
+# (C) 2013-2019 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ sub cluster_port_ready {
 
 
     # probe until we get three successful or failed connections in a row
-    $ENV{'PGPASSWORD'} = 'foo'; # prevent hangs if superuser cannot connect withouth password
+    $ENV{'PGPASSWORD'} = 'foo'; # prevent hangs if superuser cannot connect without password
     my $out;
     while ($n < ($result ? 10 : 3)) {
         select undef, undef, undef, 0.5;
@@ -142,7 +142,7 @@ sub start {
     }
 
     if ((-d '/var/run/postgresql') && !defined (PgCommon::get_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file')) {
-        # check whether /var/run/postgresql/ is writeable as the cluster owner
+        # check whether /var/run/postgresql/ is writable as the cluster owner
         my $vrp_writable;
         if ($> == 0) {
             change_ugid $info{'owneruid'}, $info{'ownergid'};
