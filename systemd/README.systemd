@@ -2,10 +2,8 @@ systemd unit files for PostgreSQL on Debian/Ubuntu
 --------------------------------------------------
 
 Each cluster is run as a separate service, called postgresql@version/name.
-As systemd prefers processes to not daemonize, pg_ctlcluster is invoked with
---foreground. Logging still goes to /var/log/postgresql. (If you prefer the
-systemd journal, remove --stdlog from ExecStart postgresql@.service, or
-configure the logging_collector.)
+pg_ctlcluster is invoked with --skip-systemctl-redirect. Logging still goes to
+/var/log/postgresql.
 
 There is a parent service called postgresql.service, that starts/stops/restarts/
 reloads all individual services that are configured as "auto" in

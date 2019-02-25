@@ -382,6 +382,7 @@ if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
 # redirect the request through systemd
 if (not $skip_systemctl_redirect and getppid() != 1 and # not run from init
     -d '/run/systemd/system' and not exists $ENV{_SYSTEMCTL_SKIP_REDIRECT} and # systemd is running
+    not $foreground and # foreground operation not requested
     not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and # not handling user clusters
     $action =~ /^(start|stop|restart)$/ # redirect only these actions
 ) {
@@ -575,6 +576,13 @@ Start B<postgres> in foreground, without daemonizing via B<pg_ctl>.
 
 When B<--foreground> is in use, redirect stderr to the standard logfile in
 C</var/log/postgresql/>.  (Default when not run in foreground.)
+
+=item B<--skip-systemctl-redirect>
+
+When running as root, B<pg_ctlcluster> redirects actions to B<systemctl> so
+running clusters are properly supervised by B<systemd>. This option skips the
+redirect; it is used in the B<postgresql@.service> unit file. The redirect is
+also skipped if additional B<postgres> or B<pg_ctl> options are provided.
 
 =item B<--bindir> I<directory>
 
