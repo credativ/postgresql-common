@@ -4,7 +4,7 @@
 # process attached.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2015-2017 Christoph Berg <myon@debian.org>
+# (C) 2015-2019 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ foreach my $f (</var/log/postgresql/postgresql-$version-$cluster.log.[1-9]*>) {
 my $statstempdir = $info{config}->{stats_temp_directory};
 if ($statstempdir) {
     my $statsowner = (stat($statstempdir))[4];
-    if (defined $statsowner and $statsowner == $info{owneruid}) {
+    if (defined $statsowner and defined $info{owneruid} and $statsowner == $info{owneruid}) {
         foreach my $f (<$statstempdir/*.stat>) {
             unlink ($f =~ /(.*)/); # untaint
         }
