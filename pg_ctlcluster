@@ -162,8 +162,9 @@ sub start {
 
     if ($foreground) {
         if ($stdlog and $info{'logfile'}) {
-            dup2(POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND), 1);
-            dup2(POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND), 2);
+            my $fd = POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND|POSIX::O_CREAT) or error "Could not open logfile $info{logfile}";
+            dup2($fd, 1);
+            dup2($fd, 2);
         }
         my $postgres = get_program_path 'postgres', $version;
         exec '/bin/sh', '-c', "exec $postgres $postgres_opts" or
@@ -204,10 +205,11 @@ sub start {
         }
     } else {
         setsid or error "could not start session: $!";
-        # without dup2, you'll get zombies on startup
-        my $output = $info{'logfile'} && -r $info{'logfile'} ? $info{'logfile'} : '/dev/null';
-        dup2(POSIX::open($output, POSIX::O_WRONLY | POSIX::O_APPEND | POSIX::O_CREAT), 1);
-        dup2(POSIX::open($output, POSIX::O_WRONLY | POSIX::O_APPEND | POSIX::O_CREAT), 2);
+        if ($info{'logfile'}) {
+            my $fd = POSIX::open($info{'logfile'}, POSIX::O_WRONLY|POSIX::O_APPEND|POSIX::O_CREAT) or error "Could not open logfile $info{'logfile'}";
+            dup2($fd, 1);
+            dup2($fd, 2);
+        }
         exec $pg_ctl @options or error "could not exec $pg_ctl @options: $!";
     }
 

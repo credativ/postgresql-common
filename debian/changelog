@@ -4,6 +4,7 @@ postgresql-common (200) UNRELEASED; urgency=medium
     database encoding, so switching encodings via dump-restore does not work
     anymore.
   * pg_upgradecluster: Deprecate 'replacement_sort_tuples' in version 11.
+  * pg_ctlcluster: Die early if logfile is not available. (Closes: #891234)
   * pg_dropcluster: Silence warning if data_directory is already gone.
     Spotted by Jean-Christophe Arnu, merci!
 
