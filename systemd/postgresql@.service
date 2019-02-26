@@ -10,6 +10,8 @@ RequiresMountsFor=/etc/postgresql/%I /var/lib/postgresql/%I
 PartOf=postgresql.service
 ReloadPropagatedFrom=postgresql.service
 Before=postgresql.service
+# stop server before networking goes down on shutdown
+After=network.target
 
 [Service]
 Type=forking

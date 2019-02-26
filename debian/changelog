@@ -12,6 +12,9 @@ postgresql-common (200) UNRELEASED; urgency=medium
     Spotted by Jean-Christophe Arnu, merci!
   * get_cluster_port: Fall back to 5432 if port is not defined in config.
     (Closes: #920248)
+  * postgresql@.service: Add After=network.target to ensure the server is
+    stopped before networking goes down on shutdown. Thanks Elrond!
+    (Closes: #920248)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 20 Feb 2019 12:32:38 +0100
 
