@@ -72,10 +72,32 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
         if (defined $walowner and $walowner == $info{owneruid}) {
             $result = system 'rm', '-r', '--', $info{waldir};
             if ($result) {
-                exit $result;
+                print STDERR "Warning: could not remove wal directory $info{waldir}";
             }
         } else {
             print STDERR "Warning: wal directory $info{waldir} is not owned by uid $info{owneruid}, not removing\n";
+        }
+    }
+
+    # remove tablespace subdirectories that belong to our version
+    for my $link (glob "$info{pgdata}/pg_tblspc/*") {
+        next unless (-l $link);
+        my $tblspc = readlink $link;
+        my $tblspcowner = (stat($tblspc))[4];
+        if (defined $tblspcowner and $tblspcowner == $info{owneruid}) {
+            for my $dir (glob "$tblspc/PG_${version}_*") {
+                my $dirowner = (stat($dir))[4];
+                if (defined $dirowner and $dirowner == $info{owneruid}) {
+                    my $result = system 'rm', '-r', '--', ($dir =~ /(.*)/); # untaint
+                    if ($result) {
+                        print STDERR "Warning: could not remove tablespace directory $dir";
+                    }
+                } else {
+                    print STDERR "Warning: tablespace subdirectory $dir (in tablespace linked from $link) is not owned by uid $info{owneruid}, not removing\n";
+                }
+            }
+        } else {
+            print STDERR "Warning: tablespace directory $tblspc (linked from $link) is not owned by uid $info{owneruid}, not considering\n";
         }
     }
 
@@ -148,7 +170,7 @@ B<pg_dropcluster> [B<--stop>] I<cluster-version> I<cluster-name>
 =head1 DESCRIPTION
 
 This program removes all files that belong to a given PostgreSQL cluster; that
-includes the data directory, the log file, and all configuration files that
+includes the data, wal, and tablespace directories, the log file, and all configuration files that
 were created by L<pg_createcluster(1)>. If the configuration directory
 (C</etc/postgresql/>I<version>C</>I<cluster>) is empty after this, it is
 removed as well.

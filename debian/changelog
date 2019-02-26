@@ -7,6 +7,7 @@ postgresql-common (200) UNRELEASED; urgency=medium
   * pg_ctlcluster: Die early if logfile is not available. (Closes: #891234)
   * pg_ctlcluster: Document --skip-systemctl-redirect, and skip redirect if
     --foreground is requested.
+  * pg_dropcluster: Delete tablespace directories. (Closes: #916449)
   * pg_dropcluster: Silence warning if data_directory is already gone.
     Spotted by Jean-Christophe Arnu, merci!
 
