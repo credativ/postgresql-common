@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2018 Christoph Berg <myon@debian.org>
+# (C) 2012-2019 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -186,13 +186,14 @@ sub read_conf_file {
 # Arguments: <version> <cluster> <config file name>
 # Returns: hash (empty if the file does not exist)
 sub read_cluster_conf_file {
-    my $fname = "$confroot/$_[0]/$_[1]/$_[2]";
-    -e $fname or $fname = "$common_confdir/$_[2]";
+    my ($version, $cluster, $configfile) = @_;
+    my $fname = "$confroot/$version/$_[1]/$configfile";
+    -e $fname or $fname = "$common_confdir/$configfile";
     my %conf = read_conf_file $fname;
 
-    if ($_[0] >= 9.4 and $_[2] eq 'postgresql.conf') { # merge settings changed by ALTER SYSTEM
+    if ($version >= 9.4 and $configfile eq 'postgresql.conf') { # merge settings changed by ALTER SYSTEM
         # data_directory cannot be changed by ALTER SYSTEM
-        my $data_directory = $conf{data_directory} || "/var/lib/postgresql/$_[0]/$_[1]";
+        my $data_directory = cluster_data_directory($version, $cluster, \%conf);
         my %auto_conf = read_conf_file "$data_directory/postgresql.auto.conf";
         foreach my $guc (keys %auto_conf) {
             $conf{$guc} = $auto_conf{$guc};
