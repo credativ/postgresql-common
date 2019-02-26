@@ -10,6 +10,8 @@ postgresql-common (200) UNRELEASED; urgency=medium
   * pg_dropcluster: Delete tablespace directories. (Closes: #916449)
   * pg_dropcluster: Silence warning if data_directory is already gone.
     Spotted by Jean-Christophe Arnu, merci!
+  * get_cluster_port: Fall back to 5432 if port is not defined in config.
+    (Closes: #920248)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 20 Feb 2019 12:32:38 +0100
 

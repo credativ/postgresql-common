@@ -54,7 +54,7 @@ our $binroot = "/usr/lib/postgresql/";
 #redhat# $binroot = "/usr/pgsql-";
 our $rpm = 0;
 #redhat# $rpm = 1;
-my $defaultport = 5432;
+our $defaultport = 5432;
 
 {
     my %saved_env;
@@ -368,11 +368,10 @@ sub replace_conf_value {
     rename "$fname.new", "$fname";
 }
 
-# Return the port of a particular cluster or undef if the cluster
-# does not exist.
+# Return the port of a particular cluster
 # Arguments: <version> <cluster>
 sub get_cluster_port {
-    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'port');
+    return get_conf_value($_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
 }
 
 # Set the port of a particular cluster.
@@ -728,8 +727,7 @@ sub next_free_port {
     my @ports;
     for my $v (get_versions) {
 	for my $c (get_version_clusters $v) {
-	    my $p = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
-	    push @ports, $p;
+	    push @ports, get_cluster_port ($v, $c);
 	}
     }
 
@@ -833,7 +831,7 @@ sub user_cluster_map {
     my ($last_version, $last_cluster, $defaultport_version, $defaultport_cluster);
     for my $v (get_versions) {
 	for my $c (get_version_clusters $v) {
-	    my $port = (get_conf_value $v, $c, 'postgresql.conf', 'port') || $defaultport;
+	    my $port = get_cluster_port ($v, $c);
             $last_version = $v;
             $last_cluster = $c;
 	    if ($port == $defaultport) {

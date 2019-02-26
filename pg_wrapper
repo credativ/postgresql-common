@@ -82,7 +82,7 @@ if ($cluster) {
     # check if we have a network cluster (N.N/the.host.name:port)
     if ($cluster =~ /^(\S+):(\d*)$/) {
 	$host = $1;
-	$port = $2 || 5432;
+	$port = $2 || $PgCommon::defaultport;
     } elsif (not cluster_exists($version, $cluster)) {
         # a specific cluster was requested, error out because it doesn't exist
         error "Cluster $version $cluster does not exist";
