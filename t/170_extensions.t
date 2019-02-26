@@ -37,6 +37,10 @@ my %depends = (
     ltree_plpython2u  => [qw(ltree plpython2u)],
     ltree_plpython3u  => [qw(ltree plpython3u)],
     ltree_plpythonu   => [qw(ltree plpythonu)],
+    # external extensions that might happen to be installed
+    db2fce            => [qw(plpgsql)],
+    pldbgapi          => [qw(plpgsql)],
+    unit              => [qw(plpgsql)],
 );
 
 foreach (</usr/share/postgresql/$v/extension/*.control>) {
