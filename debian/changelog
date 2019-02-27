@@ -20,6 +20,8 @@ postgresql-common (200) UNRELEASED; urgency=medium
   * postgresql@.service: Add After=network.target to ensure the server is
     stopped before networking goes down on shutdown. Thanks Elrond!
     (Closes: #910991)
+  * postgresql-generator: Don't attempt to auto-start removed versions.
+    (Closes: #918784)
 
  -- Christoph Berg <christoph.berg@credativ.de>  Wed, 20 Feb 2019 12:32:38 +0100
 

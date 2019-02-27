@@ -8,6 +8,7 @@ set -eu
 
 gendir="$1"
 wantdir="$1/postgresql.service.wants"
+bindir="/usr/lib/postgresql/"
 pgservice="/lib/systemd/system/postgresql@.service"
 
 mkdir -p "$wantdir"
@@ -28,6 +29,7 @@ for conf in /etc/postgresql/*/*/postgresql.conf; do
 
 	verdir="${dir%/*}"
 	version="${verdir##*/}"
+	test -x "$bindir$version/bin/postgres" || continue # package got removed
 	cluster="${dir##*/}"
 	ln -s "$pgservice" "$wantdir/postgresql@$version-$cluster.service"
 done
