@@ -167,6 +167,7 @@ sub start {
             dup2($fd, 2);
         }
         my $postgres = get_program_path 'postgres', $version;
+        error "Could not find postgres executable for version $version" unless ($postgres);
         exec '/bin/sh', '-c', "exec $postgres $postgres_opts" or
             error "Executing $postgres failed: $!"
     }
@@ -476,6 +477,7 @@ if( $> != $info{'owneruid'} ) {
 }
 
 $pg_ctl = $bindir ? "$bindir/pg_ctl" : get_program_path ('pg_ctl', $version);
+error "Could not find pg_ctl executable for version $version" unless ($pg_ctl);
 
 if ($action =~ /^(start|stop|restart|reload|status|promote)$/) {
     no strict 'refs';

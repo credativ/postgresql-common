@@ -7,6 +7,7 @@ postgresql-common (200) UNRELEASED; urgency=medium
     anymore.
   * pg_upgradecluster: Deprecate 'replacement_sort_tuples' in version 11.
   * pg_ctlcluster: Die early if logfile is not available. (Closes: #891234)
+  * pg_ctlcluster: Die early if pg_ctl cannot be found. (See: #918784)
   * pg_ctlcluster: Document --skip-systemctl-redirect, and skip redirect if
     --foreground is requested.
   * pg_dropcluster: Delete tablespace directories. (Closes: #916449)
