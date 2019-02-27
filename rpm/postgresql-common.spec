@@ -97,6 +97,7 @@ cp debian/postgresql-common.logrotate %{buildroot}/etc/logrotate.d/postgresql-co
 # Prepare systemd unit files, but only for RHEL/CentOS 7 and above...
 pushd systemd
 DESTDIR=%{buildroot} gmake install
+sed -i -e 's/#redhat# //' %{buildroot}/lib/systemd/system-generators/postgresql-generator
 popd
 %endif
 

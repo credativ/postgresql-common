@@ -9,6 +9,7 @@ set -eu
 gendir="$1"
 wantdir="$1/postgresql.service.wants"
 bindir="/usr/lib/postgresql/"
+#redhat# bindir="/usr/pgsql-"
 pgservice="/lib/systemd/system/postgresql@.service"
 
 mkdir -p "$wantdir"
