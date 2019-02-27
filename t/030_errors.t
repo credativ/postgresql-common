@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 149;
+use Test::More tests => 147;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -53,11 +53,6 @@ like_program_out 0, "pg_createcluster $version test -p foo", 1,
 like_program_out 0, "pg_createcluster $version test -p 42", 1,
     qr/must be a positive integer between/,
     'pg_createcluster -p checks valid port range';
-
-# attempt to create a cluster with an already used port
-like_program_out 0, "pg_createcluster $version test -p 5432", 1,
-    qr/port 5432 is already used/,
-    'pg_createcluster -p checks that port is already used';
 
 # chown cluster to an invalid user to test error
 my $badid = 98;

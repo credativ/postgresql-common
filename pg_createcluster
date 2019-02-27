@@ -312,13 +312,6 @@ error 'cluster configuration already exists'
 if (defined $port) {
     error 'port must be a positive integer between 1024 and 65535' 
 	unless $port =~ /^\d+/ && $port >= 1024 && $port <= 65535;
-
-    foreach $v (get_versions) {
-	foreach $c (get_version_clusters $v) {
-	    error "port $port is already used by cluster $v/$c"
-		if (get_cluster_port $v, $c) == $port;
-	}
-    }
 } else {
     $port = next_free_port;
 }
