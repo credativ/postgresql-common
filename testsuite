@@ -71,7 +71,7 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
                     postgresql-contrib-$v \
                     postgresql-plperl-$v \
                     postgresql-plpython-$v \
-                    postgresql-plpython3-$v \
+                    $(dpkg --compare-versions $v ge 9.1 && echo postgresql-plpython3-$v) \
                     postgresql-pltcl-$v \
                     postgresql-server-dev-$v
             done
