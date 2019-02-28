@@ -23,7 +23,7 @@ TimeoutStartSec=0
 ExecStop=/usr/bin/pg_ctlcluster --skip-systemctl-redirect -m fast %i stop
 TimeoutStopSec=1h
 ExecReload=/usr/bin/pg_ctlcluster --skip-systemctl-redirect %i reload
-PIDFile=/var/run/postgresql/%i.pid
+PIDFile=/run/postgresql/%i.pid
 SyslogIdentifier=postgresql@%i
 # prevent OOM killer from choosing the postmaster (individual backends will
 # reset the score to 0)
