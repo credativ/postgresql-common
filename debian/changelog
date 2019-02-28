@@ -2,6 +2,8 @@ postgresql-common (200) UNRELEASED; urgency=medium
 
   * pg_createcluster: Don't refuse explicit -p argument even when port is
     already in use. (Closes: #653870)
+  * pg_createcluster: Override suggested cluster start command in initdb.
+    (Closes: #872660)
   * pg_upgradecluster, t/052_upgrade_encodings.t: pg_dumpall 11 retains the
     database encoding, so switching encodings via dump-restore does not work
     anymore.

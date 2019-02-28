@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 143 * @MAJORS;
+use Test::More tests => 144 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -22,7 +22,10 @@ sub check_major {
     # create cluster
     my $xlogdir = tempdir("/tmp/$v.xlog.XXXXXX", CLEANUP => 1);
     rmdir $xlogdir; # recreated by initdb
-    if ($v > 8.2) {
+    if ($v >= 11) { # CLUSTER_START_COMMAND supported in initdb
+        like_program_out 'root', "pg_createcluster $v main --start -- -X $xlogdir", 0, qr/pg_ctlcluster/,
+            "pg_createcluster $v main shows desired start command";
+    } elsif ($v > 8.2) {
         ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
             "pg_createcluster $v main");
     } else { # 8.2 does not have -X yet

@@ -349,6 +349,8 @@ if (-f "$datadir/PG_VERSION") {
     }
 } else {
     print "Creating new PostgreSQL cluster $version/$cluster ...\n";
+    # ask initdb to print a different cluster start command (Debian patch)
+    $ENV{CLUSTER_START_COMMAND} = "pg_ctlcluster $version $cluster start";
     init_db $version, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
