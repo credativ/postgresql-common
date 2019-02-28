@@ -391,16 +391,19 @@ tel|2
     chown $postgres_uid, 0, $spc1, $spc2, "$spc2/PG_99_fakedirectory";
     is_program_out 'postgres', "psql -qc \"CREATE TABLESPACE spc1 LOCATION '$spc1'\"", 0, '', 'creating tablespace spc1';
     is_program_out 'postgres', "psql -qc 'CREATE TABLE tbl1 (x int) TABLESPACE spc1'", 0, '', 'creating a table in spc1';
-    is_program_out 'postgres', "psql -qc \"CREATE TABLESPACE spc2 LOCATION '$spc2'\"", 0, '', 'creating tablespace spc2';
-    is_program_out 'postgres', "psql -qc 'CREATE TABLE tbl2 (x int) TABLESPACE spc2'", 0, '', 'creating a table in spc2';
+    SKIP: {
+        skip "Non-empty tablespaces not supported before 9.0", 4 if ($v < 9.0);
+        is_program_out 'postgres', "psql -qc \"CREATE TABLESPACE spc2 LOCATION '$spc2'\"", 0, '', 'creating tablespace spc2';
+        is_program_out 'postgres', "psql -qc 'CREATE TABLE tbl2 (x int) TABLESPACE spc2'", 0, '', 'creating a table in spc2';
+    }
 
     # stop server, clean up, check for leftovers
     ok ((system "pg_dropcluster $v main --stop") == 0,
 	'pg_dropcluster removes cluster');
 
     is (-e $xlogdir, undef, "xlog/wal directory $xlogdir was deleted");
-    ok_dir $spc1, [], "tablespace spc1 was removed";
-    ok_dir $spc2, [qw(PG_99_fakedirectory)], "tablespace spc2 was removed";
+    ok_dir $spc1, [], "tablespace spc1 was emptied";
+    ok_dir $spc2, [qw(PG_99_fakedirectory)], "tablespace spc2 was emptied";
     check_clean;
 }
 

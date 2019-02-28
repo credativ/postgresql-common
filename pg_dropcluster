@@ -85,15 +85,31 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
         my $tblspc = readlink $link;
         my $tblspcowner = (stat($tblspc))[4];
         if (defined $tblspcowner and $tblspcowner == $info{owneruid}) {
-            for my $dir (glob "$tblspc/PG_${version}_*") {
-                my $dirowner = (stat($dir))[4];
-                if (defined $dirowner and $dirowner == $info{owneruid}) {
-                    my $result = system 'rm', '-r', '--', ($dir =~ /(.*)/); # untaint
-                    if ($result) {
-                        print STDERR "Warning: could not remove tablespace directory $dir";
+            if ($version >= 9.0) {
+                for my $dir (glob "$tblspc/PG_${version}_*") {
+                    my $dirowner = (stat($dir))[4];
+                    if (defined $dirowner and $dirowner == $info{owneruid}) {
+                        my $result = system 'rm', '-r', '--', ($dir =~ /(.*)/); # untaint
+                        if ($result) {
+                            print STDERR "Warning: could not remove tablespace directory $dir";
+                        }
+                    } else {
+                        print STDERR "Warning: tablespace subdirectory $dir (in tablespace linked from $link) is not owned by uid $info{owneruid}, not removing\n";
+                    }
+                }
+            } else { # before 9.0
+                if (open F, "$tblspc/PG_VERSION") {
+                    my $v = <F>;
+                    chomp $v;
+                    close F;
+                    if ($v eq $version) {
+                        $tblspc =~ /(.*)/; # untaint
+                        my $result = system "rm -r -- $1/*";
+                    } else {
+                        print STDERR "Warning: tablespace directory $tblspc (linked from $link) is from PostgreSQL version $v, not removing\n";
                     }
                 } else {
-                    print STDERR "Warning: tablespace subdirectory $dir (in tablespace linked from $link) is not owned by uid $info{owneruid}, not removing\n";
+                    print STDERR "Warning: tablespace directory $tblspc (linked from $link) is not a PostgreSQL directory, not removing\n";
                 }
             }
         } else {
