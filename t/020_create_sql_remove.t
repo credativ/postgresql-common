@@ -26,11 +26,11 @@ sub check_major {
         like_program_out 'root', "pg_createcluster $v main --start -- -X $xlogdir", 0, qr/pg_ctlcluster/,
             "pg_createcluster $v main shows desired start command";
     } elsif ($v > 8.2) {
-        ok ((system "pg_createcluster $v main --start -- -X $xlogdir >/dev/null") == 0,
-            "pg_createcluster $v main");
+        like_program_out 'root', "pg_createcluster $v main --start -- -X $xlogdir", 0, qr/pg_ctl/,
+            "pg_createcluster $v main";
     } else { # 8.2 does not have -X yet
-        ok ((system "pg_createcluster $v main --start >/dev/null") == 0,
-            "pg_createcluster $v main");
+        like_program_out 'root', "pg_createcluster $v main --start", 0, qr/pg_ctl/,
+            "pg_createcluster $v main";
         system "mv /var/lib/postgresql/$v/main/pg_xlog $xlogdir";
         system "ln -s $xlogdir /var/lib/postgresql/$v/main/pg_xlog";
     }
