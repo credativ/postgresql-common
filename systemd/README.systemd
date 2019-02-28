@@ -11,6 +11,6 @@ reloads all individual services that are configured as "auto" in
 
 The link between start.conf and postgresql.service is established by
 postgresql-generator, which creates symlinks in
-/var/run/systemd/generator/postgresql.service.wants/.
+/run/systemd/generator/postgresql.service.wants/.
 
  -- Christoph Berg <myon@debian.org>  Fri, 18 Jul 2014 23:52:09 +0300

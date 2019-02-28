@@ -8,7 +8,7 @@ use PgCommon;
 
 use Test::More tests => 73;
 
-my $systemd = -d '/var/run/systemd/system';
+my $systemd = -d '/run/systemd/system';
 
 # Do test with oldest version
 my $v = $MAJORS[0];
@@ -24,10 +24,10 @@ is_program_out 'nobody', "grep '^[^\\s#]' /etc/postgresql/$v/main/start.conf",
     0, "auto\n", 'start.conf contains auto';
 SKIP: {
     skip 'not running under systemd', 2 unless ($systemd);
-    ok_dir '/var/run/systemd/generator/postgresql.service.wants',
+    ok_dir '/run/systemd/generator/postgresql.service.wants',
         ["postgresql\@$v-main.service"],
         "systemd generator links cluster";
-    is ((readlink "/var/run/systemd/generator/postgresql.service.wants/postgresql\@$v-main.service"),
+    is ((readlink "/run/systemd/generator/postgresql.service.wants/postgresql\@$v-main.service"),
         "/lib/systemd/system/postgresql@.service",
         "systemd generator links correct service file");
 }
@@ -50,7 +50,7 @@ is_program_out 'nobody', "grep '^[^\\s#]' /etc/postgresql/$v/main/start.conf",
 SKIP: {
     skip 'not running under systemd', 1 unless ($systemd);
     system "systemctl daemon-reload";
-    ok_dir '/var/run/systemd/generator/postgresql.service.wants',
+    ok_dir '/run/systemd/generator/postgresql.service.wants',
         [], "systemd generator doesn't link cluster";
 }
 
@@ -73,7 +73,7 @@ is ((get_cluster_start_conf $v, 'main'), 'disabled',
 SKIP: {
     skip 'not running under systemd', 1 unless ($systemd);
     system "systemctl daemon-reload";
-    ok_dir '/var/run/systemd/generator/postgresql.service.wants',
+    ok_dir '/run/systemd/generator/postgresql.service.wants',
         [], "systemd generator doesn't link cluster";
 }
 
