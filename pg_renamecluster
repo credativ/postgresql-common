@@ -160,11 +160,7 @@ the operation.
 
 The following B<postgresql.conf> config options are updated to refer to the
 changed path names: B<data_directory>, B<hba_file>, B<ident_file>,
-B<external_pid_file>, B<stats_temp_directory>.
-
-Cluster names are a Debian convention, the name is not explicitly known to the
-cluster itself.  From the PostgreSQL viewpoint, the name is merely a substring
-of various path names.
+B<external_pid_file>, B<stats_temp_directory>, B<cluster_name>.
 
 =head1 OPTIONS
 
