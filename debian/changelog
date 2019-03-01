@@ -1,4 +1,4 @@
-postgresql-common (200) UNRELEASED; urgency=medium
+postgresql-common (200) unstable; urgency=medium
 
   * pg_createcluster: Don't refuse explicit -p argument even when port is
     already in use. (Closes: #653870)
@@ -31,7 +31,7 @@ postgresql-common (200) UNRELEASED; urgency=medium
   * postgresql-generator: Don't attempt to auto-start removed versions.
     (Closes: #918784)
 
- -- Christoph Berg <christoph.berg@credativ.de>  Wed, 20 Feb 2019 12:32:38 +0100
+ -- Christoph Berg <myon@debian.org>  Fri, 01 Mar 2019 20:47:06 +0100
 
 postgresql-common (199) unstable; urgency=medium
 
