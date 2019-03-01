@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2018 Christoph Berg <myon@debian.org>
+# (C) 2013-2019 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -37,86 +37,88 @@ chdir '/';
 
 # update the new cluster's conffiles
 sub adapt_conffiles {
-    my %c = read_cluster_conf_file $newversion, $newcluster, 'postgresql.conf';
+    my ($newversion, $newcluster, $configfile) = @_;
+    my %c = read_cluster_conf_file $newversion, $newcluster, $configfile;
 
     # Arguments: <ref to conf hash> <name> <comment>
-    sub deprecate {
-        if (defined ${$_[0]}{$_[1]}) {
+    my $deprecate = sub {
+        my ($conf, $guc, $comment) = @_;
+        if (defined $conf->{$guc}) {
             PgCommon::disable_conf_value $newversion, $newcluster,
-                'postgresql.conf', $_[1], $_[2];
+                $configfile, $guc, $comment;
         }
-    }
+    };
 
     # Arguments: <ref to conf hash> <old name> <new name>
-    sub rename_ {
+    my $rename = sub {
         my ($conf, $old, $new) = @_;
         if (defined ${$conf}{$old}) {
             PgCommon::replace_conf_value $newversion, $newcluster,
-                'postgresql.conf', $old, "deprecated in favor of $new", 
+                $configfile, $old, "deprecated in favor of $new",
                 $new, ${$conf}{$old};
         }
-    }
+    };
 
     # Arguments: <config option> <value>
-    sub set {
+    my $set = sub {
         my ($guc, $val) = @_;
-        PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
+        PgCommon::set_conf_value $newversion, $newcluster, $configfile,
             $guc, $val;
-    }
+    };
 
     # adapt paths to configuration files
-    set 'data_directory', $newinfo{'pgdata'};
+    $set->('data_directory', $newinfo{'pgdata'});
     for my $guc (qw(hba_file ident_file external_pid_file stats_temp_directory)) {
         next unless (defined $c{$guc});
         my $val = $c{$guc};
         $val =~ s/\b\Q$version\E\b/$newversion/g;
         $val =~ s/\b\Q$cluster\E\b/$newcluster/g if ($cluster ne $newcluster);
-        set $guc, $val;
+        $set->($guc, $val);
     }
 
     if ($newversion >= '8.2') {
         # preload_libraries -> shared_preload_libraries transition
-        rename_ \%c, 'preload_libraries', 'shared_preload_libraries';
+        $rename->(\%c, 'preload_libraries', 'shared_preload_libraries');
 
 	# australian_timezones -> timezone_abbreviations transition
 	my $australian_timezones = config_bool $c{'australian_timezones'};
 	if (defined $australian_timezones) {
-	    PgCommon::replace_conf_value $newversion, $newcluster, 'postgresql.conf',
+            PgCommon::replace_conf_value $newversion, $newcluster, $configfile,
 		    'australian_timezones', 'deprecated in favor of timezone_abbreviations', 
 		    'timezone_abbreviations', ($australian_timezones ?  'Australia' : 'Default');
 	}
     }
 
     if ($newversion >= '8.3') {
-        deprecate \%c, 'bgwriter_lru_percent', 'deprecated';
-        deprecate \%c, 'bgwriter_all_percent', 'deprecated';
-        deprecate \%c, 'bgwriter_all_maxpages', 'deprecated';
+        $deprecate->(\%c, 'bgwriter_lru_percent', 'deprecated');
+        $deprecate->(\%c, 'bgwriter_all_percent', 'deprecated');
+        $deprecate->(\%c, 'bgwriter_all_maxpages', 'deprecated');
 
-        rename_ \%c, 'redirect_stderr', 'logging_collector';
+        $rename->(\%c, 'redirect_stderr', 'logging_collector');
 
-        rename_ \%c, 'stats_command_string', 'track_activities';
-        deprecate \%c, 'stats_start_collector', 'deprecated, always on now';
-        deprecate \%c, 'stats_reset_on_server_start', 'deprecated';
+        $rename->(\%c, 'stats_command_string', 'track_activities');
+        $deprecate->(\%c, 'stats_start_collector', 'deprecated, always on now');
+        $deprecate->(\%c, 'stats_reset_on_server_start', 'deprecated');
 
 	# stats_block_level and stats_row_level are merged into track_counts
 	if ($c{'stats_block_level'} || $c{'stats_row_level'}) {
-	    deprecate \%c, 'stats_block_level', 'deprecated in favor of track_counts';
-	    deprecate \%c, 'stats_row_level', 'deprecated in favor of track_counts';
-            set 'track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'on' : 'off';
+	    $deprecate->(\%c, 'stats_block_level', 'deprecated in favor of track_counts');
+	    $deprecate->(\%c, 'stats_row_level', 'deprecated in favor of track_counts');
+            $set->('track_counts', (config_bool $c{'stats_block_level'} || config_bool $c{'stats_row_level'}) ? 'on' : 'off');
 	}
 
         # archive_command now has to be enabled explicitly
         if ($c{'archive_command'}) {
-            set 'archive_mode', 'on';
+            $set->('archive_mode', 'on');
         }
     }
 
     if ($newversion >= '8.4') {
-        deprecate \%c, 'max_fsm_pages', 'not needed anymore';
-        deprecate \%c, 'max_fsm_relations', 'not needed anymore';
-        deprecate \%c, 'krb_server_hostname', 'does not exist anymore';
-        deprecate \%c, 'krb_realm', 'does not exist anymore';
-        rename_ \%c, 'explain_pretty_print', 'debug_pretty_print';
+        $deprecate->(\%c, 'max_fsm_pages', 'not needed anymore');
+        $deprecate->(\%c, 'max_fsm_relations', 'not needed anymore');
+        $deprecate->(\%c, 'krb_server_hostname', 'does not exist anymore');
+        $deprecate->(\%c, 'krb_realm', 'does not exist anymore');
+        $rename->(\%c, 'explain_pretty_print', 'debug_pretty_print');
 
 	# "ident sameuser" -> "ident"
 	my $hba = "$PgCommon::confroot/$newversion/$newcluster/pg_hba.conf";
@@ -134,14 +136,14 @@ sub adapt_conffiles {
     }
 
     if ($newversion >= '9.0') {
-	deprecate \%c, 'add_missing_from', 'does not exist anymore';
-	deprecate \%c, 'regex_flavor', 'does not exist anymore';
+	$deprecate->(\%c, 'add_missing_from', 'does not exist anymore');
+	$deprecate->(\%c, 'regex_flavor', 'does not exist anymore');
     }
 
     if ($newversion >= '9.2') {
-	deprecate \%c, 'wal_sender_delay', 'does not exist anymore';
-	deprecate \%c, 'silent_mode', 'does not exist anymore';
-	deprecate \%c, 'custom_variable_classes', 'does not exist anymore';
+	$deprecate->(\%c, 'wal_sender_delay', 'does not exist anymore');
+	$deprecate->(\%c, 'silent_mode', 'does not exist anymore');
+	$deprecate->(\%c, 'custom_variable_classes', 'does not exist anymore');
 
         # SSL certificate paths have an explicit option now, older versions use
         # a symlink
@@ -151,50 +153,50 @@ sub adapt_conffiles {
 		   ['root.crl', 'ssl_crl_file']) {
 	    my $file = "$newinfo{'pgdata'}/$f->[0]";
 	    if (-l $file) { # migrate symlink to config entry with link target
-                set $f->[1], (readlink $file);
+                $set->($f->[1], (readlink $file));
 		unlink $file;
 	    } elsif (-e $file) { # plain file in data dir, put in config
-                set $f->[1], $file;
+                $set->($f->[1], $file);
 	    }
 	}
     }
 
     if ($newversion >= '9.3') {
-        rename_ \%c, 'unix_socket_directory', 'unix_socket_directories';
-        rename_ \%c, 'replication_timeout', 'wal_sender_timeout';
+        $rename->(\%c, 'unix_socket_directory', 'unix_socket_directories');
+        $rename->(\%c, 'replication_timeout', 'wal_sender_timeout');
     }
 
     if ($newversion >= '9.4') {
-        deprecate \%c, 'krb_srvname', 'native krb5 authentication deprecated in favor of GSSAPI';
+        $deprecate->(\%c, 'krb_srvname', 'native krb5 authentication deprecated in favor of GSSAPI');
         # grab dsmt from the new config just written by initdb
         unless ($c{dynamic_shared_memory_type}) {
-            set 'dynamic_shared_memory_type', ($newinfo{config}->{dynamic_shared_memory_type} || 'mmap');
+            $set->('dynamic_shared_memory_type', ($newinfo{config}->{dynamic_shared_memory_type} || 'mmap'));
         }
     }
 
     if ($newversion >= '9.5') {
         if ($c{checkpoint_segments}) {
             my $max_wal_size = 16*$c{checkpoint_segments} . 'MB';
-            rename_ \%c, 'checkpoint_segments', 'max_wal_size';
-            set 'max_wal_size', $max_wal_size;
+            $rename->(\%c, 'checkpoint_segments', 'max_wal_size');
+            $set->('max_wal_size', $max_wal_size);
         }
-        deprecate \%c, 'ssl_renegotiation_limit', 'does not exist anymore';
+        $deprecate->(\%c, 'ssl_renegotiation_limit', 'does not exist anymore');
         # adapt cluster_name
-        my $cluster_name = PgCommon::get_conf_value ($newversion, $newcluster, 'postgresql.conf', 'cluster_name');
+        my $cluster_name = PgCommon::get_conf_value ($newversion, $newcluster, $configfile, 'cluster_name');
         if ($cluster_name) {
             $cluster_name =~ s/\Q$version\E/$newversion/g;
             $cluster_name =~ s/\Q$cluster\E/$newcluster/g;
-            set 'cluster_name', $cluster_name;
+            $set->('cluster_name', $cluster_name);
         }
     }
 
     if ($newversion >= '10') {
-        rename_ \%c, 'min_parallel_relation_size', 'min_parallel_table_scan_size';
-        deprecate \%c, 'sql_inheritance', 'does not exist anymore';
+        $rename->(\%c, 'min_parallel_relation_size', 'min_parallel_table_scan_size');
+        $deprecate->(\%c, 'sql_inheritance', 'does not exist anymore');
     }
 
     if ($newversion >= '11') {
-        deprecate \%c, 'replacement_sort_tuples', 'does not exist anymore';
+        $deprecate->(\%c, 'replacement_sort_tuples', 'does not exist anymore');
     }
 }
 
@@ -645,6 +647,14 @@ if ($?) {
 print "Copying old configuration files...\n";
 install_file $info{'configdir'}.'/postgresql.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+adapt_conffiles $newversion, $newcluster, 'postgresql.conf';
+# copy auto.conf after postgresql.conf has been updated
+# (otherwise read_cluster_conf_file would also read auto.conf)
+if ($version >= 9.4) {
+    install_file $info{'pgdata'}.'/postgresql.auto.conf', $newinfo{'pgdata'},
+        $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+    adapt_conffiles $newversion, $newcluster, 'postgresql.auto.conf';
+}
 install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
 install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
@@ -671,8 +681,6 @@ for my $file (qw/server.crt server.key root.crt/) {
 	wait;
     }
 }
-
-adapt_conffiles $newversion, $newcluster;
 
 if ($method eq 'dump') {
     print "Stopping target cluster...\n";

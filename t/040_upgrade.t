@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => (@MAJORS == 1) ? 1 : 107 * 3;
+use Test::More tests => (@MAJORS == 1) ? 1 : 115 * 3;
 
 if (@MAJORS == 1) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -109,7 +109,14 @@ is_program_out 'nobody', 'psql -U foo -qc "CREATE SCHEMA s_foo" test', 0, '',
 is_program_out 'nobody', 'psql -U foo -qc "INSERT INTO phone VALUES (\'Bob\', 1)" test', 
     0, '', 'insert Bob into phone table (ACL)';
 
-# set database option
+# set config parameters
+is_program_out 'postgres', "pg_conftool $MAJORS[0] upgr set log_statement all",
+    0, '', 'set postgresql.conf parameter';
+SKIP: {
+    skip 'postgresql.auto.conf not supported before 9.4', 2 if ($MAJORS[0] < 9.4);
+    is_program_out 'postgres', 'psql -qc "ALTER SYSTEM SET log_min_duration_statement = \'10s\'"',
+        0, '', 'set postgresql.auto.conf parameter';
+}
 is_program_out 'postgres', 'psql -qc "ALTER DATABASE test SET DateStyle = \'ISO, YMD\'"',
     0, '', 'set database parameter';
 
@@ -220,9 +227,13 @@ SKIP: {
 is ((exec_as 'nobody', 'psql testro -c "BEGIN READ WRITE; CREATE TABLE test(num int); COMMIT"'), 
     0, 'creating table in testro succeeds with RW transaction');
 
-# check DB parameter
-is_program_out 'postgres', 'psql -Atc "SHOW DateStyle" test', 0, 'ISO, YMD
-', 'check database parameter';
+# check config parameters
+is_program_out 'postgres', 'psql -Atc "SHOW log_statement" test', 0, "all\n", 'check postgresql.conf parameters';
+SKIP: {
+    skip 'postgresql.auto.conf not supported before 9.4', 2 if ($MAJORS[0] < 9.4);
+    is_program_out 'postgres', 'psql -Atc "SHOW log_min_duration_statement" test', 0, "10s\n", 'check postgresql.auto.conf parameter';
+}
+is_program_out 'postgres', 'psql -Atc "SHOW DateStyle" test', 0, "ISO, YMD\n", 'check database parameter';
 SKIP: {
     skip "cluster name not supported in $MAJORS[0]", 1 if ($MAJORS[0] < 9.5);
     is (PgCommon::get_conf_value ($MAJORS[-1], 'upgr', 'postgresql.conf', 'cluster_name'), "$MAJORS[-1]/upgr", "cluster_name is updated");
