@@ -28,7 +28,8 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_program_path cluster_info get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
-    get_cluster_databases read_cluster_conf_file read_pg_hba read_pidfile valid_hba_method/;
+    get_cluster_databases cluster_conf_filename read_cluster_conf_file
+    read_pg_hba read_pidfile valid_hba_method/;
 our @EXPORT_OK = qw/$confroot $binroot $rpm quote_conf_value read_conf_file get_conf_value
     set_conf_value set_conffile_value disable_conffile_value disable_conf_value
     replace_conf_value cluster_data_directory get_file_device
@@ -180,16 +181,29 @@ sub read_conf_file {
     return %conf;
 }
 
-# Read a 'var = value' style configuration file from a cluster configuration
+# Returns path to cluster config file from a cluster configuration
 # directory (with /etc/postgresql-common/<file name> as fallback) and return a
 # hash with the values. Error out if the file cannot be read.
+# If config file name is postgresql.auto.conf, read from PGDATA
+# Arguments: <version> <cluster> <config file name>
+# Returns: hash (empty if the file does not exist)
+sub cluster_conf_filename {
+    my ($version, $cluster, $configfile) = @_;
+    if ($configfile eq 'postgresql.auto.conf') {
+        my $data_directory = cluster_data_directory($version, $cluster);
+        return "$data_directory/$configfile";
+    }
+    my $fname = "$confroot/$version/$cluster/$configfile";
+    -e $fname or $fname = "$common_confdir/$configfile";
+    return $fname;
+}
+
+# Read a 'var = value' style configuration file from a cluster configuration
 # Arguments: <version> <cluster> <config file name>
 # Returns: hash (empty if the file does not exist)
 sub read_cluster_conf_file {
     my ($version, $cluster, $configfile) = @_;
-    my $fname = "$confroot/$version/$_[1]/$configfile";
-    -e $fname or $fname = "$common_confdir/$configfile";
-    my %conf = read_conf_file $fname;
+    my %conf = read_conf_file(cluster_conf_filename($version, $cluster, $configfile));
 
     if ($version >= 9.4 and $configfile eq 'postgresql.conf') { # merge settings changed by ALTER SYSTEM
         # data_directory cannot be changed by ALTER SYSTEM
@@ -267,7 +281,7 @@ sub set_conffile_value {
 # Set parameter of a PostgreSQL cluster configuration file.
 # Arguments: <version> <cluster> <config file name> <parameter name> <value>
 sub set_conf_value {
-    return set_conffile_value "$confroot/$_[0]/$_[1]/$_[2]", $_[3], $_[4];
+    return set_conffile_value(cluster_conf_filename($_[0], $_[1], $_[2]), $_[3], $_[4]);
 }
 
 # Disable a parameter in a PostgreSQL configuration file by prepending it with
@@ -313,7 +327,7 @@ sub disable_conffile_value {
 # it with a '#'. Appends an optional explanatory comment <reason> if given.
 # Arguments: <version> <cluster> <config file name> <parameter name> <reason>
 sub disable_conf_value {
-    return disable_conffile_value "$confroot/$_[0]/$_[1]/$_[2]", $_[3], $_[4];
+    return disable_conffile_value(cluster_conf_filename($_[0], $_[1], $_[2]), $_[3], $_[4]);
 }
 
 # Replace a parameter in a PostgreSQL configuration file. The old parameter is
@@ -323,7 +337,7 @@ sub disable_conf_value {
 #            <reason> <new parameter name> <new value>
 sub replace_conf_value {
     my ($version, $cluster, $configfile, $oldparam, $reason, $newparam, $val) = @_;
-    my $fname = "$confroot/$version/$cluster/$configfile";
+    my $fname = cluster_conf_filename($version, $cluster, $configfile);
     my @lines;
 
     # quote $val if necessary
