@@ -183,8 +183,11 @@ sub check_major {
     # verify that SSL is enabled (which should work for user postgres in a
     # default installation)
     my $ssl = config_bool (PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'ssl');
+    my $ssl_linked = `ldd $PgCommon::binroot$v/bin/postgres | grep libssl`;
     if ($PgCommon::rpm) {
         is $ssl, undef, 'SSL is disabled';
+    } elsif ($v <= 9.1 and not $ssl_linked) {
+        is $ssl, undef, 'SSL is disabled (old version with only OpenSSL 1.0 support)';
     } else {
         is $ssl, 1, 'SSL is enabled';
     }
