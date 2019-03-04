@@ -2,6 +2,8 @@ postgresql-common (201) UNRELEASED; urgency=medium
 
   * Disable ssl on older server versions. (Versions up to 9.1 support
     OpenSSL 1.0 only, which has been removed from Debian unstable.)
+  * pg_upgrade: Fix 'sameuser' handling in pg_hba when upgrading from pre-8.4
+    versions.
 
  -- Christoph Berg <myon@debian.org>  Sun, 03 Mar 2019 18:02:47 +0100
 

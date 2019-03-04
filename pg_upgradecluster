@@ -119,20 +119,6 @@ sub adapt_conffiles {
         $deprecate->(\%c, 'krb_server_hostname', 'does not exist anymore');
         $deprecate->(\%c, 'krb_realm', 'does not exist anymore');
         $rename->(\%c, 'explain_pretty_print', 'debug_pretty_print');
-
-	# "ident sameuser" -> "ident"
-	my $hba = "$PgCommon::confroot/$newversion/$newcluster/pg_hba.conf";
-	open O, $hba or error "open $hba: $!";
-	open N, ">$hba.new" or error "open $hba.new: $!";
-	while (<O>) {
-	    s/ident sameuser/ident/;
-	    print N $_;
-	}
-	close O;
-	close N;
-	lchown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
-	chmod 0640, "$hba.new";
-	rename "$hba.new", $hba or error "rename: $!";
     }
 
     if ($newversion >= '9.0') {
@@ -644,6 +630,21 @@ install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
 install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
     $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+if ($version < 8.4 and $newversion >= 8.4) {
+    print "Removing 'ident sameuser' from pg_hba.conf...\n";
+    my $hba = "$PgCommon::confroot/$newversion/$newcluster/pg_hba.conf";
+    open O, $hba or error "open $hba: $!";
+    open N, ">$hba.new" or error "open $hba.new: $!";
+    while (<O>) {
+        s/ident\s+sameuser/ident/;
+        print N $_;
+    }
+    close O;
+    close N;
+    lchown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
+    chmod 0640, "$hba.new";
+    rename "$hba.new", $hba or error "rename: $!";
+}
 if ( -e $info{'configdir'}.'/start.conf') {
     print "Copying old start.conf...\n";
     install_file $info{'configdir'}.'/start.conf', $newinfo{'configdir'},
