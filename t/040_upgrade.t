@@ -1,6 +1,10 @@
 # Test upgrading from the oldest version to the latest, using the default
 # configuration file.
 
+# Lowest supported "upgrade from" version: 8.4 (lower versions don't have lo_import)
+# Lowest supported "upgrade to" version: 9.2 (lower versions don't have pg_upgrade -o)
+# Lowest supported "upgrade to" version with pg_dumpall: 9.1 (lower versions don't have pg_dumpall --quote-all-identifiers)
+
 use strict; 
 
 use File::Temp qw/tempfile tempdir/;
