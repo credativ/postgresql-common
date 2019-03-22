@@ -50,7 +50,7 @@ lintian:unstable: { <<: *lintian, dependencies: ['build:unstable'], image: 'debi
     - apt-get -q update
     - apt-get -y --no-install-recommends install autopkgtest autodep8
   script:
-    - autopkgtest deb/*.changes -- null
+    - autopkgtest deb/*.changes -- null || case $? in 2|8) exit 0;; *) exit $?;; esac # ignore skipped tests, and packages without tests
 
 autopkgtest:testing:  { <<: *autopkgtest, dependencies: ['build:testing'], image: 'debian:testing' }
 autopkgtest:unstable: { <<: *autopkgtest, dependencies: ['build:unstable'], image: 'debian:sid' }
