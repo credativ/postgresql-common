@@ -12,7 +12,7 @@ stages:
     # allow origtargz to use 'apt-get source'
     - sed -e 's/^deb /deb-src /' /etc/apt/sources.list > /etc/apt/sources.list.d/src.list
     - apt-get -q update
-    - apt-get -y --no-install-recommends install devscripts fakeroot liblwp-protocol-https-perl libwww-perl
+    - apt-get -y --no-install-recommends install devscripts fakeroot liblwp-protocol-https-perl libwww-perl pristine-tar
     - apt-get -y --no-install-recommends build-dep .
     # create user for building
     - useradd buildd
