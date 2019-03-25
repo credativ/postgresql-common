@@ -19,8 +19,11 @@ stages:
     - chown -R buildd:buildd .
     - chown buildd:buildd ..
   script:
-    - su -c 'origtargz' buildd
+    # create pristine-tar branch (ignore any errors if missing), and generate/fetch orig tarball
+    - su -c 'git branch pristine-tar origin/pristine-tar; origtargz' buildd
+    # regenerate debian/control
     - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; fi
+    # build package
     - su -c 'dpkg-buildpackage --no-sign -sa -rfakeroot' buildd
   after_script:
     - rm -rf deb && mkdir deb
