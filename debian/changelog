@@ -7,6 +7,8 @@ postgresql-common (201) UNRELEASED; urgency=medium
   * gitlab-ci.yml: Ignore skipped tests, and packages without tests.
   * gitlab-ci.yml: Install pristine-tar.
   * dh_make_pgxs: Add debian/gitlab-ci.yml.
+  * dh_make_pgxs: Set debhelper compat level to 9, highest version supported
+    by jessie and trusty.
 
  -- Christoph Berg <myon@debian.org>  Sun, 03 Mar 2019 18:02:47 +0100
 
