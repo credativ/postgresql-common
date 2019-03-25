@@ -2,7 +2,7 @@ Source: @SOURCE@
 Section: database
 Priority: optional
 Maintainer: Debian PostgreSQL Maintainers <team+postgresql@tracker.debian.org>
-Uploaders: @MAINTAINER_NAME@ <@DEBEMAIL@>
+Uploaders: @MAINTAINER_NAME@ <@DEBEMAIL@>,
 Build-Depends: debhelper (>= @COMPAT@), postgresql-server-dev-all (>= 153~)
 Standards-Version: @STANDARDS_VERSION@
 Vcs-Browser: https://salsa.debian.org/postgresql/@SOURCE@
