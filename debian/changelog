@@ -5,6 +5,7 @@ postgresql-common (201) UNRELEASED; urgency=medium
   * pg_upgrade: Fix 'sameuser' handling in pg_hba when upgrading from pre-8.4
     versions.
   * gitlab-ci.yml: Ignore skipped tests, and packages without tests.
+  * dh_make_pgxs: Add debian/gitlab-ci.yml.
 
  -- Christoph Berg <myon@debian.org>  Sun, 03 Mar 2019 18:02:47 +0100
 
