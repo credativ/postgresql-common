@@ -1,3 +1,25 @@
+postgresql-common (200+deb10u1) buster; urgency=high
+
+  Existing PostgreSQL databases need to be reindexed
+
+  When upgrading from stretch to buster, the glibc locale data is upgraded.
+  Specifically, this changes how PostgreSQL sorts data in text indexes. To
+  avoid corruption, such indexes need to be REINDEXed immediately after
+  upgrading the locales or locales-all packages, before putting back the
+  database into production.
+
+  Suggested command: sudo -u postgres reindexdb --all
+
+  Alternatively, upgrade the databases to PostgreSQL 11 using
+  pg_upgradecluster. (This uses pg_dump by default which will rebuild all
+  indexes. Using -m upgrade or pg_upgrade is not safe because it preserves
+  the now-wrong index ordering.)
+
+  Refer to the PostgreSQL Wiki for more information:
+    https://wiki.postgresql.org/wiki/Locale_data_changes
+
+ -- Christoph Berg <myon@debian.org>  Fri, 12 Apr 2019 14:32:52 +0200
+
 postgresql-common (161) unstable; urgency=medium
 
   pg_ctlcluster is now enforcing stricter file ownership on the cluster config

@@ -1,3 +1,10 @@
+postgresql-common (200+deb10u1) unstable; urgency=medium
+
+  * When upgrading from stretch to buster, all text indexes need to be
+    reindexed. Warn users about that in NEWS.Debian.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 12 Apr 2019 14:32:52 +0200
+
 postgresql-common (200) unstable; urgency=medium
 
   * pg_createcluster: Don't refuse explicit -p argument even when port is
