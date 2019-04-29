@@ -5,9 +5,10 @@ postgresql-common (201) UNRELEASED; urgency=medium
     OpenSSL 1.0 only, which has been removed from Debian unstable.)
   * pg_upgrade: Fix 'sameuser' handling in pg_hba when upgrading from pre-8.4
     versions.
-  * gitlab-ci.yml: Ignore skipped tests, and packages without tests.
-  * gitlab-ci.yml: Install pristine-tar.
-  * dh_make_pgxs: Add debian/gitlab-ci.yml.
+  * gitlab/gitlab-ci.yml: Ignore skipped tests, and packages without tests; install
+    pristine-tar; install via dh_make_pgxs.
+  * Move .gitlab-ci.yml to debian/gitlab-ci.yml; add buster and stretch,
+  * remove jessie. (Not to be confused with gitlab/gitlab-ci.yml.)
   * dh_make_pgxs: Set debhelper compat level to 9, highest version supported
     by jessie and trusty.
 
