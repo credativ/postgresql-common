@@ -1,5 +1,6 @@
 postgresql-common (201) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * Disable ssl on older server versions. (Versions up to 9.1 support
     OpenSSL 1.0 only, which has been removed from Debian unstable.)
   * pg_upgrade: Fix 'sameuser' handling in pg_hba when upgrading from pre-8.4
@@ -9,6 +10,9 @@ postgresql-common (201) UNRELEASED; urgency=medium
   * dh_make_pgxs: Add debian/gitlab-ci.yml.
   * dh_make_pgxs: Set debhelper compat level to 9, highest version supported
     by jessie and trusty.
+
+  [ Andreas Hasenack ]
+  * Set Ubuntu 19.10 default PostgreSQL version to 11.
 
  -- Christoph Berg <myon@debian.org>  Sun, 03 Mar 2019 18:02:47 +0100
 
