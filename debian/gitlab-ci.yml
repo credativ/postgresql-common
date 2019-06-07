@@ -1,5 +1,6 @@
 .debian_script: &debian_script
   - $SUDO apt-get update
+  - $SUDO apt-get dist-upgrade -y
   - $SUDO apt-get install -y build-essential fakeroot debhelper libreadline-dev lsb-release dh-systemd
   - dpkg-buildpackage -uc -us -rfakeroot
   - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )
@@ -35,7 +36,8 @@ centos7:
     - sudo yum install -y rpm-build
     - make rpmremove
     - make rpmbuild
-    - rpm -ql pgdg-centos11 > /dev/null || sudo yum install -y https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
+    - rpm -ql pgdg-redhat-repo > /dev/null || sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    - sudo yum update
     - make rpminstall
     - sudo ./cleanpg
     - cd /usr/share/postgresql-common && sudo ./testsuite -v "$(./supported-versions)" -i
