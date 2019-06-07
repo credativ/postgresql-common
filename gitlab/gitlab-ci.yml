@@ -15,7 +15,7 @@ stages:
     - apt-get -y --no-install-recommends install devscripts fakeroot git liblwp-protocol-https-perl libwww-perl pristine-tar
     - apt-get -y --no-install-recommends build-dep .
     # create user for building
-    - useradd buildd
+    - useradd --create-home buildd
     - chown -R buildd:buildd .
     - chown buildd:buildd ..
   script:
