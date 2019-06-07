@@ -24,12 +24,12 @@ stages:
     # regenerate debian/control
     - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; fi
     # build package
-    - su -c 'dpkg-buildpackage --no-sign -sa -rfakeroot' buildd
+    - su -s /bin/bash -c 'set -o pipefail; DPKG_COLORS=always dpkg-buildpackage --no-sign -sa -rfakeroot 2>&1 | tee ../buildlog' buildd
   after_script:
-    - rm -rf deb && mkdir deb
-    - dcmd mv ../*.changes deb
+    - mv ../buildlog .
+    - rm -rf deb; mkdir deb; dcmd mv ../*.changes deb
   artifacts:
-    paths: ['deb']
+    paths: ['buildlog', 'deb']
 
 build:testing:  { <<: *build, image: 'debian:testing' }
 build:unstable: { <<: *build, image: 'debian:sid' }
@@ -57,3 +57,14 @@ lintian:unstable: { <<: *lintian, dependencies: ['build:unstable'], image: 'debi
 
 autopkgtest:testing:  { <<: *autopkgtest, dependencies: ['build:testing'], image: 'debian:testing' }
 autopkgtest:unstable: { <<: *autopkgtest, dependencies: ['build:unstable'], image: 'debian:sid' }
+
+.blhc: &blhc
+  stage: test
+  image: registry.salsa.debian.org/salsa-ci-team/images/blhc
+  script:
+    # strip ANSI color and CR
+    - sed -i -e 's/\o033\[[0-9;]*m//g' -e 's/\r$//' buildlog
+    - blhc --debian --line-numbers --color buildlog || [ $? -eq 1 ]
+
+blhc:testing:  { <<: *blhc, dependencies: ['build:testing'] }
+blhc:unstable: { <<: *blhc, dependencies: ['build:unstable'] }
