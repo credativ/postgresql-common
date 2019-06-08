@@ -40,7 +40,7 @@ build:unstable: { <<: *build, image: 'debian:sid' }
     - apt-get -q update
     - apt-get -y --no-install-recommends install lintian
   script:
-    - lintian --info --display-info deb/*.changes 2>&1 | tee lintian.log
+    - bash -c 'set -o pipefail; lintian --info --display-info deb/*.changes 2>&1 | tee lintian.log'
   artifacts:
     paths: ['lintian.log']
 
