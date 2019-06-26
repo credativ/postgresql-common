@@ -165,6 +165,7 @@ sub start {
             my $fd = POSIX::open($info{logfile}, POSIX::O_WRONLY|POSIX::O_APPEND|POSIX::O_CREAT) or error "Could not open logfile $info{logfile}";
             dup2($fd, 1);
             dup2($fd, 2);
+            POSIX::close($fd) or error "Could not close log fd";
         }
         my $postgres = get_program_path 'postgres', $version;
         error "Could not find postgres executable for version $version" unless ($postgres);
@@ -210,6 +211,7 @@ sub start {
             my $fd = POSIX::open($info{'logfile'}, POSIX::O_WRONLY|POSIX::O_APPEND|POSIX::O_CREAT) or error "Could not open logfile $info{'logfile'}";
             dup2($fd, 1);
             dup2($fd, 2);
+            POSIX::close($fd) or error "Could not close log fd";
         }
         exec $pg_ctl @options or error "could not exec $pg_ctl @options: $!";
     }
