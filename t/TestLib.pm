@@ -1,7 +1,7 @@
 # Common functionality for postgresql-common self tests
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2016 Christoph Berg <myon@debian.org>
+# (C) 2013-2019 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/ps ok_dir exec_as deb_installed rpm_installed package_version
     version_ge program_ok is_program_out like_program_out unlike_program_out
-    pidof pid_env check_clean
+    pidof pid_env wait_ports_close check_clean
     @ALL_MAJORS @MAJORS $delay/;
 
 our @ALL_MAJORS = get_versions(); # not affected by PG_VERSIONS/-v
@@ -219,6 +219,15 @@ sub unlike_program_out {
     my $result = exec_as $_[0], $_[1], $outref;
     is $result, $_[2], $_[1] or fail_debug;
     unlike ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]")) or fail_debug;
+}
+
+# Wait for TCP ports to close. Necessary for some test files before calling check_clean
+sub wait_ports_close {
+    note 'waiting for TCP ports to close';
+    for (1 .. 60) {
+        last if system 'netstat -avptn 2>/dev/null | grep -q ":543[2-9]\b"';
+        sleep 1;
+    }
 }
 
 # Check that all PostgreSQL related directories are empty and no
