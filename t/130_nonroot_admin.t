@@ -13,7 +13,6 @@ use Test::More tests => 22;
 use PgCommon;
 
 my $testuser = 'postgres';
-my ($uid, $gid) = (getpwnam $testuser)[2,3];
 
 # pg_createcluster and pg_ctlcluster
 is ((exec_as $testuser, "pg_createcluster $version main --start"), 0,
