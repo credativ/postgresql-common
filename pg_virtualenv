@@ -40,6 +40,13 @@ if [ "$_PG_VIRTUALENV_UNSHARE" ]; then
     fi
 fi
 
+disable_fakeroot ()
+{
+    case ${LD_PRELOAD:-} in
+        *fakeroot*) LD_PRELOAD=$(echo "$LD_PRELOAD" | sed -e 's/[^ ]*fakeroot[^ ]*//g') ;;
+    esac
+}
+
 help ()
 {
     echo "pg_virtualenv: Create throw-away PostgreSQL environment for regression tests"
@@ -95,7 +102,7 @@ shift $(($OPTIND - 1))
 if [ "$(id -u)" != 0 ]; then
     NONROOT=1
 fi
-# we aren't really root in fakeroot
+# we aren't really root in fakeroot (but leave it enabled for commands spawned)
 case ${LD_PRELOAD:-} in
     *fakeroot*) NONROOT=1 ;;
 esac
@@ -117,11 +124,13 @@ if [ "${NONROOT:-}" ]; then
 
     cleanup () {
 	set +e
+        disable_fakeroot
 	for v in $PG_VERSIONS; do
             # don't drop existing clusters named "regress"
             [ -f $PG_CLUSTER_CONF_ROOT/$v/regress/.by_pg_virtualenv ] || continue
             echo "Dropping cluster $v/regress ..."
 	    pg_ctlcluster --mode immediate $v regress stop
+	    pg_dropcluster $v regress
 	done
 	rm -rf $WORKDIR
     }
@@ -182,6 +191,9 @@ for v in $PG_VERSIONS; do
             8*|9.0|9.1|9.2) : ;;
             *) NOSYNC="--nosync" ;;
         esac
+        # disable fakeroot here because we really can't run as root
+        # (and still switch to postgres when using fakeroot as root user)
+        disable_fakeroot
 	pg_createcluster \
 	    ${PGPORT:+-p "$PGPORT"} \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
