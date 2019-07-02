@@ -1,4 +1,4 @@
-postgresql-common (202) UNRELEASED; urgency=medium
+postgresql-common (202) unstable; urgency=medium
 
   * pg_ctlcluster: Close extra log filedescriptor. Thanks Andrey Borodin!
     (Closes: #930728)
@@ -8,7 +8,7 @@ postgresql-common (202) UNRELEASED; urgency=medium
   * t/TestLib.pm: Restrict check_clean to LISTENing sockets.
   * gitlab/gitlab-ci.yml: Run blhc; fail on lintian errors.
 
- -- Christoph Berg <myon@debian.org>  Fri, 07 Jun 2019 14:46:05 +0200
+ -- Christoph Berg <myon@debian.org>  Tue, 02 Jul 2019 14:39:56 +0200
 
 postgresql-common (201) experimental; urgency=medium
 
