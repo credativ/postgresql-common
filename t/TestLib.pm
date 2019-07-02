@@ -23,7 +23,7 @@ our $VERSION = 1.00;
 our @ISA = ('Exporter');
 our @EXPORT = qw/ps ok_dir exec_as deb_installed rpm_installed package_version
     version_ge program_ok is_program_out like_program_out unlike_program_out
-    pidof pid_env wait_ports_close check_clean
+    pidof pid_env check_clean
     @ALL_MAJORS @MAJORS $delay/;
 
 our @ALL_MAJORS = get_versions(); # not affected by PG_VERSIONS/-v
@@ -221,15 +221,6 @@ sub unlike_program_out {
     unlike ($$outref, $_[3], (defined $_[4] ? $_[4] : "correct output of $_[1]")) or fail_debug;
 }
 
-# Wait for TCP ports to close. Necessary for some test files before calling check_clean
-sub wait_ports_close {
-    note 'waiting for TCP ports to close';
-    for (1 .. 60) {
-        last if system 'netstat -avptn 2>/dev/null | grep -q ":543[2-9]\b"';
-        sleep 1;
-    }
-}
-
 # Check that all PostgreSQL related directories are empty and no
 # postgres processes are running. Should be called at the end
 # of all tests. Does 10 tests.
@@ -250,7 +241,7 @@ sub check_clean {
     # complain about missing directories
     ok_dir '/var/log/postgresql', [], "No files in /var/log/postgresql left behind";
 
-    is_program_out 0, 'netstat -avptn 2>/dev/null | grep ":543[2-9]\\b"', 1, '',
+    is_program_out 0, 'netstat -avptn 2>/dev/null | grep ":543[2-9]\\b.*LISTEN"', 1, '',
 	'PostgreSQL TCP ports are closed';
 }
 

@@ -27,7 +27,6 @@ SKIP: {
     like_program_out 'nobody',   "fakeroot $virtualenv", 0, qr!id.root\ncurrent_user.nobody!,   "running fakeroot pg_virtualenv as nobody";
 }
 
-wait_ports_close;
 check_clean;
 
 # vim: filetype=perl

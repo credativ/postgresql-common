@@ -298,8 +298,6 @@ is ((system "pg_dropcluster $MAJORS[-1] new1 --stop"), 0, "dropping $new1");
 is ((system "pg_dropcluster $MAJORS[-1] new2 --stop"), 0, "dropping $new2");
 is ((system "pg_dropcluster $MAJORS[0] old --stop"), 0, "dropping $old");
 
-# unlike the others, this tests leaves TIME_WAIT on localhost behind (seen on CentOS; seen for PG <= 9.1)
-wait_ports_close;
 check_clean;
 
 # vim: filetype=perl
