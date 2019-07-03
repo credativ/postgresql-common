@@ -264,7 +264,7 @@ if ($ownergid) {
     $ownergid = (getpwuid $owneruid)[3];
 }
 
-error 'clusters must not be owned by root' unless $owneruid && $ownergid;
+error 'clusters must not be owned by root' unless $owneruid;
 
 ($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
 error "invalid version '$ARGV[0]'" unless defined $version;

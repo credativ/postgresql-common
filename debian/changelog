@@ -1,3 +1,9 @@
+postgresql-common (203) UNRELEASED; urgency=medium
+
+  * pg_createcluster: Allow clusters with owner gid 0. (salsa-ci uses that.)
+
+ -- Christoph Berg <myon@debian.org>  Wed, 03 Jul 2019 15:01:03 +0200
+
 postgresql-common (202) unstable; urgency=medium
 
   * pg_ctlcluster: Close extra log filedescriptor. Thanks Andrey Borodin!
