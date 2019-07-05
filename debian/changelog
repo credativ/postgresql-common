@@ -1,6 +1,8 @@
 postgresql-common (203) UNRELEASED; urgency=medium
 
   * pg_createcluster: Allow clusters with owner gid 0. (salsa-ci uses that.)
+  * pg_upgradecluster: Don't accidentally set (the wrong!) data_directory in
+    postgresql.auto.conf.
   * pg_upgradecluster: Use a tempfile instead of replacing the original
     pg_hba.conf file during upgrades.
   * debian/tests: Do full testsuite run. Previously the full testsuite was

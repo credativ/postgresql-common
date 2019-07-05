@@ -68,7 +68,7 @@ sub adapt_conffiles {
     };
 
     # adapt paths to configuration files
-    $set->('data_directory', $newinfo{'pgdata'});
+    $set->('data_directory', $newinfo{'pgdata'}) if ($configfile eq 'postgresql.conf');
     for my $guc (qw(hba_file ident_file external_pid_file stats_temp_directory)) {
         next unless (defined $c{$guc});
         my $val = $c{$guc};
@@ -141,7 +141,7 @@ sub adapt_conffiles {
     if ($newversion >= '9.4') {
         $deprecate->(\%c, 'krb_srvname', 'native krb5 authentication deprecated in favor of GSSAPI');
         # grab dsmt from the new config just written by initdb
-        unless ($c{dynamic_shared_memory_type}) {
+        if (not $c{dynamic_shared_memory_type} and $configfile eq 'postgresql.conf') {
             $set->('dynamic_shared_memory_type', ($newinfo{config}->{dynamic_shared_memory_type} || 'mmap'));
         }
     }
