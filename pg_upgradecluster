@@ -19,6 +19,7 @@
 use strict;
 use warnings;
 use PgCommon;
+use File::Temp qw(tempfile);
 use Getopt::Long;
 use POSIX qw(lchown);
 
@@ -171,36 +172,21 @@ sub adapt_conffiles {
     }
 }
 
-# Save original pg_hba.conf, replace it with one that only allows local access
-# to the owner. Database must be reloaded manually if it is running.
+# Write temporary pg_hba.conf.
 # Arguments: <version> <cluster> <owner> <owneruid>
-sub disable_connections {
-    my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
+sub temp_hba_conf {
+    my ($fh, $hba) = tempfile("pg_hba.XXXXXX", TMPDIR => 1, SUFFIX => ".conf");
 
-    return if (-e "$hba.pg_upgradecluster"); # leftover from a previous upgrade
-		# attempt, do not rename again so we do not lose the original
-    rename $hba, "$hba.pg_upgradecluster" or error "could not rename $hba: $!";
-    unless (open F, ">$hba") {
-        rename "$hba.pg_upgradecluster", $hba;
-        error "could not create $hba";
+    if ($_[0] >= '8.4') {
+	print $fh "local all $_[2] ident\n";
+    } else {
+	print $fh "local all $_[2] ident sameuser\n";
     }
+    close $fh;
     chmod 0400, $hba;
     lchown $_[3], 0, $hba;
-    if ($_[0] >= '8.4') {
-	print F "local all $_[2] ident\n";
-    } else {
-	print F "local all $_[2] ident sameuser\n";
-    }
-    close F;
-}
 
-# Restore original pg_hba.conf, but do not restart postgres.
-# Arguments: <version> <cluster>
-sub enable_connections {
-    my $hba = "$PgCommon::confroot/$_[0]/$_[1]/pg_hba.conf";
-
-    rename "$hba.pg_upgradecluster", $hba or error "could not rename $hba.pg_upgradecluster: $!"
-	if (-e "$hba.pg_upgradecluster");
+    return $hba;
 }
 
 # Get encoding and locales of a running cluster
@@ -312,7 +298,7 @@ my $oldpsql = get_program_path 'psql', $version;
 my $oldsocket = get_cluster_socketdir $version, $cluster;
 my $owner = getpwuid $info{'owneruid'};
 error 'could not get name of cluster owner' unless $owner;
-my $old_hba_modified;
+my $temp_hba_conf = temp_hba_conf $version, $cluster, $owner, $info{'owneruid'};
 
 # stop old cluster
 if ($info{'running'}) {
@@ -323,15 +309,10 @@ if ($info{'running'}) {
 }
 
 if ($method eq 'dump' or ($method eq 'upgrade' and not $info{'running'})) {
-    # Disable access to cluster during upgrade
-    print "Disabling connections to the old cluster during upgrade...\n";
-    disable_connections $version, $cluster, $owner, $info{'owneruid'};
-    $old_hba_modified = 1;
-
     print "Restarting old cluster with restricted connections...\n";
     my @argv = ('pg_ctlcluster',
         ($old_bindir ? ("--bindir=$old_bindir") : ()),
-        $version, $cluster, 'start');
+        $version, $cluster, 'start', '-o', "-c hba_file=$temp_hba_conf");
     error "Could not restart old cluster" if system @argv;
 
     get_encoding $version, $cluster unless ($encoding); # if the cluster was not running before, get encoding now
@@ -378,10 +359,8 @@ if ($method eq 'upgrade' and $info{config}->{wal_level}) {
 %newinfo = cluster_info($newversion, $newcluster);
 
 if ($method eq 'dump') {
-    print "Disabling connections to the new cluster during upgrade...\n";
-    disable_connections $newversion, $newcluster, $owner, $newinfo{'owneruid'};
-
-    @argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
+    print "Starting new cluster...\n";
+    @argv = ('pg_ctlcluster', $newversion, $newcluster, 'start', '-o', "-c hba_file=$temp_hba_conf");
     error "Could not start target cluster" if system @argv;
 }
 
@@ -594,22 +573,17 @@ if (!fork) {
 }
 
 wait;
-if ($old_hba_modified) {
-    print "Re-enabling connections to the old cluster...\n";
-    enable_connections $version, $cluster;
-}
-if ($method eq 'dump') {
-    print "Re-enabling connections to the new cluster...\n";
-    enable_connections $newversion, $newcluster;
-}
 
 if ($?) {
     print STDERR "Error during cluster dumping, removing new cluster\n";
     system 'pg_dropcluster', '--stop', $newversion, $newcluster;
 
-    # Reload old cluster to allow connections again
-    if (system 'pg_ctlcluster', $version, $cluster, 'reload') {
-        error 'could not reload old cluster, please do that manually';
+    # Restart old cluster to allow connections again (two steps because we started without systemd)
+    if (system 'pg_ctlcluster', $version, $cluster, 'stop') {
+        error 'could not stop old cluster, please do that manually';
+    }
+    if (system 'pg_ctlcluster', $version, $cluster, 'start') {
+        error 'could not start old cluster, please do that manually';
     }
     exit 1;
 }
