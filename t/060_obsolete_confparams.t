@@ -7,7 +7,7 @@ use strict;
 use lib 't';
 use TestLib;
 
-use Test::More tests => (@MAJORS == 1) ? 1 : (12 + @MAJORS * 9);
+use Test::More tests => (@MAJORS == 1) ? 1 : (15 + @MAJORS * 12);
 
 if (@MAJORS == 1) {
     pass 'only one major version installed, skipping upgrade tests';
@@ -42,24 +42,21 @@ sub do_upgrade {
     # restore data directory, we just scribbled over it
     PgCommon::set_conf_value $cur, 'main', 'postgresql.conf', 'data_directory', $datadir;
     
-    is ((exec_as 0, "pg_ctlcluster $cur main start"), 0,
-        'pg_ctlcluster start');
+    is_program_out 0, "pg_ctlcluster $cur main start", 0, "";
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$cur.*online/, 
         "Old $cur cluster is online";
-        
+
     # Upgrade cluster
-    like_program_out 0, "pg_upgradecluster -v $new $cur main", 0, qr/^Success/im;
+    like_program_out 0, "env LC_MESSAGES=C pg_upgradecluster -v $new $cur main", 0, qr/^Success/im;
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/$new.*online/,
         "New $new cluster is online";
 
-    is ((system "pg_dropcluster $cur main"), 0, "pg_dropcluster $cur main");
-
-    is ((exec_as 0, "pg_ctlcluster $new main stop 2>/dev/null"), 0,
-        "Stopping new $new pg_ctlcluster");
+    is_program_out 0, "pg_dropcluster $cur main", 0, "";
+    is_program_out 0, "pg_ctlcluster $new main stop", 0, "";
 }
 
 # create cluster for oldest version
-is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
+is_program_out 0, "pg_createcluster $MAJORS[0] main >/dev/null", 0, "";
 
 # Loop over all but the latest major version, testing N->N+1 upgrades
 my @testversions = sort { $a <=> $b } @MAJORS;
@@ -70,18 +67,18 @@ while ($#testversions) {
 }
 
 # remove latest cluster and directory
-is ((system "pg_dropcluster $testversions[0] main"), 0, 'Dropping remaining cluster');
+is_program_out 0, "pg_dropcluster $testversions[0] main", 0, "";
 
 # now test a direct upgrade from oldest to newest, to also catch parameters
 # which changed several times, like syslog -> redirect_stderr ->
 # logging_collector
 if ($#MAJORS > 1) {
-    is ((system "pg_createcluster $MAJORS[0] main >/dev/null"), 0, "pg_createcluster $MAJORS[0] main");
+    is_program_out 0, "pg_createcluster $MAJORS[0] main >/dev/null", 0, "";
     do_upgrade $MAJORS[0], $MAJORS[-1];
     is ((system "pg_dropcluster $testversions[0] main"), 0, 'Dropping remaining cluster');
 } else {
     pass 'only two available versions, skipping tests...';
-    for (my $i = 0; $i < 10; ++$i) {
+    for (my $i = 0; $i < 14; ++$i) {
         pass '...';
     }
 }
