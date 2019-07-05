@@ -1,3 +1,7 @@
 Tests: default-psql
 Depends: postgresql
 Restrictions: needs-root
+
+Tests: run-testsuite
+Depends: postgresql-all, build-essential, fakeroot, perl, hunspell-en-us, locales, netcat-openbsd, net-tools, logrotate
+Restrictions: needs-root

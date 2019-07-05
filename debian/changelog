@@ -3,6 +3,8 @@ postgresql-common (203) UNRELEASED; urgency=medium
   * pg_createcluster: Allow clusters with owner gid 0. (salsa-ci uses that.)
   * pg_upgradecluster: Use a tempfile instead of replacing the original
     pg_hba.conf file during upgrades.
+  * debian/tests: Do full testsuite run. Previously the full testsuite was
+    only running from the postgresql-NN server package.
 
  -- Christoph Berg <myon@debian.org>  Wed, 03 Jul 2019 15:01:03 +0200
 
