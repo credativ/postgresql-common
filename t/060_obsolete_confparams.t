@@ -17,7 +17,7 @@ if (@MAJORS == 1) {
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
 # t/$v.conf generated using
-# sed -e 's/^#//' -e 's/[ \t]*#.*//g' /etc/postgresql/9.3/foo/postgresql.conf | grep '^[a-z]'
+# sed -e 's/^#//' -e 's/[ \t]*#.*//g' /etc/postgresql/12/main/postgresql.conf | grep '^[a-z]'
 # remove/comment data_directory, hba_file, ident_file, external_pid_file, include_dir, include
 # lc_* should be 'C'
 # stats_temp_directory should point to /var/run/postgresql/*.pg_stat_tmp
