@@ -18,7 +18,7 @@ $ENV{USER} = 'nobody';
 like_program_out 'nobody',   $virtualenv, 0, qr!id.nobody\ncurrent_user.nobody!,     "running pg_virtualenv as nobody";
 
 SKIP: {
-    skip "No fakeroot tests on RedHat", 6 if $PgCommon::rpm;
+    skip "/usr/bin/fakeroot not available", 6 unless (-x "/usr/bin/fakeroot"); # CentOS doesn't have fakeroot
     $ENV{USER} = 'root';
     like_program_out 'root',     "fakeroot $virtualenv", 0, qr!id.root\ncurrent_user.postgres!, "running fakeroot pg_virtualenv as root";
     $ENV{USER} = 'postgres';

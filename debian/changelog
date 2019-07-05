@@ -5,6 +5,7 @@ postgresql-common (203) UNRELEASED; urgency=medium
     pg_hba.conf file during upgrades.
   * debian/tests: Do full testsuite run. Previously the full testsuite was
     only running from the postgresql-NN server package.
+  * t/135_pg_virtualenv.t: Don't fail if fakeroot is not present.
 
  -- Christoph Berg <myon@debian.org>  Wed, 03 Jul 2019 15:01:03 +0200
 
