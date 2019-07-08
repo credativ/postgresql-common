@@ -210,6 +210,7 @@ sub read_cluster_conf_file {
         my $data_directory = cluster_data_directory($version, $cluster, \%conf);
         my %auto_conf = read_conf_file "$data_directory/postgresql.auto.conf";
         foreach my $guc (keys %auto_conf) {
+            next if ($guc eq 'data_directory'); # defend against pg_upgradecluster bug in 200..202
             $conf{$guc} = $auto_conf{$guc};
         }
     }

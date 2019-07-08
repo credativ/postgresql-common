@@ -1,7 +1,10 @@
 postgresql-common (200+deb10u2) buster; urgency=medium
 
   * pg_upgradecluster: Don't accidentally set (the wrong!) data_directory in
-    postgresql.auto.conf.
+    postgresql.auto.conf. (Closes: #931635)
+  * PgCommon.pm: Ignore data_directory when set in postgresql.auto.conf.
+  * pg_upgradecluster: Delete data_directory from postgresql.auto.conf in new
+    cluster.
 
  -- Christoph Berg <myon@debian.org>  Wed, 03 Jul 2019 15:01:03 +0200
 
