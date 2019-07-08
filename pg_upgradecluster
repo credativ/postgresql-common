@@ -68,7 +68,12 @@ sub adapt_conffiles {
     };
 
     # adapt paths to configuration files
-    $set->('data_directory', $newinfo{'pgdata'}) if ($configfile eq 'postgresql.conf');
+    if ($configfile eq 'postgresql.conf') {
+        $set->('data_directory', $newinfo{'pgdata'});
+    } else {
+        # fix bug in pg_upgradecluster 200..202
+        $deprecate->(\%c, 'data_directory', 'not valid in postgresql.auto.conf');
+    }
     for my $guc (qw(hba_file ident_file external_pid_file stats_temp_directory)) {
         next unless (defined $c{$guc});
         my $val = $c{$guc};
