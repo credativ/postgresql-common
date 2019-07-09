@@ -1,4 +1,12 @@
-postgresql-common (200+deb10u2) buster; urgency=medium
+postgresql-common (200+deb10u2) buster; urgency=high
+
+  DATA LOSS WARNING: pg_upgradecluster from postgresql-common 200,
+  200+deb10u1, 201, and 202 will corrupt the data_directory setting when used
+  *twice* to upgrade a cluster (e.g. 9.6 -> 10 -> 11). This update fixes the
+  original problem, and also heals affected clusters on the next upgrade. No
+  additional steps are required.
+
+  https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=931635
 
   * pg_upgradecluster: Don't accidentally set (the wrong!) data_directory in
     postgresql.auto.conf. (Closes: #931635)
@@ -6,7 +14,7 @@ postgresql-common (200+deb10u2) buster; urgency=medium
   * pg_upgradecluster: Delete data_directory from postgresql.auto.conf in new
     cluster.
 
- -- Christoph Berg <myon@debian.org>  Wed, 03 Jul 2019 15:01:03 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 25 Jul 2019 23:04:54 +0200
 
 postgresql-common (200+deb10u1) unstable; urgency=medium
 
