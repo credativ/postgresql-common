@@ -83,13 +83,12 @@ sub cluster_port_ready {
 
 
     # probe until we get three successful or failed connections in a row
-    $ENV{'PGPASSWORD'} = 'foo'; # prevent hangs if superuser cannot connect without password
     my $out;
     while ($n < ($result ? 10 : 3)) {
         select undef, undef, undef, 0.5;
-        $out = `$psql -h '$sd' --port $p -Xl 2>&1 >/dev/null`;
+        $out = `LC_MESSAGES=C $psql -h '$sd' --port $p -Xwc '' 2>&1 >/dev/null`;
 
-        if ($? == $result) {    
+        if ($? == $result) {
             $n++;
         } else {
             $n = 0;
@@ -97,7 +96,7 @@ sub cluster_port_ready {
         $result = $?;
     }
 
-    if ($out =~ 'FATAL:') {
+    if ($out =~ /FATAL:|no password supplied/) {
 	print STDERR "Warning: connection to the database failed, disabling startup checks:\n$out\n";
 	return cluster_port_running $v, $c, $p;
     }

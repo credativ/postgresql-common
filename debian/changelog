@@ -12,6 +12,9 @@ postgresql-common (203) UNRELEASED; urgency=medium
     pg_hba.conf file during upgrades.
   * pg_ctlcluster: For consistency with systemctl, also accept action before
     cluster name: "pg_ctlcluster start 11 main".
+  * pg_ctlcluster: Use `psql -w` to avoid flooding the log with errors when
+    the cluster was configured for password authentication on local
+    connections. Patch by Evgeny, thanks!
   * debian/tests: Do full testsuite run. Previously the full testsuite was
     only running from the postgresql-NN server package.
   * t/135_pg_virtualenv.t: Don't fail if fakeroot is not present.
