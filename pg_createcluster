@@ -63,9 +63,6 @@ sub init_db {
 
     my @initdb = (get_program_path 'initdb', $version);
     die 'Internal error: could not determine initdb path' unless $initdb[0];
-    if (my $options = $defaultconf{'initdb_options'}) {
-	push @initdb, split (/\s+/, replace_v_c ($options, $version, $cluster));
-    }
     push @initdb, ('-D', $datadir);
     if (my $waldir = $defaultconf{'waldir'} || $defaultconf{'xlogdir'}) {
         my $wal = $version >= 10 ? 'wal' : 'xlog'; # renamed in PG 10
@@ -78,6 +75,9 @@ sub init_db {
 	push @initdb, ('--auth-host', 'md5');
     } else {
 	push @initdb, ('-A', $ident_method);
+    }
+    if (my $options = $defaultconf{'initdb_options'}) {
+        push @initdb, split (/\s+/, replace_v_c ($options, $version, $cluster));
     }
     push @initdb, ('--encoding', $encoding) if $encoding;
     push @initdb, ('--locale', $locale) if $locale;
