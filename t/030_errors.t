@@ -202,7 +202,7 @@ close F;
 chmod 0644, "/etc/postgresql/$version/main/pg_hba.conf" or die "chmod: $!";
 
 like_program_out 'postgres', "pg_ctlcluster $version main start", 0,
-    qr/WARNING.*connection to the database failed.*postgres/is,
+    qr/Warning.*connection to the database failed.*no password supplied/is,
     'pg_ctlcluster start warns about absence of passwordless superuser connection';
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 0, '', 'stopping cluster';
 
