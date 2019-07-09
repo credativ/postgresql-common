@@ -233,6 +233,7 @@ $newversion = $newest_version;
 
 my $method = 'dump';
 my $link = 0;
+my $keep_port = 0;
 my $start = -1; # -1 = auto
 
 my ($locale, $lc_collate, $lc_ctype, $lc_messages, $lc_monetary, $lc_numeric,
@@ -249,6 +250,7 @@ GetOptions ('v|version=s' => \$newversion,
 	    'm|method=s' => \$method,
 	    'j|jobs=s', => \$jobs,
 	    'k|link' => \$link,
+            'keep-port' => \$keep_port,
             'rename=s' => \$newcluster,
             'old-bindir=s' => \$old_bindir,
             'maintenance-db=s' => \$maintenance_db,
@@ -690,9 +692,16 @@ manual
     error "could not create $startconf: $!";
 }
 
-my $oldport = next_free_port;
-print "Configuring old cluster to use a different port ($oldport)...\n";
-set_cluster_port $version, $cluster, $oldport;
+my $free_port = next_free_port;
+if ($keep_port) {
+    print "Configuring new cluster to use a different port ($free_port)...\n";
+    set_cluster_port $newversion, $cluster, $free_port;
+    $newinfo{port} = $free_port;
+} else {
+    print "Configuring old cluster to use a different port ($free_port)...\n";
+    set_cluster_port $version, $cluster, $free_port;
+    $newinfo{port} = $info{port};
+}
 
 # notify systemd that we modified the old start.conf
 if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and -d '/run/systemd/system' and $> == 0) {
@@ -702,7 +711,7 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and -d '/run/systemd/system' and $> 
 # start cluster if it was running before, or upgrade scripts are present
 $start = ($info{running} or $upgrade_scripts) if ($start == -1);
 if ($start) {
-    print "Starting target cluster on the original port...\n";
+    print "Starting target cluster on port $newinfo{port}...\n";
     @argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
     error "Could not start target cluster; please check configuration and log files" if system @argv;
 }
@@ -729,7 +738,7 @@ if ($upgrade_scripts) {
     exit $? >> 8 if ($?);
 }
 
-print "Success. Please check that the upgraded cluster works. If it does,
+print "\nSuccess. Please check that the upgraded cluster works. If it does,
 you can remove the old cluster with
     pg_dropcluster $version $cluster\n\n";
 
@@ -821,6 +830,12 @@ L<pg_upgrade(1)> for details.
 In pg_upgrade mode, number of simultaneous processes to use. This
 option is merely passed on to pg_upgrade. See L<pg_upgrade(1)>
 for details.
+
+=item B<--keep-port>
+
+By default, the old cluster is moved to a new port, and the new cluster is
+moved to the original port so clients will see the upgraded cluster. This
+option disables that.
 
 =item B<--rename=>I<new cluster name>
 

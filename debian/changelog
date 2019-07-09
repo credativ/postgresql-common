@@ -10,6 +10,8 @@ postgresql-common (203) UNRELEASED; urgency=medium
     cluster.
   * pg_upgradecluster: Use a tempfile instead of replacing the original
     pg_hba.conf file during upgrades.
+  * pg_upgradecluster: With --keep-port, leave old cluster on original port.
+    (Closes: #507133)
   * pg_ctlcluster: For consistency with systemctl, also accept action before
     cluster name: "pg_ctlcluster start 11 main".
   * pg_ctlcluster: Use `psql -w` to avoid flooding the log with errors when

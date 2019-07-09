@@ -31,16 +31,16 @@ is_program_out 'nobody', 'pg_lsclusters -h', 0,
     "$MAJORS[0] upgr 5433 online postgres /tmp/postgresql-test /tmp/postgresql-test.log
 ", 'pg_lsclusters output';
 
-# Do another upgrade with using a custom defined data directory
+# Do another upgrade with using a custom defined data directory (and in passing, test --keep-port)
 my $outref;
-is ((exec_as 0, "pg_upgradecluster -v $MAJORS[-1] $MAJORS[0] upgr /tmp/psql-common-testsuite", $outref, 0), 0, 'pg_upgradecluster succeeds');
+is ((exec_as 0, "pg_upgradecluster --keep-port -v $MAJORS[-1] $MAJORS[0] upgr /tmp/psql-common-testsuite", $outref, 0), 0, 'pg_upgradecluster succeeds');
 unlike $$outref, qr/^pg_restore: /m, 'no pg_restore error messages during upgrade';
 unlike $$outref, qr/^[A-Z]+:  /m, 'no server error messages during upgrade';
 like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
 like_program_out 'nobody', 'pg_lsclusters -h', 0,
-    qr"$MAJORS[0] +upgr 5432 down   postgres /tmp/postgresql-test +/tmp/postgresql-test.log\n$MAJORS[-1] +upgr 5433 online postgres /tmp/psql-common-testsuite +/var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log", 'pg_lsclusters output';
+    qr"$MAJORS[0] +upgr 5433 down   postgres /tmp/postgresql-test +/tmp/postgresql-test.log\n$MAJORS[-1] +upgr 5432 online postgres /tmp/psql-common-testsuite +/var/log/postgresql/postgresql-$MAJORS[-1]-upgr.log", 'pg_lsclusters output';
 
 # stop servers, clean up
 is ((system "pg_dropcluster $MAJORS[0] upgr"), 0, 'Dropping original cluster');
