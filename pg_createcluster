@@ -151,7 +151,7 @@ sub setup_pg_hba {
 	    $search = 0;
 	}
 
-	if (not $explicit_auth_config and $version lt '9.2') {
+        if ($version lt '9.2') {
 	    # default authentication for Unix socket connections
 	    if ($line =~ /^#?local/) {
 		$line =~ s/trust/$peer_method/;
