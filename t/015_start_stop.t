@@ -133,7 +133,7 @@ sub check_major {
     note "Start/stop specific cluster using pg_*cluster"; ###############################
 
     # try to start cluster
-    program_ok (0, "pg_ctlcluster $v main start", 1);
+    program_ok (0, "pg_ctlcluster start $v main", 1); # syntax variation: action version cluster
     check_status $v, 1, 3, "does not exist";
 
     # create cluster and start it
@@ -146,7 +146,7 @@ sub check_major {
     check_status $v, 0, 0, "is already running";
 
     # restart cluster
-    program_ok (0, "pg_ctlcluster $v main restart");
+    program_ok (0, "pg_ctlcluster $v-main restart"); # syntax variation: version-cluster action
     check_status $v, 0, 0, "is running";
 
     # stop cluster
@@ -158,7 +158,7 @@ sub check_major {
     check_status $v, $ctlstopped, 3, "is already stopped";
 
     # start cluster
-    program_ok (0, "pg_ctlcluster $v main start");
+    program_ok (0, "pg_ctlcluster start $v-main"); # syntax variation: action version-cluster
     check_status $v, 0, 0, "is running";
 
     # stop server, clean up, check for leftovers

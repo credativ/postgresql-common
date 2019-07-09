@@ -334,28 +334,34 @@ if ($mode =~ /^(s(mart)?|f(ast)?|i(mmediate)?)$/) {
 
 ($bindir) = $bindir =~ /^(\/.*)$/ if $bindir; # untaint
 
-# accept both "version cluster action" and "version[-/]cluster action"
-if (@ARGV < 2 or (@ARGV < 3 and $ARGV[0] !~ m![-/]!)) {
-    print "Usage: $0 <version> <cluster> <action>\n";
-    exit 1;
-}
+# parse command
+my $version_re = qr/(\d+\.?\d)/;
+my $cluster_re = qr/([^'"\s]+)/;
+my $action_re = qr/(start|stop|restart|reload|status|promote)/;
+my $action;
 
-$version = shift @ARGV;
-if ($version =~ m!^(\d+\.?\d)[-/](.+)!) {
-    ($version, $cluster) = ($1, $2);
+if (@ARGV >= 3 and "$ARGV[0] $ARGV[1] $ARGV[2]" =~ /^$version_re $cluster_re $action_re$/) {
+    ($version, $cluster, $action) = ($1, $2, $3);
+    splice @ARGV, 0, 3;
+} elsif (@ARGV >= 3 and "$ARGV[0] $ARGV[1] $ARGV[2]" =~ /^$action_re $version_re $cluster_re$/) {
+    ($action, $version, $cluster) = ($1, $2, $3);
+    splice @ARGV, 0, 3;
+} elsif (@ARGV >= 2 and "$ARGV[0] $ARGV[1]" =~ m!^$version_re(?:[-/])$cluster_re $action_re$!) {
+    ($version, $cluster, $action) = ($1, $2, $3);
+    splice @ARGV, 0, 2;
+} elsif (@ARGV >= 2 and "$ARGV[0] $ARGV[1]" =~ m!^$action_re $version_re(?:[-/])$cluster_re$!) {
+    ($action, $version, $cluster) = ($1, $2, $3);
+    splice @ARGV, 0, 2;
 } else {
-    $cluster = shift @ARGV;
+    error "Usage: $0 <version> <cluster> <action> [-- <pg_ctl options>]";
 }
-my $action = shift @ARGV;
 
 @pg_ctl_opts_from_cli=();
 foreach my $argv (@ARGV) {
     push @pg_ctl_opts_from_cli, $argv =~ /(.*)/; # untaint
 }
 
-($version) = $version =~ /^(\d+\.?\d+)$/; # untaint
-($cluster) = $cluster =~ /^([^'"\s]+)$/; # untaint
-error 'specified cluster does not exist' unless $version && $cluster && cluster_exists $version, $cluster;
+error "specified cluster '$version $cluster' does not exist" unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
 
 unless ($action eq 'stop') {
@@ -481,12 +487,9 @@ if( $> != $info{'owneruid'} ) {
 $pg_ctl = $bindir ? "$bindir/pg_ctl" : get_program_path ('pg_ctl', $version);
 error "Could not find pg_ctl executable for version $version" unless ($pg_ctl);
 
-if ($action =~ /^(start|stop|restart|reload|status|promote)$/) {
-    no strict 'refs';
-    exit &$action;
-} else {
-    error 'Invalid action (must be one of: start stop restart reload status promote)';
-}
+# do the action
+no strict 'refs';
+exit &$action;
 
 __END__
 
@@ -511,7 +514,8 @@ You have to start this program as the user who owns the database cluster or as
 root.
 
 To ease integration with B<systemd> operation, the alternative syntax
-"B<pg_ctlcluster> I<version>B<->I<cluster> I<action>" is also supported.
+"B<pg_ctlcluster> I<version>B<->I<cluster> I<action>" is also supported,
+as well as putting the action first (matching the ordering used by B<systemctl>).
 
 =head1 ACTIONS
 

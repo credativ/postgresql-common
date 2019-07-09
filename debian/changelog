@@ -8,6 +8,8 @@ postgresql-common (203) UNRELEASED; urgency=medium
     cluster.
   * pg_upgradecluster: Use a tempfile instead of replacing the original
     pg_hba.conf file during upgrades.
+  * pg_ctlcluster: For consistency with systemctl, also accept action before
+    cluster name: "pg_ctlcluster start 11 main".
   * debian/tests: Do full testsuite run. Previously the full testsuite was
     only running from the postgresql-NN server package.
   * t/135_pg_virtualenv.t: Don't fail if fakeroot is not present.
