@@ -1,6 +1,8 @@
 postgresql-common (203) UNRELEASED; urgency=medium
 
   * pg_createcluster: Allow clusters with owner gid 0. (salsa-ci uses that.)
+  * pg_createcluster: If there are --auth options in createcluster.conf's
+    initdb_options, don't update pg_hba.conf.
   * pg_upgradecluster: Don't accidentally set (the wrong!) data_directory in
     postgresql.auto.conf. (Closes: #931635)
   * PgCommon.pm: Ignore data_directory when set in postgresql.auto.conf.

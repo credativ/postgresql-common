@@ -207,6 +207,7 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
 
 # read defaults from /etc/postgresql-common/createcluster.conf
 %defaultconf = PgCommon::read_conf_file ($createclusterconf);
+$explicit_auth_config = 1 if ($defaultconf{initdb_options} and $defaultconf{initdb_options} =~ /(^| )(-\w*A|--auth\b)/);
 
 # check validity of locale
 unless (setlocale (LC_ALL, "")) {
