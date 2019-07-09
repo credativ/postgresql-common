@@ -1,4 +1,11 @@
-postgresql-common (203) UNRELEASED; urgency=medium
+postgresql-common (203) unstable; urgency=medium
+
+  DATA LOSS WARNING: pg_upgradecluster from postgresql-common 200 .. 202 will
+  corrupt the data_directory setting when used *twice* to upgrade a cluster
+  (e.g. 9.6 -> 10 -> 11). This update fixes the original problem, and also
+  heals affected clusters on the next upgrade. No additional steps are required.
+
+  https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=931635
 
   * pg_createcluster: Allow clusters with owner gid 0. (salsa-ci uses that.)
   * pg_createcluster: If there are --auth options in createcluster.conf's
@@ -21,7 +28,7 @@ postgresql-common (203) UNRELEASED; urgency=medium
     only running from the postgresql-NN server package.
   * t/135_pg_virtualenv.t: Don't fail if fakeroot is not present.
 
- -- Christoph Berg <myon@debian.org>  Wed, 03 Jul 2019 15:01:03 +0200
+ -- Christoph Berg <myon@debian.org>  Tue, 09 Jul 2019 16:16:57 +0200
 
 postgresql-common (202) unstable; urgency=medium
 
