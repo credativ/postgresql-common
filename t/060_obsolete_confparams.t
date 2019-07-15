@@ -2,7 +2,7 @@
 # configuration parameters set. This checks that they are correctly
 # transitioned.
 
-use strict; 
+use strict;
 
 use lib 't';
 use TestLib;
@@ -19,6 +19,7 @@ $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 # t/$v.conf generated using
 # sed -e 's/^#//' -e 's/[ \t]*#.*//g' /etc/postgresql/12/main/postgresql.conf | grep '^[a-z]'
 # remove/comment data_directory, hba_file, ident_file, external_pid_file, include_dir, include
+# include_if_exists should be 'exists.conf'
 # lc_* should be 'C'
 # stats_temp_directory should point to /var/run/postgresql/*.pg_stat_tmp
 
