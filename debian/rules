@@ -30,7 +30,7 @@ override_dh_install:
 	/bin/echo -e "# See /usr/share/postgresql-common/supported-versions for documentation of this file\n$(FLAVOR)" > debian/postgresql-client-common/etc/postgresql-common/supported_versions
 
 override_dh_installinit:
-	dh_installinit --name=postgresql -u'defaults 19 21' -r
+	dh_installinit -ppostgresql-common --name=postgresql -u'defaults 19 21' -r
 
 override_dh_gencontrol:
 	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-server-dev-$v,)"

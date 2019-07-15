@@ -1,3 +1,9 @@
+postgresql-common (204) UNRELEASED; urgency=medium
+
+  * dh_installinit: Add -ppostgresql-common to work around debhelper #932073.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 15 Jul 2019 14:33:16 +0200
+
 postgresql-common (203) unstable; urgency=medium
 
   DATA LOSS WARNING: pg_upgradecluster from postgresql-common 200 .. 202 will
