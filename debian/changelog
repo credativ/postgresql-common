@@ -1,6 +1,7 @@
 postgresql-common (204) UNRELEASED; urgency=medium
 
   * dh_installinit: Add -ppostgresql-common to work around debhelper #932073.
+  * dh_make_pgxs: Add debian/watch template (with a github pattern).
 
  -- Christoph Berg <myon@debian.org>  Mon, 15 Jul 2019 14:33:16 +0200
 
