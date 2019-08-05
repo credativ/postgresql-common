@@ -2,7 +2,44 @@
 
 # script to add apt.postgresql.org to sources.list
 
-# from command line
+# Copyright (C) 2013-2019 Christoph Berg <myon@debian.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# The full text of the GPL is distributed as in
+# /usr/share/common-licenses/GPL-2 on Debian systems.
+
+SOURCESLIST="/etc/apt/sources.list.d/pgdg.list"
+DEB_SRC="#deb-src"
+COMPONENTS="main"
+PGDG="pgdg"
+
+while getopts "c:f:ipstv:y" opt ; do
+    case $opt in
+        c) COMPONENTS="main $OPTARG" ;; # make these extra components available
+        f) SOURCESLIST=$OPTARG ;; # sources.list filename to write to
+        i) INSTALL="yes" ;; # install packages for version given with -v
+        p) PURGE="yes" ;; # purge existing postgresql packages
+        s) DEB_SRC="deb-src" ;; # include source repository as well
+        t) PGDG="pgdg-testing" ;; # use *-pgdg or *-pgdg-testing
+        v) VERSION="$OPTARG" ;; # set up sources.list to use this version (useful for beta/devel packages)
+        y) ;; # don't ask for confirmation
+        *) exit 5 ;;
+    esac
+    YES="yes" # don't ask for confirmation if any option is given
+done
+# shift away args
+shift $((OPTIND - 1))
+# check options
+if [ "$INSTALL" ] && [ -z "$VERSION" ]; then
+    echo "With -i, a version to install must be provided (-v)"
+    exit 1
+fi
+
+# codename from command line
 CODENAME="$1"
 # lsb_release is the best interface, but not always available
 if [ -z "$CODENAME" ]; then
@@ -32,16 +69,26 @@ fi
 # errors are non-fatal above
 set -e
 
+# handle -v VERSION
+case $VERSION in # FIXME: this shouldn't be hard-coded in here
+    # devel version comes from *-pgdg-testing (with lower default apt pinning priority)
+    13) PGDG="pgdg-testing"
+        COMPONENTS="main $VERSION"
+        PIN="-t $CODENAME-$PGDG" ;;
+    # beta version just needs a different component
+    12) COMPONENTS="main $VERSION" ;;
+esac
+
 cat <<EOF
 This script will enable the PostgreSQL APT repository on apt.postgresql.org on
-your system. The distribution codename used will be $CODENAME-pgdg.
+your system. The distribution codename used will be $CODENAME-$PGDG.
 
 EOF
 
 case $CODENAME in
     # known distributions
-    sid|buster|stretch|jessie|wheezy|squeeze|lenny|etch) ;;
-    disco|cosmic|bionic|zesty|xenial|wily|trusty|precise|lucid) ;;
+    sid|bullseye|buster|stretch|jessie|wheezy|squeeze|lenny|etch) ;;
+    eoan|disco|cosmic|bionic|zesty|xenial|wily|trusty|precise|lucid) ;;
     *) # unknown distribution, verify on the web
 	DISTURL="http://apt.postgresql.org/pub/repos/apt/dists/"
 	if [ -x /usr/bin/curl ]; then
@@ -50,9 +97,9 @@ case $CODENAME in
 	    DISTHTML=$(wget --quiet -O - $DISTURL)
 	fi
 	if [ "$DISTHTML" ]; then
-	    if ! echo "$DISTHTML" | grep -q "$CODENAME-pgdg"; then
+	    if ! echo "$DISTHTML" | grep -q "$CODENAME-$PGDG"; then
 		cat <<EOF
-Your system is using the distribution codename $CODENAME, but $CODENAME-pgdg
+Your system is using the distribution codename $CODENAME, but $CODENAME-$PGDG
 does not seem to be a valid distribution on
 $DISTURL
 
@@ -72,14 +119,15 @@ EOF
 	;;
 esac
 
-echo -n "Press Enter to continue, or Ctrl-C to abort."
+if [ -z "$YES" ]; then
+    echo -n "Press Enter to continue, or Ctrl-C to abort."
+    read enter
+fi
 
-read enter
-
-echo "Writing /etc/apt/sources.list.d/pgdg.list ..."
-cat > /etc/apt/sources.list.d/pgdg.list <<EOF
-deb http://apt.postgresql.org/pub/repos/apt/ $CODENAME-pgdg main
-#deb-src http://apt.postgresql.org/pub/repos/apt/ $CODENAME-pgdg main
+echo "Writing $SOURCESLIST ..."
+cat > $SOURCESLIST <<EOF
+deb http://apt.postgresql.org/pub/repos/apt/ $CODENAME-$PGDG $COMPONENTS
+$DEB_SRC http://apt.postgresql.org/pub/repos/apt/ $CODENAME-$PGDG $COMPONENTS
 EOF
 
 echo "Importing repository signing key ..."
@@ -175,3 +223,14 @@ You can now start installing packages from apt.postgresql.org.
 Have a look at https://wiki.postgresql.org/wiki/Apt for more information;
 most notably the FAQ at https://wiki.postgresql.org/wiki/Apt/FAQ
 EOF
+
+# remove/install packages
+export DEBIAN_FRONTEND=noninteractive
+if [ "$PURGE" ]; then
+    echo "Purging existing PostgreSQL packages ..."
+    apt-get -y purge postgresql-client-common
+fi
+if [ "$INSTALL" ]; then
+    echo "Installing packages for PostgreSQL $VERSION ..."
+    apt-get -y -o DPkg::Options::=--force-confnew install $PIN postgresql-$VERSION postgresql-server-dev-$VERSION
+fi
