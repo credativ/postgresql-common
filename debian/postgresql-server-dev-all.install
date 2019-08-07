@@ -1,5 +1,4 @@
 gitlab usr/share/postgresql-common
-pg_buildext /usr/bin
 pgxs_debian_control.mk /usr/share/postgresql-common/
 dh_make_pgxs/dh_make_pgxs /usr/bin
 dh_make_pgxs/debian /usr/share/postgresql-common/dh_make_pgxs

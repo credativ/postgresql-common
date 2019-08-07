@@ -35,6 +35,10 @@ Suggests:
 Breaks:
  postgresql-9.1 (<< 9.1.1-3~),
  systemd (<< 204),
+# pg_buildext moved pg-s-d-all in 204
+ postgresql-server-dev-all (<< 204),
+Replaces:
+ postgresql-server-dev-all (<< 204),
 Description: PostgreSQL database-cluster manager
  The postgresql-common package provides a structure under which
  multiple versions of PostgreSQL may be installed and/or multiple

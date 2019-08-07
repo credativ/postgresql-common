@@ -1,6 +1,7 @@
 createcluster.conf usr/share/postgresql-common
 debian/01autoremove-postgresql etc/apt/apt.conf.d
 debian/init.d-functions usr/share/postgresql-common
+pg_buildext usr/bin
 pg_checksystem usr/share/postgresql-common
 pg_config usr/bin
 pg_conftool usr/bin
