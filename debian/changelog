@@ -1,4 +1,4 @@
-postgresql-common (204) UNRELEASED; urgency=medium
+postgresql-common (204) unstable; urgency=medium
 
   * dh_installinit: Add -ppostgresql-common to work around debhelper #932073.
   * dh_make_pgxs: Add debian/watch template (with a github pattern).
@@ -9,8 +9,9 @@ postgresql-common (204) UNRELEASED; urgency=medium
     installed.
   * debian/supported-versions: Use PG11 on Bullseye.
   * pg_virtualenv: Write temporary password file before chowning the file.
+    (Closes: #933569)
 
- -- Christoph Berg <myon@debian.org>  Mon, 15 Jul 2019 14:33:16 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 08 Aug 2019 12:48:00 +0200
 
 postgresql-common (203) unstable; urgency=medium
 
