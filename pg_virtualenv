@@ -98,6 +98,13 @@ shift $(($OPTIND - 1))
 # if no command is given, open a shell
 [ "${1:-}" ] || set -- ${SHELL:-/bin/sh}
 
+# generate a password
+if [ -x /usr/bin/pwgen ]; then
+    export PGPASSWORD=$(pwgen 20 1)
+else
+    export PGPASSWORD=$(dd if=/dev/urandom bs=1k count=1 2>/dev/null | md5sum - | awk '{ print $1 }')
+fi
+
 # we are not root
 if [ "$(id -u)" != 0 ]; then
     NONROOT=1
@@ -121,6 +128,7 @@ if [ "${NONROOT:-}" ]; then
     mkdir "$PGSYSCONFDIR" "$WORKDIR/log"
     PWFILE="$PGSYSCONFDIR/pwfile"
     LOGDIR="$WORKDIR/log"
+    echo "$PGPASSWORD" > "$PWFILE"
 
     cleanup () {
 	set +e
@@ -150,6 +158,7 @@ else
 
     export PGUSER="postgres"
     PWFILE=$(mktemp -t pgpassword.XXXXXX)
+    echo "$PGPASSWORD" > "$PWFILE" # write password before chowning the file
     chown postgres:postgres "$PWFILE"
 
     cleanup () {
@@ -175,13 +184,6 @@ else
 fi
 
 # create postgres environments
-if [ -x /usr/bin/pwgen ]; then
-    export PGPASSWORD=$(pwgen 20 1)
-else
-    export PGPASSWORD=$(dd if=/dev/urandom bs=1k count=1 2>/dev/null | md5sum - | awk '{ print $1 }')
-fi
-echo "$PGPASSWORD" > "$PWFILE"
-
 for v in $PG_VERSIONS; do
     # create temporary cluster
     # we chdir to / so programs don't throw "could not change directory to ..."

@@ -8,6 +8,7 @@ postgresql-common (204) UNRELEASED; urgency=medium
     use-cases do not need the header files and compiler dependencies
     installed.
   * debian/supported-versions: Use PG11 on Bullseye.
+  * pg_virtualenv: Write temporary password file before chowning the file.
 
  -- Christoph Berg <myon@debian.org>  Mon, 15 Jul 2019 14:33:16 +0200
 
