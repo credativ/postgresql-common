@@ -2,69 +2,12 @@
 # to be used in debian/gitlab-ci.yml:
 # include: https://salsa.debian.org/postgresql/postgresql-common/raw/master/gitlab/gitlab-ci.yml
 
-stages:
-  - build
-  - test
+include:
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
 
-.build: &build
-  stage: build
-  before_script:
-    # allow origtargz to use 'apt-get source'
-    - sed -e 's/^deb /deb-src /' /etc/apt/sources.list > /etc/apt/sources.list.d/src.list
-    - apt-get -q update
-    - apt-get -y --no-install-recommends install devscripts fakeroot git liblwp-protocol-https-perl libwww-perl pristine-tar
-    - apt-get -y --no-install-recommends build-dep .
-    # create user for building
-    - useradd --create-home buildd
-    - chown -R buildd:buildd .
-    - chown buildd:buildd ..
-  script:
-    # create pristine-tar branch (ignore any errors if missing), and generate/fetch orig tarball
-    - su -c 'git branch pristine-tar origin/pristine-tar; origtargz' buildd
-    # regenerate debian/control
-    - if [ -f debian/control.in ]; then su -c 'pg_buildext updatecontrol' buildd; fi
-    # build package
-    - su -s /bin/bash -c 'set -o pipefail; DPKG_COLORS=always dpkg-buildpackage --no-sign -sa -rfakeroot 2>&1 | tee ../buildlog' buildd
-  after_script:
-    - mv ../buildlog .
-    - rm -rf deb; mkdir deb; dcmd mv ../*.changes deb
-  artifacts:
-    paths: ['buildlog', 'deb']
+reprotest:
+  extends: .test-reprotest-diffoscope
 
-build:testing:  { <<: *build, image: 'debian:testing' }
-build:unstable: { <<: *build, image: 'debian:sid' }
-
-.lintian: &lintian
-  stage: test
-  before_script:
-    - apt-get -q update
-    - apt-get -y --no-install-recommends install lintian
-  script:
-    - bash -c 'set -o pipefail; lintian --info --display-info deb/*.changes 2>&1 | tee lintian.log'
-  artifacts:
-    paths: ['lintian.log']
-
-lintian:testing:  { <<: *lintian, dependencies: ['build:testing'], image: 'debian:testing' }
-lintian:unstable: { <<: *lintian, dependencies: ['build:unstable'], image: 'debian:sid' }
-
-.autopkgtest: &autopkgtest
-  stage: test
-  before_script:
-    - apt-get -q update
-    - apt-get -y --no-install-recommends install autopkgtest autodep8
-  script:
-    - autopkgtest deb/*.changes -- null || case $? in 2|8) exit 0;; *) exit $?;; esac # ignore skipped tests, and packages without tests
-
-autopkgtest:testing:  { <<: *autopkgtest, dependencies: ['build:testing'], image: 'debian:testing' }
-autopkgtest:unstable: { <<: *autopkgtest, dependencies: ['build:unstable'], image: 'debian:sid' }
-
-.blhc: &blhc
-  stage: test
-  image: registry.salsa.debian.org/salsa-ci-team/images/blhc
-  script:
-    # strip ANSI color and CR
-    - sed -i -e 's/\o033\[[0-9;]*m//g' -e 's/\r$//' buildlog
-    - blhc --debian --line-numbers --color buildlog || [ $? -eq 1 ]
-
-blhc:testing:  { <<: *blhc, dependencies: ['build:testing'] }
-blhc:unstable: { <<: *blhc, dependencies: ['build:unstable'] }
+variables:
+  PG_UPDATECONTROL: 'yes' # tell pg_buildext to automatically generate debian/control from debian/control.in (TODO: doesn't work this way yet)
