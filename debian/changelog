@@ -1,6 +1,7 @@
 postgresql-common (205) UNRELEASED; urgency=medium
 
   * Disable plpython2 packages by default. (Closes: #937310)
+  * testsuite: Prefer PgCommon.pm from current directory.
 
  -- Christoph Berg <myon@debian.org>  Mon, 02 Sep 2019 16:57:54 +0200
 
