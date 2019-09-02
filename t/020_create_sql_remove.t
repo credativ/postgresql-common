@@ -251,11 +251,14 @@ tel|2
 	0, "f__b_r_sh\n", 'calling PL/Perl function';
 
     # Check PL/Python (untrusted)
+    SKIP: {
+    skip "No python2 support", 6 unless ($PgCommon::have_python2);
     is_program_out 'postgres', create_extension('plpythonu'), 0, '', 'CREATE EXTENSION plpythonu succeeds for user postgres';
     is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize(text) RETURNS text AS \'import sys; return args[0].capitalize() + sys.version[0]\' LANGUAGE plpythonu;"',
 	0, '', 'creating PL/Python function as user postgres succeeds';
     is_program_out 'nobody', 'psql nobodydb -Atc "select capitalize(\'foo\')"',
 	0, "Foo2\n", 'calling PL/Python function';
+    }
 
     # Check PL/Python3 (untrusted)
     if ($v >= '9.1' and not $PgCommon::rpm) {

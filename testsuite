@@ -67,10 +67,11 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
     case $DISTRO in
         debian|ubuntu)
             for v in $PG_VERSIONS; do
+                [ "$(perl -I. -le 'use PgCommon; print $PgCommon::have_python2')" = "1" ] && PYTHON2_PACKAGE=postgresql-plpython-$v
                 apt-get install -y \
                     postgresql-contrib-$v \
                     postgresql-plperl-$v \
-                    postgresql-plpython-$v \
+                    ${PYTHON2_PACKAGE:-} \
                     $(dpkg --compare-versions $v ge 9.1 && echo postgresql-plpython3-$v) \
                     postgresql-pltcl-$v \
                     postgresql-server-dev-$v

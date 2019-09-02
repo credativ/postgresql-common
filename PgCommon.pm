@@ -30,7 +30,8 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
     get_cluster_databases cluster_conf_filename read_cluster_conf_file
     read_pg_hba read_pidfile valid_hba_method/;
-our @EXPORT_OK = qw/$confroot $binroot $rpm quote_conf_value read_conf_file get_conf_value
+our @EXPORT_OK = qw/$confroot $binroot $rpm $have_python2
+    quote_conf_value read_conf_file get_conf_value
     set_conf_value set_conffile_value disable_conffile_value disable_conf_value
     replace_conf_value cluster_data_directory get_file_device
     check_pidfile_running/;
@@ -56,6 +57,8 @@ our $binroot = "/usr/lib/postgresql/";
 our $rpm = 0;
 #redhat# $rpm = 1;
 our $defaultport = 5432;
+our $have_python2 = 0; # python2 removed in bullseye+
+#py2#$have_python2 = 1;
 
 {
     my %saved_env;
