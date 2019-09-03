@@ -45,12 +45,17 @@ CODENAME="$1"
 if [ -z "$CODENAME" ]; then
     CODENAME=$(lsb_release -cs 2>/dev/null)
 fi
-# parse os-release (unreliable, does not work on Ubuntu)
+# parse os-release
 if [ -z "$CODENAME" -a -f /etc/os-release ]; then
     . /etc/os-release
-    # Debian: VERSION="7.0 (wheezy)"
-    # Ubuntu: VERSION="13.04, Raring Ringtail"
-    CODENAME=$(echo $VERSION | sed -ne 's/.*(\(.*\)).*/\1/')
+    if [ "$VERSION_CODENAME" ]; then # added in buster/xenial
+        CODENAME="$VERSION_CODENAME"
+    else
+        # Debian: VERSION="7.0 (wheezy)"
+        # Ubuntu: VERSION="13.04, Raring Ringtail"
+        #         VERSION="18.04.1 LTS (Bionic Beaver)"
+        CODENAME=$(echo $VERSION | sed -ne 's/.*(\(.*\)).*/\1/') # works on Debian only
+    fi
 fi
 # guess from sources.list
 if [ -z "$CODENAME" ]; then
