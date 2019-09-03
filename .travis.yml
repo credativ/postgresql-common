@@ -27,7 +27,7 @@ before_install:
 
 install:
   - export DEBIAN_FRONTEND=noninteractive # suppress warnings about deprecated PostgreSQL versions
-  - sudo apt-get install debhelper fakeroot libreadline-dev lsb-release
+  - sudo apt-get install debhelper fakeroot libreadline-dev
   # make PWD readable for postgres/nobody
   - dir=$PWD; while [ "$dir" ]; do sudo chmod --changes a+rx $dir; dir=${dir%/*}; done
 

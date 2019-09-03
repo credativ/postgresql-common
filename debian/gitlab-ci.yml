@@ -1,7 +1,7 @@
 .debian_script: &debian_script
   - $SUDO apt-get update
   - $SUDO apt-get -o DPkg::Options::=--force-confnew dist-upgrade -y
-  - $SUDO apt-get install -y build-essential fakeroot debhelper libreadline-dev lsb-release dh-systemd
+  - $SUDO apt-get install -y build-essential fakeroot debhelper libreadline-dev dh-systemd
   - rm -f ../*.deb ../*.dsc ../*.buildinfo ../*.changes ../*.tar.*
   - dpkg-buildpackage -uc -us -rfakeroot
   - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )

@@ -13,7 +13,6 @@ Build-Depends:
  debhelper (>= 9),
  debhelper (>= 10.1) | dh-systemd (>= 1.19),
  libreadline-dev,
- lsb-release,
 
 Package: postgresql-common
 Architecture: all
@@ -63,7 +62,6 @@ Depends:
  ${misc:Depends},
  ${pgdg:Depends},
 Recommends:
- lsb-release,
  ${readline:Recommends},
 Description: manager for multiple PostgreSQL client versions
  The postgresql-client-common package provides a structure under which
@@ -84,7 +82,6 @@ Package: postgresql-server-dev-all
 Architecture: all
 Depends:
  dctrl-tools,
- lsb-release,
  make,
  postgresql-common (>= 117~),
  ${misc:Depends},
