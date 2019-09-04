@@ -1,4 +1,4 @@
-postgresql-common (205) UNRELEASED; urgency=medium
+postgresql-common (205) unstable; urgency=medium
 
   * Disable plpython2 packages by default. (Closes: #937310)
   * testsuite: Prefer PgCommon.pm from current directory.
@@ -6,7 +6,7 @@ postgresql-common (205) UNRELEASED; urgency=medium
   * Drop lsb-release dependencies, we prefer /etc/os-release anyway.
   * apt.postgresql.org.sh: Parse VERSION_CODENAME in /etc/os-release.
 
- -- Christoph Berg <myon@debian.org>  Mon, 02 Sep 2019 16:57:54 +0200
+ -- Christoph Berg <myon@debian.org>  Wed, 04 Sep 2019 08:38:08 +0200
 
 postgresql-common (204) unstable; urgency=medium
 
