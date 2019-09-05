@@ -30,7 +30,7 @@ if ($PgCommon::rpm) {
 foreach my $v (@MAJORS) {
     ok ((deb_installed "postgresql-$v"), "postgresql-$v installed");
     SKIP: {
-        skip "No python2 support", 1 unless ($PgCommon::have_python2);
+        skip "No python2 support", 1 unless ($v <= 11 and $PgCommon::have_python2);
         ok ((deb_installed "postgresql-plpython-$v"), "postgresql-plpython-$v installed");
     }
     if ($v >= '9.1') {
