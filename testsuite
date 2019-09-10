@@ -67,7 +67,10 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
     case $DISTRO in
         debian|ubuntu)
             for v in $PG_VERSIONS; do
-                [ "$(perl -I. -le 'use PgCommon; print $PgCommon::have_python2')" = "1" ] && PYTHON2_PACKAGE=postgresql-plpython-$v
+                case $v in 8.*|9.*|10|11)
+                    [ "$(perl -I. -le 'use PgCommon; print $PgCommon::have_python2')" = "1" ] && PYTHON2_PACKAGE=postgresql-plpython-$v
+                    ;;
+                esac
                 apt-get install -y \
                     postgresql-contrib-$v \
                     postgresql-plperl-$v \
