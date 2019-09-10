@@ -252,7 +252,7 @@ tel|2
 
     # Check PL/Python (untrusted)
     SKIP: {
-    skip "No python2 support", 6 unless ($PgCommon::have_python2);
+    skip "No python2 support", 6 unless ($v <= 11 and $PgCommon::have_python2);
     is_program_out 'postgres', create_extension('plpythonu'), 0, '', 'CREATE EXTENSION plpythonu succeeds for user postgres';
     is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize(text) RETURNS text AS \'import sys; return args[0].capitalize() + sys.version[0]\' LANGUAGE plpythonu;"',
 	0, '', 'creating PL/Python function as user postgres succeeds';
