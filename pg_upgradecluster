@@ -301,7 +301,6 @@ if (cluster_exists $newversion, $newcluster) {
 
 my $oldcontrol = get_cluster_controldata ($version, $cluster);
 
-my $oldpsql = get_program_path 'psql', $version;
 my $oldsocket = get_cluster_socketdir $version, $cluster;
 my $owner = getpwuid $info{'owneruid'};
 error 'could not get name of cluster owner' unless $owner;
@@ -410,13 +409,13 @@ if (!fork) {
     change_ugid $info{'owneruid'}, $info{'ownergid'};
     my $pg_dumpall = get_program_path 'pg_dumpall', $newversion;
     my $pg_dump = get_program_path 'pg_dump', $newversion;
-    my $psql = get_program_path 'psql', $newversion;
+    my $psql = get_program_path 'psql';
     my $newsocket = get_cluster_socketdir $newversion, $newcluster;
 
     if ($method eq 'dump') {
 	# get list of databases (value = datallowconn)
 	my %databases;
-	open F, '-|', $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, 
+	open F, '-|', $psql, '-h', $oldsocket, '-p', $info{'port'},
 	    '-F|', '-d', $maintenance_db, '-AXtc',
 	    'SELECT datname, datallowconn FROM pg_database' or
 	    error 'Could not get pg_database list';
@@ -434,7 +433,7 @@ if (!fork) {
 
 	    unless ($databases{$db}) {
 		print "Temporarily enabling access to database $db\n";
-		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-qX',
+		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-qX',
 		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 't' WHERE datname = '$db'; COMMIT") == 0 or
 		    error 'Could not enable access to database';
@@ -522,7 +521,7 @@ if (!fork) {
 
 	    unless ($databases{$db}) {
 		print "Disabling access to database $db again\n";
-		(system $oldpsql, '-h', $oldsocket, '-p', $info{'port'}, '-qX',
+		(system $psql, '-h', $oldsocket, '-p', $info{'port'}, '-qX',
 		    '-d', $maintenance_db, '-c',
 		    "BEGIN READ WRITE; UPDATE pg_database SET datallowconn = 'f' where datname = '$db'; COMMIT") == 0 or
 		    error 'Could not disable access to database in old cluster';

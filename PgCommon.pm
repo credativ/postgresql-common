@@ -468,8 +468,10 @@ sub set_cluster_socketdir {
 # Return the path of a program of a particular version.
 # Arguments: <program name> <version>
 sub get_program_path {
-    return '' unless defined($_[0]) && defined($_[1]);
-    my $path = "$binroot$_[1]/bin/$_[0]";
+    my ($program, $version) = @_;
+    return '' unless defined $program;
+    $version //= get_newest_version();
+    my $path = "$binroot$version/bin/$program";
     ($path) = $path =~ /(.*)/; #untaint
     return $path if -x $path;
     return '';
@@ -911,7 +913,7 @@ sub get_db_encoding {
     my ($version, $cluster, $db) = @_;
     my $port = get_cluster_port $version, $cluster;
     my $socketdir = get_cluster_socketdir $version, $cluster;
-    my $psql = get_program_path 'psql', $version;
+    my $psql = get_program_path 'psql';
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner
@@ -941,7 +943,7 @@ sub get_db_locales {
     my ($version, $cluster, $db) = @_;
     my $port = get_cluster_port $version, $cluster;
     my $socketdir = get_cluster_socketdir $version, $cluster;
-    my $psql = get_program_path 'psql', $version;
+    my $psql = get_program_path 'psql';
     return undef unless ($port && $socketdir && $psql);
     my ($ctype, $collate);
 
@@ -1042,7 +1044,7 @@ sub get_cluster_databases {
     my ($version, $cluster) = @_;
     my $port = get_cluster_port $version, $cluster;
     my $socketdir = get_cluster_socketdir $version, $cluster;
-    my $psql = get_program_path 'psql', $version;
+    my $psql = get_program_path 'psql';
     return undef unless ($port && $socketdir && $psql);
 
     # try to swich to cluster owner

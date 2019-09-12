@@ -1,5 +1,6 @@
 postgresql-common (206) UNRELEASED; urgency=medium
 
+  * pg_ctlcluster, pg_upgradecluster: Always use latest psql.
   * t/135_pg_virtualenv.t: Run pg_virtualenv on all versions.
   * gitlab/gitlab-ci.yml: Include salsa-ci pipeline instead of our own.
 
