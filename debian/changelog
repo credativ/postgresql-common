@@ -1,5 +1,6 @@
 postgresql-common (206) UNRELEASED; urgency=medium
 
+  * t/135_pg_virtualenv.t: Run pg_virtualenv on all versions.
   * gitlab/gitlab-ci.yml: Include salsa-ci pipeline instead of our own.
 
  -- Christoph Berg <myon@debian.org>  Tue, 13 Aug 2019 11:17:09 +0200
