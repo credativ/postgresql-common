@@ -113,7 +113,9 @@ like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/online/, 'cluster is stil
 (system "cp /var/lib/postgresql/$version/main/postmaster.pid.orig /var/lib/postgresql/$version/main/postmaster.pid") == 0 or die "cp: $!";
 is ((exec_as 'postgres', "pg_ctlcluster $version main stop"), 0, 
     'pg_ctlcluster succeeds with restored PID file');
+mkdir $PgCommon::binroot . "foo"; # #940220: infinite recursion in get_program_path
 like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/down/, 'cluster is down';
+rmdir $PgCommon::binroot . "foo";
 
 # stop stopped server
 is_program_out 'postgres', "pg_ctlcluster $version main stop", 2,

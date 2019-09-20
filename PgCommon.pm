@@ -694,7 +694,7 @@ sub get_versions {
             my $pfx = '';
             #redhat# $pfx = "pgsql-";
             ($entry) = $entry =~ /^$pfx(\d+\.?\d+)$/; # untaint
-            push @versions, $entry if get_program_path ('psql', $entry);
+            push @versions, $entry if $entry and get_program_path ('psql', $entry);
         }
         closedir D;
     }
