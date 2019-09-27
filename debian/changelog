@@ -1,3 +1,10 @@
+postgresql-common (208) UNRELEASED; urgency=medium
+
+  * gitlab/gitlab-ci.yml: Too many packages fail because reprotest runs the
+    build as root, disable for now.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 27 Sep 2019 11:08:30 +0200
+
 postgresql-common (207) unstable; urgency=medium
 
   * PgCommon.pm: Fix infinite recursion in get_program_path if
