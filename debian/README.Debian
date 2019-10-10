@@ -18,7 +18,7 @@ server and client programs are shipped in postgresql-*-<version> packages.
 
 For a detailed description of the architecture, please see
 
-  /usr/share/doc/postgresql-common/architecture.html
+  /usr/share/doc/postgresql-common/README.md.gz
 
 First steps for the impatient
 -----------------------------
