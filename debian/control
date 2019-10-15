@@ -81,7 +81,6 @@ Description: manager for multiple PostgreSQL client versions
 Package: postgresql-server-dev-all
 Architecture: all
 Depends:
- dctrl-tools,
  make,
  postgresql-common (>= 117~),
  ${misc:Depends},

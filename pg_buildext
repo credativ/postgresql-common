@@ -177,9 +177,9 @@ gencontrol() {
     fi
     trap "rm -f $tmpcontrol ${tmptestscontrol:-}" 0 2 3 15
 
-    grep-dctrl -vP PGVERSION debian/control.in > $tmpcontrol
+    perl -000 -ne 'print unless /PGVERSION/' debian/control.in > $tmpcontrol
     for v in $(versions); do
-        grep-dctrl -P PGVERSION debian/control.in | sed -e "s:PGVERSION:$v:g" >> $tmpcontrol
+        perl -000 -ne 'print if /PGVERSION/' debian/control.in | sed -e "s:PGVERSION:$v:g" >> $tmpcontrol
     done
 
     if [ -f debian/tests/control.in ]; then
