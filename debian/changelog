@@ -10,6 +10,7 @@ postgresql-common (208) UNRELEASED; urgency=medium
     As a side effect, generated debian/control files will no longer have a
     trailing empty line.
   * pg_upgradecluster: Accept -m link and -m clone for simplicity.
+  * debian/supported-versions: Add 12 as default version.
 
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.

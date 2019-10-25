@@ -49,7 +49,7 @@ else
     . /usr/share/postgresql-common/pgcommon.sh
 fi
 
-DEFAULT="11"
+DEFAULT="12"
 
 # functions
 
@@ -99,7 +99,7 @@ debian() {
         8|8.*) /bin/echo -e "9.4" ;; # Jessie
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
         10|10.*) /bin/echo -e "11" ;; # Buster
-        11|11.*) /bin/echo -e "11" ;; # Bullseye
+        11|11.*) /bin/echo -e "12" ;; # Bullseye
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)
@@ -115,7 +115,8 @@ debian_backports() {
         7|7.*) /bin/echo -e "9.1\n9.4" ;; # Wheezy
         8|8.*) /bin/echo -e "9.4\n9.6" ;; # Jessie
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
-        10|10.*) /bin/echo -e "10" ;; # Buster
+        10|10.*) /bin/echo -e "11" ;; # Buster
+        11|11.*) /bin/echo -e "12" ;; # Bullseye
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)
@@ -125,7 +126,14 @@ debian_backports() {
 }
 
 pgdg() {
-    /bin/echo -e "9.4\n9.5\n9.6\n10\n11"
+    cat <<-EOF
+	9.4
+	9.5
+	9.6
+	10
+	11
+	12
+	EOF
 }
 
 installed() {
