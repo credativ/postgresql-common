@@ -1,5 +1,6 @@
 postgresql-common (208) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * gitlab/gitlab-ci.yml: Too many packages fail because reprotest runs the
     build as root, disable for now.
   * README.Debian: Redirect reference to architecture.html to README.md.gz.
@@ -8,6 +9,9 @@ postgresql-common (208) UNRELEASED; urgency=medium
   * Remove dependency on dctrl-tools; rewrite control file updating in perl.
     As a side effect, generated debian/control files will no longer have a
     trailing empty line.
+
+  [ Tilman Koschnick ]
+  * pg_upgradecluster: Support passing --clone to pg_upgrade.
 
  -- Christoph Berg <myon@debian.org>  Fri, 27 Sep 2019 11:08:30 +0200
 

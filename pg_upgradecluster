@@ -233,6 +233,7 @@ $newversion = $newest_version;
 
 my $method = 'dump';
 my $link = 0;
+my $clone = 0;
 my $keep_port = 0;
 my $start = -1; # -1 = auto
 
@@ -250,6 +251,7 @@ GetOptions ('v|version=s' => \$newversion,
 	    'm|method=s' => \$method,
 	    'j|jobs=s', => \$jobs,
 	    'k|link' => \$link,
+            'clone' => \$clone,
             'keep-port' => \$keep_port,
             'rename=s' => \$newcluster,
             'old-bindir=s' => \$old_bindir,
@@ -259,6 +261,7 @@ GetOptions ('v|version=s' => \$newversion,
 
 $method eq 'dump' or $method eq 'upgrade' or error 'method must be "dump" or "upgrade"';
 $link and $method eq 'dump' and error 'cannot use --link with --method=dump';
+$clone and $method eq 'dump' and error 'cannot use --clone with --method=dump';
 $jobs and $method eq 'dump' and error 'cannot use --jobs with --method=dump';
 
 # untaint
@@ -556,6 +559,7 @@ if (!fork) {
         }
         push @argv, '-D', $newinfo{configdir};
 	push @argv, "--link" if $link;
+	push @argv, "--clone" if $clone;
 	push @argv, '-j', $jobs if $jobs;
 
 	# Make a directory for pg_upgrade to store its reports and log
@@ -823,6 +827,12 @@ L<pg_restore(1)>, "upgrade" uses L<pg_upgrade(1)>.  The default is
 In pg_upgrade mode, use hard links instead of copying files to the new
 cluster.  This option is merely passed on to pg_upgrade.  See
 L<pg_upgrade(1)> for details.
+
+=item B<--clone>
+
+In pg_upgrade mode, use efficient file cloning (also known as "reflinks"
+on some systems) instead of copying files to the new cluster. This option
+is merely passed on to pg_upgrade.  See L<pg_upgrade(1)> for details.
 
 =item B<-j>, B<--jobs>
 
