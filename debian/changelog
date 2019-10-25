@@ -13,6 +13,7 @@ postgresql-common (208) unstable; urgency=medium
   * debian/supported-versions: Add 12 as default version.
   * pg_createcluster: Add note on security implications of using --auth-host
     and --auth-local.
+  * postgresql-all: Don't depend on postgresql-plpython-12, it doesn't exist.
 
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.
