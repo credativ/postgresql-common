@@ -21,6 +21,7 @@ Depends:
  adduser,
  debconf (>= 0.5.00) | debconf-2.0,
  lsb-base (>= 3.0-3),
+ perl (>= 5.14),
  postgresql-client-common (= ${source:Version}),
  procps,
  ssl-cert (>= 1.0.11),

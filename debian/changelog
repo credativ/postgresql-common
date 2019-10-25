@@ -8,7 +8,7 @@ postgresql-common (208) UNRELEASED; urgency=medium
   * README.Devel: Remove, bzr is long obsolete.
   * Remove dependency on dctrl-tools; rewrite control file updating in perl.
     As a side effect, generated debian/control files will no longer have a
-    trailing empty line.
+    trailing empty line. Die if no supported versions were found.
   * pg_upgradecluster: Accept -m link and -m clone for simplicity.
   * debian/supported-versions: Add 12 as default version.
 

@@ -177,10 +177,23 @@ gencontrol() {
     fi
     trap "rm -f $tmpcontrol ${tmptestscontrol:-}" 0 2 3 15
 
-    perl -000 -ne 'print unless /PGVERSION/' debian/control.in > $tmpcontrol
-    for v in $(versions); do
-        perl -000 -ne 'print if /PGVERSION/' debian/control.in | sed -e "s:PGVERSION:$v:g" >> $tmpcontrol
-    done
+    export PGVERSIONS="$(versions)"
+    [ "$PGVERSIONS" ] || die "No current PostgreSQL versions are supported by this package"
+
+    perl -e \
+        '$/ = ""; # read paragraphs
+        while (<>) {
+            chomp;
+            if (/PGVERSION/) {
+                foreach my $version (split /\n/, $ENV{PGVERSIONS}) {
+                    push @out, s/PGVERSION/$version/rg;
+                }
+            } else {
+                push @out, $_;
+            }
+        }
+        print join("\n\n", @out), "\n";
+        ' debian/control.in > $tmpcontrol
 
     if [ -f debian/tests/control.in ]; then
         cp debian/tests/control.in $tmptestscontrol
