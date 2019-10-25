@@ -1,4 +1,4 @@
-postgresql-common (208) UNRELEASED; urgency=medium
+postgresql-common (208) unstable; urgency=medium
 
   [ Christoph Berg ]
   * gitlab/gitlab-ci.yml: Too many packages fail because reprotest runs the
@@ -17,7 +17,7 @@ postgresql-common (208) UNRELEASED; urgency=medium
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.
 
- -- Christoph Berg <myon@debian.org>  Fri, 27 Sep 2019 11:08:30 +0200
+ -- Christoph Berg <myon@debian.org>  Fri, 25 Oct 2019 14:42:15 +0200
 
 postgresql-common (207) unstable; urgency=medium
 
