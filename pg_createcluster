@@ -790,6 +790,10 @@ TCP (host) connections. If explicit authentication config is included here
 (B<-A>, B<--auth>, B<--auth-host>, B<--auth-local>), the C<pg_hba.conf> file
 will be left untouched.
 
+I<Note:> If only one of B<--auth-host> and B<--auth-local> is provided, the
+other setting will default to B<trust> as per B<initdb>'s defaults, opening a
+potential security risk.
+
 =back
 
 =head1 STARTUP CONTROL

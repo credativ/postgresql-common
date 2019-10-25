@@ -11,6 +11,8 @@ postgresql-common (208) UNRELEASED; urgency=medium
     trailing empty line. Die if no supported versions were found.
   * pg_upgradecluster: Accept -m link and -m clone for simplicity.
   * debian/supported-versions: Add 12 as default version.
+  * pg_createcluster: Add note on security implications of using --auth-host
+    and --auth-local.
 
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.
