@@ -9,6 +9,7 @@ postgresql-common (208) UNRELEASED; urgency=medium
   * Remove dependency on dctrl-tools; rewrite control file updating in perl.
     As a side effect, generated debian/control files will no longer have a
     trailing empty line.
+  * pg_upgradecluster: Accept -m link and -m clone for simplicity.
 
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.
