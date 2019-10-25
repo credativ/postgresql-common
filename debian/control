@@ -6,7 +6,7 @@ Uploaders:
  Martin Pitt <mpitt@debian.org>,
  Christoph Berg <myon@debian.org>,
  Peter Eisentraut <petere@debian.org>,
-Standards-Version: 4.3.0
+Standards-Version: 4.4.0
 Vcs-Git: https://salsa.debian.org/postgresql/postgresql-common.git
 Vcs-Browser: https://salsa.debian.org/postgresql/postgresql-common
 Build-Depends:
@@ -88,7 +88,8 @@ Depends:
 Description: extension build tool for multiple PostgreSQL versions
  The postgresql-server-dev-all package provides the pg_buildext script for
  simplifying packaging of a PostgreSQL extension supporting multiple major
- versions of the product.
+ versions of the product, and dh_make_pgxs which builds a template debian/
+ source package directory based on pg_buildext.
  .
  PostgreSQL is a fully featured object-relational database management
  system. It supports a large part of the SQL standard and is designed
