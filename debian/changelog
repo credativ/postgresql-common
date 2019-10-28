@@ -21,7 +21,7 @@ postgresql-common (208) unstable; urgency=medium
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.
 
- -- Christoph Berg <myon@debian.org>  Fri, 25 Oct 2019 14:42:15 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 28 Oct 2019 15:04:12 +0100
 
 postgresql-common (207) unstable; urgency=medium
 
