@@ -14,6 +14,9 @@ postgresql-common (208) unstable; urgency=medium
   * pg_createcluster: Add note on security implications of using --auth-host
     and --auth-local.
   * postgresql-all: Don't depend on postgresql-plpython-12, it doesn't exist.
+  * pg_buildext: New action "installed-versions" reporting the list of
+    PostgreSQL major versions used by packages built from a source package.
+  * pg_buildext: "installcheck" uses "installed-versions" now.
 
   [ Tilman Koschnick ]
   * pg_upgradecluster: Support passing --clone to pg_upgrade.

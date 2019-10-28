@@ -4,7 +4,7 @@
 # versions
 #
 # (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
-# (C) 2011-2018 Christoph Berg <myon@debian.org>
+# (C) 2011-2019 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -170,6 +170,19 @@ versions() {
     done < debian/pgversions
 }
 
+# list of PostgreSQL versions for which packages built from this source are installed
+# (not necessarily the same as listed in debian/control)
+installed_versions() {
+    [ -e debian/control.in ] || die "debian/control.in not found"
+    # extract package name template(s) from control.in, split into prefix and suffix
+    perl -lne 'print "$1 $2" if /^Package: (.*)PGVERSION(.*)/' debian/control.in | \
+        while read prefix suffix; do
+            # translate templates to actually installed packages
+            dpkg-query --showformat '${db:Status-Status} ${Package}\n' --show "$prefix*$suffix" | \
+                grep '^installed' | cut -d ' ' -f 2 | sed -e "s/^$prefix//; s/$suffix\$//"
+        done | sort -u
+}
+
 gencontrol() {
     tmpcontrol=$(mktemp debian/control.XXXXXX)
     if [ -f debian/tests/control.in ]; then
@@ -259,6 +272,21 @@ case $action in
         updatecontrol
         exit
         ;;
+
+    installed-versions)
+        installed_versions
+        exit
+        ;;
+
+    installcheck)
+        versions=$(installed_versions)
+        [ "$versions" ] || exit 1
+        for v in $(installed_versions); do
+            echo "### $action $v ###"
+            $action $v
+        done
+        exit
+        ;;
 esac
 
 # loop over versions
@@ -272,11 +300,6 @@ do
 
 	configure|build|install|clean|loop)
 	    [ "$target" ] || die "syntax: pg_buildext $action <target> [<srcdir>] [<opt>]"
-	    echo "### $action $v ###"
-	    $action $v
-	    ;;
-
-	installcheck)
 	    echo "### $action $v ###"
 	    $action $v
 	    ;;
