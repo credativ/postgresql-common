@@ -85,6 +85,7 @@ ubuntu() {
         17.04|17.10) /bin/echo -e "9.6" ;;
         18.04|18.10) /bin/echo -e "10" ;;
         19.04|19.10) /bin/echo -e "11" ;;
+        20.04|20.10) /bin/echo -e "12" ;;
         *)
             echo "supported-versions: WARNING: Unknown Ubuntu release: $1" >&2
             /bin/echo -e "$DEFAULT" ;;
