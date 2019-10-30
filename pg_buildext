@@ -180,7 +180,7 @@ installed_versions() {
             # translate templates to actually installed packages
             dpkg-query --showformat '${db:Status-Status} ${Package}\n' --show "$prefix*$suffix" | \
                 grep '^installed' | cut -d ' ' -f 2 | sed -e "s/^$prefix//; s/$suffix\$//"
-        done | sort -u
+        done | sort -u | perl -e 'print sort { $a <=> $b } <>'
 }
 
 gencontrol() {
