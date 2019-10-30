@@ -279,9 +279,13 @@ case $action in
         ;;
 
     installcheck)
-        versions=$(installed_versions)
+        if [ -f debian/control.in ]; then
+            versions=$(installed_versions)
+        else
+            versions=$(versions)
+        fi
         [ "$versions" ] || exit 1
-        for v in $(installed_versions); do
+        for v in $versions; do
             echo "### $action $v ###"
             $action $v
         done

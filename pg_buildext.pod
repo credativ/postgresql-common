@@ -133,7 +133,7 @@ Use B<pg_virtualenv make installcheck> to run the extension regression tests.
 This is meant to be run from C<debian/tests/control> using B<autopkgtest>. If
 I<build-dir> is omitted, the top source directory is used.
 
-Other than the other actions which run on the "supported" versions, this one
+Other than the other actions which run on the "supported" versions, if C<debian/control.in> exists, this one
 runs on the "installed" versions as reported by B<installed-versions>.
 
 =back
