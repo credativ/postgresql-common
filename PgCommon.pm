@@ -663,7 +663,12 @@ sub cluster_info {
     if ($result{'pgdata'}) {
         ($result{'owneruid'}, $result{'ownergid'}) =
             (stat $result{'pgdata'})[4,5];
-        $result{'recovery'} = 1 if (-e "$result{'pgdata'}/recovery.conf");
+        if ($v >= 12) {
+            $result{'recovery'} = 1 if (-e "$result{'pgdata'}/recovery.signal"
+                                     or -e "$result{'pgdata'}/standby.signal");
+        } else {
+            $result{'recovery'} = 1 if (-e "$result{'pgdata'}/recovery.conf");
+        }
         my $waldirname = $v >= 10 ? 'pg_wal' : 'pg_xlog';
         if (-l "$result{pgdata}/$waldirname") { # custom wal directory
             ($result{waldir}) = readlink("$result{pgdata}/$waldirname") =~ /(.*)/; # untaint
