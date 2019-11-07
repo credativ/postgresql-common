@@ -1,11 +1,11 @@
-postgresql-common (209) UNRELEASED; urgency=medium
+postgresql-common (209) unstable; urgency=medium
 
   * pg_buildext: Fix installcheck for packages that don't have
     debian/control.in (pg-sphere).
   * PgCommon.pm cluster_info: Recognize standby.signal and recovery.signal for
     PG12 clusters instead of recovery.conf.
 
- -- Christoph Berg <myon@debian.org>  Wed, 30 Oct 2019 10:18:59 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 07 Nov 2019 15:09:18 +0100
 
 postgresql-common (208) unstable; urgency=medium
 
