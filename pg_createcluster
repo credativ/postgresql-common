@@ -139,10 +139,10 @@ sub setup_pg_hba {
 # Database administrative login by Unix domain socket
 ";
     
-    open (F, $fname) or error "could not open $fname for reading";
+    open my $hba, '<', $fname or error "could not open $fname for reading";
     my $search = 1;
     my @lines;
-    while (my $line = <F>) {
+    while (my $line = <$hba>) {
 	# add superuser entry before column description line
 	if ($search && $line =~ /#.*TYPE\s+DATABASE/) {
 	    push @lines, $su_comment;
@@ -165,15 +165,15 @@ sub setup_pg_hba {
 
 	push @lines, $line;
     }
-    close F;
+    close $hba;
 
     error "setup_pg_hba: did not find insert position" if $search;
 
-    open (F, ">$fname") or error "could not open $fname for writing";
+    open my $new_hba, '>', $fname or error "could not open $fname for writing";
     foreach (@lines) {
-	print F $_;
+	print $new_hba $_;
     }
-    close F;
+    close $new_hba;
 }
 
 #
@@ -336,14 +336,10 @@ error 'could not create configuration directory; you might ' .
 my $newcluster = 0;
 
 if (-f "$datadir/PG_VERSION") {
-    my $existingver;
-    if (open F, "$datadir/PG_VERSION") {
-        $existingver = <F>;
-        close F;
-        chomp $existingver;
-    } else {
-        error "could not open $datadir/PG_VERSION";
-    }
+    open my $fh, '<', "$datadir/PG_VERSION" or error "could not open $datadir/PG_VERSION";
+    chomp(my $existingver = <$fh>);
+    close $fh;
+
     ($owneruid, $ownergid) = (stat "$datadir/PG_VERSION")[4,5];
     if ($existingver == $version) {
         print "Configuring already existing cluster (configuration: $confdir, data: $datadir, owner: $owneruid:$ownergid)\n";
@@ -415,8 +411,7 @@ if (! -d '/var/log/postgresql') {
 my $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 error "logfile $real_logfile is a directory, not a file" if (-d $real_logfile);
 if (! -e $real_logfile) {
-    open L, ">>$real_logfile" or error "could not create log file $real_logfile";
-    close L;
+    open my $fh, '>>', $real_logfile or error "could not create log file $real_logfile";
 }
 chmod 0640, $real_logfile;
 my $g;
@@ -506,9 +501,9 @@ if ($want_ssl && $newcluster && -e $ssl_cert_file && $ssl_key_access) {
 # SSL client certificate CA
 if ($want_ssl && $newcluster && -e $ssl_ca_file) {
     # check if we have a cert in there or just the boilerplate installed by our postinst
-    open F, $ssl_ca_file;
+    open my $fh, '<', $ssl_ca_file or error "could not open $ssl_ca_file for reading";
     my $val;
-    read F, $val, 4096;
+    read $fh, $val, 4096;
     if ($val =~ /^-----BEGIN CERTIFICATE-----/m) {
         if ($version >= '9.2') {
             PgCommon::set_conf_value $version, $cluster, 'postgresql.conf',
@@ -539,15 +534,14 @@ my $defaultenv = "# environment variables for postgres processes
 # evaluated.
 ";
 if (-e $environmentfile) {
-    open ENV, '<', $environmentfile or error "could not read environment file $environmentfile";
+    open my $env, '<', $environmentfile or error "could not read environment file $environmentfile";
     local $/; # slurp mode
-    $defaultenv = <ENV>;
-    close ENV;
+    $defaultenv = <$env>;
 }
 $defaultenv = replace_v_c ($defaultenv, $version, $cluster);
-open ENV, ">$confdir/environment" or error "could not create environment file $confdir/environment";
-print ENV $defaultenv;
-close ENV;
+open my $env, '>', "$confdir/environment" or error "could not create environment file $confdir/environment";
+print $env $defaultenv;
+close $env;
 chmod 0644, "$confdir/environment";
 lchown $owneruid, $ownergid, "$confdir/environment";
 
