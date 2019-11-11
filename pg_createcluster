@@ -104,8 +104,8 @@ sub init_db {
 # postgresql.conf.
 # Arguments: <source file> <target dir> <uid> <gid> <perms> <postgresql.conf option>
 sub move_conffile {
-    ($file, $target, $uid, $gid, $perms, $confopt) = @_;
-    $realfile = $file;
+    my ($file, $target, $uid, $gid, $perms, $confopt) = @_;
+    my $realfile = $file;
     while (-l $realfile) {
         $realfile = readlink $realfile;
     }
@@ -113,7 +113,7 @@ sub move_conffile {
 	install_file $realfile, $target, $uid, $gid, $perms;
         unlink $file, $realfile;
 
-	@pathcomps = split ('/', $file);
+	my @pathcomps = split ('/', $file);
 	$target .= '/' . $pathcomps[-1];
 	PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $confopt, $target if $confopt;
     } else {
@@ -127,9 +127,9 @@ sub move_conffile {
 # - Change default authentication for host entries to md5.
 sub setup_pg_hba {
     my ($version) = @_;
-    $user = (getpwuid $owneruid)[0];
-    $fname = "$confdir/pg_hba.conf";
-    $su_comment = "
+    my $user = (getpwuid $owneruid)[0];
+    my $fname = "$confdir/pg_hba.conf";
+    my $su_comment = "
 # DO NOT DISABLE!
 # If you change this first entry you will need to make sure that the
 # database superuser can access the database using some other method.
@@ -140,14 +140,13 @@ sub setup_pg_hba {
 ";
     
     open (F, $fname) or error "could not open $fname for reading";
-    $search = 1;
-    while (<F>) {
-	$line = $_;
+    my $search = 1;
+    my @lines;
+    while (my $line = <F>) {
 	# add superuser entry before column description line
-	if ($search && /#.*TYPE\s+DATABASE/) {
+	if ($search && $line =~ /#.*TYPE\s+DATABASE/) {
 	    push @lines, $su_comment;
-	    $s = sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $peer_method;
-	    push @lines, $s;
+	    push @lines, sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $peer_method;
 	    push @lines, "\n";
 	    $search = 0;
 	}
@@ -188,9 +187,10 @@ my $cleanup_cruft = 0;
 # command line arguments
 
 my $startconf = '';
-my $pgoptions = [];
+my @pgoptions;
 my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 my $environmentfile = "$PgCommon::common_confdir/environment";
+my ($socketdir, $custom_logfile, $start, $port);
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
@@ -303,7 +303,7 @@ if (!defined $datadir) {
         $datadirp_created = $pd; # clean up in case of error
     }
 }
-$confdirp = "$PgCommon::confroot/$version";
+my $confdirp = "$PgCommon::confroot/$version";
 $confdir = "$confdirp/$cluster";
 
 # some sanity checks
@@ -333,9 +333,10 @@ error 'could not create configuration directory; you might ' .
 
 # check whether we have an already existing cluster; check version and
 # determine owner in this case
-$newcluster = 0;
+my $newcluster = 0;
 
 if (-f "$datadir/PG_VERSION") {
+    my $existingver;
     if (open F, "$datadir/PG_VERSION") {
         $existingver = <F>;
         close F;
@@ -385,8 +386,8 @@ if ($socketdir && ! -e $socketdir) {
         error "could not create socket directory $socketdir";
     }
 }
-$orig_euid = $>;
-$orig_egid = $);
+my $orig_euid = $>;
+my $orig_egid = $);
 $) = $ownergid;
 $> = $owneruid;
 unless ($socketdir) {
@@ -411,7 +412,7 @@ if (! -d '/var/log/postgresql') {
     chmod 01775, '/var/log/postgresql';
     lchown 0, $postgres_user[3], '/var/log/postgresql';
 }
-$real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
+my $real_logfile = $custom_logfile || "/var/log/postgresql/postgresql-$version-$cluster.log";
 error "logfile $real_logfile is a directory, not a file" if (-d $real_logfile);
 if (! -e $real_logfile) {
     open L, ">>$real_logfile" or error "could not create log file $real_logfile";
