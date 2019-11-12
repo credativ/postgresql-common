@@ -450,16 +450,29 @@ if ($action ne 'stop' && $info{'logfile'} && ! -e $info{'logfile'}) {
     }
 }
 
-# recreate /var/run/postgresql
-if ($action ne 'stop' && ! -d $info{'socketdir'}) {
-    system 'install', '-d', '-m', 2775,
-	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{'socketdir'};
-}
+if ($action ne 'stop') {
+    # recreate /var/run/postgresql while possibly still running as root
+    if (! -d '/var/run/postgresql') {
+        system 'install', '-d', '-m', 2775, '-o', 'postgres', '-g', 'postgres', '/var/run/postgresql';
+    }
 
-# recreate stats_temp_directory
-if ($action ne 'stop' && $info{config}->{stats_temp_directory} && ! -d $info{config}->{stats_temp_directory}) {
-    system 'install', '-d', '-m', 750,
-	'-o', $info{'owneruid'}, '-g', $info{'ownergid'}, $info{config}->{stats_temp_directory};
+    # allow creating socket directories below /var/run/postgresql for any user
+    if ($info{socketdir} =~ m!^(/var)/run/postgresql/[\w_.-]+$! and ! -d $info{socketdir}) {
+        if (mkdir $info{socketdir}, 02775) { # don't use "install" here as it would allow stealing existing directories
+            chown $info{owneruid}, $info{ownergid}, $info{socketdir};
+        } else {
+            error "Could not create $info{socketdir}: $!";
+        }
+    }
+
+    # allow creating stats_temp_directory below /var/run/postgresql for any user
+    if ($info{config}->{stats_temp_directory} and $info{config}->{stats_temp_directory}=~ m!^(/var)/run/postgresql/[\w_.-]+$! and ! -d $info{config}->{stats_temp_directory}) {
+        if (mkdir $info{config}->{stats_temp_directory}, 0750) { # don't use "install" here as it would allow stealing existing directories
+            chown $info{owneruid}, $info{ownergid}, $info{config}->{stats_temp_directory};
+        } else {
+            error "Could not create $info{config}->{stats_temp_directory}: $!";
+        }
+    }
 }
 
 if ($> == 0) {
@@ -481,6 +494,16 @@ if ($> == 0) {
 if( $> != $info{'owneruid'} ) {
     error 'You must run this program as the cluster owner ('.
         (getpwuid $info{'owneruid'})[0].') or root';
+}
+
+# create socket directory (if it wasn't already created in /var/run/postgresql by the code above)
+if ($action ne 'stop' && ! -d $info{socketdir}) {
+    system 'install', '-d', '-m', 2775, $info{socketdir};
+}
+
+# create stats_temp_directory (if it wasn't already created in /var/run/postgresql by the code above)
+if ($action ne 'stop' && $info{config}->{stats_temp_directory} && ! -d $info{config}->{stats_temp_directory}) {
+    system 'install', '-d', '-m', 750, $info{config}->{stats_temp_directory};
 }
 
 $pg_ctl = $bindir ? "$bindir/pg_ctl" : get_program_path ('pg_ctl', $version);
