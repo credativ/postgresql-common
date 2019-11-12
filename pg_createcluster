@@ -80,14 +80,6 @@ sub init_db {
     if (my $options = $defaultconf{'initdb_options'}) {
         push @initdb, split (/\s+/, replace_v_c ($options, $version, $cluster));
     }
-    push @initdb, ('--encoding', $encoding) if $encoding;
-    push @initdb, ('--locale', $locale) if $locale;
-    push @initdb, ('--lc-collate', $lc_collate) if $lc_collate;
-    push @initdb, ('--lc-ctype', $lc_ctype) if $lc_ctype;
-    push @initdb, ('--lc-messages', $lc_messages) if $lc_messages;
-    push @initdb, ('--lc-monetary', $lc_monetary) if $lc_monetary;
-    push @initdb, ('--lc-numeric', $lc_numeric) if $lc_numeric;
-    push @initdb, ('--lc-time', $lc_time) if $lc_time;
     push @initdb, @$initdb_opts_from_cli;
 
     if (fork) {
@@ -191,6 +183,7 @@ my @pgoptions;
 my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 my $environmentfile = "$PgCommon::common_confdir/environment";
 my ($socketdir, $custom_logfile, $start, $port);
+my ($encoding, $locale, $lc_collate, $lc_ctype,  $lc_messages, $lc_monetary, $lc_numeric, $lc_time);
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
@@ -277,8 +270,18 @@ if ($cluster =~ /-/ and -t 1) {
 }
 splice @ARGV, 0, 2;
 
+my @initdb_opts_from_cli;
+# options passed through to initdb
+push @initdb_opts_from_cli, ('--encoding', $encoding) if $encoding;
+push @initdb_opts_from_cli, ('--locale', $locale) if $locale;
+push @initdb_opts_from_cli, ('--lc-collate', $lc_collate) if $lc_collate;
+push @initdb_opts_from_cli, ('--lc-ctype', $lc_ctype) if $lc_ctype;
+push @initdb_opts_from_cli, ('--lc-messages', $lc_messages) if $lc_messages;
+push @initdb_opts_from_cli, ('--lc-monetary', $lc_monetary) if $lc_monetary;
+push @initdb_opts_from_cli, ('--lc-numeric', $lc_numeric) if $lc_numeric;
+push @initdb_opts_from_cli, ('--lc-time', $lc_time) if $lc_time;
+
 # initdb options passed after --
-my @initdb_opts_from_cli = ();
 foreach my $argv (@ARGV) {
     # the user passed an authentication method, don't mess with initdb and pg_hba.conf
     if ($argv =~ /^(-\w*A|--auth\b)/) { # -A --auth --auth-host --auth-local
