@@ -16,6 +16,8 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
+use strict;
+use warnings;
 use Getopt::Long;
 use PgCommon;
 
@@ -23,7 +25,7 @@ use PgCommon;
 $ENV{'PATH'} = '/bin:/usr/bin';
 delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
 
-$stopserver = 0;
+my $stopserver = 0;
 exit 1 unless GetOptions ('stop-server' => \$stopserver, 'stop' => \$stopserver);
 
 # command line options
@@ -32,8 +34,8 @@ if ($#ARGV != 1) {
     exit 1;
 }
 
-($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
-($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
+my ($version) = $ARGV[0] =~ /^(\d+\.?\d+)$/;
+my ($cluster) = $ARGV[1] =~ /^([-.\w]+)$/;
 error 'invalid version' unless defined $version;
 error 'invalid cluster name' unless defined $cluster;
 
@@ -70,7 +72,7 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
     if ($info{waldir} and -d $info{waldir}) {
         my $walowner = (stat($info{waldir}))[4];
         if (defined $walowner and $walowner == $info{owneruid}) {
-            $result = system 'rm', '-r', '--', $info{waldir};
+            my $result = system 'rm', '-r', '--', $info{waldir};
             if ($result) {
                 print STDERR "Warning: could not remove wal directory $info{waldir}";
             }
@@ -118,7 +120,7 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
     }
 
     # remove pgdata
-    $result = system 'rm', '-r', $info{'pgdata'}; 
+    my $result = system 'rm', '-r', $info{'pgdata'};
     if ($result) {
         if (! -w ($info{'pgdata'} . '/..')) {
             error 'you might need to run this program with root privileges';
