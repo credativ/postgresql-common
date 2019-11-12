@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: Debian PostgreSQL Maintainers <pkg-postgresql-public@lists.alioth.debian.org>
 Uploaders: Martin Pitt <mpitt@debian.org>, Christoph Berg <myon@debian.org>, Peter Eisentraut <petere@debian.org>
 Standards-Version: 3.9.5
-Vcs-Bzr: https://alioth.debian.org/scm/loggerhead/pkg-postgresql/postgresql-common/trunk
-Vcs-Browser: https://alioth.debian.org/scm/loggerhead/pkg-postgresql/postgresql-common/trunk/changes
+Vcs-Git: https://salsa.debian.org/postgresql/postgresql-common.git -b jessie
+Vcs-Browser: https://salsa.debian.org/postgresql/postgresql-common
 Build-Depends: debhelper (>= 9),
  dh-systemd (>= 1.19) | sysvinit (<< 2.88dsf-42),
  lsb-release
