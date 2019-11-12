@@ -26,8 +26,8 @@ use PgCommon;
 
 # determine encoding of an .aff file
 sub get_encoding {
-    open F, $_[0] or die "cannot open $_[0]: $!";
-    while (<F>) {
+    open my $fh, '<', $_[0] or die "cannot open $_[0]: $!";
+    while (<$fh>) {
         if (/^SET ([\w-]+)\s*$/) { return $1; }
     }
     return undef;
