@@ -96,7 +96,7 @@ sub init_db {
 # postgresql.conf.
 # Arguments: <source file> <target dir> <uid> <gid> <perms> <postgresql.conf option>
 sub move_conffile {
-    my ($file, $target, $uid, $gid, $perms, $confopt) = @_;
+    my ($file, $target, $version, $cluster, $uid, $gid, $perms, $confopt) = @_;
     my $realfile = $file;
     while (-l $realfile) {
         $realfile = readlink $realfile;
@@ -364,9 +364,9 @@ set_cluster_start_conf $version, $cluster, $startconf;
 set_cluster_pg_ctl_conf $version, $cluster, '';
 
 # move conffiles, setup permissions
-move_conffile "$datadir/postgresql.conf", $confdir, $owneruid, $ownergid, '644';
-move_conffile "$datadir/pg_hba.conf", $confdir, $owneruid, $ownergid, '640', 'hba_file';
-move_conffile "$datadir/pg_ident.conf", $confdir, $owneruid, $ownergid, '640', 'ident_file';
+move_conffile "$datadir/postgresql.conf", $confdir, $version, $cluster, $owneruid, $ownergid, '644';
+move_conffile "$datadir/pg_hba.conf", $confdir, $version, $cluster, $owneruid, $ownergid, '640', 'hba_file';
+move_conffile "$datadir/pg_ident.conf", $confdir, $version, $cluster, $owneruid, $ownergid, '640', 'ident_file';
 foreach my $f ($datadir, $confdir, "$confdir/start.conf", "$confdir/pg_ctl.conf") {
     lchown $owneruid, $ownergid, $f or error "lchown $f: $!";
 }
