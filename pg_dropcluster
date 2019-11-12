@@ -100,10 +100,10 @@ if ($info{'pgdata'} && -d $info{'pgdata'}) {
                     }
                 }
             } else { # before 9.0
-                if (open F, "$tblspc/PG_VERSION") {
-                    my $v = <F>;
+                if (open my $fh, '<', "$tblspc/PG_VERSION") {
+                    my $v = <$fh>;
                     chomp $v;
-                    close F;
+                    close $fh;
                     if ($v eq $version) {
                         $tblspc =~ /(.*)/; # untaint
                         my $result = system "rm -r -- $1/*";
