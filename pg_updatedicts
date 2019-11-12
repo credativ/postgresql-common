@@ -42,23 +42,22 @@ if ((system 'mkdir', '-p', $cachedir) != 0) {
 my %current;
 
 print "Building PostgreSQL dictionaries from installed myspell/hunspell packages...\n";
-my ($dic, $enc, $locale);
 for my $d (@srcdirs) {
     for my $aff (glob "$d/*.aff") {
 	next if -l $aff; # ignore symlinks
-	$dic = substr($aff, 0, -3) . 'dic';
+	my $dic = substr($aff, 0, -3) . 'dic';
 	if (! -f $dic) {
 	    print STDERR "ERROR: $aff does not have corresponding $dic, ignoring\n";
 	    next;
 	}
 
-	$enc = get_encoding $aff;
+	my $enc = get_encoding $aff;
 	if (!$enc) {
 	    print STDERR "ERROR: no ecoding defined in $aff, ignoring\n";
 	    next;
 	}
 
-	$locale = substr ((split '/', $aff)[-1], 0, -4);
+	my $locale = substr ((split '/', $aff)[-1], 0, -4);
 	$locale =~ tr /A-Z/a-z/;
 
         $current{"$cachedir/$locale.affix"} = undef;
