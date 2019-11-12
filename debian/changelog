@@ -1,3 +1,13 @@
+postgresql-common (200+deb10u3) buster-security; urgency=medium
+
+  * pg_ctlcluster: Drop privileges before creating socket and stats temp
+    directories outside /var/run/postgresql. The default configuration is not
+    affected by this change. Users with directories on volatile storage
+    (tmpfs) in other locations have to make sure the parent directory is
+    writable for the cluster owner. (CVE-2019-3466, discovered by Rich Mirch)
+
+ -- Christoph Berg <myon@debian.org>  Tue, 12 Nov 2019 15:00:36 +0100
+
 postgresql-common (200+deb10u2) buster; urgency=high
 
   DATA LOSS WARNING: pg_upgradecluster from postgresql-common 200,
