@@ -1,4 +1,4 @@
-postgresql-common (210) UNRELEASED; urgency=medium
+postgresql-common (210) unstable; urgency=medium
 
   * pg_ctlcluster: Drop privileges before creating socket and stats temp
     directories outside /var/run/postgresql. The default configuration is not
@@ -6,7 +6,7 @@ postgresql-common (210) UNRELEASED; urgency=medium
     (tmpfs) in other locations have to make sure the parent directory is
     writable for the cluster owner. (CVE-2019-3466, discovered by Rich Mirch)
 
- -- Christoph Berg <myon@debian.org>  Tue, 12 Nov 2019 15:00:36 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 14 Nov 2019 13:23:42 +0100
 
 postgresql-common (209) unstable; urgency=medium
 
