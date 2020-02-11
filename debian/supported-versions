@@ -37,7 +37,7 @@
 # X: consider this version supported
 #
 # (C) 2005-2016 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2019 Christoph Berg <myon@debian.org>
+# (C) 2012-2020 Christoph Berg <myon@debian.org>
 
 set -eu
 
@@ -128,7 +128,6 @@ debian_backports() {
 
 pgdg() {
     cat <<-EOF
-	9.4
 	9.5
 	9.6
 	10

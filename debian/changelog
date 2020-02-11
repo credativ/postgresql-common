@@ -1,3 +1,9 @@
+postgresql-common (212) UNRELEASED; urgency=medium
+
+  * debian/supported-versions: Remove 9.4 support on apt.postgresql.org.
+
+ -- Christoph Berg <myon@debian.org>  Tue, 11 Feb 2020 10:10:13 +0100
+
 postgresql-common (211) unstable; urgency=medium
 
   [ Dagfinn Ilmari Mannsåker ]
