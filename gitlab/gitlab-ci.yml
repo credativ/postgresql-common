@@ -7,6 +7,6 @@ include:
   - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
 
 variables:
-  SALSA_CI_DPKG_BUILDPACKAGE_ARGS: '-e PG_UPDATECONTROL=yes' # tell pg_buildext to automatically generate debian/control from debian/control.in
+  PG_UPDATECONTROL: 'yes' # tell pg_buildext to automatically generate debian/control from debian/control.in (TODO: doesn't work this way yet)
   SALSA_CI_DISABLE_REPROTEST: 'yes' # too many packages fail because reprotest runs the build as root, disable for now
   SALSA_CI_REPROTEST_ENABLE_DIFFOSCOPE: 'yes'
