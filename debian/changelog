@@ -16,6 +16,8 @@ postgresql-common (213) UNRELEASED; urgency=medium
     Michael Banck, thanks! (Salsa #6)
   * pg_wrapper: Reword docs to better describe clusters on the local system.
     Reported by James Coleman, thanks! (Closes: #950149)
+  * pg_wrapper: Document that `ALTER SYSTEM SET port` will interact badly with
+    cluster selection. (Closes: #919385)
 
  -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 11:19:03 +0100
 

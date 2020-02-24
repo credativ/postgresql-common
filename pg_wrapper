@@ -232,6 +232,12 @@ variables and the program called will likely error out with a message like
 For B<psql>, B<pg_archivecleanup>, and B<pg_isready>, B<pg_wrapper> will always use the binary from
 the newest PostgreSQL version installed, as these are downwards compatible.
 
+Note that B<pg_wrapper> needs to be able to read the server config to get the
+port number to connect to. If a non-standard port is configured in a place that
+pg_wrapper cannot read, connecting will fail. This particularly holds if the
+port was configured via B<ALTER SYSTEM> in C<postgresql.auto.conf> and
+pg_wrapper is invoked as any user other than B<postgres> and B<root>.
+
 =head1 OPTIONS
 
 =over
