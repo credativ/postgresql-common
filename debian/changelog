@@ -11,6 +11,9 @@ postgresql-common (213) UNRELEASED; urgency=medium
     dh_installinit. Problem reported by velix, thanks! (Salsa #12)
   * debian/maintscripts-functions: Save full bin and lib dirs on catversion
     bump. Problem reported by Komzzpa, thanks! (Salsa #9)
+  * debian/maintscripts-functions: Suppress errors from pg_controldata, the
+    control file might be missing if the cluster was pg_upgraded. Spotted by
+    Michael Banck, thanks! (Salsa #6)
 
  -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 11:19:03 +0100
 
