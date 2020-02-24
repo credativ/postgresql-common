@@ -117,7 +117,7 @@ EOF
         pg_updatedicts
     fi
 
-    # Reload systemd (we don't restart services on install)
+    # Reload systemd (we don't restart services on install) (#932360, #950726)
     [ -d /run/systemd/system ] && systemctl --system daemon-reload >/dev/null || :
 fi
 
