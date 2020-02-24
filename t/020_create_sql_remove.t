@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 146 * @MAJORS;
+use Test::More tests => 144 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
