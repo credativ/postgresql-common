@@ -134,7 +134,7 @@ sub check_major {
 
     # verify that log symlink works
     is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
-    open L, ">$default_log"; close L; # empty default log file
+    truncate "$default_log", 0; # empty log file
     my $p = (PgCommon::cluster_data_directory $v, 'main') . '/mylog';
     symlink $p, "/etc/postgresql/$v/main/log";
     is ((exec_as 'root', "pg_ctlcluster $v main start"), 0, 
@@ -143,7 +143,7 @@ sub check_major {
     ok -z $default_log, "default log is not used";
     like_program_out 'postgres', 'pg_lsclusters -h', 0, qr/^$v\s+main.*$p\n$/;
     is ((exec_as 'root', "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
-    open L, ">$p"; close L; # empty log file
+    truncate "$default_log", 0; # empty log file
 
     # verify that explicitly configured log file trumps log symlink
     PgCommon::set_conf_value ($v, 'main', 'postgresql.conf', 
