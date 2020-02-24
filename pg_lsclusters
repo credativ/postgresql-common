@@ -75,6 +75,10 @@ foreach my $v (@versions) {
         my $status = $info{'running'} ? "online" : "down";
         $status .= ",recovery" if ($info{'recovery'});
         $status .= ",$info{start}" if ($start_conf);
+        unless (-e "${PgCommon::binroot}$v/bin/postgres") {
+            $status .= ",binaries_missing";
+            $info{binaries_missing} = 1;
+        }
 
         my $logfile = $info{logfile} // '<unknown>'; # default logfile in /var/log/postgresql
         if (config_bool ($info{config}->{logging_collector})) {

@@ -1,7 +1,7 @@
 # Common functions for the postgresql-common framework
 #
 # (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2019 Christoph Berg <myon@debian.org>
+# (C) 2012-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -687,9 +687,11 @@ sub cluster_info {
     return %result;
 }
 
-# Return an array of all available psql versions
+# Return an array of all available versions (by psql binaries and postgresql.conf files)
 sub get_versions {
-    my @versions = ();
+    my %versions = ();
+
+    # enumerate psql versions from /usr/lib/postgresql/* (or /usr/pgsql-*)
     my $dir = $binroot;
     #redhat# $dir = '/usr';
     if (opendir (D, $dir)) {
@@ -699,11 +701,34 @@ sub get_versions {
             my $pfx = '';
             #redhat# $pfx = "pgsql-";
             ($entry) = $entry =~ /^$pfx(\d+\.?\d+)$/; # untaint
-            push @versions, $entry if $entry and get_program_path ('psql', $entry);
+            $versions{$entry} = 1 if $entry and get_program_path ('psql', $entry);
         }
         closedir D;
     }
-    return sort { $a <=> $b } @versions;
+
+    # enumerate versions from /etc/postgresql/*
+    if (opendir (D, $confroot)) {
+        my $v;
+        while (defined ($v = readdir D)) {
+            next if $v eq '.' || $v eq '..';
+            ($v) = $v =~ /^(\d+\.?\d+)$/; # untaint
+            next unless ($v);
+
+            if (opendir (C, "$confroot/$v")) {
+                my $c;
+                while (defined ($c = readdir C)) {
+                    if (-e "$confroot/$v/$c/postgresql.conf") {
+                        $versions{$v} = 1;
+                        last;
+                    }
+                }
+                closedir C;
+            }
+        }
+        closedir D;
+    }
+
+    return sort { $a <=> $b } keys %versions;
 }
 
 # Return the newest available version
@@ -715,7 +740,8 @@ sub get_newest_version {
 
 # Check whether a version exists
 sub version_exists {
-    return (grep { $_ eq $_[0] } get_versions) ? 1 : 0;
+    my ($version) = @_;
+    return get_program_path ('psql', $version);
 }
 
 # Return an array of all available clusters of given version
