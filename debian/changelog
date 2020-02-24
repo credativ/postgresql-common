@@ -8,7 +8,9 @@ postgresql-common (213) UNRELEASED; urgency=medium
     binaries are missing; include "binaries_missing" in status column.
     (Salsa #13)
   * Reload systemd on install since we don't do that automatically via
-    dh_installinit. (Salsa #12)
+    dh_installinit. Problem reported by velix, thanks! (Salsa #12)
+  * debian/maintscripts-functions: Save full bin and lib dirs on catversion
+    bump. Problem reported by Komzzpa, thanks! (Salsa #9)
 
  -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 11:19:03 +0100
 
