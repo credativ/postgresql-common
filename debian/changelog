@@ -1,4 +1,4 @@
-postgresql-common (213) UNRELEASED; urgency=medium
+postgresql-common (213) unstable; urgency=medium
 
   [ Christian Ehrhardt ]
   * t/020_create_sql_remove.t: fix file clear with procps 3.16. (LP: #1864423)
@@ -19,7 +19,7 @@ postgresql-common (213) UNRELEASED; urgency=medium
   * pg_wrapper: Document that `ALTER SYSTEM SET port` will interact badly with
     cluster selection. (Closes: #919385)
 
- -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 11:19:03 +0100
+ -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 16:20:14 +0100
 
 postgresql-common (212) unstable; urgency=medium
 
