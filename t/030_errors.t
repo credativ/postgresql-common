@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 147;
+use Test::More tests => 149;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -32,6 +32,15 @@ sub check_nonexisting_cluster_error {
     like $$outref, qr/(invalid version|does not exist)/i, "$_[0] gives error message about nonexisting cluster";
     unlike $$outref, qr/invalid symbolic link/i, "$_[0] does not print 'invalid symbolic link' gibberish";
 }
+
+# check if pg_lsclusters shows a cluster without binaries
+mkdir "/etc/postgresql/6.3";
+mkdir "/etc/postgresql/6.3/main";
+open F, ">/etc/postgresql/6.3/main/postgresql.conf";
+close F;
+is `pg_lsclusters -h`, "6.3 main <unknown> down,binaries_missing <unknown> <unknown> <unknown>\n",
+    'pg_lscluster reports cluster without binaries';
+program_ok 0, "pg_dropcluster 6.3 main";
 
 # create cluster
 ok ((system "pg_createcluster --socketdir '$socketdir' $version main >/dev/null") == 0,
