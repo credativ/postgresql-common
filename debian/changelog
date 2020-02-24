@@ -7,6 +7,8 @@ postgresql-common (213) UNRELEASED; urgency=medium
   * pg_lsclusters: List clusters even if the corresponding PostgreSQL
     binaries are missing; include "binaries_missing" in status column.
     (Salsa #13)
+  * Reload systemd on install since we don't do that automatically via
+    dh_installinit. (Salsa #12)
 
  -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 11:19:03 +0100
 
