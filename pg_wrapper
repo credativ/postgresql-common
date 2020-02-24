@@ -4,7 +4,7 @@
 # /etc/postgresql-common/user_clusters.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2017 Christoph Berg <myon@debian.org>
+# (C) 2013-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ $ENV{'PGDATABASE'} = $db if $db && !$ENV{'PGDATABASE'};
 my $cmdname = (split '/', $0)[-1];
 
 unless ($version or $explicit_host or $explicit_port or $explicit_service) {
-    print STDERR "Warning: No existing local cluster is suitable as a default target. Please see man pg_wrapper(1) how to specify one.\n";
+    print STDERR "Warning: No existing cluster is suitable as a default target. Please see man pg_wrapper(1) how to specify one.\n";
 }
 
 # if we have no version yet, use the latest version. We were called as psql,
@@ -216,11 +216,11 @@ L<user_clusters(5)>), if that file exists
 
 =item 7.
 
-If only one local cluster exists, that one will be selected.
+If only one cluster exists on the local system, that one will be selected.
 
 =item 8.
 
-If several local clusters exist, the one listening on the default port 5432
+If several clusters exist on the local system, the one listening on the default port 5432
 will be selected.
 
 =back
@@ -240,7 +240,7 @@ the newest PostgreSQL version installed, as these are downwards compatible.
 
 =item B<--cluster> I<version>B</>I<host>B<:>[I<port>]
 
-I<cluster> is either the name of a local cluster, or takes the form
+I<cluster> is either the name of a cluster on the local system, or takes the form
 I<host>:I<port> for a remote cluster. If I<port> is left empty (i. e. you just
 specify I<host:>), it defaults to 5432.
 

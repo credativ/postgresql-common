@@ -14,6 +14,8 @@ postgresql-common (213) UNRELEASED; urgency=medium
   * debian/maintscripts-functions: Suppress errors from pg_controldata, the
     control file might be missing if the cluster was pg_upgraded. Spotted by
     Michael Banck, thanks! (Salsa #6)
+  * pg_wrapper: Reword docs to better describe clusters on the local system.
+    Reported by James Coleman, thanks! (Closes: #950149)
 
  -- Christoph Berg <myon@debian.org>  Mon, 24 Feb 2020 11:19:03 +0100
 
