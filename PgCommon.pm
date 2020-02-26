@@ -608,21 +608,13 @@ sub check_pidfile_running {
     return 0 if ! -e $_[0];
 
     my $pid = read_pidfile $_[0];
-    if (defined $pid) {
-	prepare_exec;
-        my $res = open PS, '-|', '/bin/ps', '-o', 'comm=', '-p', $pid;
-	restore_exec;
-	if ($res) {
-	    my $process = <PS>;
-	    chomp $process if defined $process;
-	    close PS;
-            if (defined $process and ($process eq 'postgres')) {
-                return 1;
-            } else {
-		return 0;
-	    }
+    if (defined $pid and open CL, "/proc/$pid/cmdline") {
+        my $cmdline = <CL>;
+        close CL;
+        if ($cmdline and $cmdline =~ /\bpostgres\b/) {
+            return 1;
         } else {
-            error "Could not exec /bin/ps";
+            return 0;
         }
     }
     return undef;

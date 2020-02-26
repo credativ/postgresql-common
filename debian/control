@@ -23,7 +23,6 @@ Depends:
  lsb-base (>= 3.0-3),
  perl (>= 5.14),
  postgresql-client-common (= ${source:Version}),
- procps,
  ssl-cert (>= 1.0.11),
  ucf,
  ${misc:Depends},
