@@ -1,9 +1,9 @@
-postgresql-common (214) UNRELEASED; urgency=medium
+postgresql-common (214) unstable; urgency=medium
 
   * check_pidfile_running: Read /proc/$pid/cmdline instead of calling /bin/ps.
     (Works around #952572)
 
- -- Christoph Berg <myon@debian.org>  Wed, 26 Feb 2020 21:00:44 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 27 Feb 2020 13:22:52 +0100
 
 postgresql-common (213) unstable; urgency=medium
 
