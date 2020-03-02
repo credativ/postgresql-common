@@ -173,6 +173,11 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf and $startconf eq 'au
     }
 }
 
+# notify apt about the new cluster
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $> == 0) {
+    system "/usr/share/postgresql-common/pg_updateaptconfig";
+}
+
 exit 0;
 
 __END__

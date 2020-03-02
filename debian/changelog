@@ -1,3 +1,11 @@
+postgresql-common (215) UNRELEASED; urgency=medium
+
+  * Mark only the packages as apt NeverAutoRemove for which PostgreSQL
+    clusters exist. /etc/apt/apt.conf.d/01autoremove-postgresql is updated
+    when clusters are created and dropped. (Closes: #948728)
+
+ -- Christoph Berg <myon@debian.org>  Mon, 02 Mar 2020 15:00:01 +0100
+
 postgresql-common (214) unstable; urgency=medium
 
   * check_pidfile_running: Read /proc/$pid/cmdline instead of calling /bin/ps.

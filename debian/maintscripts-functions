@@ -103,6 +103,9 @@ or a similar command (see 'man pg_createcluster')." >&2
     # done with debconf
     db_stop
 
+    # update list of packages not to apt-autoremove
+    /usr/share/postgresql-common/pg_updateaptconfig
+
     # reload systemd to let the generator pick up the new unit
     if [ -d /run/systemd/system ]; then
         systemctl daemon-reload
@@ -122,6 +125,8 @@ stop_version() {
 remove_version() {
     _unlink_manpages "$1" postmaster.1.gz
     _remove_tsearch "$1"
+    # update list of packages not to apt-autoremove
+    /usr/share/postgresql-common/pg_updateaptconfig
 }
 
 configure_client_version() {

@@ -131,4 +131,9 @@ fi
 
 #DEBHELPER#
 
+if [ "$1" = configure ]; then
+    # update list of packages not to apt-autoremove (after dpkg-maintscript-helper possibly removed the old version)
+    /usr/share/postgresql-common/pg_updateaptconfig
+fi
+
 exit 0

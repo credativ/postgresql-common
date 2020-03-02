@@ -4,7 +4,7 @@
 # the postgresql-common infrastructure.
 #
 # (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2019 Christoph Berg <myon@debian.org>
+# (C) 2012-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -592,6 +592,11 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $startconf eq 'auto' and -d '/ru
         print "Warning: systemd does not know about the new cluster yet. Operations like \"service postgresql start\" will not handle it. To fix, run:\n";
         print "  sudo systemctl daemon-reload\n";
     }
+}
+
+# notify apt about the new cluster
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and $> == 0) {
+    system "/usr/share/postgresql-common/pg_updateaptconfig";
 }
 
 # start it if requested

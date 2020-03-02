@@ -137,6 +137,7 @@ if [ -z "${NO_TMPFS:-}" ]; then
         set +e
         umount -l $dirs
         sed -i -e '/# by pg-testsuite/d' /etc/postgresql-common/createcluster.conf
+        ./pg_updateaptconfig
         systemctl daemon-reload 2> /dev/null || : # poke generator to handle the system's clusters again
     }
     trap "cleanup" 0 HUP INT QUIT ILL ABRT PIPE TERM

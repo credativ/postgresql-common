@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 144 * @MAJORS;
+use Test::More tests => 148 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -401,6 +401,10 @@ tel|2
         is_program_out 'postgres', "psql -qc 'CREATE TABLE tbl2 (x int) TABLESPACE spc2'", 0, '', 'creating a table in spc2';
     }
 
+    # check apt config
+    is_program_out 0, "egrep -o 'postgresql-[0-9.]+' /etc/apt/apt.conf.d/01autoremove-postgresql", 0,
+        "postgresql-$v\n", "Correct apt NeverAutoRemove config";
+
     # stop server, clean up, check for leftovers
     ok ((system "pg_dropcluster $v main --stop") == 0,
 	'pg_dropcluster removes cluster');
@@ -408,6 +412,10 @@ tel|2
     is (-e $xlogdir, undef, "xlog/wal directory $xlogdir was deleted");
     ok_dir $spc1, [], "tablespace spc1 was emptied";
     ok_dir $spc2, [qw(PG_99_fakedirectory)], "tablespace spc2 was emptied";
+
+    is_program_out 0, "egrep -o 'postgresql-[0-9.]+' /etc/apt/apt.conf.d/01autoremove-postgresql", 1,
+        "", "Correct apt NeverAutoRemove config";
+
     check_clean;
 }
 
