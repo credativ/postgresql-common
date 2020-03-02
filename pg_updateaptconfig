@@ -25,7 +25,7 @@ APT
 EOF
 
 pg_lsclusters -h | uniq | cut -d ' ' -f 1 | while read version; do
-    echo "    \"^postgresql-$version\";" >> $TMPCONF
+    echo "    \"^postgresql.*-$version\";" >> $TMPCONF
 done
 
 cat >> $TMPCONF <<EOF
