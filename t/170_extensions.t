@@ -23,6 +23,8 @@ is_program_out 'postgres', "psql -qc 'DROP EXTENSION plpgsql'", 0, '';
 is_program_out 'postgres', "psql -Atc 'SELECT * FROM pg_extension'", 0, '';
 
 my %depends = (
+    bool_plperl       => [qw(plperl)],
+    bool_plperlu      => [qw(plperlu)],
     earthdistance     => [qw(cube)],
     hstore_plperl     => [qw(hstore plperl)],
     hstore_plperlu    => [qw(hstore plperlu)],
