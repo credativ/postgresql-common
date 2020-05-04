@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 148 * @MAJORS;
+use Test::More tests => 149 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -184,12 +184,17 @@ sub check_major {
     # default installation)
     my $ssl = config_bool (PgCommon::get_conf_value $v, 'main', 'postgresql.conf', 'ssl');
     my $ssl_linked = `ldd $PgCommon::binroot$v/bin/postgres | grep libssl`;
+    my ($os, $osversion) = os_release();
     if ($PgCommon::rpm) {
-        is $ssl, undef, 'SSL is disabled';
-    } elsif ($v <= 9.1 and not $ssl_linked) {
-        is $ssl, undef, 'SSL is disabled (old version with only OpenSSL 1.0 support)';
+        isnt $ssl_linked, '', 'Server is linked with SSL support';
+        is $ssl, undef, 'SSL is disabled in postgresql.conf';
+    } elsif ($v <= 9.1 and (($os eq 'debian' and ($osversion eq 'unstable' or $osversion > 9)) or # stretch had 1.0 and 1.1
+                            ($os eq 'ubuntu' and $osversion > 18.04))) { # bionic had 1.0 and 1.1
+        is $ssl_linked, '', 'Server is linked without SSL support (old version with only OpenSSL 1.0 support)';
+        is $ssl, undef, 'SSL is disabled in postgresql.conf';
     } else {
-        is $ssl, 1, 'SSL is enabled';
+        isnt $ssl_linked, '', 'Server is linked with SSL support';
+        is $ssl, 1, 'SSL is enabled in postgresql.conf';
     }
 
     # Create user nobody, a database 'nobodydb' for him, check the database list
