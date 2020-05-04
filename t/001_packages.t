@@ -1,12 +1,18 @@
 # Check that the necessary packages are installed
 
+use warnings;
 use strict;
 
 use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => $PgCommon::rpm ? (8*@MAJORS) : (11 + 7*@MAJORS);
+use Test::More tests => $PgCommon::rpm ? (3 + 8*@MAJORS) : (14 + 7*@MAJORS);
+
+ok (-f "/etc/os-release", "/etc/os-release exists");
+my ($os, $osversion) = os_release();
+ok (defined $os, "OS is $os");
+ok (defined $osversion, "OS version is $osversion");
 
 note "PostgreSQL versions installed: @MAJORS\n";
 

@@ -1,7 +1,7 @@
 # Common functionality for postgresql-common self tests
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2019 Christoph Berg <myon@debian.org>
+# (C) 2013-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ use PgCommon qw/get_versions change_ugid/;
 
 our $VERSION = 1.00;
 our @ISA = ('Exporter');
-our @EXPORT = qw/ps ok_dir exec_as deb_installed rpm_installed package_version
+our @EXPORT = qw/os_release ps ok_dir exec_as deb_installed rpm_installed package_version
     version_ge program_ok is_program_out like_program_out unlike_program_out
     pidof pid_env check_clean
     @ALL_MAJORS @MAJORS $delay/;
@@ -38,6 +38,19 @@ sub fail_debug {
 	    exit 1;
 	}
     }
+}
+
+# parse /etc/os-release and return (os, version number)
+sub os_release {
+    open OS, "/etc/os-release" or return (undef, undef);
+    my ($os, $osversion);
+    while (<OS>) {
+        $os = $1 if /^ID=(.*)/;
+        $osversion = $1 if /^VERSION_ID=(.*)/;
+    }
+    close OS;
+    $osversion = 'unstable' if ($os eq 'debian' and not defined $osversion);
+    return ($os, $osversion);
 }
 
 # Return whether a given deb is installed.
