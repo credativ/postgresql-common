@@ -46,7 +46,7 @@ sub os_release {
     my ($os, $osversion);
     while (<OS>) {
         $os = $1 if /^ID=(.*)/;
-        $osversion = $1 if /^VERSION_ID=(.*)/;
+        $osversion = $1 if /^VERSION_ID="?([^"]*)/;
     }
     close OS;
     $osversion = 'unstable' if ($os eq 'debian' and not defined $osversion);
