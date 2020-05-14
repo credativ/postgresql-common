@@ -1,4 +1,4 @@
-postgresql-common (215) UNRELEASED; urgency=medium
+postgresql-common (215) unstable; urgency=medium
 
   * Mark only the packages as apt NeverAutoRemove for which PostgreSQL
     clusters exist. /etc/apt/apt.conf.d/01autoremove-postgresql is updated
@@ -6,7 +6,7 @@ postgresql-common (215) UNRELEASED; urgency=medium
   * t/TestLib.pm: Add os_release function.
   * t/020_create_sql_remove.t: Verify server libssl linkage.
 
- -- Christoph Berg <myon@debian.org>  Mon, 02 Mar 2020 15:00:01 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 14 May 2020 16:36:50 +0200
 
 postgresql-common (214) unstable; urgency=medium
 
