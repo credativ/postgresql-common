@@ -1,56 +1,45 @@
-# postgresql-common po-debconf translation to spanish
-# Copyright (C) 2006 Software in the Public Interest, SPI Inc.
-# This file is distributed under the same license as the postgresql-common
-# package.
+# postgresql-common po-debconf translation to Spanish
+# Copyright (C) 2010 Software in the Public Interest
+# This file is distributed under the same license as the ocsinventory-server package.
 #
 # Changes:
 # - Initial translation
-#       Javier Fernández-Sanguino , 2006
-# - Updated
-#       Javier Fernández-Sanguino , 2007-2008
-# 	Manuel "Venturi" Porras Peralta <venturi@openmailbox.org>, 2014.
+# Manuel \"Venturi\" Porras Peralta <venturi@openmailbox.org>, 2016
 #
-#  Traductores, si no conoce el formato PO, merece la pena leer la 
-#  documentación de gettext, especialmente las secciones dedicadas a este
-#  formato, por ejemplo ejecutando:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
+# - Updates
+# Camaleón <noelamac@gmail.com>, 2020
+#
+# Traductores, si no conocen el formato PO, merece la pena leer la
+# documentación de gettext, especialmente las secciones dedicadas a este
+# formato, por ejemplo ejecutando:
+# info -n '(gettext)PO Files'
+# info -n '(gettext)Header Entry'
 #
 # Equipo de traducción al español, por favor lean antes de traducir
 # los siguientes documentos:
 #
 # - El proyecto de traducción de Debian al español
-#   http://www.debian.org/intl/spanish/
-#   especialmente las notas y normas de traducción en
-#   http://www.debian.org/intl/spanish/notas
+# http://www.debian.org/intl/spanish/
+# especialmente las notas y normas de traducción en
+# http://www.debian.org/intl/spanish/notas
 #
 # - La guía de traducción de po's de debconf:
-#   /usr/share/doc/po-debconf/README-trans
-#   o http://www.debian.org/intl/l10n/po-debconf/README-trans
-#
-# Si tiene dudas o consultas sobre esta traducción consulte con el último
-# traductor (campo Last-Translator) y ponga en copia a la lista de
-# traducción de Debian al español (<debian-l10n-spanish@lists.debian.org>)
-#
+# /usr/share/doc/po-debconf/README-trans
+# o http://www.debian.org/intl/l10n/po-debconf/README-trans
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 68\n"
+"Project-Id-Version: postgresql-common\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2016-03-05 11:47+0100\n"
-"PO-Revision-Date: 2014-12-21 12:27+0100\n"
-"Last-Translator: Manuel \"Venturi\" Porras Peralta <venturi@openmailbox."
-"org>\n"
-"Language-Team: Español; Castellano <debian-l10n-spanish@lists.debian.org>\n"
+"PO-Revision-Date: 2020-05-03 15:56+0000\n"
+"Last-Translator: Camaleón <noelamac@gmail.com>\n"
+"Language-Team: Debian Spanish <debian-l10n-spanish@lists.debian.org>\n"
 "Language: es\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-POFile-SpellExtra: PostgreSQL oldversion clúster stop pgdropcluster\n"
-"X-POFile-SpellExtra: client old main clústers pgupgradecluster latest\n"
-"X-POFile-SpellExtra: postgresql\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
 
 #. Type: error
 #. Description
@@ -63,15 +52,15 @@ msgstr "Versión principal ${old} obsoleta"
 #: ../postgresql-common.templates:1001
 msgid ""
 "The PostgreSQL version ${old} is obsolete, but the server or client packages "
-"are still installed. Please install the latest packages (postgresql-"
-"${latest} and postgresql-client-${latest}) and upgrade the existing "
-"${oldversion} clusters with pg_upgradecluster (see manpage)."
+"are still installed. Please install the latest packages (postgresql-${latest}"
+" and postgresql-client-${latest}) and upgrade the existing ${oldversion} "
+"clusters with pg_upgradecluster (see manpage)."
 msgstr ""
 "La versión de PostgreSQL ${old} está obsoleta, pero el paquete del cliente o "
 "del servidor aún están instalados. Debe instalar las últimas versiones de "
 "los paquetes (postgresql-${latest} y postgresql-client-${latest}) y "
-"actualizar sus clústers ${oldversion} con la orden "
-"«pg_upgradecluster» (consulte la página del manual)."
+"actualizar sus clústers ${oldversion} con la orden «pg_upgradecluster» "
+"(consulte la página del manual)."
 
 #. Type: error
 #. Description
@@ -154,7 +143,7 @@ msgstr "Si no está seguro, active SSL."
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "La versión del catálogo de PostgreSQL ${version} ha cambiado"
 
 #. Type: note
 #. Description
@@ -166,6 +155,10 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"El clúster de PostgreSQL ${version} ${cluster} se creó utilizando la versión "
+"del catálogo ${db_catversion}, pero el paquete de  postgresql-${version} que "
+"se va instalar utiliza la versión del catálogo ${new_catversion}. No podrá "
+"utilizar este clúster si no lo actualiza a la nueva versión del catálogo."
 
 #. Type: note
 #. Description
@@ -174,3 +167,6 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"El subconjunto de los archivos binarios necesarios de la versión antigua se "
+"han guardado en ${vartmpdir}. Para actualizar el clúster, ejecute las "
+"siguientes órdenes:"

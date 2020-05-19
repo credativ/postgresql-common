@@ -1,3 +1,9 @@
+postgresql-common (216) UNRELEASED; urgency=medium
+
+  * Updated es debconf translation by Camaleón, thanks! (Closes: #960994)
+
+ -- Christoph Berg <myon@debian.org>  Tue, 19 May 2020 09:46:50 +0200
+
 postgresql-common (215) unstable; urgency=medium
 
   * Mark only the packages as apt NeverAutoRemove for which PostgreSQL
