@@ -25,7 +25,7 @@ while getopts "c:f:ipstv:y" opt ; do
         p) PURGE="yes" ;; # purge existing postgresql packages
         s) DEB_SRC="deb-src" ;; # include source repository as well
         t) PGDG="pgdg-testing" ;; # use *-pgdg or *-pgdg-testing
-        v) VERSION="$OPTARG" ;; # set up sources.list to use this version (useful for beta/devel packages)
+        v) PGVERSION="$OPTARG" ;; # set up sources.list to use this version (useful for beta/devel packages)
         y) ;; # don't ask for confirmation
         *) exit 5 ;;
     esac
@@ -34,7 +34,7 @@ done
 # shift away args
 shift $((OPTIND - 1))
 # check options
-if [ "$INSTALL" ] && [ -z "$VERSION" ]; then
+if [ "$INSTALL" ] && [ -z "$PGVERSION" ]; then
     echo "With -i, a version to install must be provided (-v)"
     exit 1
 fi
@@ -74,14 +74,14 @@ fi
 # errors are non-fatal above
 set -e
 
-# handle -v VERSION
-case $VERSION in # FIXME: this shouldn't be hard-coded in here
+# handle -v PGVERSION
+case $PGVERSION in # FIXME: this shouldn't be hard-coded in here
     # devel version comes from *-pgdg-testing (with lower default apt pinning priority)
     13) PGDG="pgdg-testing"
-        COMPONENTS="main $VERSION"
+        COMPONENTS="main $PGVERSION"
         PIN="-t $CODENAME-$PGDG" ;;
     # beta version just needs a different component
-    12) COMPONENTS="main $VERSION" ;;
+    12) COMPONENTS="main $PGVERSION" ;;
 esac
 
 cat <<EOF
@@ -127,6 +127,7 @@ esac
 if [ -z "$YES" ]; then
     echo -n "Press Enter to continue, or Ctrl-C to abort."
     read enter
+    echo
 fi
 
 echo "Writing $SOURCESLIST ..."
@@ -218,6 +219,7 @@ Gtz3cydIohvNO9d90+29h0eGEDYti7j7maHkBKUAwlcPvMg5m3Y=
 -----END PGP PUBLIC KEY BLOCK-----
 EOF
 
+echo
 echo "Running apt-get update ..."
 apt-get update
 
@@ -232,13 +234,17 @@ EOF
 # remove/install packages
 export DEBIAN_FRONTEND=noninteractive
 if [ "$PURGE" ]; then
+    echo
     echo "Purging existing PostgreSQL packages ..."
     apt-get -y purge postgresql-client-common
 fi
 if [ "$INSTALL" ]; then
-    echo "Installing packages for PostgreSQL $VERSION ..."
-    case $VERSION in
-        8*|9*) CONTRIB="postgresql-contrib-$VERSION" ;;
+    echo
+    echo "Installing packages for PostgreSQL $PGVERSION ..."
+    case $PGVERSION in
+        8*|9*) CONTRIB="postgresql-contrib-$PGVERSION" ;;
     esac
-    apt-get -y -o DPkg::Options::=--force-confnew install $PIN postgresql-$VERSION ${CONTRIB:-} postgresql-server-dev-$VERSION
+    apt-get -y -o DPkg::Options::=--force-confnew \
+        install ${PIN:-} \
+        postgresql-$PGVERSION ${CONTRIB:-} postgresql-server-dev-$PGVERSION
 fi
