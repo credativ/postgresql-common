@@ -2,7 +2,7 @@
 
 # script to add apt.postgresql.org to sources.list
 
-# Copyright (C) 2013-2019 Christoph Berg <myon@debian.org>
+# Copyright (C) 2013-2020 Christoph Berg <myon@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -237,5 +237,8 @@ if [ "$PURGE" ]; then
 fi
 if [ "$INSTALL" ]; then
     echo "Installing packages for PostgreSQL $VERSION ..."
-    apt-get -y -o DPkg::Options::=--force-confnew install $PIN postgresql-$VERSION postgresql-server-dev-$VERSION
+    case $VERSION in
+        8*|9*) CONTRIB="postgresql-contrib-$VERSION" ;;
+    esac
+    apt-get -y -o DPkg::Options::=--force-confnew install $PIN postgresql-$VERSION ${CONTRIB:-} postgresql-server-dev-$VERSION
 fi
