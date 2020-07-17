@@ -2,6 +2,8 @@ postgresql-common (216) UNRELEASED; urgency=medium
 
   * Updated es debconf translation by Camaleón, thanks! (Closes: #960994)
   * apt.postgresql.org.sh: Install contrib package with -i.
+  * pg_virtualenv: Show PostgreSQL backtrace when coredumps are found and gdb
+    is installed.
 
  -- Christoph Berg <myon@debian.org>  Tue, 19 May 2020 09:46:50 +0200
 

@@ -30,6 +30,10 @@ for other users, B<PG_CLUSTER_CONF_ROOT> and B<PGSYSCONFDIR> are
 set to a temporary directory where all files belonging to the clusters are
 created.
 
+If I<command> fails, the tail of the PostgreSQL server log is shown.
+Additionally, if B<gdb> is available, the backtrace from any PostgreSQL
+coredump is show.
+
 =head1 OPTIONS
 
 =over 4
