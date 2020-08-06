@@ -5,6 +5,7 @@ postgresql-common (216) UNRELEASED; urgency=medium
   * pg_virtualenv: Show PostgreSQL backtrace when coredumps are found and gdb
     is installed.
   * pg_ctlcluster: Fix cluster start in 8.2/3.
+  * pg_virtualenv: 8.2 doesn't have pg_ctl -c yet.
 
  -- Christoph Berg <myon@debian.org>  Tue, 19 May 2020 09:46:50 +0200
 

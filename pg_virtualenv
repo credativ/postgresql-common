@@ -205,7 +205,8 @@ for v in $PG_VERSIONS; do
 	# in fakeroot, the username will likely default to "postgres" otherwise
         echo "This is a temporary throw-away cluster" > ${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/.by_pg_virtualenv
         # start cluster with coredumps enabled
-        pg_ctlcluster $v regress start -- -c
+        [ $v != 8.2 ] && ENABLE_COREDUMPS="-c"
+        pg_ctlcluster $v regress start -- ${ENABLE_COREDUMPS:-}
     )
     port=$(pg_conftool -s $v regress show port)
 

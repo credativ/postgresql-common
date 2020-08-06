@@ -87,6 +87,7 @@ sub cluster_port_ready {
     while ($n < ($result ? 10 : 3)) {
         select undef, undef, undef, 0.5;
         $out = `LC_MESSAGES=C $psql -h '$sd' --port $p $nopwoption -Xc '' template1 2>&1 >/dev/null`;
+        print "out $out\n";
 
         if ($? == $result) {
             $n++;
