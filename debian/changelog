@@ -4,6 +4,7 @@ postgresql-common (216) UNRELEASED; urgency=medium
   * apt.postgresql.org.sh: Install contrib package with -i.
   * pg_virtualenv: Show PostgreSQL backtrace when coredumps are found and gdb
     is installed.
+  * pg_ctlcluster: Fix cluster start in 8.2/3.
 
  -- Christoph Berg <myon@debian.org>  Tue, 19 May 2020 09:46:50 +0200
 
