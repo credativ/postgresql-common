@@ -1,3 +1,12 @@
+postgresql-common (200+deb10u4) buster; urgency=medium
+
+  * t/170_extensions.t: Don't drop plpgsql before testing extensions.
+    A recent security fix in the PostgreSQL server (CVE-2020-14350) makes use
+    of plpgsql DO blocks in various extension creation scripts without
+    declaring a formal dependency on it, so change tests not to drop plpgsql.
+
+ -- Christoph Berg <myon@debian.org>  Fri, 14 Aug 2020 14:54:15 +0200
+
 postgresql-common (200+deb10u3) buster-security; urgency=medium
 
   * pg_ctlcluster: Drop privileges before creating socket and stats temp
