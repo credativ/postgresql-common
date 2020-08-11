@@ -18,9 +18,8 @@ if ($v < '9.1') {
 # create cluster
 is ((system "pg_createcluster $v main --start >/dev/null"), 0, "pg_createcluster $v main");
 
-# plpgsql is installed by default; remove it to simplify test logic
-is_program_out 'postgres', "psql -qc 'DROP EXTENSION plpgsql'", 0, '';
-is_program_out 'postgres', "psql -Atc 'SELECT * FROM pg_extension'", 0, '';
+# plpgsql is installed by default
+is_program_out 'postgres', "psql -Atc 'SELECT extname FROM pg_extension'", 0, "plpgsql\n";
 
 my %depends = (
     bool_plperl       => [qw(plperl)],
@@ -39,23 +38,17 @@ my %depends = (
     ltree_plpython2u  => [qw(ltree plpython2u)],
     ltree_plpython3u  => [qw(ltree plpython3u)],
     ltree_plpythonu   => [qw(ltree plpythonu)],
-    # external extensions that might happen to be installed
-    db2fce            => [qw(plpgsql)],
-    pldbgapi          => [qw(plpgsql)],
-    unit              => [qw(plpgsql)],
 );
 
 foreach (</usr/share/postgresql/$v/extension/*.control>) {
     my ($extname) = $_ =~ /^.*\/(.*)\.control$/;
-
-    my $expected_extensions = "$extname\n";
+    next if ($extname eq 'plpgsql');
 
     if ($depends{$extname}) {
         for my $dep (@{$depends{$extname}}) {
             is_program_out 'postgres', "psql -qc 'CREATE EXTENSION $dep'", 0, '',
                 "$extname dependency $dep installs without error";
         }
-        $expected_extensions = join ("\n", sort ($extname, @{$depends{$extname}})) . "\n";
     }
 
     if ($extname eq 'hstore' && $v eq '9.1') {
@@ -73,8 +66,6 @@ foreach (</usr/share/postgresql/$v/extension/*.control>) {
 	    "extension $extname installs without error";
     }
 
-    is_program_out 'postgres', "psql -Atc 'SELECT extname FROM pg_extension ORDER BY extname'", 0,
-	$expected_extensions, "$extname is in pg_extension";
     is_program_out 'postgres', "psql -qc 'DROP EXTENSION \"$extname\"'", 0, '',
 	"extension $extname removes without error";
 
