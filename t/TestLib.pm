@@ -59,7 +59,7 @@ sub deb_installed {
     open (DPKG, "dpkg -s $_[0] 2>/dev/null|") or die "call dpkg: $!";
     my $result = 0;
     while (<DPKG>) {
-	if (/^Version:/) {
+	if (/^Status: install ok installed/) {
 	    $result = 1;
 	    last;
 	}

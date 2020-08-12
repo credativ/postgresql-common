@@ -1,4 +1,4 @@
-postgresql-common (216) UNRELEASED; urgency=medium
+postgresql-common (216) unstable; urgency=medium
 
   * Updated es debconf translation by Camaleón, thanks! (Closes: #960994)
   * apt.postgresql.org.sh: Install contrib package with -i.
@@ -7,8 +7,10 @@ postgresql-common (216) UNRELEASED; urgency=medium
   * pg_ctlcluster: Fix cluster start in 8.2/3.
   * pg_virtualenv: 8.2 doesn't have pg_ctl -c yet.
   * t/170_extensions.t: Don't drop plpgsql before testing extensions.
+  * t/TestLib.pm: Fix deb_installed to only recognize fully installed
+    packages.
 
- -- Christoph Berg <myon@debian.org>  Tue, 19 May 2020 09:46:50 +0200
+ -- Christoph Berg <myon@debian.org>  Wed, 12 Aug 2020 15:10:25 +0200
 
 postgresql-common (215) unstable; urgency=medium
 
