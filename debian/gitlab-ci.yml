@@ -34,7 +34,7 @@ centos7:
   tags:
     - centos7
   script:
-    - sudo yum install -y rpm-build epel-release # for llvm
+    - sudo yum install -y rpm-build centos-release-scl epel-release # for llvm
     - make rpmremove
     - make rpmbuild
     - rpm -ql pgdg-redhat-repo > /dev/null || sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
