@@ -236,8 +236,9 @@ sub unlike_program_out {
 
 # Check that all PostgreSQL related directories are empty and no
 # postgres processes are running. Should be called at the end
-# of all tests. Does 10 tests.
+# of all tests. Does 8 tests.
 sub check_clean {
+    note "Cleanup";
     is (`pg_lsclusters -h`, '', 'Cleanup: No clusters left behind');
     is ((ps 'postgres'), '', 'No postgres processes left behind');
 
