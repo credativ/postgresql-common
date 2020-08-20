@@ -1,3 +1,11 @@
+postgresql-common (217) UNRELEASED; urgency=medium
+
+  * pg_upgradecluster: Rename wal_keep_segments to wal_keep_size on upgrades
+    to PG 13.
+  * t/060_obsolete_confparams.t: Generate full config files dynamically.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 20 Aug 2020 13:56:24 +0200
+
 postgresql-common (216) unstable; urgency=medium
 
   * Updated es debconf translation by Camaleón, thanks! (Closes: #960994)

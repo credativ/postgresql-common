@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2019 Christoph Berg <myon@debian.org>
+# (C) 2013-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ sub adapt_conffiles {
     }
 
     if ($newversion >= '9.5') {
-        if ($c{checkpoint_segments}) {
+        if (exists $c{checkpoint_segments}) {
             my $max_wal_size = 16*$c{checkpoint_segments} . 'MB';
             $rename->(\%c, 'checkpoint_segments', 'max_wal_size');
             $set->('max_wal_size', $max_wal_size);
@@ -174,6 +174,14 @@ sub adapt_conffiles {
 
     if ($newversion >= '11') {
         $deprecate->(\%c, 'replacement_sort_tuples', 'does not exist anymore');
+    }
+
+    if ($newversion >= '13') {
+        if (exists $c{wal_keep_segments}) {
+            my $wal_keep_size = 16*$c{wal_keep_segments} . 'MB';
+            $rename->(\%c, 'wal_keep_segments', 'wal_keep_size');
+            $set->('wal_keep_size', $wal_keep_size);
+        }
     }
 }
 
