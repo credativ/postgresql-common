@@ -45,7 +45,7 @@ ok ((index $$outref, 'asctest|postgres|SQL_ASCII') >= 0, 'asctest is ASCII encod
 ok ((index $$outref, 'template1|postgres|ISO_8859_5') >= 0, 'template1 is LATIN encoded');
 
 # upgrade without specifying locales, should be kept
-like_program_out 0, "pg_upgradecluster -v $newv $oldv main", 0, qr/^Success/im;
+like_program_out 0, "pg_upgradecluster -v $newv $oldv main", 0, qr/^Success. Please check/m;
 
 is ((exec_as 'postgres', "psql --cluster $newv/main -Atl", $outref), 0, 'psql -Atl on upgraded cluster');
 ok ((index $$outref, 'latintest|postgres|ISO_8859_5') >= 0, 'latintest is LATIN encoded');
@@ -58,7 +58,7 @@ is ((system "pg_dropcluster --stop $newv main"), 0, 'dropping upgraded cluster')
 is ((system "pg_ctlcluster $oldv main start"), 0, 'restarting old cluster');
 
 # upgrade with explicitly specifying other locale
-like_program_out 0, "pg_upgradecluster --locale ru_RU.UTF-8 -v $newv $oldv main", 0, qr/^Success/im;
+like_program_out 0, "pg_upgradecluster --locale ru_RU.UTF-8 -v $newv $oldv main", 0, qr/^Success. Please check/m;
 
 is ((exec_as 'postgres', "psql --cluster $newv/main -Atl", $outref), 0, 'psql -Atl on upgraded cluster');
 if ($newv >= 11) {
