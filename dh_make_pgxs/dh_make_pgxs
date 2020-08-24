@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C) 2015-2019 Christoph Berg <myon@debian.org>
+# (C) 2015-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -37,8 +37,7 @@ shift $((OPTIND - 1)) # shift away args
 
 SOURCE="${NAME//_/-}" # Debian name
 EXTNAME="$(echo $SOURCE | sed -e 's/^\(postgresql\|pgsql\|pg\)-//')" # binary package name suffix
-#COMPAT="$(apt-cache show debhelper | sed -n 's/Version: \([0-9]*\)\..*/\1/p' | head -n1)"
-COMPAT="9" # highest version supported in Debian oldoldstable and Ubuntu oldoldLTS
+COMPAT="$(apt-cache show debhelper | sed -n 's/Version: \([0-9]*\)\..*/\1/p' | head -n1)"
 STANDARDS_VERSION="$(apt-cache show debian-policy | sed -n 's/Version: \(.*\)\..*/\1/p' | head -n1)"
 USERNAME=${LOGNAME:-${USER:-root}}
 MAINTAINER_NAME=$(getent passwd $USERNAME | cut -d : -f 5 | sed -e 's/,.*//')
