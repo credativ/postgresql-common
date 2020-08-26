@@ -40,6 +40,8 @@ like PgCommon::get_conf_value($MAJORS[0], 'main', 'postgresql.conf', 'work_mem')
 # tweak invalid settings
 PgCommon::set_conf_value $MAJORS[0], 'main', 'postgresql.conf', 'log_timezone', 'UTC';
 PgCommon::set_conf_value $MAJORS[0], 'main', 'postgresql.conf', 'timezone', 'UTC';
+PgCommon::disable_conf_value $MAJORS[0], 'main', 'postgresql.conf', 'include_dir', "Disable placeholder value";
+PgCommon::disable_conf_value $MAJORS[0], 'main', 'postgresql.conf', 'include_if_exists', "Disable placeholder value";
 PgCommon::disable_conf_value $MAJORS[0], 'main', 'postgresql.conf', 'include', "Disable placeholder value";
 # older versions (<= 9.1 as of 2019-03) do not support ssl anymore
 my $postgres = PgCommon::get_program_path('postgres', $MAJORS[0]);
