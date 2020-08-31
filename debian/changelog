@@ -4,6 +4,7 @@ postgresql-common (217) UNRELEASED; urgency=medium
     to PG 13.
   * t/060_obsolete_confparams.t: Generate full config files dynamically.
   * dh_make_pgxs: Use current debhelper version instead of the oldest one.
+  * Updated it debconf translation by Luca Monducci, thanks! (Closes: #969220)
 
  -- Christoph Berg <myon@debian.org>  Thu, 20 Aug 2020 13:56:24 +0200
 

@@ -1,13 +1,13 @@
 # Italian (it) translation of debconf templates for postgresql-common
 # This file is distributed under the same license as the postgresql-common package.
-# Luca Monducci <luca.mo@tiscali.it>, 2006-2014.
+# Luca Monducci <luca.mo@tiscali.it>, 2006-2020.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: postgresql-common 160 italian debconf templates\n"
+"Project-Id-Version: postgresql-common 216 italian debconf templates\n"
 "Report-Msgid-Bugs-To: postgresql-common@packages.debian.org\n"
 "POT-Creation-Date: 2016-03-05 11:47+0100\n"
-"PO-Revision-Date: 2014-08-30 10:23+0200\n"
+"PO-Revision-Date: 2020-08-29 14:43+0200\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
 "Language: it\n"
@@ -30,7 +30,7 @@ msgid ""
 "${latest} and postgresql-client-${latest}) and upgrade the existing "
 "${oldversion} clusters with pg_upgradecluster (see manpage)."
 msgstr ""
-"La versione ${old} di PostgreSQL è obsoleta, ma alcuni dei pacchetti server "
+"La versione ${old} di PostgreSQL è obsoleta ma alcuni dei pacchetti server "
 "o client sono ancora installati. Installare i pacchetti più recenti "
 "(postgresql-${latest} e postgresql-client-${latest}) e aggiornare i cluster "
 "${oldversion} esistenti con pg_upgradecluster (consultare la pagina man)."
@@ -114,7 +114,7 @@ msgstr "Se non si è sicuri, attivare SSL."
 #. Description
 #: ../postgresql-common.templates:3001
 msgid "PostgreSQL ${version} catalog version changed"
-msgstr ""
+msgstr "Nuova versione ${version} del catalogo PostgreSQL"
 
 #. Type: note
 #. Description
@@ -126,6 +126,11 @@ msgid ""
 "not be able to use this cluster until it was upgraded to the new catalog "
 "version."
 msgstr ""
+"Il cluster PostgreSQL ${version} ${cluster} è stato creato utilizzando un "
+"catalogo con versione ${db_catversion}, tuttavia il pacchetto postgresql-"
+"${version} che si sta installando utilizza la versione ${new_catversion} del "
+"catalogo. Non sarà possibile utilizzare questo cluster fino a quando non "
+"aggiornato alla nuova versione di catalogo."
 
 #. Type: note
 #. Description
@@ -134,3 +139,5 @@ msgid ""
 "The necessary subset of binaries from the old version was saved in "
 "${vartmpdir}. To upgrade the cluster, execute these commands:"
 msgstr ""
+"Un sottoinsieme dei comandi della versione precedente necessari è salvato "
+"in ${vartmpdir}. Eseguire questi comandi per aggiornare il cluster:"
