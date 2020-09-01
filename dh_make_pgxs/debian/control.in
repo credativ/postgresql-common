@@ -2,17 +2,21 @@ Source: @SOURCE@
 Section: database
 Priority: optional
 Maintainer: Debian PostgreSQL Maintainers <team+postgresql@tracker.debian.org>
-Uploaders: @MAINTAINER_NAME@ <@DEBEMAIL@>,
+Uploaders:
+ @MAINTAINER_NAME@ <@DEBEMAIL@>,
 Build-Depends:
  debhelper-compat (= @COMPAT@),
  postgresql-server-dev-all,
 Standards-Version: @STANDARDS_VERSION@
+Homepage: @URL@
 Vcs-Browser: https://salsa.debian.org/postgresql/@SOURCE@
 Vcs-Git: https://salsa.debian.org/postgresql/@SOURCE@.git
-#Homepage: @URL@
 
 Package: postgresql-PGVERSION-@EXTNAME@
 Architecture: any
-Depends: postgresql-PGVERSION, ${misc:Depends}, ${shlibs:Depends}
+Depends:
+ postgresql-PGVERSION,
+ ${misc:Depends},
+ ${shlibs:Depends},
 Description: FIXME PostgreSQL extension @SOURCE@
  FIXME long description here

@@ -1,9 +1,9 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: @NAME@
-#Source: @URL@
+Source: @URL@
 
 Files: *
-Copyright: Portions Copyright (c) 1996-2018, PostgreSQL Global Development Group
+Copyright: Portions Copyright (c) 1996-@YEAR@, PostgreSQL Global Development Group
            Portions Copyright (c) 1994, The Regents of the University of California
 License: PostgreSQL
  Permission to use, copy, modify, and distribute this software and its

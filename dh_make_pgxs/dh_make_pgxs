@@ -17,15 +17,18 @@ set -eu
 # basic variables
 
 template_dir="/usr/share/postgresql-common/dh_make_pgxs/debian"
+
 DIRECTORY="$(basename $PWD)"
 NAME="${DIRECTORY%-*}" # Upstream name
 VERSION="${DIRECTORY##*-}"
+URL="https://FIXME/$NAME"
 
 # options
 
-while getopts "fn:v:" opt ; do
+while getopts "fh:n:v:" opt ; do
     case $opt in
         f) FORCE=yes ;;
+        h) URL="$OPTARG" ;;
         n) NAME="$OPTARG" ;;
         v) VERSION="$OPTARG" ;;
         *) exit 5 ;;
@@ -42,11 +45,14 @@ STANDARDS_VERSION="$(apt-cache show debian-policy | sed -n 's/Version: \(.*\)\..
 USERNAME=${LOGNAME:-${USER:-root}}
 MAINTAINER_NAME=$(getent passwd $USERNAME | cut -d : -f 5 | sed -e 's/,.*//')
 : ${DEBEMAIL:=$USERNAME@localhost}
+YEAR=$(date +%Y)
 
-echo "Upstream: $NAME ($VERSION)"
-echo "Debian:   $SOURCE ($VERSION-1)"
-echo "Binaries: postgresql-PGVERSION-$EXTNAME ($VERSION-1)"
-echo "Uploader: $MAINTAINER_NAME <$DEBEMAIL>"
+echo "Upstream (-n): $NAME"
+echo "Version (-v):  $VERSION"
+echo "Source:        $SOURCE ($VERSION-1)"
+echo "Binaries:      postgresql-PGVERSION-$EXTNAME ($VERSION-1)"
+echo "Uploader:      $MAINTAINER_NAME <$DEBEMAIL>"
+echo "Homepage (-h): $URL"
 echo
 if [ -t 0 ]; then
     echo -n "Press Enter to continue, ^C to abort "
@@ -77,6 +83,8 @@ install_template ()
             -e "s/@SOURCE@/$SOURCE/g" \
             -e "s/@MAINTAINER_NAME@/$MAINTAINER_NAME/g" \
             -e "s/@DEBEMAIL@/$DEBEMAIL/g" \
+            -e "s;@URL@;$URL;g" \
+            -e "s/@YEAR@/$YEAR/g" \
             "$template_dir/$template" > "debian/$template"
         if [ -x $template_dir/$template ]; then
             chmod +x "debian/$template"
