@@ -4,7 +4,7 @@ dh_make_pgxs - Create a new Debian source package for a PGXS PostgreSQL extensio
 
 =head1 SYNOPSIS
 
-B<dh_make_pgxs> [B<-f>] [B<-n> I<name>] [B<-v> I<version>]
+B<dh_make_pgxs> [B<-f>] [B<-h> I<URL>] [B<-n> I<name>] [B<-v> I<version>]
 
 =head1 DESCRIPTION
 
@@ -19,6 +19,10 @@ build process.
 =item B<-f>
 
 Overwrite existing files.
+
+=item B<-h> I<URL>
+
+Package upstream homepage.
 
 =item B<-n> I<name>
 
