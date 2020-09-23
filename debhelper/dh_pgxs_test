@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use warnings;
+use strict;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::pgxs;
+
+my $target = (@ARGV and $ARGV[0] eq 'loop') ? "." : "build-%v";
+my $pattern = package_pattern();
+
+print_and_doit(qw(pg_buildext installcheck .), $target, $pattern);

@@ -10,6 +10,11 @@ postgresql-common (217) UNRELEASED; urgency=medium
   * t/060_obsolete_confparams.t: Generate full config files dynamically.
   * dh_make_pgxs: Use current debhelper version instead of the oldest one,
     support setting homepage, general template copy-editing.
+  * Implement extension building as `dh $@ --with pgxs` and pgxs_loop, backed
+    by `--buildsystem=pgxs` and pgxs_loop. We also run `make installcheck` at
+    extension build time now via dh_pgxs_test and our PostgreSQL
+    extension_destdir patch. Previously extensions could only be tested at
+    runtime via autopkgtest.
   * Drop the PG major prefix from postgresql-all version number so extensions
     can declare sensible versioned dependencies on it.
   * Updated it debconf translation by Luca Monducci, thanks! (Closes: #969220)

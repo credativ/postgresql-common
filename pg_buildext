@@ -4,7 +4,7 @@
 # versions
 #
 # (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
-# (C) 2011-2019 Christoph Berg <myon@debian.org>
+# (C) 2011-2020 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,10 +36,12 @@ done
 # shift away args
 shift $(($OPTIND - 1))
 
+# positional arguments: action [srcdir] [target [opt]]
 [ "${1:-}" ] || die "no action given"
 action="$1"
 if [ -d "${2:-}" ] && [ "${3:-}" ]; then # optional: $2 is source directory
     srcdir="${2:-}"
+    [ "$srcdir" = "." ] && srcdir="$PWD"
     shift
 else
     srcdir="$PWD"
@@ -90,15 +92,12 @@ install() {
 
 clean() {
     prepare_env $1
-
-    # if a Makefile was created by configure, use it, else the top level Makefile
-    [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    [ -d $vtarget ] && make -C $vtarget clean ${makefile:-} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS
-    rm -rf $vtarget
+    if [ "$vtarget" ]; then
+        rm -rf $vtarget
+    fi
 }
 
 loop() {
-    echo "### $1 ###"
     prepare_env $1
     package=$(echo $target | sed -e "s:%v:$1:g")
 
@@ -108,7 +107,6 @@ loop() {
     make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     echo "# $1: make install"
     make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
-    echo "### done $1 ###"
 }
 
 installcheck() {
@@ -122,10 +120,16 @@ installcheck() {
         export NONROOT=1
     fi
 
-    if [ "$target" ]; then # if target is given, use it, else stay in the top source dir
+    # if a package pattern is given, tell pg_virtualenv where the installed files are
+    if [ "$opt" ]; then
+        pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
+        PKGARGS="-o extension_destdir=$PWD/debian/$pkg -o dynamic_library_path=$PWD/debian/$pkg/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
+    fi
+
+    if [ "$target" ] && [ "$target" != "." ]; then # if target is given, use it, else stay in the top source dir
 	# if a Makefile was created by configure, use it, else the top level Makefile
 	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-	if ! pg_virtualenv $VENVARGS -v $1 \
+        if ! pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
 	    make -C $vtarget ${makefile:-} installcheck \
 		PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS; then
 	    if [ -r $vtarget/regression.diffs ]; then
@@ -135,7 +139,7 @@ installcheck() {
 	    exit 1
 	fi
     else
-	if ! pg_virtualenv $VENVARGS -v $1 \
+        if ! pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
 	    make installcheck PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS; then
 	    if [ -r regression.diffs ]; then
 		echo "**** regression.diffs ****"
@@ -143,6 +147,8 @@ installcheck() {
 	    fi
 	    exit 1
 	fi
+        # since we are in the top-level directory, clean up behind us
+        make clean PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     fi
 }
 
@@ -188,7 +194,7 @@ gencontrol() {
     if [ -f debian/tests/control.in ]; then
         tmptestscontrol=$(mktemp debian/tests/control.XXXXXX)
     fi
-    trap "rm -f $tmpcontrol ${tmptestscontrol:-}" 0 2 3 15
+    trap "rm -f $tmpcontrol ${tmptestscontrol:-}" EXIT
 
     export PGVERSIONS="$(versions)"
     [ "$PGVERSIONS" ] || die "No current PostgreSQL versions are supported by this package"
@@ -241,8 +247,9 @@ case $action in
     configure-*|build-*|install-*|clean-*|installcheck-*)
 	a=${action%%-*}
 	v=${action##$a-}
-	echo "### $a $v ###"
+        echo "### PostgreSQL $v $a ###"
 	$a $v
+        echo "### End $v $a ###"
 	exit
 	;;
 
@@ -273,21 +280,39 @@ case $action in
         exit
         ;;
 
+    clean)
+        if [ "$target" ]; then
+            pattern=$(echo "$target" | sed -e "s:%v:*:g")
+            echo rm -rf $pattern/
+            rm -rf $pattern/
+        fi
+        if [ "$opt" ]; then
+            pattern=$(echo "$opt" | sed -e "s:%v:*:g")
+            echo rm -rf debian/$pattern/ debian/$pattern.substvars
+            rm -rf debian/$pattern/ debian/$pattern.substvars
+        fi
+        make clean
+        exit
+        ;;
+
     installed-versions)
         installed_versions
         exit
         ;;
 
     installcheck)
-        if [ -f debian/control.in ]; then
+        # prefer testing installed versions over supported versions as the set
+        # of versions might have changed (unless a package-pattern is provided)
+        if [ -f debian/control.in ] && [ -z "$opt" ]; then
             versions=$(installed_versions)
         else
             versions=$(versions)
         fi
         [ "$versions" ] || exit 1
         for v in $versions; do
-            echo "### $action $v ###"
+            echo "### PostgreSQL $v $action ###"
             $action $v
+            echo "### End $v $action ###"
         done
         exit
         ;;
@@ -304,8 +329,9 @@ do
 
 	configure|build|install|clean|loop)
 	    [ "$target" ] || die "syntax: pg_buildext $action <target> [<srcdir>] [<opt>]"
-	    echo "### $action $v ###"
+            echo "### PostgreSQL $v $action ###"
 	    $action $v
+            echo "### End $v $action ###"
 	    ;;
 
 	*)

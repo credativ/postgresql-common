@@ -1,21 +1,32 @@
 #!/usr/bin/make -f
 
-include /usr/share/postgresql-common/pgxs_debian_control.mk
-
-override_dh_auto_build:
-	+pg_buildext build build-%v
-
-override_dh_auto_test:
-	# nothing to do here, see debian/tests/* instead
-
-override_dh_auto_install:
-	+pg_buildext install build-%v postgresql-%v-@EXTNAME@
+%:
+	dh $@ --buildsystem=pgxs
 
 override_dh_installdocs:
 	dh_installdocs --all README.*
 
-override_dh_auto_clean:
-	+pg_buildext clean build-%v
+# if the package does not support building from subdirectories, use
+# `--buildsystem=pgxs_loop` above.
 
-%:
-	dh $@
+# classic `pg_buildext` interface:
+
+#include /usr/share/postgresql-common/pgxs_debian_control.mk
+#
+#override_dh_auto_build:
+#	+pg_buildext build build-%v
+#
+#override_dh_auto_test:
+#	# nothing to do here, see debian/tests/* instead
+#
+#override_dh_auto_install:
+#	+pg_buildext install build-%v postgresql-%v-@EXTNAME@
+#
+#override_dh_installdocs:
+#	dh_installdocs --all README.*
+#
+#override_dh_auto_clean:
+#	+pg_buildext clean build-%v
+#
+#%:
+#	dh $@

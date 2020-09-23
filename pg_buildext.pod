@@ -15,6 +15,10 @@ C<debian/pgversions> (versions supported by the package) and in
 C</usr/share/postgresql-common/supported-versions> (versions supported in this
 release).
 
+Many PostgreSQL extension packages require no special handling at build time
+and can use B<dh $@ --with pgxs> or B<dh $@ --with pgxs_loop> to
+automatically execute the steps outlined below.
+
 =head1 USAGE
 
 Packages using B<pg_buildext> should be prepared to build binaries for
@@ -115,9 +119,9 @@ The third parameter specifies the package name to use. Most packages
 use B<postgresql-%v-pkgname>. Make will be
 called with DESTDIR="$(CURDIR)/debian/I<package>".
 
-=item B<clean> [I<src-dir>] I<build-dir>
+=item B<clean> [I<src-dir>] [I<build-dir>] [I<package-pattern>]
 
-Clean the build directory.
+Clean the build directories.
 
 =item B<loop> [I<src-dir>] I<package-pattern>
 
@@ -127,14 +131,19 @@ should be used if the package does not support VPATH builds. As it also invokes
 B<make install>, it should be placed were installation happens in debian/rules,
 rather than where build would normally be called.
 
-=item B<installcheck> [I<src-dir>] [I<build-dir>]
+=item B<installcheck> [I<src-dir>] [I<build-dir>] [I<package-pattern>]
 
 Use B<pg_virtualenv make installcheck> to run the extension regression tests.
 This is meant to be run from C<debian/tests/control> using B<autopkgtest>. If
 I<build-dir> is omitted, the top source directory is used.
 
+If I<package-pattern> is given, options are passed to B<pg_virtualenv> to set
+up the temporary PostgreSQL instance to find extension files in
+C<debian/package-directory/>.
+
 Other than the other actions which run on the "supported" versions, if C<debian/control.in> exists, this one
-runs on the "installed" versions as reported by B<installed-versions>.
+runs on the "installed" versions as reported by B<installed-versions> (unless
+I<package-pattern> is provided, which means we are called during a build).
 
 =back
 
@@ -193,7 +202,28 @@ configure the list of supported versions on your system.
   #9.6
   #11+
 
-=item B<debian/rules:>
+=item B<debian/rules> using B<dh $@ --with pgxs>:
+
+  #!/usr/bin/make -f
+
+  override_dh_installdocs:
+	  dh_installdocs --all README.*
+
+  %:
+	  dh $@ --with pgxs
+
+=item If the package does no support building from subdirectories, use B<dh $@ --with pgxs_loop>:
+
+  #!/usr/bin/make -f
+
+  %:
+	  dh $@ --with pgxs_loop
+
+=item If the package does not use PGXS's "make installcheck" for testing:
+
+  override_dh_pgxs_test:
+
+=item B<debian/rules> using B<pg_buildext> directly:
 
   #!/usr/bin/make -f
 
@@ -275,6 +305,9 @@ introduced in postgresql-common (>= 171~).
 
 The action B<installed-versions> was introduced in postgresql-common (>= 208~).
 B<installcheck> was switched to use it in the same version.
+
+B<dh $@ --with pgxs> and B<pgxs_loop>, and the corresponding B<--buildsystem>
+were introduced in postgresql-server-dev-all (>= 217~).
 
 =head1 SEE ALSO
 

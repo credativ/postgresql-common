@@ -1,4 +1,6 @@
 gitlab usr/share/postgresql-common
 pgxs_debian_control.mk /usr/share/postgresql-common/
+debhelper/Debian /usr/share/perl5
+debhelper/dh_pgxs_test /usr/bin
 dh_make_pgxs/dh_make_pgxs /usr/bin
 dh_make_pgxs/debian /usr/share/postgresql-common/dh_make_pgxs
