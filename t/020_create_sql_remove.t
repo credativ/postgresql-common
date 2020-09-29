@@ -266,7 +266,7 @@ tel|2
     }
 
     # Check PL/Python3 (untrusted)
-    if ($v >= '9.1' and not $PgCommon::rpm) {
+    if ($v >= '9.1') {
 	is_program_out 'postgres', create_extension('plpython3u'), 0, '', 'CREATE EXTENSION plpython3u succeeds for user postgres';
 	is_program_out 'postgres', 'psql nobodydb -qc "CREATE FUNCTION capitalize3(text) RETURNS text AS \'import sys; return args[0].capitalize() + sys.version[0]\' LANGUAGE plpython3u;"',
 	    0, '', 'creating PL/Python3 function as user postgres succeeds';

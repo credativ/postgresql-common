@@ -92,7 +92,7 @@ if [ "${INSTALL:-}" ] && [ -z "${UNSHARED:-}" ]; then
                 yum install -y \
                     postgresql$vv-contrib \
                     postgresql$vv-plperl \
-                    postgresql$vv-plpython \
+                    postgresql$vv-plpython3 \
                     postgresql$vv-pltcl \
                     postgresql$vv-devel
             done

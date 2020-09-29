@@ -7,7 +7,7 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => $PgCommon::rpm ? (3 + 8*@MAJORS) : (14 + 7*@MAJORS);
+use Test::More tests => $PgCommon::rpm ? (3 + 9*@MAJORS) : (14 + 7*@MAJORS);
 
 ok (-f "/etc/os-release", "/etc/os-release exists");
 my ($os, $osversion) = os_release();
@@ -26,7 +26,11 @@ if ($PgCommon::rpm) {
         ok ((rpm_installed "postgresql$vv-server"),   "postgresql$vv-server installed");
         ok ((rpm_installed "postgresql$vv-contrib"),  "postgresql$vv-contrib installed");
         ok ((rpm_installed "postgresql$vv-plperl"),   "postgresql$vv-plperl installed");
-        ok ((rpm_installed "postgresql$vv-plpython"), "postgresql$vv-plpython installed");
+        SKIP: {
+            skip "No python2 support", 1 unless ($v <= 12);
+            ok ((rpm_installed "postgresql$vv-plpython"), "postgresql$vv-plpython installed");
+        }
+        ok ((rpm_installed "postgresql$vv-plpython3"), "postgresql$vv-plpython3 installed");
         ok ((rpm_installed "postgresql$vv-pltcl"),    "postgresql$vv-pltcl installed");
         ok ((rpm_installed "postgresql$vv-devel"),    "postgresql$vv-devel installed");
     }
