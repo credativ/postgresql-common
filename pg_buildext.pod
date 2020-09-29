@@ -180,7 +180,7 @@ configure the list of supported versions on your system.
 =item B<debian/control.in:>
 
   Source: postgresql-foobar
-  Build-Depends: debhelper, postgresql-server-dev-all (>= 153~)
+  Build-Depends: debhelper, postgresql-all (>= 217~)
 
   Package: postgresql-PGVERSION-foobar
   Depends: ${misc:Depends}, ${shlibs:Depends}, postgresql-PGVERSION

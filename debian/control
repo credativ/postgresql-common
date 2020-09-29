@@ -176,6 +176,7 @@ Architecture: all
 Depends:
  libecpg-dev,
  libpq-dev,
+ postgresql-common (= ${source:Version}),
  postgresql-server-dev-all,
  ${postgresql-all-depends},
  ${misc:Depends},

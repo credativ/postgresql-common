@@ -10,6 +10,8 @@ postgresql-common (217) UNRELEASED; urgency=medium
   * t/060_obsolete_confparams.t: Generate full config files dynamically.
   * dh_make_pgxs: Use current debhelper version instead of the oldest one,
     support setting homepage, general template copy-editing.
+  * Drop the PG major prefix from postgresql-all version number so extensions
+    can declare sensible versioned dependencies on it.
   * Updated it debconf translation by Luca Monducci, thanks! (Closes: #969220)
 
  -- Christoph Berg <myon@debian.org>  Thu, 20 Aug 2020 13:56:24 +0200
