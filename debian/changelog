@@ -1,5 +1,6 @@
 postgresql-common (217) UNRELEASED; urgency=medium
 
+  * Set PostgreSQL 13 as default version.
   * pg_upgradecluster: Rename wal_keep_segments to wal_keep_size on upgrades
     to PG 13.
   * pg_createcluster: Add option --quiet to suppress initdb output and make

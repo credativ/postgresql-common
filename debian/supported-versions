@@ -49,7 +49,7 @@ else
     . /usr/share/postgresql-common/pgcommon.sh
 fi
 
-DEFAULT="12"
+DEFAULT="13"
 
 # functions
 
@@ -86,6 +86,7 @@ ubuntu() {
         18.04|18.10) /bin/echo -e "10" ;;
         19.04|19.10) /bin/echo -e "11" ;;
         20.04|20.10) /bin/echo -e "12" ;;
+        21.04|21.10) /bin/echo -e "13" ;;
         *)
             echo "supported-versions: WARNING: Unknown Ubuntu release: $1" >&2
             /bin/echo -e "$DEFAULT" ;;
@@ -100,7 +101,7 @@ debian() {
         8|8.*) /bin/echo -e "9.4" ;; # Jessie
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
         10|10.*) /bin/echo -e "11" ;; # Buster
-        11|11.*) /bin/echo -e "12" ;; # Bullseye
+        11|11.*) /bin/echo -e "13" ;; # Bullseye
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)
@@ -117,7 +118,7 @@ debian_backports() {
         8|8.*) /bin/echo -e "9.4\n9.6" ;; # Jessie
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
         10|10.*) /bin/echo -e "11" ;; # Buster
-        11|11.*) /bin/echo -e "12" ;; # Bullseye
+        11|11.*) /bin/echo -e "13" ;; # Bullseye
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)
@@ -133,6 +134,7 @@ pgdg() {
 	10
 	11
 	12
+	13
 	EOF
 }
 
