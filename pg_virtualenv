@@ -196,7 +196,7 @@ for v in $PG_VERSIONS; do
         # disable fakeroot here because we really can't run as root
         # (and still switch to postgres when using fakeroot as root user)
         disable_fakeroot
-	pg_createcluster \
+	pg_createcluster --quiet \
 	    ${PGPORT:+-p "$PGPORT"} \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
@@ -234,7 +234,6 @@ case $PG_VERSIONS in
 esac
 
 # run program
-echo
 "$@" || EXIT="$?"
 if [ ${EXIT:-0} -gt 0 ]; then
     for log in ${LOGDIR:-/var/log/postgresql}/*.log; do

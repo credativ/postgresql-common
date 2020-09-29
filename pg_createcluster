@@ -27,6 +27,7 @@ $ENV{'PATH'} = '/bin:/usr/bin'; # untaint
 my @postgres_user = getpwnam 'postgres';
 my %defaultconf;
 my $explicit_auth_config = 0;
+my $quiet;
 
 chdir '/';
 
@@ -90,7 +91,8 @@ sub init_db {
         error 'initdb failed' if $?;
     } else{
         change_ugid $owneruid, $ownergid;
-        print "@initdb\n";
+        print "@initdb\n" unless ($quiet);
+        close STDOUT if ($quiet); # suppress initdb output
         exec @initdb;
     }
 
@@ -199,7 +201,9 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     },
     'createclusterconf=s' => \$createclusterconf,
     'environment=s' => \$environmentfile,
-    'p|port=i' => \$port, 'locale=s' => \$locale,
+    'p|port=i' => \$port,
+    'q|quiet' => \$quiet,
+    'locale=s' => \$locale,
     'lc-collate=s' => \$lc_collate, 'lc-ctype=s' => \$lc_ctype,
     'lc-messages=s' => \$lc_messages, 'lc-monetary=s' => \$lc_monetary,
     'lc-numeric=s' => \$lc_numeric, 'lc-time=s' => \$lc_time);
@@ -606,7 +610,7 @@ if ($start) {
 }
 
 # finally, show the cluster we created
-system 'pg_lsclusters', $version, $cluster;
+system 'pg_lsclusters', $version, $cluster unless ($quiet);;
 
 END {
     # clean up cruft if something went wrong
@@ -760,6 +764,10 @@ Select the port the new cluster listens on (for the Unix socket and the TCP
 port); this must be a number between 1024 and 65535, since PostgreSQL does not
 run as root and thus needs an unprivileged port number. By default the next
 free port starting from 5432 is assigned.
+
+=item B<-q> B<--quiet>
+
+Suppress output from B<initdb>.
 
 =item B<--start>
 

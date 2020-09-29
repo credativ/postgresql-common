@@ -2,6 +2,8 @@ postgresql-common (217) UNRELEASED; urgency=medium
 
   * pg_upgradecluster: Rename wal_keep_segments to wal_keep_size on upgrades
     to PG 13.
+  * pg_createcluster: Add option --quiet to suppress initdb output and make
+    pg_virtualenv use it.
   * t/060_obsolete_confparams.t: Generate full config files dynamically.
   * dh_make_pgxs: Use current debhelper version instead of the oldest one,
     support setting homepage, general template copy-editing.
