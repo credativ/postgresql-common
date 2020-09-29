@@ -25,23 +25,10 @@ for the particular cluster you want to access (with a command line
 option, an environment variable, /etc/postgresql-common/user_clusters,
 or ~/.postgresqlrc).
 
-%package -n postgresql-server-dev-all
-Summary: extension build tool for multiple PostgreSQL versions
-%description -n postgresql-server-dev-all
-The postgresql-server-dev-all package provides the pg_buildext script for
-simplifying packaging of a PostgreSQL extension supporting multiple major
-versions of the product.
-
 %prep
 # unpack tarball, ignoring the name of the top level directory inside
 %setup -c
 mv */* .
-# Remove Requires: perl(Test::More) so postgresql-common only depends on perl
-echo "#!/bin/sh" > %{_builddir}/find-requires
-echo "/usr/lib/rpm/find-requires | sed -e 's/perl(Test::More)//'" >> %{_builddir}/find-requires
-chmod +x %{_builddir}/find-requires
-%define _use_internal_dependency_generator 0
-%define __find_requires %{_builddir}/find-requires
 
 %build
 make
@@ -51,6 +38,7 @@ rm -rf %{buildroot}
 # install in subpackages using the Debian files
 for inst in debian/*.install; do
     pkg=$(basename $inst .install)
+    [ "$pkg" = "postgresql-server-dev-all" ] && continue
     echo "### Reading $pkg files list from $inst ###"
     while read file dir; do
         mkdir -p %{buildroot}/$dir
@@ -61,6 +49,7 @@ done
 # install manpages
 for manpages in debian/*.manpages; do
     pkg=$(basename $manpages .manpages)
+    [ "$pkg" = "postgresql-server-dev-all" ] && continue
     echo "### Reading $pkg manpages list from $manpages ###"
     while read file; do
         section="${file##*.}"
@@ -116,8 +105,6 @@ popd
 
 %files -n postgresql-client-common -f files-postgresql-client-common
 
-%files -n postgresql-server-dev-all -f files-postgresql-server-dev-all
-
 %post
 # create postgres user
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
@@ -143,6 +130,8 @@ update-alternatives --install /usr/bin/ecpg pgsql-ecpg /usr/share/postgresql-com
 update-alternatives --remove pgsql-ecpg /usr/share/postgresql-common/pg_wrapper
 
 %changelog
+* Tue Sep 29 2020 Christoph Berg <myon@debian.org> 217-1
+- Drop postgresql-server-dev-all package, it's debian-specific only.
 * Fri Dec 09 2016 Bernd Helmle <bernd.helmle@credativ.de> 177-1
 - New upstream release 177
 * Fri Jun 03 2016 Bernd Helmle <bernd.helmle@credativ.de> 174-2
