@@ -210,6 +210,15 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
 
 # read defaults from /etc/postgresql-common/createcluster.conf
 %defaultconf = PgCommon::read_conf_file ($createclusterconf);
+# process --pgoption parameters
+foreach my $guc (@pgoptions) {
+    if ($guc->[1] eq '') {
+        delete $defaultconf{$guc->[0]};
+    } else {
+        $defaultconf{$guc->[0]} = $guc->[1];
+    }
+}
+
 $explicit_auth_config = 1 if ($defaultconf{initdb_options} and $defaultconf{initdb_options} =~ /(^| )(-\w*A|--auth\b)/);
 
 # check validity of locale
@@ -566,7 +575,7 @@ if ($socketdir eq '/var/run/postgresql') {
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'external_pid_file', "/var/run/postgresql/$version-$cluster.pid";
 }
 
-# handle other createcluster.conf parameters
+# handle other createcluster.conf parameters, including --pgoption parameters
 foreach my $guc (sort keys %defaultconf) {
     next if $guc =~ /^(create_main_cluster|start_conf|data_directory|waldir|xlogdir|initdb_options|ssl)$/;
     next if $guc eq 'logging_collector' and $version < 8.3;
@@ -581,11 +590,6 @@ foreach my $guc (sort keys %defaultconf) {
         }
     }
     PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $guc, $val;
-}
-
-# process --pgoption parameters
-foreach my $guc (@pgoptions) {
-    PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', $guc->[0], $guc->[1];
 }
 
 # notify systemd about the new cluster
