@@ -1,4 +1,4 @@
-postgresql-common (217) UNRELEASED; urgency=medium
+postgresql-common (217) unstable; urgency=medium
 
   * Set PostgreSQL 13 as default version.
   * pg_upgradecluster: Rename wal_keep_segments to wal_keep_size on upgrades
@@ -21,7 +21,7 @@ postgresql-common (217) UNRELEASED; urgency=medium
     can declare sensible versioned dependencies on it.
   * Updated it debconf translation by Luca Monducci, thanks! (Closes: #969220)
 
- -- Christoph Berg <myon@debian.org>  Thu, 20 Aug 2020 13:56:24 +0200
+ -- Christoph Berg <myon@debian.org>  Wed, 30 Sep 2020 21:54:23 +0200
 
 postgresql-common (216) unstable; urgency=medium
 
