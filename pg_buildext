@@ -152,6 +152,29 @@ installcheck() {
     fi
 }
 
+run_psql () {
+    prepare_env $1
+
+    # ask pg_virtualenv to create a non-system cluster
+    if [ "${NONROOT-unset}" = "unset" ]; then
+        export NONROOT=1
+    fi
+
+    # if a package pattern is given, tell pg_virtualenv where the installed files are
+    if [ "$opt" ]; then
+        pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
+        PKGARGS="-o extension_destdir=$PWD/debian/$pkg -o dynamic_library_path=$PWD/debian/$pkg/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
+    fi
+
+    (
+        if [ "$target" ] && [ "$target" != "." ]; then # if target is given, use it, else stay in the top source dir
+            cd $target
+        fi
+        pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
+            psql -Xe -v ON_ERROR_STOP=1 < $PSQLTMP
+    )
+}
+
 versions() {
     [ -e /usr/share/postgresql-common/supported-versions ] ||
 	die "/usr/share/postgresql-common/supported-versions not found"
@@ -313,6 +336,29 @@ case $action in
             echo "### PostgreSQL $v $action ###"
             $action $v
             echo "### End $v $action ###"
+        done
+        exit
+        ;;
+
+    psql)
+        PSQLTMP=$(mktemp --tmpdir psql.XXXXXX)
+        trap "rm -f $PSQLTMP" EXIT
+        # if we are fed any input (and hence aren't reading from a terminal),
+        # store it in a tempfile
+        [ ! -t 0 ] && cat > $PSQLTMP
+
+        # prefer testing installed versions over supported versions as the set
+        # of versions might have changed (unless a package-pattern is provided)
+        if [ -f debian/control.in ] && [ -z "$opt" ]; then
+            versions=$(installed_versions)
+        else
+            versions=$(versions)
+        fi
+        [ "$versions" ] || exit 1
+        for v in $versions; do
+            echo "### PostgreSQL $v psql ###"
+            run_psql $v
+            echo "### End $v psql ###"
         done
         exit
         ;;

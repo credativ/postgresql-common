@@ -145,6 +145,10 @@ Other than the other actions which run on the "supported" versions, if C<debian/
 runs on the "installed" versions as reported by B<installed-versions> (unless
 I<package-pattern> is provided, which means we are called during a build).
 
+=item B<psql> [I<src-dir>] [I<build-dir>] [I<package-pattern>]
+
+Like B<installcheck>, but invokes B<psql>. Input is read from stdin.
+
 =back
 
 Sometimes it is desirable to run extra code per version before invoking the
@@ -306,8 +310,8 @@ introduced in postgresql-common (>= 171~).
 The action B<installed-versions> was introduced in postgresql-common (>= 208~).
 B<installcheck> was switched to use it in the same version.
 
-B<dh $@ --with pgxs> and B<pgxs_loop>, and the corresponding B<--buildsystem>
-were introduced in postgresql-server-dev-all (>= 217~).
+B<dh $@ --with pgxs> and B<pgxs_loop>, the corresponding B<--buildsystem>, and
+the B<psql> action were introduced in postgresql-server-dev-all (>= 217~).
 
 =head1 SEE ALSO
 
