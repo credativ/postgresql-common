@@ -9,6 +9,7 @@ POD1PROGS = pg_conftool.1 \
 	    pg_wrapper.1
 POD1PROGS_POD = pg_buildext.1 \
 		pg_virtualenv.1 \
+		debhelper/dh_pgxs_test.1 \
 		dh_make_pgxs/dh_make_pgxs.1
 POD8PROGS = pg_updatedicts.8
 
@@ -26,7 +27,7 @@ man: $(POD1PROGS) $(POD1PROGS_POD) $(POD8PROGS)
 	$(POD2MAN) --quotes=none --section 8 $< $@
 
 clean:
-	rm -f *.1 *.8 dh_make_pgxs/*.1
+	rm -f *.1 *.8 debhelper/*.1 dh_make_pgxs/*.1
 
 # rpm
 

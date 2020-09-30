@@ -1,0 +1,44 @@
+=head1 NAME
+
+dh_pgxs_test - Run testsuite during a PGXS PostgreSQL extension build
+
+=head1 SYNOPSIS
+
+B<dh_pgxs_test> [B<loop>]
+
+=head1 DESCRIPTION
+
+B<PostgreSQL> extensions need to be installed before they can be tested and
+hence the usual B<debhelper> way of invoking tests from dh_auto_test(1) does
+not work.
+
+B<dh_pgxs_test> is a dh(1) sequence point created by the B<pgxs> and
+B<pgxs_loop> B<debhelper> extensions that is executed after dh_auto_install(1).
+It calls B<pg_buildext installcheck> after a B<PostgreSQL> extension module has
+been built and installed into the C<debian/>I<packagename/> directory.
+
+Users wishing to change the action called by B<dh_pgxs_test> should call
+B<pg_buildext> or similar commands.
+
+  override_dh_pgxs_test:
+          echo "CREATE EXTENSION foo" | pg_buildext psql . . postgresql-%v-foo
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<loop>
+
+B<dh --with pgxs> builds packages in C<build-%v> subdirectories. The B<loop>
+options corresponds to B<dh --with pgxs_loop> and builds in the top-level
+directory.
+
+=back
+
+=head1 SEE ALSO
+
+debhelper(7), dh(1), dh_make_pgxs(1), pg_buildext(1).
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>
