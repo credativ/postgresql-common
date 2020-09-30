@@ -101,12 +101,12 @@ loop() {
     prepare_env $1
     package=$(echo $target | sed -e "s:%v:$1:g")
 
-    echo "# $1: make clean"
-    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     echo "# $1: make"
     make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
     echo "# $1: make install"
     make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
+    echo "# $1: make clean"
+    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
 }
 
 installcheck() {

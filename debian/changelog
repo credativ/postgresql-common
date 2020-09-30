@@ -15,6 +15,7 @@ postgresql-common (217) UNRELEASED; urgency=medium
     extension build time now via dh_pgxs_test and our PostgreSQL
     extension_destdir patch. Previously extensions could only be tested at
     runtime via autopkgtest.
+  * pg_buildext loop: Clean after building instead of before.
   * Add `pg_buildext psql` action for extensions that use psql for testing.
   * Drop the PG major prefix from postgresql-all version number so extensions
     can declare sensible versioned dependencies on it.
