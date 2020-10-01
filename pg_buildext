@@ -124,13 +124,14 @@ installcheck() {
     if [ "$opt" ]; then
         pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
         PKGARGS="-o extension_destdir=$PWD/debian/$pkg -o dynamic_library_path=$PWD/debian/$pkg/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
+        DESTDIR="DESTDIR=$PWD/debian/$pkg"
     fi
 
     if [ "$target" ] && [ "$target" != "." ]; then # if target is given, use it, else stay in the top source dir
 	# if a Makefile was created by configure, use it, else the top level Makefile
 	[ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
         if ! pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
-	    make -C $vtarget ${makefile:-} installcheck \
+	    make -C $vtarget ${makefile:-} installcheck ${DESTDIR:-} \
 		PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS; then
 	    if [ -r $vtarget/regression.diffs ]; then
 		echo "**** $vtarget/regression.diffs ****"
@@ -140,7 +141,7 @@ installcheck() {
 	fi
     else
         if ! pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
-	    make installcheck PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS; then
+	    make installcheck ${DESTDIR:-} PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS; then
 	    if [ -r regression.diffs ]; then
 		echo "**** regression.diffs ****"
 		cat regression.diffs

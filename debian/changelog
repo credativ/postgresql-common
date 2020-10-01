@@ -1,3 +1,9 @@
+postgresql-common (218) UNRELEASED; urgency=medium
+
+  * pg_buildext installcheck: Set DESTDIR during build-time tests.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 01 Oct 2020 15:25:20 +0200
+
 postgresql-common (217) unstable; urgency=medium
 
   * Set PostgreSQL 13 as default version.
