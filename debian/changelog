@@ -1,6 +1,7 @@
 postgresql-common (218) UNRELEASED; urgency=medium
 
   * pg_buildext installcheck: Set DESTDIR during build-time tests.
+  * pg_buildext clean: Do not assume Makefile to be present. (Closes: #971517)
 
  -- Christoph Berg <myon@debian.org>  Thu, 01 Oct 2020 15:25:20 +0200
 

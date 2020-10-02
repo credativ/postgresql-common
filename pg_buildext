@@ -315,7 +315,9 @@ case $action in
             echo rm -rf debian/$pattern/ debian/$pattern.substvars
             rm -rf debian/$pattern/ debian/$pattern.substvars
         fi
-        make clean
+        if [ -f Makefile ]; then
+            make clean
+        fi
         exit
         ;;
 
