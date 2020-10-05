@@ -16,9 +16,10 @@ The environment variables B<PGHOST>, B<PGDATABASE>, B<PGUSER>, and
 B<PGPASSWORD> will be set. Per default, a single new cluster is created,
 using the newest PostgreSQL server version installed. The cluster will use the
 first available port number starting from B<5432>, and B<PGPORT> will be set.
+B<PGVERSION> is set the the PostgreSQL major version number.
 
 When clusters for more than one versions are created, they will differ in the
-port number used, and B<PGPORT> is not set. The clusters are
+port number used, and B<PGPORT> and B<PGVERSION> are not set. The clusters are
 named I<version>/regress. To access a cluster, set
 B<PGCLUSTER=>I<version>B</regress>. For ease of access, the clusters are also
 registered in F</etc/postgresql-common/pg_service.conf>, with the version
@@ -100,6 +101,10 @@ these flags.
 When set, the value is used for the (single) cluster created.
 
 =back
+
+=head1 COMPATIBILITY
+
+B<PGVERSION> is set in postgresql-common (>= 219~).
 
 =head1 SEE ALSO
 

@@ -232,6 +232,7 @@ case $PG_VERSIONS in
     *)
         export PGPORT="$port"
 	export PG_CONFIG="$PGBINROOT$PG_VERSIONS/bin/pg_config"
+        export PGVERSION="$PG_VERSIONS"
 	;;
 esac
 

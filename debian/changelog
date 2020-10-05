@@ -1,3 +1,9 @@
+postgresql-common (219) UNRELEASED; urgency=medium
+
+  * pg_virtualenv: Export PGVERSION with the PostgreSQL major version.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 05 Oct 2020 11:36:38 +0200
+
 postgresql-common (218) unstable; urgency=medium
 
   * pg_buildext installcheck: Set DESTDIR during build-time tests.
