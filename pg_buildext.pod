@@ -147,7 +147,10 @@ I<package-pattern> is provided, which means we are called during a build).
 
 =item B<psql> [I<src-dir>] [I<build-dir>] [I<package-pattern>]
 
-Like B<installcheck>, but invokes B<psql>. Input is read from stdin.
+=item B<virtualenv> [I<src-dir>] [I<build-dir>] [I<package-pattern>]
+
+Like B<installcheck>, but invokes B<psql>, or a shell, both wrapped in
+B<pg_virtualenv>. Input is read from stdin.
 
 =back
 
@@ -311,7 +314,7 @@ The action B<installed-versions> was introduced in postgresql-common (>= 208~).
 B<installcheck> was switched to use it in the same version.
 
 B<dh $@ --with pgxs> and B<pgxs_loop>, the corresponding B<--buildsystem>, and
-the B<psql> action were introduced in postgresql-server-dev-all (>= 217~).
+the B<psql> and B<virtualenv> actions were introduced in postgresql-server-dev-all (>= 217~).
 
 =head1 SEE ALSO
 

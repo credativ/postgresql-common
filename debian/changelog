@@ -1,6 +1,7 @@
 postgresql-common (219) UNRELEASED; urgency=medium
 
   * pg_virtualenv: Export PGVERSION with the PostgreSQL major version.
+  * pg_buildext: Add "virtualenv" action that loops over shells for testing.
 
  -- Christoph Berg <myon@debian.org>  Mon, 05 Oct 2020 11:36:38 +0200
 

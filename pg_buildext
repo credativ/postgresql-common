@@ -164,7 +164,8 @@ run_psql () {
     # if a package pattern is given, tell pg_virtualenv where the installed files are
     if [ "$opt" ]; then
         pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
-        PKGARGS="-o extension_destdir=$PWD/debian/$pkg -o dynamic_library_path=$PWD/debian/$pkg/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
+        export DESTDIR="$PWD/debian/$pkg"
+        PKGARGS="-o extension_destdir=$DESTDIR -o dynamic_library_path=$DESTDIR/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
     fi
 
     (
@@ -173,6 +174,29 @@ run_psql () {
         fi
         pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
             psql -Xe -v ON_ERROR_STOP=1 < $PSQLTMP
+    )
+}
+
+run_virtualenv () {
+    prepare_env $1
+
+    # ask pg_virtualenv to create a non-system cluster
+    if [ "${NONROOT-unset}" = "unset" ]; then
+        export NONROOT=1
+    fi
+
+    # if a package pattern is given, tell pg_virtualenv where the installed files are
+    if [ "$opt" ]; then
+        pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
+        export DESTDIR="$PWD/debian/$pkg"
+        PKGARGS="-o extension_destdir=$DESTDIR -o dynamic_library_path=$DESTDIR/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
+    fi
+
+    (
+        if [ "$target" ] && [ "$target" != "." ]; then # if target is given, use it, else stay in the top source dir
+            cd $target
+        fi
+        pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 < $PSQLTMP
     )
 }
 
@@ -343,7 +367,7 @@ case $action in
         exit
         ;;
 
-    psql)
+    psql|virtualenv)
         PSQLTMP=$(mktemp --tmpdir psql.XXXXXX)
         trap "rm -f $PSQLTMP" EXIT
         # if we are fed any input (and hence aren't reading from a terminal),
@@ -359,9 +383,9 @@ case $action in
         fi
         [ "$versions" ] || exit 1
         for v in $versions; do
-            echo "### PostgreSQL $v psql ###"
-            run_psql $v
-            echo "### End $v psql ###"
+            echo "### PostgreSQL $v $action ###"
+            run_$action $v
+            echo "### End $v $action ###"
         done
         exit
         ;;
