@@ -1,5 +1,6 @@
 postgresql-common (219) UNRELEASED; urgency=medium
 
+  * postgresql-server-dev-all: Depend on strict postgresql-common version.
   * pg_virtualenv: Export PGVERSION with the PostgreSQL major version.
   * pg_buildext: Add "virtualenv" action that loops over shells for testing.
 

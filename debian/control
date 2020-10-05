@@ -82,7 +82,7 @@ Package: postgresql-server-dev-all
 Architecture: all
 Depends:
  make,
- postgresql-common (>= 117~),
+ postgresql-common (= ${source:Version}),
  ${misc:Depends},
  ${server-dev-all-depends},
 Description: extension build tool for multiple PostgreSQL versions
