@@ -303,6 +303,7 @@ case $action in
 	;;
 
     checkcontrol)
+        [ -f debian/control.in ] || exit 0 # silently exit if debian/control.in is not there
         gencontrol
         need_update=
         if ! diff -u debian/control $tmpcontrol; then
@@ -324,6 +325,7 @@ case $action in
         ;;
 
     updatecontrol)
+        [ -f debian/control.in ] || die "debian/control.in is missing, cannot update debian/control"
         gencontrol
         updatecontrol
         exit
