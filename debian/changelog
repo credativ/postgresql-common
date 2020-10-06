@@ -5,6 +5,7 @@ postgresql-common (219) UNRELEASED; urgency=medium
   * pg_buildext: Add "virtualenv" action that loops over shells for testing.
   * pg_buildext: Fix "installed-versions" for empty package name suffixes.
   * pg_buildext: Don't update debian/control if debian/control.in is missing.
+  * Move dh_pgxs_test after dh_link so we have the links in the install trees.
 
  -- Christoph Berg <myon@debian.org>  Mon, 05 Oct 2020 11:36:38 +0200
 

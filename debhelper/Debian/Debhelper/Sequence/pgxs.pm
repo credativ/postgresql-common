@@ -15,6 +15,6 @@ add_command_options("dh_auto_install", "--buildsystem=pgxs");
 
 # move tests from dh_auto_test to dh_pgxs_test
 remove_command("dh_auto_test");
-insert_after("dh_auto_install", "dh_pgxs_test");
+insert_after("dh_link", "dh_pgxs_test");
 
 1;
