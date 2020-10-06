@@ -1,4 +1,4 @@
-postgresql-common (219) UNRELEASED; urgency=medium
+postgresql-common (219) unstable; urgency=medium
 
   * postgresql-server-dev-all: Depend on strict postgresql-common version.
   * pg_virtualenv: Export PGVERSION with the PostgreSQL major version.
@@ -9,7 +9,7 @@ postgresql-common (219) UNRELEASED; urgency=medium
   * Move dh_pgxs_test after dh_link so we have the links in the install trees.
   * Skip invoking dh_pgxs_test if nocheck is set, or when on hurd-i386.
 
- -- Christoph Berg <myon@debian.org>  Mon, 05 Oct 2020 11:36:38 +0200
+ -- Christoph Berg <myon@debian.org>  Tue, 06 Oct 2020 23:26:00 +0200
 
 postgresql-common (218) unstable; urgency=medium
 
