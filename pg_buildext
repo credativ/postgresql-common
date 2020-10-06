@@ -231,9 +231,10 @@ installed_versions() {
     # extract package name template(s) from control.in, split into prefix and suffix
     perl -lne 'print "$1 $2" if /^Package: (.*)PGVERSION(.*)/' debian/control.in | \
         while read prefix suffix; do
-            # translate templates to actually installed packages
+            # translate templates to actually installed packages, and extract version numbers
             dpkg-query --showformat '${db:Status-Status} ${Package}\n' --show "$prefix*$suffix" | \
-                grep '^installed' | cut -d ' ' -f 2 | sed -e "s/^$prefix//; s/$suffix\$//"
+                grep '^installed' | cut -d ' ' -f 2 | sed -e "s/^$prefix//; s/$suffix\$//" | egrep '^[0-9.]+$'
+            # if suffix is empty, the egrep will filter out noise like '13-dbgsym'
         done | sort -uV
 }
 
