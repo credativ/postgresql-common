@@ -123,7 +123,7 @@ installcheck() {
     # if a package pattern is given, tell pg_virtualenv where the installed files are
     if [ "$opt" ]; then
         pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
-        PKGARGS="-o extension_destdir=$PWD/debian/$pkg -o dynamic_library_path=$PWD/debian/$pkg/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
+        PKGARGS="-p $pkg"
         DESTDIR="DESTDIR=$PWD/debian/$pkg"
     fi
 
@@ -164,8 +164,8 @@ run_psql () {
     # if a package pattern is given, tell pg_virtualenv where the installed files are
     if [ "$opt" ]; then
         pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
+        PKGARGS="-p $pkg"
         export DESTDIR="$PWD/debian/$pkg"
-        PKGARGS="-o extension_destdir=$DESTDIR -o dynamic_library_path=$DESTDIR/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
     fi
 
     (
@@ -188,8 +188,8 @@ run_virtualenv () {
     # if a package pattern is given, tell pg_virtualenv where the installed files are
     if [ "$opt" ]; then
         pkg=$(echo "$opt" | sed -e "s:%v:$1:g")
+        PKGARGS="-p $pkg"
         export DESTDIR="$PWD/debian/$pkg"
-        PKGARGS="-o extension_destdir=$DESTDIR -o dynamic_library_path=$DESTDIR/usr/lib/postgresql/$1/lib:/usr/lib/postgresql/$1/lib"
     fi
 
     (

@@ -56,6 +56,7 @@ help ()
     echo "    -c 'options'      extra options to pass to pg_createcluster"
     echo "    -i 'initdb opts'  extra initdb options to pass to pg_createcluster"
     echo "    -o 'guc=value'    postgresql.conf options to pass to pg_createcluster"
+    echo "    -p 'package'      set options to find extension files in debian/package/"
     echo "    -s                open a shell when command fails"
     echo "    -t                use a temporary cluster directory even as root"
     exit ${1:-0}
@@ -66,7 +67,7 @@ PGBINROOT="/usr/lib/postgresql/"
 #redhat# PGBINROOT="/usr/pgsql-"
 PG_VERSIONS=""
 PGCONF_OPTS=()
-while getopts "ac:i:ho:stv:" opt ; do
+while getopts "ac:i:ho:p:stv:" opt ; do
     case $opt in
 	a) for d in $PGBINROOT*/bin/pg_ctl; do
 		# prepend version so latest ends up first (i.e. on port 5432)
@@ -77,6 +78,7 @@ while getopts "ac:i:ho:stv:" opt ; do
 	i) INITDB_OPTS="$OPTARG" ;;
 	h) help ;;
 	o) PGCONF_OPTS+=("--pgoption" "$OPTARG") ;;
+        p) PACKAGE="$OPTARG" ;;
 	s) run_shell=1 ;;
         t) NONROOT=1 ;;
 	v) PG_VERSIONS="$OPTARG" ;;
@@ -190,6 +192,9 @@ for v in $PG_VERSIONS; do
     # create temporary cluster
     # we chdir to / so programs don't throw "could not change directory to ..."
     (
+        if [ "${PACKAGE:-}" ]; then
+            PKGARGS="--pgoption extension_destdir=$PWD/debian/$PACKAGE --pgoption dynamic_library_path=$PWD/debian/$PACKAGE/usr/lib/postgresql/$v/lib:/usr/lib/postgresql/$v/lib"
+        fi
 	cd /
         case $v in
             8*|9.0|9.1|9.2) : ;;
@@ -202,7 +207,8 @@ for v in $PG_VERSIONS; do
 	    ${PGPORT:+-p "$PGPORT"} \
 	    ${NONROOT:+-d "$WORKDIR/data/$v/regress"} \
 	    ${NONROOT:+-l "$WORKDIR/log/postgresql-$v-regress.log"} \
-            ${CREATE_OPTS:-} --pgoption fsync=off "${PGCONF_OPTS[@]}" $v regress -- \
+            ${CREATE_OPTS:-} --pgoption fsync=off ${PKGARGS:-} "${PGCONF_OPTS[@]}" \
+            $v regress -- \
 	    --username="$PGUSER" --pwfile="$PWFILE" $NOSYNC ${INITDB_OPTS:-}
 	# in fakeroot, the username will likely default to "postgres" otherwise
         echo "This is a temporary throw-away cluster" > ${PG_CLUSTER_CONF_ROOT:-/etc/postgresql}/$v/regress/.by_pg_virtualenv
