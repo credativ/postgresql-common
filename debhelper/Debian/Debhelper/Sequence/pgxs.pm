@@ -15,6 +15,8 @@ add_command_options("dh_auto_install", "--buildsystem=pgxs");
 
 # move tests from dh_auto_test to dh_pgxs_test
 remove_command("dh_auto_test");
-insert_after("dh_link", "dh_pgxs_test");
+if (! get_buildoption("nocheck") and hostarch() ne "hurd-i386") {
+    insert_after("dh_link", "dh_pgxs_test");
+}
 
 1;
