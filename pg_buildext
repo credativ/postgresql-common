@@ -196,7 +196,7 @@ run_virtualenv () {
         if [ "$target" ] && [ "$target" != "." ]; then # if target is given, use it, else stay in the top source dir
             cd $target
         fi
-        pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 < $PSQLTMP
+        pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 ${SHELL:-/bin/sh} -ex < $PSQLTMP
     )
 }
 
