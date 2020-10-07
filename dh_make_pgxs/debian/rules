@@ -1,13 +1,17 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --buildsystem=pgxs
+	dh $@ --with pgxs
 
 override_dh_installdocs:
 	dh_installdocs --all README.*
 
 # if the package does not support building from subdirectories, use
-# `--buildsystem=pgxs_loop` above.
+# `--with pgxs_loop` above.
+#
+# change the way tests are run:
+# override_dh_pgxs_test:
+#	+pg_buildext installcheck . . postgresql-%v-@EXTNAME@
 
 # classic `pg_buildext` interface:
 

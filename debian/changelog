@@ -1,3 +1,9 @@
+postgresql-common (220) UNRELEASED; urgency=medium
+
+  * dh_make_pgxs: Use dh --with pgxs in template.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 07 Oct 2020 22:45:35 +0200
+
 postgresql-common (219) unstable; urgency=medium
 
   * postgresql-server-dev-all: Depend on strict postgresql-common version.
