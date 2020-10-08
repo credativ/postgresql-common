@@ -15,7 +15,9 @@ add_command_options("dh_auto_install", "--buildsystem=pgxs_loop");
 
 # move tests from dh_auto_test to dh_pgxs_test
 remove_command("dh_auto_test");
-if (! get_buildoption("nocheck") and hostarch() ne "hurd-i386") {
+# Dh_Lib::hostarch() not yet available on stretch and xenial
+my $hostarch = dpkg_architecture_value('DEB_HOST_ARCH');
+if (! get_buildoption("nocheck") and $hostarch ne "hurd-i386") {
     insert_after("dh_link", "dh_pgxs_test");
     add_command_options("dh_pgxs_test", "loop");
 }
