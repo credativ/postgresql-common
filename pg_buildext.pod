@@ -196,9 +196,11 @@ configure the list of supported versions on your system.
 =item B<debian/control.in:>
 
   Source: postgresql-foobar
+  Rules-Requires-Root: no
   Build-Depends: debhelper, postgresql-all (>= 217~)
 
   Package: postgresql-PGVERSION-foobar
+  Architecture: any
   Depends: ${misc:Depends}, ${shlibs:Depends}, postgresql-PGVERSION
 
 =item B<debian/pgversions:>

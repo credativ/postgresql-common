@@ -1,6 +1,7 @@
 postgresql-common (220) UNRELEASED; urgency=medium
 
   * dh_make_pgxs: Use dh --with pgxs in template.
+  * dh_make_pgxs: Add `R³: no` to control.in template.
 
  -- Christoph Berg <myon@debian.org>  Wed, 07 Oct 2020 22:45:35 +0200
 
