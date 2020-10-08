@@ -1,0 +1,14 @@
+CREATE EXTENSION foo VERSION "100";
+SELECT foo();
+   foo   
+---------
+ old bar
+(1 row)
+
+ALTER EXTENSION foo UPDATE TO "123";
+SELECT foo();
+ foo 
+-----
+ bar
+(1 row)
+

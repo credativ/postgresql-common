@@ -1,0 +1,4 @@
+foo_123*.*
+foo-123/build-*/
+foo-123/debian/
+postgresql-*-foo*.deb
