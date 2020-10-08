@@ -114,7 +114,17 @@ pg_buildext updatecontrol
 if [ "${FORCE:-}" ] || ! [ -e debian/changelog ]; then
     rm -f debian/changelog
     echo "Creating debian/changelog"
-    dch --create --package "$SOURCE" --newversion "$VERSION-1"
+    if [ -x /usr/bin/dch ]; then
+        dch --create --package "$SOURCE" --newversion "$VERSION-1"
+    else
+        cat > debian/changelog <<-EOT
+	$SOURCE ($VERSION-1) UNRELEASED; urgency=medium
+
+	  * Initial release. (Closes: #XXXXXX)
+
+	 -- $MAINTAINER_NAME <$DEBEMAIL>  $(date -R)
+	EOT
+    fi
 else
     echo "Keeping existing debian/changelog"
 fi
