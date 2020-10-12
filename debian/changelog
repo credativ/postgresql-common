@@ -1,4 +1,4 @@
-postgresql-common (220) UNRELEASED; urgency=medium
+postgresql-common (220) unstable; urgency=medium
 
   * dh_make_pgxs: Use dh --with pgxs in template.
   * dh_make_pgxs: Add `R³: no` to control.in template.
@@ -6,7 +6,7 @@ postgresql-common (220) UNRELEASED; urgency=medium
     Dh_Lib.pm on stretch and xenial doesn't have the latter yet.
   * Add t/190_pg_buildext.t covering pg_buildext and debhelper integration.
 
- -- Christoph Berg <myon@debian.org>  Wed, 07 Oct 2020 22:45:35 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 12 Oct 2020 23:21:52 +0200
 
 postgresql-common (219) unstable; urgency=medium
 
