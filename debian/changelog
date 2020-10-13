@@ -1,5 +1,6 @@
 postgresql-common (221) UNRELEASED; urgency=medium
 
+  [ Christoph Berg ]
   * pg_virtualenv: Skip build-time package tests if the PG server is missing
     extension_destdir support.
   * Test-depend on debhelper for the pg_buildext tests.
@@ -8,6 +9,9 @@ postgresql-common (221) UNRELEASED; urgency=medium
   * pgdg/apt.postgresql.org.sh: Bump devel version to 14, thanks to Aaron
     Pavely for spotting!
   * pg_updateaptconfig: Fix not to emit duplicated version entries.
+
+  [ Dominik George ]
+  * pg_buildext: Fail late on builds and tests to logs for all versions.
 
  -- Christoph Berg <myon@debian.org>  Tue, 13 Oct 2020 15:18:29 +0200
 

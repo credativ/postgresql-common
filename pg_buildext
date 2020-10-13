@@ -65,7 +65,7 @@ configure() {
 
     mkdir -p $vtarget
     ( echo "calling configure in $vtarget" &&
-      cd $vtarget && $srcdir/configure $confopts PG_CONFIG="$pgc" VPATH="$srcdir" )
+      cd $vtarget && $srcdir/configure $confopts PG_CONFIG="$pgc" VPATH="$srcdir" ) || return $?
 }
 
 build() {
@@ -77,7 +77,7 @@ build() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS
+    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS || return $?
 }
 
 install() {
@@ -87,7 +87,7 @@ install() {
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS
+    make -C $vtarget ${makefile:-} install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS || return $?
 }
 
 clean() {
@@ -102,11 +102,11 @@ loop() {
     package=$(echo $target | sed -e "s:%v:$1:g")
 
     echo "# $1: make"
-    make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
+    make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS || return $?
     echo "# $1: make install"
-    make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
+    make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS || return $?
     echo "# $1: make clean"
-    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
+    make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS # clean errors are fatal
 }
 
 installcheck() {
@@ -137,7 +137,7 @@ installcheck() {
 		echo "**** $vtarget/regression.diffs ****"
 		cat $vtarget/regression.diffs
 	    fi
-	    exit 1
+	    return 1
 	fi
     else
         if ! pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
@@ -146,7 +146,7 @@ installcheck() {
 		echo "**** regression.diffs ****"
 		cat regression.diffs
 	    fi
-	    exit 1
+	    return 1
 	fi
         # since we are in the top-level directory, clean up behind us
         make clean PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS
@@ -174,7 +174,7 @@ run_psql () {
         fi
         pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 \
             psql -Xe -v ON_ERROR_STOP=1 < $PSQLTMP
-    )
+    ) || return $?
 }
 
 run_virtualenv () {
@@ -197,7 +197,7 @@ run_virtualenv () {
             cd $target
         fi
         pg_virtualenv ${PKGARGS:-} $VENVARGS -v $1 ${SHELL:-/bin/sh} -ex < $PSQLTMP
-    )
+    ) || return $?
 }
 
 versions() {
@@ -296,10 +296,15 @@ case $action in
     configure-*|build-*|install-*|clean-*|installcheck-*)
 	a=${action%%-*}
 	v=${action##$a-}
+        ret=0
         echo "### PostgreSQL $v $a ###"
-	$a $v
-        echo "### End $v $a ###"
-	exit
+        if $a $v; then
+            echo "### End $v $a ###"
+        else
+            ret=$?
+            echo "### End $v $a (FAILED with exit code $ret) ###"
+        fi
+        exit $ret
 	;;
 
     checkcontrol)
@@ -362,12 +367,17 @@ case $action in
             versions=$(versions)
         fi
         [ "$versions" ] || exit 1
+        ret=0
         for v in $versions; do
             echo "### PostgreSQL $v $action ###"
-            $action $v
-            echo "### End $v $action ###"
+            if $action $v; then
+                echo "### End $v $action ###"
+            else
+                ret=$?
+                echo "### End $v $action (FAILED with exit code $ret) ###"
+            fi
         done
-        exit
+        exit $ret
         ;;
 
     psql|virtualenv)
@@ -387,15 +397,20 @@ case $action in
         [ "$versions" ] || exit 1
         for v in $versions; do
             echo "### PostgreSQL $v $action ###"
-            run_$action $v
-            echo "### End $v $action ###"
+            if run_$action $v; then
+                echo "### End $v $action ###"
+            else
+                ret=$r
+                echo "### End $v $action (FAILED with exit code $ret) ###"
+            fi
         done
-        exit
+        exit $ret
         ;;
 esac
 
 # loop over versions
 
+ret=0
 for v in $(versions)
 do
     case "$action" in
@@ -406,8 +421,12 @@ do
 	configure|build|install|clean|loop)
 	    [ "$target" ] || die "syntax: pg_buildext $action <target> [<srcdir>] [<opt>]"
             echo "### PostgreSQL $v $action ###"
-	    $action $v
-            echo "### End $v $action ###"
+            if $action $v; then
+                echo "### End $v $action ###"
+            else
+                ret=$?
+                echo "### End $v $action (FAILED with exit code $ret) ###"
+            fi
 	    ;;
 
 	*)
@@ -415,3 +434,5 @@ do
 	    ;;
     esac
 done
+
+exit $ret
