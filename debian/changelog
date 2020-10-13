@@ -7,6 +7,7 @@ postgresql-common (221) UNRELEASED; urgency=medium
   * dh_make_pgxs: Support running with older debhelper versions.
   * pgdg/apt.postgresql.org.sh: Bump devel version to 14, thanks to Aaron
     Pavely for spotting!
+  * pg_updateaptconfig: Fix not to emit duplicated version entries.
 
  -- Christoph Berg <myon@debian.org>  Tue, 13 Oct 2020 15:18:29 +0200
 
