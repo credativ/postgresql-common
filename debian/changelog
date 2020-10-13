@@ -1,6 +1,7 @@
 postgresql-common (221) UNRELEASED; urgency=medium
 
   * Test-depend on debhelper for the pg_buildext tests.
+  * dh_make_pgxs: Support running with older debhelper versions.
 
  -- Christoph Berg <myon@debian.org>  Tue, 13 Oct 2020 15:18:29 +0200
 

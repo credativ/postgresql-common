@@ -40,7 +40,8 @@ shift $((OPTIND - 1)) # shift away args
 
 SOURCE="${NAME//_/-}" # Debian name
 EXTNAME="$(echo $SOURCE | sed -e 's/^\(postgresql\|pgsql\|pg\)-//')" # binary package name suffix
-COMPAT="$(apt-cache show debhelper | sed -n 's/Version: \([0-9]*\)\..*/\1/p' | head -n1)"
+DHVERSION="$(dpkg-query --showformat '${Version}' --show debhelper)"
+COMPAT="${DHVERSION%%.*}"
 STANDARDS_VERSION="$(apt-cache show debian-policy | sed -n 's/Version: \(.*\)\..*/\1/p' | head -n1)"
 USERNAME=${LOGNAME:-${USER:-root}}
 MAINTAINER_NAME=$(getent passwd $USERNAME | cut -d : -f 5 | sed -e 's/,.*//')
@@ -107,6 +108,11 @@ for template in $(find $template_dir -mindepth 1 | sort); do
         install_template "$basename"
     fi
 done
+
+if [ "$COMPAT" -lt "12" ]; then
+    sed -i -e "s/debhelper-compat[^,]*/debhelper (>= $COMPAT)/" debian/control*
+    echo "$COMPAT" > debian/compat
+fi
 
 echo "Updating debian/control from debian/control.in"
 pg_buildext updatecontrol
