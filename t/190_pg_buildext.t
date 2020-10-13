@@ -50,10 +50,10 @@ foreach my $ver (@versions) {
             0, qr/PostgreSQL $ver installcheck.*test foo * \.\.\. ok/s;
     }
     program_ok 0, "dpkg -i $deb";
-    like_program_out 'nobody', "cd foo-123 && PG_SUPPORTED_VERSIONS=$ver pg_buildext installcheck",
+    like_program_out 'nobody', "cd foo-123 && pg_buildext installcheck",
         0, qr/PostgreSQL $ver installcheck.*test foo * \.\.\. ok/s;
-    like_program_out 'nobody', "cd foo-123 && echo 'SELECT 3*41, version()' | PG_SUPPORTED_VERSIONS=$ver pg_buildext psql", 0, qr/123.*PostgreSQL $ver\./;
-    like_program_out 'nobody', "cd foo-123 && echo 'echo --\$PGVERSION--' | PG_SUPPORTED_VERSIONS=$ver pg_buildext virtualenv", 0, qr/--$ver--/;
+    like_program_out 'nobody', "cd foo-123 && echo 'SELECT 3*41, version()' | pg_buildext psql", 0, qr/123.*PostgreSQL $ver\./;
+    like_program_out 'nobody', "cd foo-123 && echo 'echo --\$PGVERSION--' | pg_buildext virtualenv", 0, qr/--$ver--/;
     program_ok 0, "dpkg -r postgresql-$ver-foo";
 }
 
