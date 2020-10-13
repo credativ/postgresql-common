@@ -5,6 +5,8 @@ postgresql-common (221) UNRELEASED; urgency=medium
   * Test-depend on debhelper for the pg_buildext tests.
   * Skip pg_buildext tests when invoked from postgresql-NN server tests.
   * dh_make_pgxs: Support running with older debhelper versions.
+  * pgdg/apt.postgresql.org.sh: Bump devel version to 14, thanks to Aaron
+    Pavely for spotting!
 
  -- Christoph Berg <myon@debian.org>  Tue, 13 Oct 2020 15:18:29 +0200
 

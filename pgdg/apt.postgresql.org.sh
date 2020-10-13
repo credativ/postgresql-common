@@ -77,11 +77,11 @@ set -e
 # handle -v PGVERSION
 case $PGVERSION in # FIXME: this shouldn't be hard-coded in here
     # devel version comes from *-pgdg-testing (with lower default apt pinning priority)
-    13) PGDG="pgdg-testing"
+    14) PGDG="pgdg-testing"
         COMPONENTS="main $PGVERSION"
         PIN="-t $CODENAME-$PGDG" ;;
     # beta version just needs a different component
-    12) COMPONENTS="main $PGVERSION" ;;
+    #14) COMPONENTS="main $PGVERSION" ;;
 esac
 
 cat <<EOF
