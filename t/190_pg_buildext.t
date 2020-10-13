@@ -13,6 +13,13 @@ if ($PgCommon::rpm) {
     exit;
 }
 
+# when invoked from the postgresql-NN package tests, postgresql-server-dev-all is not installed
+if (! -x '/usr/bin/dh_make_pgxs') {
+    pass "Skipping pg_buildext tests, /usr/bin/dh_make_pgxs is not installed";
+    done_testing();
+    exit;
+}
+
 my $arch = `dpkg-architecture -qDEB_HOST_ARCH`;
 chomp $arch;
 
