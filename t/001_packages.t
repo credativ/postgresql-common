@@ -7,7 +7,7 @@ use lib 't';
 use TestLib;
 use POSIX qw/setlocale LC_ALL LC_MESSAGES/;
 
-use Test::More tests => $PgCommon::rpm ? (3 + 9*@MAJORS) : (14 + 7*@MAJORS);
+use Test::More tests => $PgCommon::rpm ? (3 + 9*@MAJORS) : (15 + 7*@MAJORS);
 
 ok (-f "/etc/os-release", "/etc/os-release exists");
 my ($os, $osversion) = os_release();
@@ -57,6 +57,7 @@ foreach my $v (@MAJORS) {
   }
 }
 
+ok ((deb_installed 'debhelper'), 'debhelper installed');
 ok ((deb_installed 'libecpg-dev'), 'libecpg-dev installed');
 ok ((deb_installed 'procps'), 'procps installed');
 ok ((deb_installed 'netcat-openbsd'), 'netcat-openbsd installed');
