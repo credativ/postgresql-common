@@ -9,6 +9,7 @@ postgresql-common (221) UNRELEASED; urgency=medium
   * pgdg/apt.postgresql.org.sh: Bump devel version to 14, thanks to Aaron
     Pavely for spotting!
   * pg_updateaptconfig: Fix not to emit duplicated version entries.
+  * Add Breaks on regressing packages with the move to PG13.
 
   [ Dominik George ]
   * pg_buildext: Fail late on builds and tests to logs for all versions.
