@@ -395,6 +395,7 @@ case $action in
             versions=$(versions)
         fi
         [ "$versions" ] || exit 1
+        ret=0
         for v in $versions; do
             echo "### PostgreSQL $v $action ###"
             if run_$action $v; then
