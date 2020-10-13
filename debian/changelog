@@ -1,5 +1,7 @@
 postgresql-common (221) UNRELEASED; urgency=medium
 
+  * pg_virtualenv: Skip build-time package tests if the PG server is missing
+    extension_destdir support.
   * Test-depend on debhelper for the pg_buildext tests.
   * Skip pg_buildext tests when invoked from postgresql-NN server tests.
   * dh_make_pgxs: Support running with older debhelper versions.

@@ -190,11 +190,16 @@ fi
 # create postgres environments
 for v in $PG_VERSIONS; do
     # create temporary cluster
+    if [ "${PACKAGE:-}" ]; then
+        if ! grep -q 'extension_destdir' /usr/share/postgresql/$v/postgresql.conf.sample; then
+            echo "$0: This PostgreSQL $v installation does not support 'extension_destdir', skipping this version"
+            [ "$PG_VERSIONS" = "$v" ] && exit 0 # only one version requested
+            continue
+        fi
+        PKGARGS="--pgoption extension_destdir=$PWD/debian/$PACKAGE --pgoption dynamic_library_path=$PWD/debian/$PACKAGE/usr/lib/postgresql/$v/lib:/usr/lib/postgresql/$v/lib"
+    fi
     # we chdir to / so programs don't throw "could not change directory to ..."
     (
-        if [ "${PACKAGE:-}" ]; then
-            PKGARGS="--pgoption extension_destdir=$PWD/debian/$PACKAGE --pgoption dynamic_library_path=$PWD/debian/$PACKAGE/usr/lib/postgresql/$v/lib:/usr/lib/postgresql/$v/lib"
-        fi
 	cd /
         case $v in
             8*|9.0|9.1|9.2) : ;;

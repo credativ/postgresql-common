@@ -23,6 +23,9 @@ if (! -x '/usr/bin/dh_make_pgxs') {
 my $arch = `dpkg-architecture -qDEB_HOST_ARCH`;
 chomp $arch;
 
+if ($ENV{PG_VERSIONS}) {
+    $ENV{PG_SUPPORTED_VERSIONS} = $ENV{PG_VERSIONS};
+}
 my @versions = split /\s+/, `/usr/share/postgresql-common/supported-versions`;
 
 # prepare build environment
@@ -41,7 +44,8 @@ foreach my $ver (@versions) {
     my $deb = "postgresql-$ver-foo_123-1_$arch.deb";
     ok (-f $deb, "$deb was built");
     SKIP: {
-        skip "No in-tree installcheck on $ver", 2 if ($ver < 9.5);
+        my $have_extension_destdir = `grep extension_destdir /usr/share/postgresql/$ver/postgresql.conf.sample`;
+        skip "No in-tree installcheck on PG $ver (missing extension_destdir)", 2 unless ($have_extension_destdir);
         like_program_out 'nobody', "cd foo-123 && PG_SUPPORTED_VERSIONS=$ver dh_pgxs_test",
             0, qr/PostgreSQL $ver installcheck.*test foo * \.\.\. ok/s;
     }
