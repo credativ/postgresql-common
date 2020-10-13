@@ -1,4 +1,4 @@
-postgresql-common (221) UNRELEASED; urgency=medium
+postgresql-common (221) unstable; urgency=medium
 
   [ Christoph Berg ]
   * pg_virtualenv: Skip build-time package tests if the PG server is missing
@@ -14,7 +14,7 @@ postgresql-common (221) UNRELEASED; urgency=medium
   [ Dominik George ]
   * pg_buildext: Fail late on builds and tests to logs for all versions.
 
- -- Christoph Berg <myon@debian.org>  Tue, 13 Oct 2020 15:18:29 +0200
+ -- Christoph Berg <myon@debian.org>  Tue, 13 Oct 2020 23:27:27 +0200
 
 postgresql-common (220) unstable; urgency=medium
 
