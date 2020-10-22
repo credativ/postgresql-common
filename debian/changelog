@@ -1,5 +1,10 @@
 postgresql-common (222) UNRELEASED; urgency=medium
 
+  [ Michael Banck ]
+  * pg_upgradecluster: set max_wal_senders along with wal_level in ugprade
+    mode.
+
+  [ Christoph Berg ]
   * Drop t/003_package_checks.t, psql can be linked with readline now.
     http://meetbot.debian.net/debian-ftp/2020/debian-ftp.2020-03-13-20.02.html
 

@@ -380,6 +380,12 @@ print "\n";
 if ($method eq 'upgrade' and $info{config}->{wal_level}) {
     PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
         'wal_level', $info{config}->{wal_level};
+    # if wal_level is minimal, max_wal_senders must be zero so the new cluster
+    # can start, so set max_wal_senders config option early as well
+    if (defined($info{config}->{max_wal_senders})) {
+       PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
+           'max_wal_senders', $info{config}->{max_wal_senders};
+   }
 }
 
 %newinfo = cluster_info($newversion, $newcluster);
