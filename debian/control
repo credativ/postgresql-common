@@ -37,12 +37,6 @@ Breaks:
  systemd (<< 204),
 # pg_buildext moved pg-s-d-all in 204
  postgresql-server-dev-all (<< 204),
-# postgresql-13 transition
- postgresql-12-omnidb (<= 2.17.0+ds-2),
- postgresql-12-pg-checksums (<= 1.0-3),
- postgresql-12-pgtap (<= 1.1.0-2),
- postgresql-12-python3-multicorn (<= 1.4.0-2),
- postgresql-12-slony1-2 (<= 2.2.8-4),
 Replaces:
  postgresql-server-dev-all (<< 204),
 Description: PostgreSQL database-cluster manager

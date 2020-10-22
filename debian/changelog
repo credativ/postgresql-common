@@ -7,6 +7,7 @@ postgresql-common (222) UNRELEASED; urgency=medium
   [ Christoph Berg ]
   * Drop t/003_package_checks.t, psql can be linked with readline now.
     http://meetbot.debian.net/debian-ftp/2020/debian-ftp.2020-03-13-20.02.html
+  * Remove PostgreSQL 13 transition Breaks, problems were testsuite-only.
 
  -- Christoph Berg <myon@debian.org>  Tue, 20 Oct 2020 11:40:45 +0200
 
