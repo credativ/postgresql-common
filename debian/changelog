@@ -1,4 +1,4 @@
-postgresql-common (222) UNRELEASED; urgency=medium
+postgresql-common (222) unstable; urgency=medium
 
   [ Michael Banck ]
   * pg_upgradecluster: set max_wal_senders along with wal_level in ugprade
@@ -9,7 +9,7 @@ postgresql-common (222) UNRELEASED; urgency=medium
     http://meetbot.debian.net/debian-ftp/2020/debian-ftp.2020-03-13-20.02.html
   * Remove PostgreSQL 13 transition Breaks, problems were testsuite-only.
 
- -- Christoph Berg <myon@debian.org>  Tue, 20 Oct 2020 11:40:45 +0200
+ -- Christoph Berg <myon@debian.org>  Mon, 26 Oct 2020 11:46:34 +0100
 
 postgresql-common (221) unstable; urgency=medium
 
