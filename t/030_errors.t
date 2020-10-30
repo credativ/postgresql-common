@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 149;
+use Test::More tests => 154;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -64,18 +64,21 @@ like_program_out 0, "pg_createcluster $version test -p 42", 1,
     'pg_createcluster -p checks valid port range';
 
 # chown cluster to an invalid user to test error
+(system "chown -R 0 /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
+like_program_out 0, "pg_ctlcluster $version main start", 1, qr/must not be owned by root/,
+    "pg_ctlcluster refuses to start root-owned cluster";
 my $badid = 98;
 (system "chown -R $badid /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
-is ((system "pg_ctlcluster $version main start 2>/dev/null"), 256,
-    'pg_ctlcluster fails on invalid cluster owner uid');
+like_program_out 0, "pg_ctlcluster $version main start", 1, qr/owned by user id 98 which does not exist/,
+    'pg_ctlcluster fails on invalid cluster owner uid';
 (system "chown -R postgres:$badid /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
-is ((system "pg_ctlcluster $version main start 2>/dev/null"), 256,
-    'pg_ctlcluster as root fails on invalid cluster owner gid');
-is ((exec_as 'postgres', "pg_ctlcluster $version main start"), 1,
-    'pg_ctlcluster as postgres fails on invalid cluster owner gid');
+like_program_out 0, "pg_ctlcluster $version main start", 1, qr/owned by group id 98 which does not exist/,
+    'pg_ctlcluster as root fails on invalid cluster owner gid';
+like_program_out 'postgres', "pg_ctlcluster $version main start", 1, qr/owned by group id 98 which does not exist/,
+    'pg_ctlcluster as postgres fails on invalid cluster owner gid';
 (system "chown -R postgres:postgres /var/lib/postgresql/$version/main") == 0 or die "chown failed: $!";
-is ((system "pg_ctlcluster $version main start"), 0,
-    'pg_ctlcluster succeeds on valid cluster owner uid/gid');
+program_ok 0, "pg_ctlcluster $version main start", 0,
+    'pg_ctlcluster succeeds on valid cluster owner uid/gid';
 
 # check socket
 my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid", "$version-main.pg_stat_tmp");

@@ -373,6 +373,9 @@ unless (-d $info{'pgdata'} && defined $info{'owneruid'}) {
 }
 
 # check that owner uid/gid is valid
+if ($info{owneruid} == 0) {
+    error "Data directory $info{pgdata} must not be owned by root";
+}
 unless (getpwuid $info{'owneruid'}) {
     error 'The cluster is owned by user id '.$info{'owneruid'}.' which does not exist'
 }
