@@ -236,7 +236,7 @@ sub run_parts {
 
 # command line arguments
 
-my $newest_version = get_newest_version;
+my $newest_version = get_newest_version('postgres');
 $newversion = $newest_version;
 
 my $method = 'dump';

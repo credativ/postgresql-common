@@ -679,8 +679,10 @@ sub cluster_info {
     return %result;
 }
 
-# Return an array of all available versions (by psql binaries and postgresql.conf files)
+# Return an array of all available versions (by binaries and postgresql.conf files)
+# Arguments: binary to scan for (optional, defaults to postgres)
 sub get_versions {
+    my $program = shift // 'postgres';
     my %versions = ();
 
     # enumerate psql versions from /usr/lib/postgresql/* (or /usr/pgsql-*)
@@ -693,13 +695,13 @@ sub get_versions {
             my $pfx = '';
             #redhat# $pfx = "pgsql-";
             ($entry) = $entry =~ /^$pfx(\d+\.?\d+)$/; # untaint
-            $versions{$entry} = 1 if $entry and get_program_path ('psql', $entry);
+            $versions{$entry} = 1 if $entry and get_program_path ($program, $entry);
         }
         closedir D;
     }
 
-    # enumerate versions from /etc/postgresql/*
-    if (opendir (D, $confroot)) {
+    # enumerate server versions from /etc/postgresql/*
+    if ($program eq 'postgres' and opendir (D, $confroot)) {
         my $v;
         while (defined ($v = readdir D)) {
             next if $v eq '.' || $v eq '..';
@@ -724,8 +726,10 @@ sub get_versions {
 }
 
 # Return the newest available version
+# Arguments: binary to scan for (optional)
 sub get_newest_version {
-    my @versions = get_versions;
+    my $program = shift // undef;
+    my @versions = get_versions($program);
     return undef unless (@versions);
     return $versions[-1];
 }
@@ -890,7 +894,7 @@ sub user_cluster_map {
     if ($count == 0) {
 	# if there are no local clusters, use latest clients for accessing
 	# network clusters
-	return (get_newest_version, undef, undef);
+	return (get_newest_version('psql'), undef, undef);
     }
 
     # more than one cluster exists, return cluster at default port

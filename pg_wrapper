@@ -110,7 +110,7 @@ unless ($version or $explicit_host or $explicit_port or $explicit_service) {
 # if we have no version yet, use the latest version. We were called as psql,
 # pg_archivecleanup, or pg_isready, always use latest version
 if (not $version or $cmdname =~ /^(psql|pg_archivecleanup|pg_isready)$/) {
-    $version = get_newest_version;
+    $version = get_newest_version($cmdname);
 }
 unless ($version) {
     error 'You must install at least one postgresql-client-<version> package';
