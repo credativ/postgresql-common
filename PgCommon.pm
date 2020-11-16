@@ -466,11 +466,11 @@ sub set_cluster_socketdir {
 }
 
 # Return the path of a program of a particular version.
-# Arguments: <program name> <version>
+# Arguments: <program name> [<version>]
 sub get_program_path {
     my ($program, $version) = @_;
     return '' unless defined $program;
-    $version //= get_newest_version();
+    $version //= get_newest_version($program);
     my $path = "$binroot$version/bin/$program";
     ($path) = $path =~ /(.*)/; #untaint
     return $path if -x $path;
