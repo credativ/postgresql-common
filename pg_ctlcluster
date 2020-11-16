@@ -76,7 +76,7 @@ sub stop_check_pid_file {
 # Arguments: <version> <cluster> <port> <socket dir>
 sub cluster_port_ready {
     my ($v, $c, $p, $sd) = @_;
-    my $psql = get_program_path 'psql';
+    my $psql = get_program_path('psql', $v);
     error 'cluster_port_ready: could not find psql binary' unless $psql;
     my $n = 0;
     my $result = 0;
