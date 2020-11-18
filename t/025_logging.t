@@ -33,6 +33,7 @@ sub check_major {
     my $default_log = "/var/log/postgresql/postgresql-$v-main.log";
     check_logging qr($v main 5432 online postgres $pgdata $default_log), "pg_lscluster reports logfile $default_log";
     like_program_out 'postgres', "psql -qc \"'foobar_${v}_$$'\"", 1, qr/syntax error.*foobar_${v}_$$/, 'log an error';
+    usleep $delay;
     like_program_out 'postgres', "grep --binary-files=text foobar_${v}_$$ $default_log", 0, qr/syntax error.*foobar_${v}_$$/, 'error appears in logfile';
 
     # syslog
@@ -57,6 +58,7 @@ sub check_major {
     is_program_out 'postgres', "psql -Atc \"show log_destination\"", 0, "csvlog\n", 'log_destination is csvlog';
     check_logging qr($v main 5432 online postgres $pgdata $pg_log/.*\.csv), "pg_lscluster reports csvlog";
     like_program_out 'postgres', "psql -qc \"'barbaz_${v}_$$'\"", 1, qr/syntax error.*barbaz_${v}_$$/, 'log an error';
+    usleep $delay;
     like_program_out 'postgres', "grep --binary-files=text barbaz_${v}_$$ $pgdata/$pg_log/*.csv", 0, qr/syntax error.*barbaz_${v}_$$/, "error appears in $pg_log/*.csv";
 
     # stderr,syslog,csvlog
@@ -65,6 +67,7 @@ sub check_major {
     is_program_out 'postgres', "psql -Atc \"show log_destination\"", 0, "stderr,syslog,csvlog\n", 'log_destination is stderr,syslog,csvlog';
     check_logging qr($v main 5432 online postgres $pgdata $pg_log/.*\.log,syslog,$pg_log/.*\.csv), "pg_lscluster reports stderr,syslog,csvlog";
     like_program_out 'postgres', "psql -qc \"'moo_${v}_$$'\"", 1, qr/syntax error.*moo_${v}_$$/, 'log an error';
+    usleep $delay;
     like_program_out 'postgres', "grep --binary-files=text moo_${v}_$$ $pgdata/$pg_log/*.log", 0, qr/syntax error.*moo_${v}_$$/, "error appears in $pg_log/*.log";
     SKIP: {
         skip "/var/log/syslog not available", 2 unless ($syslog_works);

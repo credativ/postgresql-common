@@ -2,6 +2,7 @@ postgresql-common (224) UNRELEASED; urgency=medium
 
   * pg_wrapper, PgCommon: When looking for the newest version, consider the
     name of the binary (psql, postgres) asked for.
+  * t/025_logging.t: Sleep a bit for the log tests to make test more stable.
 
  -- Christoph Berg <myon@debian.org>  Thu, 12 Nov 2020 15:56:28 +0100
 
