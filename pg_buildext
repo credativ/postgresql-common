@@ -401,7 +401,7 @@ case $action in
             if run_$action $v; then
                 echo "### End $v $action ###"
             else
-                ret=$r
+                ret=$?
                 echo "### End $v $action (FAILED with exit code $ret) ###"
             fi
         done
