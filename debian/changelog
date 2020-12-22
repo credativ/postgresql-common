@@ -4,6 +4,7 @@ postgresql-common (224) UNRELEASED; urgency=medium
     name of the binary (psql, postgres) asked for.
   * pg_buildext: Fix typo in the psql/virtualenv exit code handling.
   * t/025_logging.t: Sleep a bit for the log tests to make test more stable.
+  * postgresqlrc.5, user_clusters.5: Mention file locations more prominently.
 
  -- Christoph Berg <myon@debian.org>  Thu, 12 Nov 2020 15:56:28 +0100
 
