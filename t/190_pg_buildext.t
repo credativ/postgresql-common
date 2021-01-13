@@ -24,7 +24,14 @@ my $arch = `dpkg-architecture -qDEB_HOST_ARCH`;
 chomp $arch;
 
 if ($ENV{PG_VERSIONS}) {
-    $ENV{PG_SUPPORTED_VERSIONS} = $ENV{PG_VERSIONS};
+    note "PG_VERSIONS=$ENV{PG_VERSIONS}";
+    $ENV{PG_SUPPORTED_VERSIONS} = join ' ', (grep { $_ >= 9.1 } split /\s+/, $ENV{PG_VERSIONS});
+    unless ($ENV{PG_SUPPORTED_VERSIONS}) {
+        ok 1, 'No versions with extension support to test';
+        done_testing();
+        exit;
+    }
+    note "PG_SUPPORTED_VERSIONS=$ENV{PG_SUPPORTED_VERSIONS}";
 }
 my @versions = split /\s+/, `/usr/share/postgresql-common/supported-versions`;
 
