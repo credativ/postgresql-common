@@ -1,4 +1,4 @@
-postgresql-common (224) UNRELEASED; urgency=medium
+postgresql-common (224) unstable; urgency=medium
 
   * pg_wrapper, PgCommon: When looking for the newest version, consider the
     name of the binary (psql, postgres) asked for.
@@ -8,7 +8,7 @@ postgresql-common (224) UNRELEASED; urgency=medium
   * postgresqlrc.5, user_clusters.5: Mention file locations more prominently.
   * pg_upgradecluster: Deprecate operator_precedence_warning in PG14.
 
- -- Christoph Berg <myon@debian.org>  Thu, 12 Nov 2020 15:56:28 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 14 Jan 2021 16:23:51 +0100
 
 postgresql-common (223) unstable; urgency=medium
 
