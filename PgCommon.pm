@@ -620,6 +620,28 @@ sub check_pidfile_running {
     return undef;
 }
 
+# Determine if a cluster is managed by a supervisor (pacemaker, patroni).
+# Returns undef if it cannot be determined
+# Arguments: <pid file path>
+sub cluster_supervisor {
+    # postgres does not clean up the PID file when it stops, and it is
+    # not world readable, so only its absence is a definitive result; if it
+    # is present, we need to read it and check the PID, which will only
+    # work as root
+    return undef if ! -e $_[0];
+
+    my $pid = read_pidfile $_[0];
+    if (defined $pid and open(CG, "/proc/$pid/cgroup")) {
+        local $/; # enable localized slurp mode
+        my $cgroup = <CG>;
+        close CG;
+        if ($cgroup and $cgroup =~ /\b(pacemaker|patroni)\b/) {
+            return $1;
+        }
+    }
+    return undef;
+}
+
 # Return a hash with information about a specific cluster (which needs to exist).
 # Arguments: <version> <cluster name>
 # Returns: information hash (keys: pgdata, port, running, logfile [unless it
@@ -644,6 +666,8 @@ sub cluster_info {
     if ($postgresql_conf{'external_pid_file'} &&
 	$postgresql_conf{'external_pid_file'} ne '(none)') {
 	$result{'running'} = check_pidfile_running $postgresql_conf{'external_pid_file'};
+        my $supervisor = cluster_supervisor($postgresql_conf{'external_pid_file'});
+        $result{supervisor} = $supervisor if ($supervisor);
     }
 
     # otherwise fall back to probing the port; this is unreliable if the port

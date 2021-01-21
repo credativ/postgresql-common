@@ -1,11 +1,12 @@
-postgresql-common (225) UNRELEASED; urgency=medium
+postgresql-common (225) unstable; urgency=medium
 
+  * pg_lsclusters, cluster_info: Show cluster managed by pacemaker or patroni.
   * pg_ctlcluster: Fix "use systemctl instead" context.
   * pg_createcluster: In 14+, use initdb --no-instructions.
   * pg_upgradecluster: Deprecate password_encryption as boolean in 14.
   * t: Accept changed connection error messages from libpq 14.
 
- -- Christoph Berg <myon@debian.org>  Thu, 21 Jan 2021 15:46:53 +0100
+ -- Christoph Berg <myon@debian.org>  Tue, 02 Feb 2021 15:40:25 +0100
 
 postgresql-common (224) unstable; urgency=medium
 
