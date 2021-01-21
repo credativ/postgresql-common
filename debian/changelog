@@ -1,3 +1,9 @@
+postgresql-common (225) UNRELEASED; urgency=medium
+
+  * pg_ctlcluster: Fix "use systemctl instead" context.
+
+ -- Christoph Berg <myon@debian.org>  Thu, 21 Jan 2021 15:46:53 +0100
+
 postgresql-common (224) unstable; urgency=medium
 
   * pg_wrapper, PgCommon: When looking for the newest version, consider the
