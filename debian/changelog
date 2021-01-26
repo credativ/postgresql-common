@@ -1,6 +1,7 @@
 postgresql-common (225) UNRELEASED; urgency=medium
 
   * pg_ctlcluster: Fix "use systemctl instead" context.
+  * pg_createcluster: In 14+, use initdb --no-instructions.
 
  -- Christoph Berg <myon@debian.org>  Thu, 21 Jan 2021 15:46:53 +0100
 

@@ -4,7 +4,7 @@
 # the postgresql-common infrastructure.
 #
 # (C) 2005-2013 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2020 Christoph Berg <myon@debian.org>
+# (C) 2012-2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -81,6 +81,16 @@ sub init_db {
     } else {
 	push @initdb, ('-A', $ident_method);
     }
+
+    # cluster startup message
+    if ($version >= 14) {
+        push @initdb, '--no-instructions';
+    } else {
+        # ask initdb to print a different cluster start command (Debian patch)
+        $ENV{CLUSTER_START_COMMAND} = "pg_ctlcluster $version $cluster start";
+    }
+
+    # options from config and command line
     if (my $options = $defaultconf{'initdb_options'}) {
         push @initdb, split (/\s+/, replace_v_c ($options, $version, $cluster));
     }
@@ -370,8 +380,6 @@ if (-f "$datadir/PG_VERSION") {
     }
 } else {
     print "Creating new PostgreSQL cluster $version/$cluster ...\n";
-    # ask initdb to print a different cluster start command (Debian patch)
-    $ENV{CLUSTER_START_COMMAND} = "pg_ctlcluster $version $cluster start";
     ($ident_method, $peer_method) = init_db $version, $cluster, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
