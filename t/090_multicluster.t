@@ -93,7 +93,7 @@ unlike_program_out 'postgres', "psql -Atl --cluster $MAJORS[-1]/localhost:5440",
 
 # check some erroneous cluster specifications
 like_program_out 'postgres', "LC_MESSAGES=C psql -Atl --cluster $MAJORS[-1]/localhost:5435", 2, 
-    qr/could not connect/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
+    qr/could not connect|connection to server .* failed/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
 like_program_out 'postgres', "LC_MESSAGES=C psql -Atl --cluster $MAJORS[-1]/localhost:a", 1, 
     qr/Cluster .* does not exist/, "psql --cluster $MAJORS[-1]/localhost:a fails due to invalid syntax";
 like_program_out 'postgres', "LC_MESSAGES=C psql -Atl --cluster $MAJORS[-1]/doesnotexi.st", 1, 
@@ -123,7 +123,7 @@ unlike_program_out 'postgres', 'psql -Atl', 0,
     qr/test\|postgres\|/, 'PGCLUSTER network cluster selection (3)';
 $ENV{'PGCLUSTER'} = "$MAJORS[-1]/localhost:5435";
 like_program_out 'postgres', 'LC_MESSAGES=C psql -Atl', 2, 
-    qr/could not connect/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
+    qr/could not connect|connection to server .* failed/, "psql --cluster $MAJORS[-1]/localhost:5435 fails due to nonexisting port";
 delete $ENV{'PGCLUSTER'};
 
 # check that PGPORT works

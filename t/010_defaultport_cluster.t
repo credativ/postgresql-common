@@ -12,7 +12,7 @@ use TestLib;
 like_program_out 0, 'psql --version', 0, qr/^psql \(PostgreSQL\) $ALL_MAJORS[-1]/, 
     'pg_wrapper selects highest available version number';
 
-like_program_out 0, 'env LC_MESSAGES=C psql -h 127.0.0.1 -l', 2, qr/could not connect/, 
+like_program_out 0, 'env LC_MESSAGES=C psql -h 127.0.0.1 -l', 2, qr/could not connect|connection to server .* failed/,
     'connecting to localhost fails with no clusters';
 
 # We check if PGCLUSTER, --cluster, and native psql options are evaluated with
@@ -20,14 +20,14 @@ like_program_out 0, 'env LC_MESSAGES=C psql -h 127.0.0.1 -l', 2, qr/could not co
 # easier to do here because no clusters are running.)
 
 like_program_out 0, "env LC_MESSAGES=C PGCLUSTER=$MAJORS[-1]/127.0.0.2:5431 psql -l",
-    2, qr/could not connect.*127.0.0.2.*on port 5431/s, 'pg_wrapper uses host and port from PGCLUSTER';
+    2, qr/(could not connect|connection to server).*127.0.0.2.* port 5431/s, 'pg_wrapper uses host and port from PGCLUSTER';
 like_program_out 0, "env LC_MESSAGES=C PGCLUSTER=$MAJORS[-1]/127.0.0.2:5431 psql --cluster $MAJORS[-1]/127.0.0.3:5430 -l",
-    2, qr/could not connect.*127.0.0.3.*on port 5430/s, 'pg_wrapper uses --cluster from the command line';
+    2, qr/(could not connect|connection to server).*127.0.0.3.* port 5430/s, 'pg_wrapper uses --cluster from the command line';
 like_program_out 0, "env LC_MESSAGES=C PGCLUSTER=$MAJORS[-1]/127.0.0.2:5431 psql -h 127.0.0.3 -l",
-    2, qr/could not connect.*127.0.0.3.*on port 5432/s, 'pg_wrapper ignores PGCLUSTER with -h on the command line';
+    2, qr/(could not connect|connection to server).*127.0.0.3.* port 5432/s, 'pg_wrapper ignores PGCLUSTER with -h on the command line';
 like_program_out 0, "env LC_MESSAGES=C PGCLUSTER=$MAJORS[-1]/127.0.0.2:5431 psql --host 127.0.0.3 -l",
-    2, qr/could not connect.*127.0.0.3.*on port 5432/s, 'pg_wrapper ignores PGCLUSTER with --host on the command line';
+    2, qr/(could not connect|connection to server).*127.0.0.3.* port 5432/s, 'pg_wrapper ignores PGCLUSTER with --host on the command line';
 like_program_out 0, "env LC_MESSAGES=C PGCLUSTER=$MAJORS[-1]/127.0.0.2:5431 PGHOST=127.0.0.3 psql -l",
-    2, qr/could not connect.*127.0.0.3.*on port 5432/s, 'pg_wrapper ignores PGCLUSTER if PGHOST is set';
+    2, qr/(could not connect|connection to server).*127.0.0.3.* port 5432/s, 'pg_wrapper ignores PGCLUSTER if PGHOST is set';
 
 # vim: filetype=perl
