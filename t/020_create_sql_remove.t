@@ -23,7 +23,8 @@ sub check_major {
     my $xlogdir = tempdir("/tmp/$v.xlog.XXXXXX", CLEANUP => 1);
     rmdir $xlogdir; # recreated by initdb
     if ($v > 8.2) {
-        my $start_command = ($v >= 11 and not $PgCommon::rpm) ? "pg_ctlcluster" : "pg_ctl"; # CLUSTER_START_COMMAND supported in initdb
+        my $start_command = $v >= 14 ? "14 *main *5432 *online" : # initdb --no-instructions in 14+
+            ($v >= 11 and not $PgCommon::rpm) ? "pg_ctlcluster" : "pg_ctl"; # CLUSTER_START_COMMAND supported in initdb 11+
         like_program_out 'root', "pg_createcluster $v main --start -- -X $xlogdir", 0, qr/$start_command/,
             "pg_createcluster $v main";
     } else { # 8.2 does not have -X yet
