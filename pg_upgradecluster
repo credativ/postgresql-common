@@ -186,6 +186,9 @@ sub adapt_conffiles {
 
     if ($newversion >= '14') {
         $deprecate->(\%c, 'operator_precedence_warning', 'does not exist anymore');
+        if ($c{password_encryption} and $c{password_encryption} =~ /^(on|off|true|false)$/) {
+            $deprecate->(\%c, 'password_encryption', 'password_encryption is not a boolean anymore');
+        }
     }
 }
 
