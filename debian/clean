@@ -1,4 +1,7 @@
 tags
+t/foo/foo-123/build-*/
+t/foo/foo-123/debian/
+t/foo/foo_*
 rpm/BUILD/
 rpm/BUILDROOT/
 rpm/RPMS/
