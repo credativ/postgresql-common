@@ -1,3 +1,10 @@
+postgresql-common (226) UNRELEASED; urgency=medium
+
+  * PgCommon.pm: documentation converted to POD, many thanks to Pablo Valdés
+    for the excellent patch!
+
+ -- Christoph Berg <myon@debian.org>  Wed, 10 Feb 2021 23:51:11 +0100
+
 postgresql-common (225) unstable; urgency=medium
 
   * pg_lsclusters, cluster_info: Show cluster managed by pacemaker or patroni.

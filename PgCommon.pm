@@ -1,17 +1,23 @@
-# Common functions for the postgresql-common framework
-#
-# (C) 2008-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2020 Christoph Berg <myon@debian.org>
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+=head1 NAME
+
+PgCommon - Common functions for the postgresql-common framework
+
+=head1 COPYRIGHT AND LICENSE
+
+ (C) 2008-2009 Martin Pitt <mpitt@debian.org>
+ (C) 2012-2021 Christoph Berg <myon@debian.org>
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either
+L<version 2 of the License|https://www.gnu.org/licenses/old-licenses/gpl-2.0.html>,
+or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+=cut
 
 package PgCommon;
 use strict;
@@ -36,13 +42,26 @@ our @EXPORT_OK = qw/$confroot $binroot $rpm $have_python2
     replace_conf_value cluster_data_directory get_file_device
     check_pidfile_running/;
 
-# Print an error message to stderr and exit with status 1
+
+=head1 CONTENTS
+
+=head2 error
+
+ Print an error message to stderr and exit with status 1
+
+=cut
+
 sub error {
     print STDERR 'Error: ', $_[0], "\n";
     exit 1;
 }
 
-# configuration
+=head2 prepare_exec, restore_exec
+
+ Functions for configuration
+
+=cut
+
 our $confroot = '/etc/postgresql';
 if ($ENV{'PG_CLUSTER_CONF_ROOT'}) {
     ($confroot) = $ENV{'PG_CLUSTER_CONF_ROOT'} =~ /(.*)/; # untaint
@@ -90,9 +109,15 @@ our $have_python2 = 0; # python2 removed in bullseye+
     }
 }
 
-# Returns '1' if the argument is a configuration file value that stands for
-# true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
-# a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
+
+=head2 config_bool
+
+ returns '1' if the argument is a configuration file value that stands for
+ true (ON, TRUE, YES, or 1, case insensitive), '0' if the argument represents
+ a false value (OFF, FALSE, NO, or 0, case insensitive), or undef otherwise.
+
+=cut
+
 sub config_bool {
     return undef unless defined($_[0]);
     return 1 if ($_[0] =~ /^(on|true|yes|1)$/i);
@@ -100,9 +125,16 @@ sub config_bool {
     return undef;
 }
 
-# Quotes a value with single quotes
-# Arguments: <value>
-# Returns: quoted string
+
+=head2 quote_conf_value
+
+ Quotes a value with single quotes
+
+ Arguments: <value>
+ Returns: quoted string
+
+=cut
+
 sub quote_conf_value ($) {
     my $value = shift;
     return $value if ($value =~ /^-?[\d.]+$/); # integer or float
@@ -111,13 +143,21 @@ sub quote_conf_value ($) {
     return "'$value'";
 }
 
-# Read a 'var = value' style configuration file and return a hash with the
-# values. Error out if the file cannot be read.
-# If the file name ends with '.conf', the keys will be normalized to lower case
-# (suitable for e. g. postgresql.conf), otherwise kept intact (suitable for
-# environment).
-# Arguments: <path>
-# Returns: hash (empty if file does not exist)
+
+=head2 read_conf_file
+
+ Read a 'var = value' style configuration file and return a hash with the
+ values. Error out if the file cannot be read.
+
+ If the file name ends with '.conf', the keys will be normalized to
+ lower case (suitable for e.g. postgresql.conf), otherwise kept intact
+ (suitable for environment).
+
+ Arguments: <path>
+ Returns: hash (empty if file does not exist)
+
+=cut
+
 sub read_conf_file {
     my ($config_path) = @_;
     my %conf;
@@ -184,12 +224,18 @@ sub read_conf_file {
     return %conf;
 }
 
-# Returns path to cluster config file from a cluster configuration
-# directory (with /etc/postgresql-common/<file name> as fallback) and return a
-# hash with the values. Error out if the file cannot be read.
-# If config file name is postgresql.auto.conf, read from PGDATA
-# Arguments: <version> <cluster> <config file name>
-# Returns: hash (empty if the file does not exist)
+=head2 cluster_conf_filename
+
+ Returns path to cluster config file from a cluster configuration
+ directory (with /etc/postgresql-common/<file name> as fallback)
+ and return a hash with the values. Error out if the file cannot be read.
+ If config file name is postgresql.auto.conf, read from PGDATA
+
+ Arguments: <version> <cluster> <config file name>
+ Returns: hash (empty if the file does not exist)
+
+=cut
+
 sub cluster_conf_filename {
     my ($version, $cluster, $configfile) = @_;
     if ($configfile eq 'postgresql.auto.conf') {
@@ -201,9 +247,16 @@ sub cluster_conf_filename {
     return $fname;
 }
 
-# Read a 'var = value' style configuration file from a cluster configuration
-# Arguments: <version> <cluster> <config file name>
-# Returns: hash (empty if the file does not exist)
+
+=head2 read_cluster_conf_file
+
+Read a 'var = value' style configuration file from a cluster configuration
+
+Arguments: <version> <cluster> <config file name>
+Returns: hash (empty if the file does not exist)
+
+=cut
+
 sub read_cluster_conf_file {
     my ($version, $cluster, $configfile) = @_;
     my %conf = read_conf_file(cluster_conf_filename($version, $cluster, $configfile));
@@ -221,16 +274,30 @@ sub read_cluster_conf_file {
     return %conf;
 }
 
-# Return parameter from a PostgreSQL configuration file, or undef if the parameter
-# does not exist.
-# Arguments: <version> <cluster> <config file name> <parameter name>
+
+=head2 get_conf_value
+
+ Return parameter from a PostgreSQL configuration file,
+ or undef if the parameter does not exist.
+
+ Arguments: <version> <cluster> <config file name> <parameter name>
+
+=cut
+
 sub get_conf_value {
     my %conf = (read_cluster_conf_file $_[0], $_[1], $_[2]);
     return $conf{$_[3]};
 }
 
-# Set parameter of a PostgreSQL configuration file.
-# Arguments: <config file name> <parameter name> <value>
+
+=head2 set_conffile_value
+
+ Set parameter of a PostgreSQL configuration file.
+
+ Arguments: <config file name> <parameter name> <value>
+
+=cut
+
 sub set_conffile_value {
     my ($fname, $key, $value) = ($_[0], $_[1], quote_conf_value($_[2]));
     my @lines;
@@ -282,15 +349,29 @@ sub set_conffile_value {
     rename "$fname.new", "$fname" or die "rename $fname.new $fname: $!";
 }
 
-# Set parameter of a PostgreSQL cluster configuration file.
-# Arguments: <version> <cluster> <config file name> <parameter name> <value>
+
+=head2 set_conf_value
+
+ Set parameter of a PostgreSQL cluster configuration file.
+
+ Arguments: <version> <cluster> <config file name> <parameter name> <value>
+
+=cut
+
 sub set_conf_value {
     return set_conffile_value(cluster_conf_filename($_[0], $_[1], $_[2]), $_[3], $_[4]);
 }
 
-# Disable a parameter in a PostgreSQL configuration file by prepending it with
-# a '#'. Appends an optional explanatory comment <reason> if given.
-# Arguments: <config file name> <parameter name> <reason>
+
+=head2 disable_conffile_value
+
+ Disable a parameter in a PostgreSQL configuration file by prepending it
+ with a '#'. Appends an optional explanatory comment <reason> if given.
+
+ Arguments: <config file name> <parameter name> <reason>
+
+=cut
+
 sub disable_conffile_value {
     my ($fname, $key, $reason) = @_;
     my @lines;
@@ -327,18 +408,32 @@ sub disable_conffile_value {
     }
 }
 
-# Disable a parameter in a PostgreSQL cluster configuration file by prepending
-# it with a '#'. Appends an optional explanatory comment <reason> if given.
-# Arguments: <version> <cluster> <config file name> <parameter name> <reason>
+
+=head2 disable_conf_value
+
+ Disable a parameter in a PostgreSQL cluster configuration file by prepending
+ it with a '#'. Appends an optional explanatory comment <reason> if given.
+
+ Arguments: <version> <cluster> <config file name> <parameter name> <reason>
+
+=cut
+
 sub disable_conf_value {
     return disable_conffile_value(cluster_conf_filename($_[0], $_[1], $_[2]), $_[3], $_[4]);
 }
 
-# Replace a parameter in a PostgreSQL configuration file. The old parameter is
-# prepended with a '#' and  gets an optional explanatory comment <reason>
-# appended, if given. The new parameter is inserted directly after the old one.
-# Arguments: <version> <cluster> <config file name> <old parameter name>
-#            <reason> <new parameter name> <new value>
+
+=head2 replace_conf_value
+
+ Replace a parameter in a PostgreSQL configuration file. The old parameter
+ is prepended with a '#' and gets an optional explanatory comment <reason>
+ appended, if given. The new parameter is inserted directly after the old one.
+
+ Arguments: <version> <cluster> <config file name> <old parameter name>
+            <reason> <new parameter name> <new value>
+
+=cut
+
 sub replace_conf_value {
     my ($version, $cluster, $configfile, $oldparam, $reason, $newparam, $val) = @_;
     my $fname = cluster_conf_filename($version, $cluster, $configfile);
@@ -387,20 +482,41 @@ sub replace_conf_value {
     rename "$fname.new", "$fname";
 }
 
-# Return the port of a particular cluster
-# Arguments: <version> <cluster>
+
+=head2 get_cluster_port
+
+ Return the port of a particular cluster
+
+ Arguments: <version> <cluster>
+
+=cut
+
 sub get_cluster_port {
     return get_conf_value($_[0], $_[1], 'postgresql.conf', 'port') || $defaultport;
 }
 
-# Set the port of a particular cluster.
-# Arguments: <version> <cluster> <port>
+
+=head2 set_cluster_port
+
+ Set the port of a particular cluster.
+
+ Arguments: <version> <cluster> <port>
+
+=cut
+
 sub set_cluster_port {
     set_conf_value $_[0], $_[1], 'postgresql.conf', 'port', $_[2];
 }
 
-# Return cluster data directory.
-# Arguments: <version> <cluster name> [<config_hash>]
+
+=head2 cluster_data_directory
+
+ Return cluster data directory.
+
+ Arguments: <version> <cluster name> [<config_hash>]
+
+=cut
+
 sub cluster_data_directory {
     my $d;
     if ($_[2]) {
@@ -423,9 +539,16 @@ sub cluster_data_directory {
     return $d;
 }
 
-# Return the socket directory of a particular cluster or undef if the cluster
-# does not exist.
-# Arguments: <version> <cluster>
+
+=head2 get_cluster_socketdir
+
+ Return the socket directory of a particular cluster
+ or undef if the cluster does not exist.
+
+ Arguments: <version> <cluster>
+
+=cut
+
 sub get_cluster_socketdir {
     # if it is explicitly configured, just return it
     my $socketdir = get_conf_value($_[0], $_[1], 'postgresql.conf',
@@ -457,16 +580,30 @@ sub get_cluster_socketdir {
     return $socketdir;
 }
 
-# Set the socket directory of a particular cluster.
-# Arguments: <version> <cluster> <directory>
+
+=head2 set_cluster_socketdir
+
+ Set the socket directory of a particular cluster.
+
+ Arguments: <version> <cluster> <directory>
+
+=cut
+
 sub set_cluster_socketdir {
     set_conf_value $_[0], $_[1], 'postgresql.conf',
         $_[0] >= 9.3 ? 'unix_socket_directories' : 'unix_socket_directory',
         $_[2];
 }
 
-# Return the path of a program of a particular version.
-# Arguments: <program name> [<version>]
+
+=head2 get_program_path
+
+ Return the path of a program of a particular version.
+
+ Arguments: <program name> [<version>]
+
+=cut
+
 sub get_program_path {
     my ($program, $version) = @_;
     return '' unless defined $program;
@@ -477,8 +614,15 @@ sub get_program_path {
     return '';
 }
 
-# Check whether a postgres server is running at the specified port.
-# Arguments: <version> <cluster> <port>
+
+=head2 cluster_port_running
+
+ Check whether a postgres server is running at the specified port.
+
+ Arguments: <version> <cluster> <port>
+
+=cut
+
 sub cluster_port_running {
     die "port_running: invalid port $_[2]" if $_[2] !~ /\d+/;
     my $socketdir = get_cluster_socketdir $_[0], $_[1];
@@ -491,9 +635,16 @@ sub cluster_port_running {
     return $running ? 1 : 0;
 }
 
-# Read, verify, and return the current start.conf setting.
-# Arguments: <version> <cluster>
-# Returns: auto | manual | disabled
+
+=head2 get_cluster_start_conf
+
+ Read, verify, and return the current start.conf setting.
+
+ Arguments: <version> <cluster>
+ Returns: auto | manual | disabled
+
+=cut
+
 sub get_cluster_start_conf {
     my $start_conf = "$confroot/$_[0]/$_[1]/start.conf";
     if (-e $start_conf) {
@@ -512,9 +663,16 @@ sub get_cluster_start_conf {
     return 'auto'; # default
 }
 
-# Change start.conf setting.
-# Arguments: <version> <cluster> <value>
-# <value> = auto | manual | disabled
+
+=head2 set_cluster_start_conf
+
+ Change start.conf setting.
+
+ Arguments: <version> <cluster> <value>
+ <value> = auto | manual | disabled
+
+=cut
+
 sub set_cluster_start_conf {
     my ($v, $c, $val) = @_;
 
@@ -558,9 +716,16 @@ $val
     close F;
 }
 
-# Change pg_ctl.conf setting.
-# Arguments: <version> <cluster> <options>
-# <options> = options passed to pg_ctl(1)
+
+=head2 set_cluster_pg_ctl_conf
+
+ Change pg_ctl.conf setting.
+
+ Arguments: <version> <cluster> <options>
+ <options> = options passed to pg_ctl(1)
+
+=cut
+
 sub set_cluster_pg_ctl_conf {
     my ($v, $c, $opts) = @_;
     my $perms = 0644;
@@ -580,8 +745,15 @@ pg_ctl_options = '$opts'
     close F;
 }
 
-# Return the PID from an existing PID file or undef if it does not exist.
-# Arguments: <pid file path>
+
+=head2 read_pidfile
+
+ Return the PID from an existing PID file or undef if it does not exist.
+
+ Arguments: <pid file path>
+
+=cut
+
 sub read_pidfile {
     return undef unless -e $_[0];
 
@@ -597,14 +769,22 @@ sub read_pidfile {
     }
 }
 
-# Check whether a pid file is present and belongs to a running postgres.
-# Returns undef if it cannot be determined
-# Arguments: <pid file path>
+
+=head2 check_pidfile_running
+
+ Check whether a pid file is present and belongs to a running postgres.
+ Returns undef if it cannot be determined
+
+ Arguments: <pid file path>
+
+ postgres does not clean up the PID file when it stops, and it is
+ not world readable, so only its absence is a definitive result;
+ if it is present, we need to read it and check the PID, which will
+ only work as root
+
+=cut
+
 sub check_pidfile_running {
-    # postgres does not clean up the PID file when it stops, and it is
-    # not world readable, so only its absence is a definitive result; if it
-    # is present, we need to read it and check the PID, which will only
-    # work as root
     return 0 if ! -e $_[0];
 
     my $pid = read_pidfile $_[0];
@@ -620,14 +800,22 @@ sub check_pidfile_running {
     return undef;
 }
 
-# Determine if a cluster is managed by a supervisor (pacemaker, patroni).
-# Returns undef if it cannot be determined
-# Arguments: <pid file path>
+
+=head2 cluster_supervisor
+
+ Determine if a cluster is managed by a supervisor (pacemaker, patroni).
+ Returns undef if it cannot be determined
+
+ Arguments: <pid file path>
+
+ postgres does not clean up the PID file when it stops, and it is
+ not world readable, so only its absence is a definitive result; if it
+ is present, we need to read it and check the PID, which will only
+ work as root
+
+=cut
+
 sub cluster_supervisor {
-    # postgres does not clean up the PID file when it stops, and it is
-    # not world readable, so only its absence is a definitive result; if it
-    # is present, we need to read it and check the PID, which will only
-    # work as root
     return undef if ! -e $_[0];
 
     my $pid = read_pidfile $_[0];
@@ -642,11 +830,18 @@ sub cluster_supervisor {
     return undef;
 }
 
-# Return a hash with information about a specific cluster (which needs to exist).
-# Arguments: <version> <cluster name>
-# Returns: information hash (keys: pgdata, port, running, logfile [unless it
-#          has a custom one], configdir, owneruid, ownergid, waldir, socketdir,
-#          config->postgresql.conf)
+
+=head2 cluster_info
+
+ Return a hash with information about a specific cluster (which needs to exist).
+
+ Arguments: <version> <cluster name>
+ Returns: information hash (keys: pgdata, port, running, logfile [unless it
+          has a custom one], configdir, owneruid, ownergid, waldir, socketdir,
+          config->postgresql.conf)
+
+=cut
+
 sub cluster_info {
     my ($v, $c) = @_;
     error 'cluster_info must be called with <version> <cluster> arguments' unless ($v and $c);
@@ -703,8 +898,15 @@ sub cluster_info {
     return %result;
 }
 
-# Return an array of all available versions (by binaries and postgresql.conf files)
-# Arguments: binary to scan for (optional, defaults to postgres)
+
+=head2 get_versions
+
+ Return an array of all available versions (by binaries and postgresql.conf files)
+
+ Arguments: binary to scan for (optional, defaults to postgres)
+
+=cut
+
 sub get_versions {
     my $program = shift // 'postgres';
     my %versions = ();
@@ -749,8 +951,15 @@ sub get_versions {
     return sort { $a <=> $b } keys %versions;
 }
 
-# Return the newest available version
-# Arguments: binary to scan for (optional)
+
+=head2 get_newest_version
+
+ Return the newest available version
+
+ Arguments: binary to scan for (optional)
+
+=cut
+
 sub get_newest_version {
     my $program = shift // undef;
     my @versions = get_versions($program);
@@ -758,14 +967,26 @@ sub get_newest_version {
     return $versions[-1];
 }
 
-# Check whether a version exists
+=head2 version_exists
+
+ Check whether a version exists
+
+=cut
+
 sub version_exists {
     my ($version) = @_;
     return get_program_path ('psql', $version);
 }
 
-# Return an array of all available clusters of given version
-# Arguments: <version>
+
+=head2 get_version_clusters
+
+ Return an array of all available clusters of given version
+
+ Arguments: <version>
+
+=cut
+
 sub get_version_clusters {
     my $vdir = $confroot.'/'.$_[0].'/';
     my @clusters = ();
@@ -784,8 +1005,15 @@ sub get_version_clusters {
     return sort @clusters;
 }
 
-# Check if a cluster exists.
-# Arguments: <version> <cluster>
+
+=head2 cluster_exists
+
+ Check if a cluster exists.
+
+ Arguments: <version> <cluster>
+
+=cut
+
 sub cluster_exists {
     for my $c (get_version_clusters $_[0]) {
 	return 1 if $c eq $_[1];
@@ -793,7 +1021,13 @@ sub cluster_exists {
     return 0;
 }
 
-# Return the next free PostgreSQL port.
+
+=head2 next_free_port
+
+ Return the next free PostgreSQL port.
+
+=cut
+
 sub next_free_port {
     # create list of already used ports
     my @ports;
@@ -835,12 +1069,19 @@ sub next_free_port {
     die "no free port found";
 }
 
-# Return the PostgreSQL version, cluster, and database to connect to. version
-# is always set (defaulting to the version of the default port if no matching
-# entry is found, or finally to the latest installed version if there are no
-# clusters at all), cluster and database may be 'undef'. If only one cluster
-# exists, and no matching entry is found in the map files, that cluster is
-# returned.
+
+=head2 user_cluster_map
+
+ Return the PostgreSQL version, cluster, and database to connect to.
+
+ Version is always set (defaulting to the version of the default port
+ if no matching entry is found, or finally to the latest installed version
+ if there are no clusters at all), cluster and database may be 'undef'.
+ If only one cluster exists, and no matching entry is found in the map files,
+ that cluster is returned.
+
+=cut
+
 sub user_cluster_map {
     my ($user, $pwd, $uid, $gid) = getpwuid $>;
     my $group = (getgrgid  $gid)[0];
@@ -925,8 +1166,15 @@ sub user_cluster_map {
     return ($defaultport_version, $defaultport_cluster, undef);
 }
 
-# Copy a file to a destination and setup permissions
-# Arguments: <source file> <destination file or dir> <uid> <gid> <permissions>
+
+=head2 install_file
+
+ Copy a file to a destination and setup permissions
+
+ Arguments: <source file> <destination file or dir> <uid> <gid> <permissions>
+
+=cut
+
 sub install_file {
     my ($source, $dest, $uid, $gid, $perm) = @_;
 
@@ -935,10 +1183,17 @@ sub install_file {
     }
 }
 
-# Change effective and real user and group id. Also activates all auxiliary
-# groups the user is in. Exits with an error message if user/group ID cannot be
-# changed.
-# Arguments: <user id> <group id>
+
+=head2 change_ugid
+
+ Change effective and real user and group id. Also activates all auxiliary
+ groups the user is in. Exits with an error message if user/group ID cannot
+ be changed.
+
+ Arguments: <user id> <group id>
+
+=cut
+
 sub change_ugid {
     my ($uid, $gid) = @_;
 
@@ -955,11 +1210,19 @@ sub change_ugid {
     error 'Could not change group id' if $( != $gid;
 }
 
-# Return the encoding of a particular database in a cluster. This requires
-# access privileges to that database, so this function should be called as the
-# cluster owner.
-# Arguments: <version> <cluster> <database>
-# Returns: Encoding or undef if it cannot be determined.
+
+=head2 get_db_encoding
+
+ Return the encoding of a particular database in a cluster.
+
+ This requires access privileges to that database, so this
+ function should be called as the cluster owner.
+
+ Arguments: <version> <cluster> <database>
+ Returns: Encoding or undef if it cannot be determined.
+
+=cut
+
 sub get_db_encoding {
     my ($version, $cluster, $db) = @_;
     my $port = get_cluster_port $version, $cluster;
@@ -985,11 +1248,18 @@ sub get_db_encoding {
     return $out;
 }
 
-# Return locale of a particular database in a cluster. This requires access
-# privileges to that database, so this function should be called as the cluster
-# owner. (For versions >= 8.4; for older versions use get_cluster_locales()).
-# Arguments: <version> <cluster> <database>
-# Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
+
+=head2 get_db_locales
+
+ Return locale of a particular database in a cluster. This requires access
+ privileges to that database, so this function should be called as the cluster
+ owner. (For versions >= 8.4; for older versions use get_cluster_locales()).
+
+ Arguments: <version> <cluster> <database>
+ Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
+
+=cut
+
 sub get_db_locales {
     my ($version, $cluster, $db) = @_;
     my $port = get_cluster_port $version, $cluster;
@@ -1023,11 +1293,19 @@ sub get_db_locales {
     return (undef, undef);
 }
 
-# Return the CTYPE and COLLATE locales of a cluster. This needs to be called
-# as root or as the cluster owner. (For versions <= 8.3; for >= 8.4, use
-# get_db_locales()).
-# Arguments: <version> <cluster>
-# Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
+
+=head2 get_cluster_locales
+
+ Return the CTYPE and COLLATE locales of a cluster.
+
+ This needs to be called as root or as the cluster owner.
+ (For versions <= 8.3; for >= 8.4, use get_db_locales()).
+
+ Arguments: <version> <cluster>
+ Returns: (LC_CTYPE, LC_COLLATE) or (undef,undef) if it cannot be determined.
+
+=cut
+
 sub get_cluster_locales {
     my ($version, $cluster) = @_;
     my ($lc_ctype, $lc_collate) = (undef, undef);
@@ -1058,9 +1336,16 @@ sub get_cluster_locales {
     return ($lc_ctype, $lc_collate);
 }
 
-# Return the pg_control data for a cluster
-# Arguments: <version> <cluster>
-# Returns: hashref
+
+=head2 get_cluster_controldata
+
+ Return the pg_control data for a cluster
+
+ Arguments: <version> <cluster>
+ Returns: hashref
+
+=cut
+
 sub get_cluster_controldata {
     my ($version, $cluster) = @_;
 
@@ -1086,11 +1371,19 @@ sub get_cluster_controldata {
     return $data;
 }
 
-# Return an array with all databases of a cluster. This requires connection
-# privileges to template1, so this function should be called as the
-# cluster owner.
-# Arguments: <version> <cluster>
-# Returns: array of database names or undef on error.
+
+=head2 get_cluster_databases
+
+ Return an array with all databases of a cluster.
+
+ This requires connection privileges to template1, so
+ this function should be called as the cluster owner.
+
+ Arguments: <version> <cluster>
+ Returns: array of database names or undef on error.
+
+=cut
+
 sub get_cluster_databases {
     my ($version, $cluster) = @_;
     my $port = get_cluster_port $version, $cluster;
@@ -1122,9 +1415,16 @@ sub get_cluster_databases {
     return $? ? undef : @dbs;
 }
 
-# Return the device name a file is stored at.
-# Arguments: <file path>
-# Returns:  device name, or '' if it cannot be determined.
+
+=head2 get_file_device
+
+ Return the device name a file is stored at.
+
+ Arguments: <file path>
+ Returns:  device name, or '' if it cannot be determined.
+
+=cut
+
 sub get_file_device {
     my $dev = '';
     prepare_exec;
@@ -1143,16 +1443,47 @@ sub get_file_device {
 }
 
 
-# Parse a single pg_hba.conf line.
-# Arguments: <line>
-# Returns: Hash reference (only returns line and type==undef for invalid lines)
-# line -> the verbatim pg_hba line
-# type -> comment, local, host, hostssl, hostnossl, undef
-# db -> database name
-# user -> user name
-# method -> trust, reject, md5, crypt, password, krb5, ident, pam
-# ip -> ip address
-# mask -> network mask (either a single number as number of bits, or bit mask)
+=head2 parse_hba_line
+
+ Parse a single pg_hba.conf line.
+
+ Arguments: <line>
+ Returns: Hash reference (or only line and type==undef for invalid lines)
+
+=over 4
+
+=item *
+
+line -> the verbatim pg_hba line
+
+=item *
+
+type -> comment, local, host, hostssl, hostnossl, undef
+
+=item *
+
+db -> database name
+
+=item *
+
+user -> user name
+
+=item *
+
+method -> trust, reject, md5, crypt, password, krb5, ident, pam
+
+=item *
+
+ip -> ip address
+
+=item *
+
+mask -> network mask (either a single number as number of bits, or bit mask)
+
+=back
+
+=cut
+
 sub parse_hba_line {
     my $l = $_[0];
     chomp $l;
@@ -1201,9 +1532,16 @@ error:
     return $res;
 }
 
-# Parse given pg_hba.conf file.
-# Arguments: <pg_hba.conf path>
-# Returns: Array with hash refs; for hash contents, see parse_hba_line().
+
+=head2 read_pg_hba
+
+ Parse given pg_hba.conf file.
+
+ Arguments: <pg_hba.conf path>
+ Returns: Array with hash refs; for hash contents, see parse_hba_line().
+
+=cut
+
 sub read_pg_hba {
     open HBA, $_[0] or return undef;
     my @hba;
@@ -1215,9 +1553,16 @@ sub read_pg_hba {
     return @hba;
 }
 
-# Check if hba method is known
-# Argument: hba method
-# Returns: True if method is valid
+
+=head2 valid_hba_method
+
+ Check if hba method is known
+
+ Argument: hba method
+ Returns: True if method is valid
+
+=cut
+
 sub valid_hba_method {
     my $method = $_[0];
 
