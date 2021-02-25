@@ -72,12 +72,13 @@ build() {
     prepare_env $1
     if [ "$opt" ]; then
         cflags="$(echo $opt | sed -e "s:%v:$1:g")"
+        export COPT="${COPT:+$COPT }$cflags"
     fi
 
     mkdir -p $vtarget
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
-    make -C $vtarget ${makefile:-} ${cflags:+CFLAGS="$cflags"} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS || return $?
+    make -C $vtarget ${makefile:-} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS || return $?
 }
 
 install() {
