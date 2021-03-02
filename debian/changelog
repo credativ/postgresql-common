@@ -2,6 +2,7 @@ postgresql-common (226) UNRELEASED; urgency=medium
 
   * PgCommon.pm: documentation converted to POD, many thanks to Pablo Valdés
     for the excellent patch!
+  * PgCommon.pm error: Use die() instead of exit().
 
  -- Christoph Berg <myon@debian.org>  Wed, 10 Feb 2021 23:51:11 +0100
 

@@ -47,13 +47,13 @@ our @EXPORT_OK = qw/$confroot $binroot $rpm $have_python2
 
 =head2 error
 
- Print an error message to stderr and exit with status 1
+ Print an error message to stderr and die with exit status 1
 
 =cut
 
 sub error {
-    print STDERR 'Error: ', $_[0], "\n";
-    exit 1;
+    $! = 1; # force exit code 1
+    die "Error: $_[0]\n";
 }
 
 =head2 prepare_exec, restore_exec
