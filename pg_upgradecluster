@@ -4,7 +4,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2013 Peter Eisentraut <petere@debian.org>
-# (C) 2013-2020 Christoph Berg <myon@debian.org>
+# (C) 2013-2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -316,6 +316,7 @@ my $datadir;
 
 error 'specified cluster does not exist' unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
+validate_cluster_owner \%info;
 error 'cluster is disabled' if $info{'start'} eq 'disabled';
 
 error "cluster $version/$cluster is already on version $newversion. " .

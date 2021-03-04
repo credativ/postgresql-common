@@ -6,7 +6,7 @@ require File::Temp;
 
 use lib 't';
 use TestLib;
-use Test::More tests => 154;
+use Test::More tests => 156;
 use PgCommon;
 
 my $version = $MAJORS[-1];
@@ -318,6 +318,7 @@ mkdir "/etc/postgresql/$MAJORS[-1]" and
 mkdir "/etc/postgresql/$MAJORS[-1]/broken";
 mkdir "/var/lib/postgresql/$MAJORS[-1]";
 mkdir "/var/lib/postgresql/$MAJORS[-1]/broken";
+chown $pg_uid, $pg_gid, "/var/lib/postgresql/$MAJORS[-1]/broken";
 mkdir "/var/lib/postgresql/$MAJORS[-1]/broken/base" or die "mkdir: $!";
 open F, ">/etc/postgresql/$MAJORS[-1]/broken/postgresql.conf" or die "open: $!";
 print F "data_directory = '/var/lib/postgresql/$MAJORS[-1]/broken'\n";
@@ -327,6 +328,8 @@ close F;
 
 unlike_program_out 0, "pg_dropcluster $MAJORS[-1] broken", 0, qr/error/i, 
     'pg_dropcluster cleans up broken cluster configuration (/etc with pgdata and postgresql.conf and partial /var)';
+is -d "/etc/postgresql/$MAJORS[-1]", undef, "/etc/postgresql/$MAJORS[-1] was removed";
+is -d "/var/lib/postgresql/$MAJORS[-1]", undef, "/var/lib/postgresql/$MAJORS[-1] was removed";
 
 check_clean;
 

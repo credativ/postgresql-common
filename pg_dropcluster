@@ -4,7 +4,7 @@
 # process attached.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2015-2019 Christoph Berg <myon@debian.org>
+# (C) 2015-2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,8 @@ my $startconf;
 
 if (cluster_exists $version, $cluster) {
     %info = cluster_info ($version, $cluster);
+    validate_cluster_owner \%info if ($info{pgdata} && -d $info{pgdata}); # ignore missing data directory
+
     if ($info{'running'}) {
 	if ($stopserver) {
 	    if ($info{'pgdata'} && -d $info{'pgdata'}) {

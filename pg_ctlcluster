@@ -6,7 +6,7 @@
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
 # (C) 2009 Cyril Bouthors <cyril@bouthors.org>
-# (C) 2013-2019 Christoph Berg <myon@debian.org>
+# (C) 2013-2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -365,32 +365,11 @@ foreach my $argv (@ARGV) {
 
 error "specified cluster '$version $cluster' does not exist" unless cluster_exists $version, $cluster;
 %info = cluster_info ($version, $cluster);
+validate_cluster_owner \%info;
 
 unless ($action eq 'stop') {
     # check if cluster is disabled in start.conf
     error 'Cluster is disabled' if $info{'start'} eq 'disabled';
-}
-
-unless (-d $info{'pgdata'} && defined $info{'owneruid'}) {
-    error $info{'pgdata'} . ' is not accessible or does not exist';
-}
-
-# check that owner uid/gid is valid
-if ($info{owneruid} == 0) {
-    error "Data directory $info{pgdata} must not be owned by root";
-}
-unless (getpwuid $info{'owneruid'}) {
-    error 'The cluster is owned by user id '.$info{'owneruid'}.' which does not exist'
-}
-unless (getgrgid $info{'ownergid'}) {
-    error 'The cluster is owned by group id '.$info{'ownergid'}.' which does not exist'
-}
-# owneruid and configuid need to match, unless configuid is root
-if (($< == 0 or $> == 0) and $info{'configuid'} != 0 and
-        $info{'configuid'} != $info{'owneruid'}) {
-    my $configowner = (getpwuid $info{'configuid'})[0] || "(unknown)";
-    my $dataowner = (getpwuid $info{'owneruid'})[0];
-    error "Config owner ($configowner:$info{configuid}) and data owner ($dataowner:$info{owneruid}) do not match, and config owner is not root";
 }
 
 # redirect the request through systemd

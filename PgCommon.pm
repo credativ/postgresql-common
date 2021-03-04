@@ -31,7 +31,7 @@ our @ISA = ('Exporter');
 our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_socketdir set_cluster_socketdir cluster_port_running
     get_cluster_start_conf set_cluster_start_conf set_cluster_pg_ctl_conf
-    get_program_path cluster_info get_versions get_newest_version version_exists
+    get_program_path cluster_info validate_cluster_owner get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
     change_ugid config_bool get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
     get_cluster_databases cluster_conf_filename read_cluster_conf_file
@@ -896,6 +896,46 @@ sub cluster_info {
     }
 
     return %result;
+}
+
+
+=head2 validate_cluster_owner
+
+ Checks if the owner of a cluster is valid, and the owner of the config matches
+ the owner of the data directory.
+
+ Arguments: cluster_info hash reference
+
+=cut
+
+sub validate_cluster_owner($) {
+    my $info = shift;
+
+    unless ($info->{pgdata}) {
+        error "Cluster data directory is unknown";
+    }
+    unless (-d $info->{pgdata}) {
+        error "$info->{pgdata} is not accessible or does not exist";
+    }
+    unless (defined $info->{owneruid}) {
+        error "Could not determine owner of $info->{pgdata}";
+    }
+    if ($info->{owneruid} == 0) {
+        error "Data directory $info->{pgdata} must not be owned by root";
+    }
+    unless (getpwuid $info->{owneruid}) {
+        error "The cluster is owned by user id $info->{owneruid} which does not exist";
+    }
+    unless (getgrgid $info->{ownergid}) {
+        error "The cluster is owned by group id $info->{ownergid} which does not exist";
+    }
+    # owneruid and configuid need to match, unless configuid is root
+    if (($< == 0 or $> == 0) and $info->{configuid} != 0 and
+            $info->{configuid} != $info->{owneruid}) {
+        my $configowner = (getpwuid $info->{configuid})[0] || "(unknown)";
+        my $dataowner = (getpwuid $info->{owneruid})[0];
+        error "Config owner ($configowner:$info->{configuid}) and data owner ($dataowner:$info->{owneruid}) do not match, and config owner is not root";
+    }
 }
 
 

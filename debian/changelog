@@ -1,5 +1,8 @@
 postgresql-common (226) UNRELEASED; urgency=medium
 
+  * Move cluster owner verification from pg_ctlcluster to new PgCommon.pm
+    function validate_cluster_owner and use it in pg_upgradecluster,
+    pg_renamecluster, pg_dropcluster. (Extends the CVE-2019-3466 fix.)
   * PgCommon.pm: documentation converted to POD, many thanks to Pablo Valdés
     for the excellent patch!
   * PgCommon.pm error: Use die() instead of exit().
