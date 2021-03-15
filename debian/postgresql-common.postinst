@@ -90,10 +90,13 @@ EOF
     fi
 
     # Add postgres user to the ssl-cert group on fresh installs
+    # if not already in the group
     if [ -z "$2" ]; then
-	if getent group ssl-cert >/dev/null; then
-	    adduser $quiet postgres ssl-cert
-	fi
+        if getent group ssl-cert >/dev/null; then
+            if ! id -Gn postgres 2> /dev/null | grep -qw ssl-cert; then
+                adduser $quiet postgres ssl-cert
+            fi
+        fi
     fi
 
     if [ "$2" ]; then

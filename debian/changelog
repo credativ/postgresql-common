@@ -14,6 +14,10 @@ postgresql-common (226) UNRELEASED; urgency=medium
   * pg_buildext build: Move extra_cflags from command line arguments to COPT
     so Makefile.global CFLAGS are not overridden
 
+  [ Bryce Harrington ]
+  * d/postinst: Only add postgres to group ssl-cert if it isn't
+    already a member of that group. (Closes: #984473, LP: #1690432)
+
  -- Christoph Berg <myon@debian.org>  Wed, 10 Feb 2021 23:51:11 +0100
 
 postgresql-common (225) unstable; urgency=medium
