@@ -9,17 +9,29 @@ use Test::More;
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
 
 foreach my $v (@MAJORS) {
+    if ($v < 9.1) {
+        ok 1, "pg_backupcluster not supported on $v";
+        next;
+    }
     note "PostgreSQL $v";
 
     note "create cluster";
     program_ok 0, "pg_createcluster --locale C.UTF-8 $v main --start";
     like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
     program_ok 0, "pg_conftool $v main set work_mem 11MB";
+    if ($v <= 9.6) {
+        open my $hba, ">>", "/etc/postgresql/$v/main/pg_hba.conf";
+        print $hba "local replication all peer\n";
+        close $hba;
+        program_ok 0, "pg_conftool $v main set max_wal_senders 10";
+        program_ok 0, "pg_conftool $v main set wal_level archive";
+        program_ok 0, "pg_ctlcluster $v main restart";
+    }
     program_ok $pg_uid, "createdb -E SQL_ASCII -T template0 mydb";
     program_ok $pg_uid, "psql -c 'alter database mydb set search_path=public'";
     program_ok $pg_uid, "psql -c 'create table foo (t text)' mydb";
     program_ok $pg_uid, "psql -c \"insert into foo values ('important data')\" mydb";
-    program_ok $pg_uid, "createuser myuser";
+    program_ok $pg_uid, "psql -c 'CREATE USER myuser'";
     program_ok $pg_uid, "psql -c 'alter role myuser set search_path=public, myschema'";
     SKIP: { # in PG 10, AR-ID is part of globals.sql which we try to restore before databases.sql
         skip "alter role in database handling in PG <= 10 not supported", 1 if ($v <= 10);
@@ -33,24 +45,33 @@ foreach my $v (@MAJORS) {
     is $stat[4], $pg_uid, "$dir owned by uid postgres";
     is $stat[5], $pg_gid, "$dir owned by gid postgres";
 
-    note "dump";
-    program_ok 0, "pg_backupcluster $v main dump";
-    my $dump = glob "$dir/*.dump";
-    @stat = stat $dump;
-    is $stat[4], $pg_uid, "$dump owned by uid postgres";
-    is $stat[5], $pg_gid, "$dump owned by gid postgres";
+    my @backups = ();
+    my $dump = '';
+    SKIP: {
+        skip "dump not supported before 9.3", 1 if ($v < 9.3);
+        note "dump";
+        program_ok 0, "pg_backupcluster $v main dump";
+        $dump = glob "$dir/*.dump";
+        ok -d $dump, "dump created in $dump";
+        @stat = stat $dump;
+        is $stat[4], $pg_uid, "$dump owned by uid postgres";
+        is $stat[5], $pg_gid, "$dump owned by gid postgres";
+        push @backups, $dump;
+    }
 
     note "basebackup";
     program_ok 0, "pg_backupcluster $v main basebackup";
     my $basebackup = glob "$dir/*.backup";
+    ok -d $basebackup, "dump created in $basebackup";
     @stat = stat $basebackup;
     is $stat[4], $pg_uid, "$basebackup owned by uid postgres";
     is $stat[5], $pg_gid, "$basebackup owned by gid postgres";
+    push @backups, $basebackup;
 
     note "list";
     like_program_out 0, "pg_backupcluster $v main list", 0, qr/$dump.*$basebackup/s;
 
-    for my $backup ($dump, $basebackup) {
+    for my $backup (@backups) {
         note "restore $backup";
         program_ok 0, "pg_dropcluster $v main --stop";
         program_ok 0, "pg_restorecluster $v main $backup --start";
@@ -62,7 +83,8 @@ template1|postgres|UTF8|C.UTF-8|C.UTF-8|=c/postgres
 postgres=CTc/postgres\n";
         is_program_out $pg_uid, "psql -XAtc 'show work_mem'", 0, "11MB\n";
         is_program_out $pg_uid, "psql -XAtc 'select * from foo' mydb", 0, "important data\n";
-        is_program_out $pg_uid, "psql -XAtc \"select analyze_count from pg_stat_user_tables where relname = 'foo'\" mydb", 0, "3\n"; # --analyze-in-stages does 3 passes
+        is_program_out $pg_uid, "psql -XAtc \"select analyze_count from pg_stat_user_tables where relname = 'foo'\" mydb", 0,
+            ($v >= 9.4 ? "3\n" : "1\n"); # --analyze-in-stages does 3 passes
         SKIP: {
             skip "alter role in database handling in PG <= 10 not supported", 1 if ($v <= 10);
             is_program_out $pg_uid, "psql -XAtc '\\drds'", 0, "myuser|mydb|search_path=public, myotherschema

@@ -129,6 +129,7 @@ sub create_basebackup($) {
         "--verbose",
         (-t 2 ? "--progress" : ()),
         "--format", "tar", "--gzip",
+        ($version < 10 ? "--xlog" : ()),
         "-D", $backupdir;
 }
 
@@ -138,7 +139,7 @@ sub create_dumpall($) {
 
     my $clusterquery = "SELECT concat(
   format('--encoding %s --lc-collate %s --lc-ctype %s', pg_catalog.pg_encoding_to_char(encoding), datcollate, datctype),
-  CASE WHEN current_setting('data_checksums')::boolean THEN ' -- -k' END)
+  CASE WHEN current_setting('data_checksums')::boolean THEN ' -- --data-checksums' END)
 FROM pg_database WHERE datname = 'template0'";
     system_or_error "psql",
         "--cluster", "$version/$cluster",
@@ -156,7 +157,9 @@ SELECT
 FROM pg_database
 LEFT JOIN pg_roles r ON r.oid = datdba
 WHERE datallowconn AND datname NOT IN ('postgres', 'template1')
+
 UNION ALL
+
 /* database options */
 SELECT
   CASE
@@ -341,6 +344,7 @@ if ($action eq 'createdirectory') {
     create_directory();
 
 } elsif ($action eq 'basebackup') {
+    error "basebackups of pre-9.1 servers are not supported" if ($version < 9.1);
     create_directory();
     switch_to_cluster_owner();
     my $backupdir = get_backupdir('backup');
@@ -353,6 +357,7 @@ if ($action eq 'createdirectory') {
     compresswal();
 
 } elsif ($action eq 'dump') {
+    error "dumps of pre-9.3 servers are not supported" if ($version < 9.3);
     create_directory();
     switch_to_cluster_owner();
     my $backupdir = get_backupdir('dump');
@@ -570,6 +575,9 @@ For dump-style backups, not all properties of the original cluster are preserved
 B<--lc-collate>, B<--lc-collate>, and B<-k --data-checksums>.
 
 =back
+
+The earliest PostgreSQL version supported for dumps is 9.3.
+For basebackups, the earliest supported version is 9.1.
 
 =head1 SEE ALSO
 

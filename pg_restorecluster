@@ -122,10 +122,10 @@ sub update_config($$) {
         hba_file => "$configdir/pg_hba.conf",
         ident_file => "$configdir/pg_ident.conf",
         external_pid_file => "/var/run/postgresql/$version-$cluster.pid",
-        cluster_name => "$version/$cluster",
         stats_temp_directory => "/var/run/postgresql/$version-$cluster.pg_stat_tmp",
         port => next_free_port(),
     );
+    $settings{cluster_name} = "$version/$cluster" if ($version >= 9.5);
     my %config = PgCommon::read_conf_file("$configdir/postgresql.conf");
     for my $guc (sort keys %settings) {
         if (not exists $config{$guc} or $config{$guc} ne $settings{$guc}) {
@@ -142,6 +142,7 @@ sub restore_basebackup($$) {
     print "Restoring $backup/base.tar.gz to $datadir ...\n";
     system_or_error "tar", "-C", $datadir, "-xf", "$backup/base.tar.gz";
 
+    return if ($version < 10); # WAL contained in base.tar.gz in PG 9.x
     -f "$backup/pg_wal.tar.gz" or error "$backup/pg_wal.tar.gz is missing";
     my $waldir = "$datadir/pg_wal";
     print "Restoring $backup/pg_wal.tar.gz to $waldir ...\n";
@@ -184,7 +185,11 @@ sub restore_dumps($) {
 }
 
 sub analyze() {
-    system_or_error "vacuumdb", "--cluster", "$version/$cluster", "--analyze-only", "--analyze-in-stages", "--all";
+    system_or_error "vacuumdb",
+        "--cluster", "$version/$cluster",
+        "--analyze-only",
+        ($version >= 9.4 ? "--analyze-in-stages" : ()),
+        "--all";
 }
 
 sub lscluster() {
