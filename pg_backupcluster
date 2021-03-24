@@ -505,7 +505,8 @@ Backup from B<pg_backupcluster ... basebackup>.
 
 =item C<config.tar.gz>
 
-Tarball of cluster configuration directory in /etc/postgresql.
+Tarball of cluster configuration directory (postgresql.conf, pg_hba.conf, ...)
+in /etc/postgresql.
 
 =item I<tablespace>C<.tar.gz>, C<pg_wal.tar.gz>, C<backup_manifest>
 
@@ -525,7 +526,8 @@ Backup from B<pg_backupcluster ... dump>.
 
 =item C<config.tar.gz>
 
-Tarball of cluster configuration directory in /etc/postgresql.
+Tarball of cluster configuration directory (postgresql.conf, pg_hba.conf, ...)
+in /etc/postgresql.
 
 =item C<createcluster.opts>
 
@@ -553,6 +555,19 @@ Completion timestamp of backup run.
 =item /var/backups/I<version>-I<cluster>/B<wal>
 
 WAL files from B<pg_receivewal>.
+
+=back
+
+=head1 CAVEATS
+
+For dump-style backups, not all properties of the original cluster are preserved:
+
+=over 2
+
+=item * In PostgreSQL 10 and earlier, ALTER ROLE ... IN DATABASE is not supported.
+
+=item * Not all B<initdb> options are carried over. Currently supported are B<--encoding>,
+B<--lc-collate>, B<--lc-collate>, and B<-k --data-checksums>.
 
 =back
 

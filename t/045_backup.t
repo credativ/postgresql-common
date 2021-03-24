@@ -21,7 +21,10 @@ foreach my $v (@MAJORS) {
     program_ok $pg_uid, "psql -c \"insert into foo values ('important data')\" mydb";
     program_ok $pg_uid, "createuser myuser";
     program_ok $pg_uid, "psql -c 'alter role myuser set search_path=public, myschema'";
-    program_ok $pg_uid, "psql -c 'alter role myuser in database mydb set search_path=public, myotherschema'";
+    SKIP: { # in PG 10, AR-ID is part of globals.sql which we try to restore before databases.sql
+        skip "alter role in database handling in PG <= 10 not supported", 1 if ($v <= 10);
+        program_ok $pg_uid, "psql -c 'alter role myuser in database mydb set search_path=public, myotherschema'";
+    }
 
     note "create directory";
     program_ok 0, "pg_backupcluster $v main createdirectory";
@@ -60,9 +63,12 @@ postgres=CTc/postgres\n";
         is_program_out $pg_uid, "psql -XAtc 'show work_mem'", 0, "11MB\n";
         is_program_out $pg_uid, "psql -XAtc 'select * from foo' mydb", 0, "important data\n";
         is_program_out $pg_uid, "psql -XAtc \"select analyze_count from pg_stat_user_tables where relname = 'foo'\" mydb", 0, "3\n"; # --analyze-in-stages does 3 passes
-        is_program_out $pg_uid, "psql -XAtc '\\drds'", 0, "myuser|mydb|search_path=public, myotherschema
+        SKIP: {
+            skip "alter role in database handling in PG <= 10 not supported", 1 if ($v <= 10);
+            is_program_out $pg_uid, "psql -XAtc '\\drds'", 0, "myuser|mydb|search_path=public, myotherschema
 myuser||search_path=public, myschema
 |mydb|search_path=public\n";
+        }
     }
 
     program_ok 0, "pg_dropcluster $v main --stop";
