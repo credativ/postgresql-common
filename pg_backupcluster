@@ -281,6 +281,7 @@ sub compresswal() {
 }
 
 sub archivecleanup() {
+    chdir $waldir or return; # ok if not yet created
     my @backups = sort glob "$clusterdir/*.backup";
     for my $backup (@backups) {
         next unless (-f "$backup/status");
@@ -391,12 +392,10 @@ if ($action eq 'createdirectory') {
 
 } elsif ($action eq 'compresswal') {
     switch_to_cluster_owner();
-    exit 0 unless (-d $waldir);
     compresswal();
 
 } elsif ($action eq 'archivecleanup') {
     switch_to_cluster_owner();
-    exit 0 unless (-d $waldir);
     archivecleanup();
     compresswal();
 

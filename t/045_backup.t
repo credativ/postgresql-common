@@ -7,6 +7,8 @@ use PgCommon;
 use Test::More;
 
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
+my $systemd = (-d "/run/systemd/system" and not $ENV{_SYSTEMCTL_SKIP_REDIRECT});
+note $systemd ? "We are running systemd" : "We are not running systemd";
 
 foreach my $v (@MAJORS) {
     if ($v < 9.1) {
@@ -50,7 +52,11 @@ foreach my $v (@MAJORS) {
     SKIP: {
         skip "dump not supported before 9.3", 1 if ($v < 9.3);
         note "dump";
-        program_ok 0, "pg_backupcluster $v main dump";
+        if ($systemd) {
+            program_ok 0, "systemctl start pg_dump\@$v-main";
+        } else {
+            program_ok 0, "pg_backupcluster $v main dump";
+        }
         ($dump) = glob "$dir/*.dump";
         ok -d $dump, "dump created in $dump";
         @stat = stat $dump;
@@ -60,7 +66,11 @@ foreach my $v (@MAJORS) {
     }
 
     note "basebackup";
-    program_ok 0, "pg_backupcluster $v main basebackup";
+    if ($systemd) {
+        program_ok 0, "systemctl start pg_basebackup\@$v-main";
+    } else {
+        program_ok 0, "pg_backupcluster $v main basebackup";
+    }
     my ($basebackup) = glob "$dir/*.backup";
     ok -d $basebackup, "dump created in $basebackup";
     @stat = stat $basebackup;
