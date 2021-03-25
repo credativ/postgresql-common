@@ -16,7 +16,7 @@ foreach my $v (@MAJORS) {
     note "PostgreSQL $v";
 
     note "create cluster";
-    program_ok 0, "pg_createcluster --locale C.UTF-8 $v main --start";
+    program_ok 0, "pg_createcluster --locale ru_RU.UTF-8 $v main --start";
     like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
     program_ok 0, "pg_conftool $v main set work_mem 11MB";
     if ($v <= 9.6) {
@@ -75,11 +75,11 @@ foreach my $v (@MAJORS) {
         note "restore $backup";
         program_ok 0, "pg_dropcluster $v main --stop";
         program_ok 0, "pg_restorecluster $v main $backup --start";
-        is_program_out $pg_uid, "psql -XAtl", 0, "mydb|postgres|SQL_ASCII|C.UTF-8|C.UTF-8|
-postgres|postgres|UTF8|C.UTF-8|C.UTF-8|
-template0|postgres|UTF8|C.UTF-8|C.UTF-8|=c/postgres
+        is_program_out $pg_uid, "psql -XAtl", 0, "mydb|postgres|SQL_ASCII|ru_RU.UTF-8|ru_RU.UTF-8|
+postgres|postgres|UTF8|ru_RU.UTF-8|ru_RU.UTF-8|
+template0|postgres|UTF8|ru_RU.UTF-8|ru_RU.UTF-8|=c/postgres
 postgres=CTc/postgres
-template1|postgres|UTF8|C.UTF-8|C.UTF-8|=c/postgres
+template1|postgres|UTF8|ru_RU.UTF-8|ru_RU.UTF-8|=c/postgres
 postgres=CTc/postgres\n";
         is_program_out $pg_uid, "psql -XAtc 'show work_mem'", 0, "11MB\n";
         is_program_out $pg_uid, "psql -XAtc 'select * from foo' mydb", 0, "important data\n";
