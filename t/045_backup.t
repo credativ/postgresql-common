@@ -51,7 +51,7 @@ foreach my $v (@MAJORS) {
         skip "dump not supported before 9.3", 1 if ($v < 9.3);
         note "dump";
         program_ok 0, "pg_backupcluster $v main dump";
-        $dump = glob "$dir/*.dump";
+        ($dump) = glob "$dir/*.dump";
         ok -d $dump, "dump created in $dump";
         @stat = stat $dump;
         is $stat[4], $pg_uid, "$dump owned by uid postgres";
@@ -61,7 +61,7 @@ foreach my $v (@MAJORS) {
 
     note "basebackup";
     program_ok 0, "pg_backupcluster $v main basebackup";
-    my $basebackup = glob "$dir/*.backup";
+    my ($basebackup) = glob "$dir/*.backup";
     ok -d $basebackup, "dump created in $basebackup";
     @stat = stat $basebackup;
     is $stat[4], $pg_uid, "$basebackup owned by uid postgres";
