@@ -8,6 +8,7 @@ pg_conftool usr/bin
 pg_createcluster usr/bin
 pg_ctlcluster usr/bin
 pg_dropcluster usr/bin
+pg_getwal usr/share/postgresql-common
 pg_lsclusters usr/bin
 pg_renamecluster usr/bin
 pg_restorecluster usr/bin

@@ -40,7 +40,7 @@ Actions:
   receivewal             Launch pg_receivewal
   compresswal            Compress WAL files in archive
   archivecleanup         Remove obsolete WAL files from archive
-  list                   Show basebackups and dumps
+  list                   Show dumps, basebackups, and WAL
 Options:
   -k --keep-on-error     Keep faulty backup directory on error
   -v --verbose           Verbose output

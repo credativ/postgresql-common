@@ -1,0 +1,71 @@
+#!/usr/bin/perl -wT
+
+# retrieve a WAL file from a pg_receivewal archive
+#
+# (C) 2021 Christoph Berg <myon@debian.org>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+use strict;
+use warnings;
+use PgCommon;
+
+my ($version, $cluster);
+
+# untaint environment
+$ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
+delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
+umask 027;
+
+sub help () {
+    print "Syntax: $0 /path/to/wal/%f %p\n";
+}
+
+if (@ARGV != 2) {
+    help();
+    exit 1;
+}
+my ($file) = $ARGV[0] =~ /(.*)/;
+my ($path) = $ARGV[1] =~ /(.*)/;
+
+if (-f "$file.gz") {
+    system_or_error "gunzip < $file.gz > $path";
+} elsif (-f "$file.partial") {
+    system_or_error "cp $file.partial $path";
+} elsif (-f "$file") {
+    system_or_error "cp $file $path";
+} else {
+    error "$file not found";
+}
+
+__END__
+
+=head1 NAME
+
+pg_getwal - retrieve a WAL file from a pg_receivewal archive
+
+=head1 SYNOPSIS
+
+B<pg_getwal> I</path/to/wal/%f> I<%p>
+
+=head1 DESCRIPTION
+
+B<pg_getwal> retrieves and decompresses files from a WAL archive maintained by
+B<pg_receivewal> and B<pg_backupcluster>. It is put into PostgreSQL's
+B<restore_command> by B<pg_restorecluster>.
+
+=head1 SEE ALSO
+
+L<pg_restorecluster(1)>, L<pg_backupcluster(1)>.
+
+=head1 AUTHOR
+
+Christoph Berg L<E<lt>myon@debian.orgE<gt>>

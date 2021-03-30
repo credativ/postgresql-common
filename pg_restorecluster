@@ -16,6 +16,7 @@
 
 use strict;
 use warnings;
+use Cwd 'abs_path';
 use Getopt::Long;
 use PgCommon;
 
@@ -30,13 +31,15 @@ sub help () {
     print "Syntax: $0 [options] <version> <cluster> <backup>
 Options:
   -s --start    Start cluster after restoring (default for restore from dump)
+  -w --wal      TODO
 ";
 }
 
-my ($start);
+my ($start, $restore_wal);
 
 exit 1 unless GetOptions (
     's|start' => \$start,
+    'w|wal' => \$restore_wal,
 );
 
 # accept both "version cluster" and "version[-/]cluster"
@@ -98,6 +101,7 @@ sub create_cluster($$$$$) {
 }
 
 sub start_cluster() {
+    print "Starting cluster $version $cluster ...\n";
     system_or_error "pg_ctlcluster", $version, $cluster, "start";
 }
 
@@ -129,7 +133,7 @@ sub update_config($$) {
     my %config = PgCommon::read_conf_file("$configdir/postgresql.conf");
     for my $guc (sort keys %settings) {
         if (not exists $config{$guc} or $config{$guc} ne $settings{$guc}) {
-            print "Setting $guc to $settings{$guc} ...\n";
+            print "Setting $guc = $settings{$guc}\n";
             PgCommon::set_conffile_value("$configdir/postgresql.conf", $guc, $settings{$guc});
         }
     }
@@ -147,6 +151,42 @@ sub restore_basebackup($$) {
     my $waldir = "$datadir/pg_wal";
     print "Restoring $backup/pg_wal.tar.gz to $waldir ...\n";
     system_or_error "tar", "-C", $waldir, "-xf", "$backup/pg_wal.tar.gz";
+}
+
+sub pitr_options($$) {
+    my ($backup, $datadir) = @_;
+
+    my $walpath = "$backup/../wal";
+    my $waldir = abs_path($walpath) or error "$walpath: $!";
+    -d $waldir or error "$waldir is not a directory";
+
+    my $restore_command = "restore_command = '/usr/share/postgresql-common/pg_getwal $waldir/%f %p'\n";
+    print "Setting $restore_command";
+
+    if ($version >= 12) {
+        my $autoconf = "$datadir/postgresql.auto.conf";
+        open my $fh, ">>", $autoconf or error "$autoconf: $!";
+        print $fh $restore_command or error "$autoconf: $!";
+        close $fh or error "$autoconf: $!";
+
+        my $recoverysignal = "$datadir/recovery.signal";
+        open my $fh2, ">", $recoverysignal or error "$recoverysignal: $!";
+        close $fh2 or error "$recoverysignal: $!";
+
+    } else {
+        my $recoveryconf = "$datadir/recovery.conf";
+        open my $fh, ">>", $recoveryconf or error "$recoveryconf: $!";
+        print $fh $restore_command or error "$recoveryconf: $!";
+        close $fh or error "$recoveryconf: $!";
+    }
+}
+
+sub reset_pitr_options() {
+    if ($version >= 12) {
+        system_or_error "psql",
+            "--cluster", "$version/$cluster",
+            "-XAtqc", "ALTER SYSTEM RESET restore_command";
+    }
 }
 
 sub restore_globals($$) {
@@ -184,6 +224,20 @@ sub restore_dumps($) {
     }
 }
 
+sub wait_for_recovery() {
+    my $sleep = 1;
+
+    print "Waiting for end of recovery ...\n";
+    while (1) {
+        open my $psql, "-|", "psql", "--cluster", "$version/$cluster", "-XAtc", "SELECT pg_is_in_recovery()" or error "psql: $!";
+        my $status = <$psql>;
+        error "psql: $!" unless (defined $status);
+        close $psql or error "psql: $!";
+        last if ($status eq "f\n");
+        sleep($sleep++);
+    }
+}
+
 sub analyze() {
     system_or_error "vacuumdb",
         "--cluster", "$version/$cluster",
@@ -200,29 +254,35 @@ sub lscluster() {
 
 my ($backup) = $ARGV[0] =~ /(.*)/; # untaint
 error "$backup is not a directory" unless (-d $backup);
+$backup =~ s/\/$//; # strip trailing slash
 my ($owneruid, $ownergid) = (stat $backup)[4, 5];
 my $configdir = "/etc/postgresql/$version/$cluster";
 my $datadir = "/var/lib/postgresql/$version/$cluster";
 
-if ($backup =~ /\.backup\/?$/) {
+if ($backup =~ /\.backup$/) {
     create_cluster_directories($owneruid, $ownergid, $configdir, $datadir);
     if (fork == 0) {
         switch_to_cluster_owner($owneruid, $ownergid);
         restore_config($backup, $configdir);
         update_config($configdir, $datadir);
         restore_basebackup($backup, $datadir);
+        pitr_options($backup, $datadir) if ($restore_wal);
         exit(0);
     }
     wait;
     exit($?) if ($?);
     if ($start) {
+        print "\n";
         start_cluster();
         switch_to_cluster_owner($owneruid, $ownergid);
+        wait_for_recovery();
+        reset_pitr_options();
         analyze();
     }
+    print "\n";
     lscluster();
 
-} elsif ($backup =~ /\.dump\/?$/) {
+} elsif ($backup =~ /\.dump$/) {
     create_cluster($backup, $owneruid, $ownergid, $configdir, $datadir);
     print "\n";
     if (fork == 0) {
@@ -281,6 +341,10 @@ Start cluster after restoring (default for restore from dump; off for
 basebackup restores).
 
 After the cluster has been started, B<ANALYZE> is run on all databases.
+
+=item B<-w --wal>
+
+TODO
 
 =back
 
