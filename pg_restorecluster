@@ -31,16 +31,21 @@ sub help () {
     print "Syntax: $0 [options] <version> <cluster> <backup>
 Options:
   -s --start    Start cluster after restoring (default for restore from dump)
+     --pitr TS  Configure point-in-time-recovery to TIMESTAMP
   -w --wal      TODO
 ";
 }
 
-my ($start, $restore_wal);
+my ($start, $recovery_target_time, $restore_wal);
 
 exit 1 unless GetOptions (
     's|start' => \$start,
+    'pitr=s' => \$recovery_target_time,
     'w|wal' => \$restore_wal,
 );
+if ($recovery_target_time) {
+    ($recovery_target_time) = $recovery_target_time =~ /(.*)/; # untaint
+}
 
 # accept both "version cluster" and "version[-/]cluster"
 if (@ARGV >= 2 and $ARGV[0] =~ m!^(\d+\.?\d)[-/]([^/]+)$!) {
@@ -145,8 +150,12 @@ sub restore_basebackup($$) {
     -f "$backup/base.tar.gz" or error "$backup/base.tar.gz is missing";
     print "Restoring $backup/base.tar.gz to $datadir ...\n";
     system_or_error "tar", "-C", $datadir, "-xf", "$backup/base.tar.gz";
+}
 
+sub restore_wal($$) {
+    my ($backup, $datadir) = @_;
     return if ($version < 10); # WAL contained in base.tar.gz in PG 9.x
+
     -f "$backup/pg_wal.tar.gz" or error "$backup/pg_wal.tar.gz is missing";
     my $waldir = "$datadir/pg_wal";
     print "Restoring $backup/pg_wal.tar.gz to $waldir ...\n";
@@ -160,13 +169,17 @@ sub pitr_options($$) {
     my $waldir = abs_path($walpath) or error "$walpath: $!";
     -d $waldir or error "$waldir is not a directory";
 
-    my $restore_command = "restore_command = '/usr/share/postgresql-common/pg_getwal $waldir/%f %p'\n";
-    print "Setting $restore_command";
+    print "Setting recovery options";
+    my $recovery_options = "restore_command = '/usr/share/postgresql-common/pg_getwal $waldir/%f %p'\n";
+    if ($recovery_target_time) {
+        $recovery_options .= "recovery_target_time = '$recovery_target_time'\n";
+        $recovery_options .= "recovery_target_action = 'promote'\n";
+    }
 
     if ($version >= 12) {
         my $autoconf = "$datadir/postgresql.auto.conf";
         open my $fh, ">>", $autoconf or error "$autoconf: $!";
-        print $fh $restore_command or error "$autoconf: $!";
+        print $fh $recovery_options or error "$autoconf: $!";
         close $fh or error "$autoconf: $!";
 
         my $recoverysignal = "$datadir/recovery.signal";
@@ -176,7 +189,7 @@ sub pitr_options($$) {
     } else {
         my $recoveryconf = "$datadir/recovery.conf";
         open my $fh, ">>", $recoveryconf or error "$recoveryconf: $!";
-        print $fh $restore_command or error "$recoveryconf: $!";
+        print $fh $recovery_options or error "$recoveryconf: $!";
         close $fh or error "$recoveryconf: $!";
     }
 }
@@ -186,6 +199,14 @@ sub reset_pitr_options() {
         system_or_error "psql",
             "--cluster", "$version/$cluster",
             "-XAtqc", "ALTER SYSTEM RESET restore_command";
+        system_or_error "psql",
+            "--cluster", "$version/$cluster",
+            "-XAtqc", "ALTER SYSTEM RESET recovery_target_time"
+                if ($recovery_target_time);
+        system_or_error "psql",
+            "--cluster", "$version/$cluster",
+            "-XAtqc", "ALTER SYSTEM RESET recovery_target_action"
+                if ($recovery_target_time);
     }
 }
 
@@ -266,7 +287,8 @@ if ($backup =~ /\.backup$/) {
         restore_config($backup, $configdir);
         update_config($configdir, $datadir);
         restore_basebackup($backup, $datadir);
-        pitr_options($backup, $datadir) if ($restore_wal);
+        restore_wal($backup, $datadir);
+        pitr_options($backup, $datadir) if ($restore_wal or $recovery_target_time);
         exit(0);
     }
     wait;
@@ -276,7 +298,7 @@ if ($backup =~ /\.backup$/) {
         start_cluster();
         switch_to_cluster_owner($owneruid, $ownergid);
         wait_for_recovery();
-        reset_pitr_options();
+        reset_pitr_options() if ($restore_wal or $recovery_target_time);
         analyze();
     }
     print "\n";

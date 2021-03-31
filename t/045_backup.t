@@ -18,7 +18,7 @@ foreach my $v (@MAJORS) {
     note "PostgreSQL $v";
 
     note "create cluster";
-    program_ok 0, "pg_createcluster --locale ru_RU.UTF-8 $v main --start";
+    program_ok 0, "pg_createcluster --locale en_US.UTF-8 $v main --start";
     like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
     program_ok 0, "pg_conftool $v main set work_mem 11MB";
     if ($v <= 9.6) {
@@ -39,6 +39,7 @@ foreach my $v (@MAJORS) {
         skip "alter role in database handling in PG <= 10 not supported", 1 if ($v <= 10);
         program_ok $pg_uid, "psql -c 'alter role myuser in database mydb set search_path=public, myotherschema'";
     }
+    program_ok $pg_uid, "psql -c 'select pg_switch_wal()'";
 
     note "create directory";
     program_ok 0, "pg_backupcluster $v main createdirectory";
@@ -66,9 +67,15 @@ foreach my $v (@MAJORS) {
     }
 
     note "basebackup";
+    my $receivewal_pid;
     if ($systemd) {
+        program_ok 0, "systemctl start pg_receivewal\@$v-main";
         program_ok 0, "systemctl start pg_basebackup\@$v-main";
     } else {
+        my $receivewal_pid = fork;
+        if ($receivewal_pid == 0) {
+            exec "pg_backupcluster $v main receivewal";
+        }
         program_ok 0, "pg_backupcluster $v main basebackup";
     }
     my ($basebackup) = glob "$dir/*.backup";
@@ -81,15 +88,27 @@ foreach my $v (@MAJORS) {
     note "list";
     like_program_out 0, "pg_backupcluster $v main list", 0, qr/$dump.*$basebackup/s;
 
+    note "more database changes";
+    program_ok $pg_uid, "psql -c \"insert into foo values ('some other data')\" mydb";
+    program_ok $pg_uid, "psql -c \"insert into foo values ('yet more data')\" mydb";
+    my $timestamp = `su -c "psql -XAtc 'select now()'" postgres`;
+    ok $timestamp, "retrieve recovery timestamp";
+    program_ok $pg_uid, "psql -c \"delete from foo where t = 'some other data'\" mydb";
+    if ($systemd) {
+        program_ok 0, "systemctl stop pg_receivewal\@$v-main";
+    } else {
+        is kill('TERM', $receivewal_pid), 1, "stop receivewal";
+    }
+
     for my $backup (@backups) {
         note "restore $backup";
         program_ok 0, "pg_dropcluster $v main --stop";
         program_ok 0, "pg_restorecluster $v main $backup --start";
-        is_program_out $pg_uid, "psql -XAtl", 0, "mydb|postgres|SQL_ASCII|ru_RU.UTF-8|ru_RU.UTF-8|
-postgres|postgres|UTF8|ru_RU.UTF-8|ru_RU.UTF-8|
-template0|postgres|UTF8|ru_RU.UTF-8|ru_RU.UTF-8|=c/postgres
+        is_program_out $pg_uid, "psql -XAtl", 0, "mydb|postgres|SQL_ASCII|en_US.UTF-8|en_US.UTF-8|
+postgres|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|
+template0|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|=c/postgres
 postgres=CTc/postgres
-template1|postgres|UTF8|ru_RU.UTF-8|ru_RU.UTF-8|=c/postgres
+template1|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|=c/postgres
 postgres=CTc/postgres\n";
         is_program_out $pg_uid, "psql -XAtc 'show work_mem'", 0, "11MB\n";
         is_program_out $pg_uid, "psql -XAtc 'select * from foo' mydb", 0, "important data\n";
@@ -102,6 +121,16 @@ myuser||search_path=public, myschema
 |mydb|search_path=public\n";
         }
     }
+
+    note "restore $basebackup with WAL";
+    program_ok 0, "pg_dropcluster $v main --stop";
+    program_ok 0, "pg_restorecluster $v main $basebackup --start --wal";
+    is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nyet more data\n";
+
+    note "restore $basebackup with PITR";
+    program_ok 0, "pg_dropcluster $v main --stop";
+    program_ok 0, "pg_restorecluster $v main $basebackup --start --pitr '$timestamp'";
+    is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nsome other data\nyet more data\n";
 
     program_ok 0, "pg_dropcluster $v main --stop";
     check_clean;

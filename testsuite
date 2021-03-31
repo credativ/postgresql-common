@@ -118,7 +118,7 @@ locale_gen \
 # stop currently running clusters
 if [ -d /run/systemd/system ] ; then
     # stop postgresql@* explicitly (#759725)
-    systemctl stop postgresql "postgresql@*"
+    systemctl stop postgresql "postgresql@*" "pg_receivewal@*"
 else
     service postgresql stop
 fi
