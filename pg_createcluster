@@ -31,16 +31,7 @@ my $quiet;
 
 chdir '/';
 
-# replace placeholders
-# Arguments: <string> <version> <cluster>
-sub replace_v_c ($$$) {
-    my ($str, $version, $cluster) = @_;
-    $str =~ s/%([vc%])/$1 eq 'v' ? $version :
-		       $1 eq 'c' ? $cluster : '%'/eg;
-    return $str;
-}
-
-# call initdb 
+# call initdb
 # Arguments: <version> <data directory> <owner uid> <owner gid> <initdb options>
 sub init_db {
     my ($version, $cluster, $datadir, $owneruid, $ownergid, $initdb_opts_from_cli) = @_;

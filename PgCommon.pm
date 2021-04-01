@@ -33,7 +33,8 @@ our @EXPORT = qw/error user_cluster_map get_cluster_port set_cluster_port
     get_cluster_start_conf set_cluster_start_conf set_cluster_pg_ctl_conf
     get_program_path cluster_info validate_cluster_owner get_versions get_newest_version version_exists
     get_version_clusters next_free_port cluster_exists install_file
-    change_ugid system_or_error config_bool get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
+    change_ugid system_or_error config_bool replace_v_c
+    get_db_encoding get_db_locales get_cluster_locales get_cluster_controldata
     get_cluster_databases cluster_conf_filename read_cluster_conf_file
     read_pg_hba read_pidfile valid_hba_method/;
 our @EXPORT_OK = qw/$confroot $binroot $rpm $have_python2
@@ -141,6 +142,23 @@ sub quote_conf_value ($) {
     return $value if ($value =~ /^\w+$/); # plain word
     $value =~ s/'/''/g; # else quote it
     return "'$value'";
+}
+
+
+=head2 replace_v_c
+
+ Replaces %v and %c placeholders
+
+ Arguments: <string> <version> <cluster>
+ Returns: string
+
+=cut
+
+sub replace_v_c ($$$) {
+    my ($str, $version, $cluster) = @_;
+    $str =~ s/%([vc%])/$1 eq 'v' ? $version :
+                       $1 eq 'c' ? $cluster : '%'/eg;
+    return $str;
 }
 
 
