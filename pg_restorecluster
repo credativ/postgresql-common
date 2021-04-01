@@ -30,15 +30,17 @@ umask 022;
 sub help () {
     print "Syntax: $0 [options] <version> <cluster> <backup>
 Options:
+  -p --port N   Use port N for restored cluster (default is next free port)
   -s --start    Start cluster after restoring (default for restore from dump)
      --archive  Configure recovery from WAL archive
      --pitr TS  Configure point-in-time recovery to TIMESTAMP from WAL archive
 ";
 }
 
-my ($start, $recovery_target_time, $archive_recovery);
+my ($port, $start, $recovery_target_time, $archive_recovery);
 
 exit 1 unless GetOptions (
+    'p|port=s' => \$port,
     's|start' => \$start,
     'archive' => \$archive_recovery,
     'pitr=s' => \$recovery_target_time,
@@ -125,15 +127,15 @@ sub restore_config($$) {
     system_or_error "tar", "-C", $configdir, "-xf", "$backup/config.tar.gz";
 }
 
-sub update_config($$) {
-    my ($configdir, $datadir) = @_;
+sub update_config($$$) {
+    my ($configdir, $datadir, $port) = @_;
     my %settings = (
         data_directory => $datadir,
         hba_file => "$configdir/pg_hba.conf",
         ident_file => "$configdir/pg_ident.conf",
         external_pid_file => "/var/run/postgresql/$version-$cluster.pid",
         stats_temp_directory => "/var/run/postgresql/$version-$cluster.pg_stat_tmp",
-        port => next_free_port(),
+        port => $port,
     );
     $settings{cluster_name} = "$version/$cluster" if ($version >= 9.5);
     my %config = PgCommon::read_conf_file("$configdir/postgresql.conf");
@@ -280,13 +282,14 @@ $backup =~ s/\/$//; # strip trailing slash
 my ($owneruid, $ownergid) = (stat $backup)[4, 5];
 my $configdir = "/etc/postgresql/$version/$cluster";
 my $datadir = "/var/lib/postgresql/$version/$cluster";
+$port //= next_free_port();
 
 if ($backup =~ /\.backup$/) {
     create_cluster_directories($owneruid, $ownergid, $configdir, $datadir);
     if (fork == 0) {
         switch_to_cluster_owner($owneruid, $ownergid);
         restore_config($backup, $configdir);
-        update_config($configdir, $datadir);
+        update_config($configdir, $datadir, $port);
         restore_basebackup($backup, $datadir);
         restore_wal($backup, $datadir);
         archive_recovery_options($backup, $datadir) if ($archive_recovery or $recovery_target_time);
@@ -311,7 +314,7 @@ if ($backup =~ /\.backup$/) {
     if (fork == 0) {
         switch_to_cluster_owner($owneruid, $ownergid);
         restore_config($backup, $configdir);
-        update_config($configdir, $datadir);
+        update_config($configdir, $datadir, $port);
         exit(0);
     }
     wait;
@@ -358,6 +361,10 @@ create a new cluster, and schema and data are restored via B<pg_restore>.
 =head1 OPTIONS
 
 =over 4
+
+=item B<-p --port> I<N>
+
+Use port I<N> for restored cluster (default is next free port).
 
 =item B<-s --start>
 
