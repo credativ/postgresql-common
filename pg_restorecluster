@@ -30,21 +30,27 @@ umask 022;
 sub help () {
     print "Syntax: $0 [options] <version> <cluster> <backup>
 Options:
-  -p --port N   Use port N for restored cluster (default is next free port)
-  -s --start    Start cluster after restoring (default for restore from dump)
-     --archive  Configure recovery from WAL archive
-     --pitr TS  Configure point-in-time recovery to TIMESTAMP from WAL archive
+  -d --datadir DIR  Data directory for restored cluster (default per createcluster.conf)
+  -p --port PORT    Use port PORT for restored cluster (default is next free port)
+  -s --start        Start cluster after restoring (default for restore from dump)
+     --archive      Configure recovery from WAL archive
+     --pitr TIMEST  Configure point-in-time recovery to TIMESTAMP from WAL archive
+     --wal-archive DIR  Read WAL from archive DIR (default <backup>/../wal)
 ";
 }
 
-my ($port, $start, $recovery_target_time, $archive_recovery);
+my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
+my ($datadir, $port, $start, $recovery_target_time, $archive_recovery, $wal_archive);
 
 exit 1 unless GetOptions (
+    'd|datadir=s' => \$datadir,
     'p|port=s' => \$port,
     's|start' => \$start,
     'archive' => \$archive_recovery,
     'pitr=s' => \$recovery_target_time,
     'recovery-target-time=s' => \$recovery_target_time,
+    'wal-archive=s' => \$wal_archive,
+    'createclusterconf=s' => \$createclusterconf,
 );
 if ($recovery_target_time) {
     ($recovery_target_time) = $recovery_target_time =~ /(.*)/; # untaint
@@ -66,9 +72,7 @@ if (@ARGV >= 2 and $ARGV[0] =~ m!^(\d+\.?\d)[-/]([^/]+)$!) {
 
 error "cluster $version $cluster already exists" if cluster_exists $version, $cluster;
 
-my $rootdir = "/var/backups/postgresql";
-my $clusterdir = "$rootdir/$version-$cluster";
-my $waldir = "$clusterdir/wal";
+my %defaultconf = PgCommon::read_conf_file ($createclusterconf);
 
 # functions to be run as root
 
@@ -165,15 +169,14 @@ sub restore_wal($$) {
     system_or_error "tar", "-C", $waldir, "-xf", "$backup/pg_wal.tar.gz";
 }
 
-sub archive_recovery_options($$) {
-    my ($backup, $datadir) = @_;
+sub archive_recovery_options($$$) {
+    my ($backup, $datadir, $wal_archive) = @_;
 
-    my $walpath = "$backup/../wal";
-    my $waldir = abs_path($walpath) or error "$walpath: $!";
-    -d $waldir or error "$waldir is not a directory";
+    $wal_archive = abs_path($wal_archive) or error "$wal_archive: $!";
+    -d $wal_archive or error "$wal_archive is not a directory";
 
     print "Setting archive recovery options";
-    my $recovery_options = "restore_command = '/usr/share/postgresql-common/pg_getwal $waldir/%f %p'\n";
+    my $recovery_options = "restore_command = '/usr/share/postgresql-common/pg_getwal $wal_archive/%f %p'\n";
     if ($recovery_target_time) {
         $recovery_options .= "recovery_target_time = '$recovery_target_time'\n";
         $recovery_options .= "recovery_target_action = 'promote'\n";
@@ -281,7 +284,9 @@ error "$backup is not a directory" unless (-d $backup);
 $backup =~ s/\/$//; # strip trailing slash
 my ($owneruid, $ownergid) = (stat $backup)[4, 5];
 my $configdir = "/etc/postgresql/$version/$cluster";
-my $datadir = "/var/lib/postgresql/$version/$cluster";
+$datadir //= replace_v_c($defaultconf{data_directory} // "/var/lib/postgresql/%v/%c", $version, $cluster);
+($datadir) = $datadir =~ /(.*)/; # untaint
+$wal_archive //= "$backup/../wal";
 $port //= next_free_port();
 
 if ($backup =~ /\.backup$/) {
@@ -292,7 +297,8 @@ if ($backup =~ /\.backup$/) {
         update_config($configdir, $datadir, $port);
         restore_basebackup($backup, $datadir);
         restore_wal($backup, $datadir);
-        archive_recovery_options($backup, $datadir) if ($archive_recovery or $recovery_target_time);
+        archive_recovery_options($backup, $datadir, $wal_archive)
+            if ($archive_recovery or $recovery_target_time);
         exit(0);
     }
     wait;
@@ -362,6 +368,11 @@ create a new cluster, and schema and data are restored via B<pg_restore>.
 
 =over 4
 
+=item B<-d --datadir> I<DIR>
+
+Use I<DIR> as data directory for the restored cluster (default per
+createcluster.conf, by default /var/lib/postgresql/I<version>/I<cluster>).
+
 =item B<-p --port> I<N>
 
 Use port I<N> for restored cluster (default is next free port).
@@ -385,6 +396,11 @@ to retrieve WAL files from I<backup>B</../wal>.
 Additionally to setting B<restore_command>, set B<recovery_target_time> to
 I<TIMESTAMP> for point-in-time recovery. Also sets
 B<recovery_target_action='promote'>.
+
+=item B<--wal-archive> I<DIR>
+
+For archive recovery, read WAL from archive I<DIR> (default is
+I<backup>B</../wal>).
 
 =back
 

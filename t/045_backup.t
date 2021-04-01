@@ -110,8 +110,8 @@ foreach my $v (@MAJORS) {
     for my $backup (@backups) {
         note "restore $backup";
         program_ok 0, "pg_dropcluster $v main --stop";
-        program_ok 0, "pg_restorecluster $v main $backup --start";
-        like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
+        program_ok 0, "pg_restorecluster $v main $backup --start --datadir /var/lib/postgresql/$v/snowflake";
+        like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online postgres .var.lib.postgresql.$v.snowflake/;
         is_program_out $pg_uid, "psql -XAtl", 0, "mydb|postgres|SQL_ASCII|en_US.UTF-8|en_US.UTF-8|
 postgres|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|
 template0|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|=c/postgres
@@ -134,13 +134,13 @@ myuser||search_path=public, myschema
         note "restore $basebackup with WAL archive";
         program_ok 0, "pg_dropcluster $v main --stop";
         program_ok 0, "pg_restorecluster $v main $basebackup --start --archive --port 5430";
-        like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5430 online/;
+        like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5430 online postgres .var.lib.postgresql.$v.main/;
         is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nyet more data\n";
 
         note "restore $basebackup with PITR";
         program_ok 0, "pg_dropcluster $v main --stop";
         program_ok 0, "pg_restorecluster $v main $basebackup --start --pitr '$timestamp'";
-        like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
+        like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online postgres .var.lib.postgresql.$v.main/;
         is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nsome other data\nyet more data\n";
     }
 
