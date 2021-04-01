@@ -27,7 +27,7 @@ foreach my $v (@MAJORS) {
         close $hba;
         program_ok 0, "pg_conftool $v main set max_wal_senders 10";
         program_ok 0, "pg_conftool $v main set wal_level archive";
-        program_ok 0, "pg_conftool $v main set max_replication_slots 10";
+        program_ok 0, "pg_conftool $v main set max_replication_slots 10" if ($v >= 9.4);
         program_ok 0, "pg_ctlcluster $v main restart";
     }
     program_ok $pg_uid, "createdb -E SQL_ASCII -T template0 mydb";
@@ -68,14 +68,19 @@ foreach my $v (@MAJORS) {
 
     note "basebackup";
     my $receivewal_pid;
+    if ($v >= 9.5) {
+        if ($systemd) {
+            program_ok 0, "systemctl start pg_receivewal\@$v-main";
+        } else {
+            $receivewal_pid = fork;
+            if ($receivewal_pid == 0) {
+                exec "pg_backupcluster $v main receivewal";
+            }
+        }
+    }
     if ($systemd) {
-        program_ok 0, "systemctl start pg_receivewal\@$v-main";
         program_ok 0, "systemctl start pg_basebackup\@$v-main";
     } else {
-        my $receivewal_pid = fork;
-        if ($receivewal_pid == 0) {
-            exec "pg_backupcluster $v main receivewal";
-        }
         program_ok 0, "pg_backupcluster $v main basebackup";
     }
     my ($basebackup) = glob "$dir/*.backup";
@@ -94,10 +99,12 @@ foreach my $v (@MAJORS) {
     my $timestamp = `su -c "psql -XAtc 'select now()'" postgres`;
     ok $timestamp, "retrieve recovery timestamp";
     program_ok $pg_uid, "psql -c \"delete from foo where t = 'some other data'\" mydb";
-    if ($systemd) {
-        program_ok 0, "systemctl stop pg_receivewal\@$v-main";
-    } else {
-        is kill('TERM', $receivewal_pid), 1, "stop receivewal";
+    if ($v >= 9.5) {
+        if ($systemd) {
+            program_ok 0, "systemctl stop pg_receivewal\@$v-main";
+        } else {
+            is kill('TERM', $receivewal_pid), 1, "stop receivewal";
+        }
     }
 
     for my $backup (@backups) {
@@ -122,15 +129,17 @@ myuser||search_path=public, myschema
         }
     }
 
-    note "restore $basebackup with WAL archive";
-    program_ok 0, "pg_dropcluster $v main --stop";
-    program_ok 0, "pg_restorecluster $v main $basebackup --start --archive";
-    is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nyet more data\n";
+    if ($v >= 9.5) {
+        note "restore $basebackup with WAL archive";
+        program_ok 0, "pg_dropcluster $v main --stop";
+        program_ok 0, "pg_restorecluster $v main $basebackup --start --archive";
+        is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nyet more data\n";
 
-    note "restore $basebackup with PITR";
-    program_ok 0, "pg_dropcluster $v main --stop";
-    program_ok 0, "pg_restorecluster $v main $basebackup --start --pitr '$timestamp'";
-    is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nsome other data\nyet more data\n";
+        note "restore $basebackup with PITR";
+        program_ok 0, "pg_dropcluster $v main --stop";
+        program_ok 0, "pg_restorecluster $v main $basebackup --start --pitr '$timestamp'";
+        is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nsome other data\nyet more data\n";
+    }
 
     program_ok 0, "pg_dropcluster $v main --stop";
     check_clean;

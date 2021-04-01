@@ -578,6 +578,7 @@ B<--lc-collate>, B<--lc-collate>, and B<-k --data-checksums>.
 
 The earliest PostgreSQL version supported for dumps is 9.3.
 For basebackups, the earliest supported version is 9.1.
+B<receivewal> (and hence archive recovery) are supported in 9.5 and later.
 
 =head1 SEE ALSO
 
