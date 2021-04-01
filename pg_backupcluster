@@ -2,7 +2,7 @@
 
 # simple pg_basebackup front-end
 #
-# (C) 2021 Christoph Berg <myon@debian.org>
+# Copyright (C) 2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -253,15 +253,17 @@ sub create_wal_directory() {
     }
 }
 
-sub create_replication_slot() {
-    system_or_error "pg_receivewal", "--cluster=$version/$cluster", "--slot", "pg_receivewal_service", "--create-slot", "--if-not-exists";
-}
-
 sub receivewal() {
+    my $pg_receivewal = $version >= 10 ? 'pg_receivewal' : 'pg_receivexlog';
+
+    # create slot
+    system_or_error $pg_receivewal, "--cluster=$version/$cluster", "--slot", "pg_receivewal_service", "--create-slot", "--if-not-exists";
+
+    # launch pg_receivewal
     $ENV{PGAPPNAME} = "pg_receivewal\@$version-$cluster.service";
-    exec {'pg_receivewal'} "pg_receivewal", "--cluster", "$version/$cluster",
+    exec {$pg_receivewal} $pg_receivewal, "--cluster", "$version/$cluster",
         "-D", $waldir, "--slot", "pg_receivewal_service"
-        or error "exec pg_receivewal: $!";
+        or error "exec $pg_receivewal: $!";
 }
 
 sub compresswal() {
@@ -387,7 +389,6 @@ if ($action eq 'createdirectory') {
     create_directory();
     switch_to_cluster_owner();
     create_wal_directory();
-    create_replication_slot();
     receivewal();
 
 } elsif ($action eq 'compresswal') {

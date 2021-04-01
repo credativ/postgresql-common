@@ -2,7 +2,7 @@
 
 # pg_restorecluster: restore from a pg_backupcluster backup
 #
-# (C) 2021 Christoph Berg <myon@debian.org>
+# Copyright (C) 2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -31,17 +31,18 @@ sub help () {
     print "Syntax: $0 [options] <version> <cluster> <backup>
 Options:
   -s --start    Start cluster after restoring (default for restore from dump)
-     --pitr TS  Configure point-in-time-recovery to TIMESTAMP
-  -w --wal      TODO
+     --archive  Configure recovery from WAL archive
+     --pitr TS  Configure point-in-time recovery to TIMESTAMP from WAL archive
 ";
 }
 
-my ($start, $recovery_target_time, $restore_wal);
+my ($start, $recovery_target_time, $archive_recovery);
 
 exit 1 unless GetOptions (
     's|start' => \$start,
+    'archive' => \$archive_recovery,
     'pitr=s' => \$recovery_target_time,
-    'w|wal' => \$restore_wal,
+    'recovery-target-time=s' => \$recovery_target_time,
 );
 if ($recovery_target_time) {
     ($recovery_target_time) = $recovery_target_time =~ /(.*)/; # untaint
@@ -162,14 +163,14 @@ sub restore_wal($$) {
     system_or_error "tar", "-C", $waldir, "-xf", "$backup/pg_wal.tar.gz";
 }
 
-sub pitr_options($$) {
+sub archive_recovery_options($$) {
     my ($backup, $datadir) = @_;
 
     my $walpath = "$backup/../wal";
     my $waldir = abs_path($walpath) or error "$walpath: $!";
     -d $waldir or error "$waldir is not a directory";
 
-    print "Setting recovery options";
+    print "Setting archive recovery options";
     my $recovery_options = "restore_command = '/usr/share/postgresql-common/pg_getwal $waldir/%f %p'\n";
     if ($recovery_target_time) {
         $recovery_options .= "recovery_target_time = '$recovery_target_time'\n";
@@ -194,7 +195,7 @@ sub pitr_options($$) {
     }
 }
 
-sub reset_pitr_options() {
+sub reset_archive_recovery_options() {
     if ($version >= 12) {
         system_or_error "psql",
             "--cluster", "$version/$cluster",
@@ -288,7 +289,7 @@ if ($backup =~ /\.backup$/) {
         update_config($configdir, $datadir);
         restore_basebackup($backup, $datadir);
         restore_wal($backup, $datadir);
-        pitr_options($backup, $datadir) if ($restore_wal or $recovery_target_time);
+        archive_recovery_options($backup, $datadir) if ($archive_recovery or $recovery_target_time);
         exit(0);
     }
     wait;
@@ -298,7 +299,7 @@ if ($backup =~ /\.backup$/) {
         start_cluster();
         switch_to_cluster_owner($owneruid, $ownergid);
         wait_for_recovery();
-        reset_pitr_options() if ($restore_wal or $recovery_target_time);
+        reset_archive_recovery_options() if ($archive_recovery or $recovery_target_time);
         analyze();
     }
     print "\n";
@@ -348,7 +349,8 @@ location.
 
 The I<backup> name passed must end in either B<.basebackup> or B<.dump>;
 usually this will be the full path to a backup directory in
-C</var/backups/postgresql/version-cluster/>.
+C</var/backups/postgresql/version-cluster/> as reported by
+B<pg_backupcluster ... list>.
 
 Basebackups are restored as-is. For dumps, B<pg_createcluster> is used to
 create a new cluster, and schema and data are restored via B<pg_restore>.
@@ -364,9 +366,18 @@ basebackup restores).
 
 After the cluster has been started, B<ANALYZE> is run on all databases.
 
-=item B<-w --wal>
+=item B<--archive>
 
-TODO
+Configure cluster for recovery from WAL archive. This sets B<restore_command>
+to retrieve WAL files from I<backup>B</../wal>.
+
+=item B<--pitr> I<TIMESTAMP>
+
+=item B<--recovery-target-time> I<TIMESTAMP>
+
+Additionally to setting B<restore_command>, set B<recovery_target_time> to
+I<TIMESTAMP> for point-in-time recovery. Also sets
+B<recovery_target_action='promote'>.
 
 =back
 
@@ -378,9 +389,9 @@ TODO
 
 Default root directory for cluster backup directories.
 
-See L<pg_backupcluster(1)> for a description of files.
-
 =back
+
+See L<pg_backupcluster(1)> for a description of files.
 
 =head1 SEE ALSO
 

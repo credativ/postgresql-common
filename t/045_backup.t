@@ -27,6 +27,7 @@ foreach my $v (@MAJORS) {
         close $hba;
         program_ok 0, "pg_conftool $v main set max_wal_senders 10";
         program_ok 0, "pg_conftool $v main set wal_level archive";
+        program_ok 0, "pg_conftool $v main set max_replication_slots 10";
         program_ok 0, "pg_ctlcluster $v main restart";
     }
     program_ok $pg_uid, "createdb -E SQL_ASCII -T template0 mydb";
@@ -35,11 +36,10 @@ foreach my $v (@MAJORS) {
     program_ok $pg_uid, "psql -c \"insert into foo values ('important data')\" mydb";
     program_ok $pg_uid, "psql -c 'CREATE USER myuser'";
     program_ok $pg_uid, "psql -c 'alter role myuser set search_path=public, myschema'";
-    SKIP: { # in PG 10, AR-ID is part of globals.sql which we try to restore before databases.sql
+    SKIP: { # in PG 10, ARID is part of globals.sql which we try to restore before databases.sql
         skip "alter role in database handling in PG <= 10 not supported", 1 if ($v <= 10);
         program_ok $pg_uid, "psql -c 'alter role myuser in database mydb set search_path=public, myotherschema'";
     }
-    program_ok $pg_uid, "psql -c 'select pg_switch_wal()'";
 
     note "create directory";
     program_ok 0, "pg_backupcluster $v main createdirectory";
@@ -122,9 +122,9 @@ myuser||search_path=public, myschema
         }
     }
 
-    note "restore $basebackup with WAL";
+    note "restore $basebackup with WAL archive";
     program_ok 0, "pg_dropcluster $v main --stop";
-    program_ok 0, "pg_restorecluster $v main $basebackup --start --wal";
+    program_ok 0, "pg_restorecluster $v main $basebackup --start --archive";
     is_program_out $pg_uid, "psql -XAtc 'select * from foo order by t' mydb", 0, "important data\nyet more data\n";
 
     note "restore $basebackup with PITR";
