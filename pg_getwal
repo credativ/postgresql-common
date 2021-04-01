@@ -1,8 +1,8 @@
-#!/usr/bin/perl -wT
+#!/bin/sh
 
 # retrieve a WAL file from a pg_receivewal archive
 #
-# (C) 2021 Christoph Berg <myon@debian.org>
+# Copyright (C) 2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -14,37 +14,35 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 
-use strict;
-use warnings;
-use PgCommon;
+set -eu
 
-my ($version, $cluster);
+if [ -z "${2:-}" ]; then
+    echo "Syntax: $0 /path/to/wal/%f %p" >&2
+    exit 1
+fi
 
-# untaint environment
-$ENV{'PATH'} = '/sbin:/bin:/usr/sbin:/usr/bin';
-delete @ENV{'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};
-umask 027;
+file="$1"
+path="$2"
 
-sub help () {
-    print "Syntax: $0 /path/to/wal/%f %p\n";
-}
+# sanity-check the first argument
+waldir="$(dirname $file)"
+if ! [ -d "$waldir" ]; then
+    echo "$0: $waldir is not a directory" >&2
+    exit 129
+fi
 
-if (@ARGV != 2) {
-    help();
-    exit 1;
-}
-my ($file) = $ARGV[0] =~ /(.*)/;
-my ($path) = $ARGV[1] =~ /(.*)/;
+if [ -f "$file.gz" ]; then
+    gunzip < "$file.gz" > "$path" || exit 129
+elif [ -f "$file.partial" ]; then
+    cp "$file.partial" "$path" || exit 129
+elif [ -f "$file" ]; then
+    cp "$file" "$path" || exit 129
+else
+    # file not found, exit silently in order not to spam the server log with errors
+    exit 1
+fi
 
-if (-f "$file.gz") {
-    system_or_error "gunzip < $file.gz > $path";
-} elsif (-f "$file.partial") {
-    system_or_error "cp $file.partial $path";
-} elsif (-f "$file") {
-    system_or_error "cp $file $path";
-} else {
-    error "$file not found";
-}
+exit 0
 
 __END__
 
