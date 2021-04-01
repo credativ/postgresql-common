@@ -62,11 +62,12 @@ for manpages in debian/*.manpages; do
     done < $manpages
 done
 # install pg_wrapper symlinks by augmenting the existing pgdg.rpm alternatives
+cat debian/postgresql-*common.links | \
 while read dest link; do
     name="pgsql-$(basename $link)"
     echo "update-alternatives --install /$link $name /$dest 9999" >> postgresql-client-common.post
     echo "update-alternatives --remove $name /$dest" >> postgresql-client-common.preun
-done < debian/postgresql-client-common.links
+done
 # activate rpm-specific tweaks
 sed -i -e 's/#redhat# //' \
     %{buildroot}/usr/bin/pg_config \
