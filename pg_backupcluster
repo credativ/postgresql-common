@@ -18,6 +18,7 @@ use strict;
 use warnings;
 use Fcntl qw(LOCK_EX);
 use Getopt::Long;
+use JSON;
 use PgCommon;
 use POSIX qw(strftime);
 
@@ -204,11 +205,23 @@ sub create_configbackup($) {
         ".";
 }
 
-sub create_status($) {
-    my $backupdir = shift;
-    open F, '>', "$backupdir/status" or error "$backupdir/status: $!";
-    print F "Backup completed successfully at " . scalar(gmtime) . "\n" or error "$backupdir/status: $!";
-    close F or error "$backupdir/status: $!";
+sub create_status($$$$) {
+    my ($type, $starttime, $backupdir, $status) = @_;
+    my $statusfile = "$backupdir/status";
+    my $endtime = time;
+    my $statusjson = {
+        cluster => $cluster,
+        duration => $endtime - $starttime,
+        end => scalar(gmtime($endtime)),
+        start => scalar(gmtime($starttime)),
+        status => $status,
+        type => $type,
+        version => $version,
+    };
+
+    open F, '>', $statusfile or error "$statusfile: $!";
+    print F encode_json($statusjson) . "\n" or error "$statusfile: $!";
+    close F or error "$$statusfile: $!";
 }
 
 sub sync($) {
@@ -348,26 +361,28 @@ if ($action eq 'createdirectory') {
 
 } elsif ($action eq 'basebackup') {
     error "basebackups of pre-9.1 servers are not supported" if ($version < 9.1);
+    my $starttime = time;
     create_directory();
     switch_to_cluster_owner();
     my $backupdir = get_backupdir('backup');
     $SIG{__DIE__} = sub { remove_backup_on_error($backupdir) };
     create_basebackup($backupdir);
     create_configbackup($backupdir);
-    create_status($backupdir);
+    create_status($action, $starttime, $backupdir, 'ok');
     $SIG{__DIE__} = undef;
     sync($backupdir);
     compresswal();
 
 } elsif ($action eq 'dump') {
     error "dumps of pre-9.3 servers are not supported" if ($version < 9.3);
+    my $starttime = time;
     create_directory();
     switch_to_cluster_owner();
     my $backupdir = get_backupdir('dump');
     $SIG{__DIE__} = sub { remove_backup_on_error($backupdir) };
     create_dumpall($backupdir);
     create_configbackup($backupdir);
-    create_status($backupdir);
+    create_status($action, $starttime, $backupdir, 'ok');
     $SIG{__DIE__} = undef;
     sync($backupdir);
 

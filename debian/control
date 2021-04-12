@@ -21,6 +21,7 @@ Multi-Arch: foreign
 Depends:
  adduser,
  debconf (>= 0.5.00) | debconf-2.0,
+ libjson-perl,
  lsb-base (>= 3.0-3),
  perl (>= 5.14),
  postgresql-client-common (= ${source:Version}),
@@ -30,8 +31,6 @@ Depends:
 Recommends:
  e2fsprogs,
  logrotate,
-Suggests:
- libjson-perl,
 Breaks:
  postgresql-9.1 (<< 9.1.1-3~),
  systemd (<< 204),
