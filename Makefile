@@ -45,6 +45,7 @@ $(TARBALL):
 	git archive --prefix=postgresql-common-$(DPKG_VERSION)/ HEAD | xz > $(TARBALL)
 
 rpminstall:
+	sudo yum install perl-JSON
 	sudo rpm --upgrade --replacefiles --replacepkgs -v $(RPMDIR)/RPMS/noarch/*-$(DPKG_VERSION)-*.rpm
 
 rpmremove:
