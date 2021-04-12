@@ -69,6 +69,16 @@ if (cluster_exists $version, $cluster) {
     -d $c or error 'specified cluster does not exist';
 }
 
+# disable systemd-enabled clusters
+if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and -d '/run/systemd/system') {
+    if ($> == 0) {
+        system "systemctl", "disable", "postgresql\@$version-$cluster";
+        system "systemctl", "disable", "--now", "pg_receivewal\@$version-$cluster";
+        system "systemctl", "disable", "--now", "pg_basebackup\@$version-$cluster.timer";
+        system "systemctl", "disable", "--now", "pg_dump\@$version-$cluster.timer";
+    }
+}
+
 if ($info{'pgdata'} && -d $info{'pgdata'}) {
     # remove custom wal directory
     if ($info{waldir} and -d $info{waldir}) {
