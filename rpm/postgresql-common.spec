@@ -9,6 +9,7 @@ License:        GPLv2+
 URL:            https://packages.debian.org/sid/%{name}
 Source0:        http://ftp.debian.org/debian/pool/main/p/%{name}/%{name}_%{version}.tar.xz
 Requires:       postgresql-client-common
+Requires:       perl-JSON
 
 %description
 The postgresql-common package provides a structure under which
