@@ -4,6 +4,7 @@ postgresql-common (226) UNRELEASED; urgency=medium
   * pg_backupcluster, pg_restorecluster: New front-ends to pg_basebackup,
     pg_receivewal and pg_dump with systemd service/timer integration.
   * pg_dropcluster: Disable cluster and backup services on drop.
+  * pg_upgradecluster: Deprecate vacuum_cleanup_index_scale_factor in 14.
   * Promote libjson-perl to Depends.
   * Move cluster owner verification from pg_ctlcluster to new PgCommon.pm
     function validate_cluster_owner and use it in pg_upgradecluster,

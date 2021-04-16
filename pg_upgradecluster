@@ -189,6 +189,7 @@ sub adapt_conffiles {
         if ($c{password_encryption} and $c{password_encryption} =~ /^(on|off|true|false)$/) {
             $deprecate->(\%c, 'password_encryption', 'password_encryption is not a boolean anymore');
         }
+        $deprecate->(\%c, 'vacuum_cleanup_index_scale_factor', 'does not exist anymore');
     }
 }
 
