@@ -108,8 +108,8 @@ unless ($version or $explicit_host or $explicit_port or $explicit_service) {
 }
 
 # if we have no version yet, use the latest version. We were called as psql,
-# pg_archivecleanup, pg_basebackup, or pg_isready, always use latest version
-if (not $version or $cmdname =~ /^(psql|pg_archivecleanup|pg_basebackup|pg_isready)$/) {
+# pg_archivecleanup, or pg_isready, always use latest version
+if (not $version or $cmdname =~ /^(psql|pg_archivecleanup|pg_isready)$/) {
     $version = get_newest_version($cmdname);
 }
 unless ($version) {
@@ -229,9 +229,8 @@ If none of these rules match, B<pg_wrapper> does not set any environment
 variables and the program called will likely error out with a message like
 "could not connect to server: Connection refused".
 
-For B<psql>, B<pg_archivecleanup>, B<pg_basebackup>, and B<pg_isready>,
-B<pg_wrapper> will always use the binary from the newest PostgreSQL version
-installed, as these are downwards compatible.
+For B<psql>, B<pg_archivecleanup>, and B<pg_isready>, B<pg_wrapper> will always use the binary from
+the newest PostgreSQL version installed, as these are downwards compatible.
 
 Note that B<pg_wrapper> needs to be able to read the server config to get the
 port number to connect to. If a non-standard port is configured in a place that
