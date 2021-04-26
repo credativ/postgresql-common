@@ -28,6 +28,7 @@ foreach my $v (@MAJORS) {
         program_ok 0, "pg_conftool $v main set max_wal_senders 10";
         program_ok 0, "pg_conftool $v main set wal_level archive";
         program_ok 0, "pg_conftool $v main set max_replication_slots 10" if ($v >= 9.4);
+        program_ok 0, "pg_conftool $v main set ssl off" if ($v <= 9.1); # cert symlinks not backed up in 9.1
         program_ok 0, "pg_ctlcluster $v main restart";
     }
     program_ok $pg_uid, "createdb -E SQL_ASCII -T template0 mydb";
