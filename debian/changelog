@@ -14,6 +14,7 @@ postgresql-common (226) UNRELEASED; urgency=medium
   * PgCommon.pm error: Use die() instead of exit().
   * PgCommon.pm: documentation converted to POD, many thanks to Pablo Valdés
     for the excellent patch!
+  * supported-versions: Drop support for 9.5 on apt.postgresql.org.
 
   [ Hanefi Onaldi ]
   * pg_buildext build: Move extra_cflags from command line arguments to COPT
