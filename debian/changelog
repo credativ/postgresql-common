@@ -1,4 +1,4 @@
-postgresql-common (226) UNRELEASED; urgency=medium
+postgresql-common (226) experimental; urgency=medium
 
   [ Christoph Berg ]
   * pg_backupcluster, pg_restorecluster: New front-ends to pg_basebackup,
@@ -12,8 +12,6 @@ postgresql-common (226) UNRELEASED; urgency=medium
   * PgCommon.pm: documentation converted to POD, many thanks to Pablo Valdés
     for the excellent patch!
   * PgCommon.pm error: Use die() instead of exit().
-  * PgCommon.pm: documentation converted to POD, many thanks to Pablo Valdés
-    for the excellent patch!
   * supported-versions: Drop support for 9.5 on apt.postgresql.org.
 
   [ Hanefi Onaldi ]
@@ -24,7 +22,7 @@ postgresql-common (226) UNRELEASED; urgency=medium
   * d/postinst: Only add postgres to group ssl-cert if it isn't
     already a member of that group. (Closes: #984473, LP: #1690432)
 
- -- Christoph Berg <myon@debian.org>  Wed, 10 Feb 2021 23:51:11 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 12 May 2021 17:16:38 +0200
 
 postgresql-common (225) unstable; urgency=medium
 
