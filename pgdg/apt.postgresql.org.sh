@@ -2,7 +2,7 @@
 
 # script to add apt.postgresql.org to sources.list
 
-# Copyright (C) 2013-2020 Christoph Berg <myon@debian.org>
+# Copyright (C) 2013-2021 Christoph Berg <myon@debian.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -77,11 +77,11 @@ set -e
 # handle -v PGVERSION
 case $PGVERSION in # FIXME: this shouldn't be hard-coded in here
     # devel version comes from *-pgdg-testing (with lower default apt pinning priority)
-    14) PGDG="pgdg-testing"
+    15) PGDG="pgdg-testing"
         COMPONENTS="main $PGVERSION"
         PIN="-t $CODENAME-$PGDG" ;;
     # beta version just needs a different component
-    #14) COMPONENTS="main $PGVERSION" ;;
+    14) COMPONENTS="main $PGVERSION" ;;
 esac
 
 cat <<EOF
