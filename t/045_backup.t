@@ -5,6 +5,7 @@ use TestLib;
 use PgCommon;
 
 use Test::More;
+use Time::HiRes qw/usleep/;
 
 my ($pg_uid, $pg_gid) = (getpwnam 'postgres')[2,3];
 my $systemd = (-d "/run/systemd/system" and not $ENV{_SYSTEMCTL_SKIP_REDIRECT});
@@ -100,6 +101,7 @@ foreach my $v (@MAJORS) {
     my $timestamp = `su -c "psql -XAtc 'select now()'" postgres`;
     ok $timestamp, "retrieve recovery timestamp";
     program_ok $pg_uid, "psql -c \"delete from foo where t = 'some other data'\" mydb";
+    usleep($delay);
     if ($v >= 9.5) {
         if ($systemd) {
             program_ok 0, "systemctl stop pg_receivewal\@$v-main";
