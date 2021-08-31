@@ -1,6 +1,7 @@
 postgresql-common (227) UNRELEASED; urgency=medium
 
   * pgdg/apt.postgresql.org.sh, t/020_create_sql_remove.t: Support PG15.
+  * pgxs.pm: Enable tests on hurd, it can run PostgreSQL now.
 
  -- Christoph Berg <myon@debian.org>  Tue, 29 Jun 2021 23:49:51 +0200
 
