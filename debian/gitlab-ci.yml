@@ -3,6 +3,7 @@
   - $SUDO apt-get -o DPkg::Options::=--force-confnew dist-upgrade -y
   - $SUDO apt-get install -y build-essential fakeroot debhelper libreadline-dev dh-systemd
   - rm -f ../*.deb ../*.dsc ../*.buildinfo ../*.changes ../*.tar.*
+  - if [ "$DEBHELPER" ]; then echo "$DEBHELPER" > debian/compat; sed -i -e "s/debhelper-.*/debhelper (>= $DEBHELPER),/" debian/control; fi
   - dpkg-buildpackage -uc -us -rfakeroot
   - ( set -x; for deb in ../*.deb; do dpkg-deb --info $deb; dpkg-deb --contents $deb; done )
   - ( set -x; $SUDO dpkg --force-confmiss --force-confnew -i ../*.deb || { $SUDO apt-get install -fy; $SUDO dpkg --force-confmiss --force-confnew -i ../*.deb; } )
@@ -22,6 +23,7 @@ buster:
   script: *debian_script
   variables:
     SUDO: sudo
+    DEBHELPER: 12
 
 stretch:
   tags:
@@ -29,6 +31,7 @@ stretch:
   script: *debian_script
   variables:
     SUDO: sudo
+    DEBHELPER: 10
 
 centos7:
   tags:
