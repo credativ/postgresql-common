@@ -19,10 +19,10 @@ if [ "$1" = purge ]; then
 
     # unregister and remove files maintained by ucf
     CCCONFIG="/etc/postgresql-common/createcluster.conf"
-    if which ucf >/dev/null; then
+    if command -v ucf >/dev/null; then
 	ucf --purge $CCCONFIG
     fi
-    if which ucfr >/dev/null; then
+    if command -v ucfr >/dev/null; then
 	ucfr --purge postgresql-common $CCCONFIG
     fi
     rm -f $CCCONFIG $CCCONFIG.ucf-*

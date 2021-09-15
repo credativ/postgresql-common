@@ -255,7 +255,7 @@ if [ ${EXIT:-0} -gt 0 ]; then
 	tail -100 $log
     done
 
-    if which gdb > /dev/null; then
+    if command -v gdb > /dev/null; then
         for v in $PG_VERSIONS; do
             PGDATA=$(pg_conftool -s $v regress show data_directory)
             for core in $PGDATA/core*; do

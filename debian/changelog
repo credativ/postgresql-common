@@ -1,3 +1,10 @@
+postgresql-common (228) UNRELEASED; urgency=medium
+
+  * pg_virtualenv, postgresql-common.postrm: Use `command -v` instead of
+    deprecated `which`.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 15 Sep 2021 15:22:59 +0200
+
 postgresql-common (227) unstable; urgency=medium
 
   * pgdg/apt.postgresql.org.sh, t/020_create_sql_remove.t: Support PG15.
