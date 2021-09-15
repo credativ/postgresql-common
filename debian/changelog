@@ -6,6 +6,7 @@ postgresql-common (228) UNRELEASED; urgency=medium
   * Update doc/dependencies.* and install as .svg.
   * pg_virtualenv, postgresql-common.postrm: Use `command -v` instead of
     deprecated `which`.
+  * Upgrade to debhelper 13; packaging still compatible with DH10 in stretch.
 
  -- Christoph Berg <myon@debian.org>  Wed, 15 Sep 2021 15:22:59 +0200
 

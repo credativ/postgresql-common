@@ -15,10 +15,9 @@ DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
 LIBREADLINE := $(shell dpkg-query -W --showformat '$${Status} $${Package}\n' 'libreadline[0-9]'| sed -n '/ installed / {s/^.* //; p}'|sort -ru | head -n1)
 
 #py2#PYTHON2_PACKAGE=postgresql-plpython-$v
-WITH_SYSTEMD=--with systemd
 
 %:
-	dh $@ $(WITH_SYSTEMD)
+	dh $@
 
 override_dh_auto_configure:
 	@echo "### Building postgresql-common flavor $(FLAVOR)"
