@@ -1,5 +1,7 @@
 postgresql-common (228) UNRELEASED; urgency=medium
 
+  * postgresql-server-dev-all: Move to Arch: any, M-A: same to allow
+    cross-compiling.
   * pg_virtualenv, postgresql-common.postrm: Use `command -v` instead of
     deprecated `which`.
 

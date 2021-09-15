@@ -79,7 +79,8 @@ Description: manager for multiple PostgreSQL client versions
  and functions.
 
 Package: postgresql-server-dev-all
-Architecture: all
+Architecture: any
+Multi-Arch: same
 Depends:
  make,
  postgresql-common (= ${source:Version}),
