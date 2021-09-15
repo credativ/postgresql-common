@@ -17,6 +17,7 @@ Build-Depends:
 Package: postgresql-common
 Architecture: all
 Multi-Arch: foreign
+Pre-Depends: ${misc:Pre-Depends}
 Depends:
  adduser,
  debconf (>= 0.5.00) | debconf-2.0,
