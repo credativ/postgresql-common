@@ -44,7 +44,7 @@ fi
 
 exit 0
 
-__END__
+: <<=cut
 
 =head1 NAME
 
@@ -67,3 +67,5 @@ L<pg_restorecluster(1)>, L<pg_backupcluster(1)>.
 =head1 AUTHOR
 
 Christoph Berg L<E<lt>myon@debian.orgE<gt>>
+
+=cut

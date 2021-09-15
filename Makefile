@@ -4,6 +4,7 @@ POD1PROGS = pg_backupcluster.1 \
 	    pg_createcluster.1 \
 	    pg_ctlcluster.1 \
 	    pg_dropcluster.1 \
+	    pg_getwal.1 \
 	    pg_lsclusters.1 \
 	    pg_renamecluster.1 \
 	    pg_restorecluster.1 \
