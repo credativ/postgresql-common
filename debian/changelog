@@ -1,4 +1,4 @@
-postgresql-common (228) UNRELEASED; urgency=medium
+postgresql-common (228) unstable; urgency=medium
 
   * postgresql-server-dev-all: Move to Arch: any, M-A: same to allow
     cross-compiling.
@@ -12,7 +12,7 @@ postgresql-common (228) UNRELEASED; urgency=medium
   * Remove /etc/sysctl.d/30-postgresql-shm.conf, obsolete with current
     kernels and PG versions.
 
- -- Christoph Berg <myon@debian.org>  Wed, 15 Sep 2021 15:22:59 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 16 Sep 2021 18:44:15 +0200
 
 postgresql-common (227) unstable; urgency=medium
 
