@@ -1,6 +1,5 @@
 createcluster.conf usr/share/postgresql-common
 debian/init.d-functions usr/share/postgresql-common
-lib/systemd
 pg_backupcluster usr/bin
 pg_buildext usr/bin
 pg_checksystem usr/share/postgresql-common
@@ -19,6 +18,7 @@ pg_upgradecluster usr/bin
 pg_virtualenv usr/bin
 pgdg usr/share/postgresql-common
 run-upgrade-scripts usr/share/postgresql-common
+systemd/system* lib/systemd
 t/* usr/share/postgresql-common/t
 testsuite usr/share/postgresql-common
 upgrade-scripts/* usr/share/postgresql-common/upgrade-scripts
