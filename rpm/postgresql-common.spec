@@ -72,6 +72,7 @@ while read dest link; do
 done
 # activate rpm-specific tweaks
 sed -i -e 's/#redhat# //' \
+    %{buildroot}/lib/systemd/system-generators/postgresql-generator \
     %{buildroot}/usr/bin/pg_config \
     %{buildroot}/usr/bin/pg_virtualenv \
     %{buildroot}/usr/share/perl5/PgCommon.pm \
@@ -84,14 +85,6 @@ cp rpm/init-functions-compat %{buildroot}/usr/share/postgresql-common
 # ssl defaults to 'off' here because we don't have pregenerated snakeoil certs
 sed -e 's/__SSL__/off/' createcluster.conf > %{buildroot}/etc/postgresql-common/createcluster.conf
 cp debian/postgresql-common.logrotate %{buildroot}/etc/logrotate.d/postgresql-common
-
-%if 0%{?rhel} >= 7
-# Prepare systemd unit files, but only for RHEL/CentOS 7 and above...
-pushd systemd
-DESTDIR=%{buildroot} gmake install
-sed -i -e 's/#redhat# //' %{buildroot}/lib/systemd/system-generators/postgresql-generator
-popd
-%endif
 
 %files -n postgresql-common -f files-postgresql-common
 %attr(0755, root, root) %config /etc/init.d/postgresql
