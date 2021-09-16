@@ -32,6 +32,11 @@ man: $(POD1PROGS) $(POD1PROGS_POD) $(POD8PROGS)
 clean:
 	rm -f *.1 *.8 debhelper/*.1 dh_make_pgxs/*.1
 
+# install
+
+install:
+	$(MAKE) -C systemd install
+
 # rpm
 
 DPKG_VERSION=$(shell sed -ne '1s/.*(//; 1s/).*//p' debian/changelog)
