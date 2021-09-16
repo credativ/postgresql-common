@@ -42,6 +42,7 @@ for inst in debian/*.install; do
     [ "$pkg" = "postgresql-server-dev-all" ] && continue
     echo "### Reading $pkg files list from $inst ###"
     while read file dir; do
+        [ "$file" = "supported_versions" ] && continue # only relevant on Debian
         mkdir -p %{buildroot}/$dir
         cp -r $file %{buildroot}/$dir
         echo "/$dir/${file##*/}" >> files-$pkg
