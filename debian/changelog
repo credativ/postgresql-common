@@ -9,6 +9,8 @@ postgresql-common (228) UNRELEASED; urgency=medium
   * Upgrade to debhelper 13; packaging still compatible with DH10 in stretch.
   * Add ${misc:Pre-Depends} to postgresql-common.
   * Install pg_backupcluster.1, pg_restorecluster.1, and pg_getwal.1 manpages.
+  * Remove /etc/sysctl.d/30-postgresql-shm.conf, obsolete with current
+    kernels and PG versions.
 
  -- Christoph Berg <myon@debian.org>  Wed, 15 Sep 2021 15:22:59 +0200
 
