@@ -36,14 +36,19 @@ clean:
 
 DPKG_VERSION=$(shell sed -ne '1s/.*(//; 1s/).*//p' debian/changelog)
 RPMDIR=$(CURDIR)/rpm
-TARBALL=$(RPMDIR)/SOURCES/postgresql-common_$(DPKG_VERSION).tar.xz
+TARNAME=postgresql-common_$(DPKG_VERSION).tar.xz
+TARBALL=$(RPMDIR)/SOURCES/$(TARNAME)
 
 rpmbuild: $(TARBALL)
 	rpmbuild -D"%_topdir $(RPMDIR)" --define='version $(DPKG_VERSION)' -ba rpm/postgresql-common.spec
 
 $(TARBALL):
 	mkdir -p $(dir $(TARBALL))
-	git archive --prefix=postgresql-common-$(DPKG_VERSION)/ HEAD | xz > $(TARBALL)
+	if test -f ../$(TARNAME); then \
+	    cp -v ../$(TARNAME) $(TARBALL); \
+	else \
+	    git archive --prefix=postgresql-common-$(DPKG_VERSION)/ HEAD | xz > $(TARBALL); \
+	fi
 
 rpminstall:
 	sudo yum install -y perl-JSON
