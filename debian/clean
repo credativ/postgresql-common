@@ -1,3 +1,4 @@
+supported_versions
 tags
 t/foo/foo-123/build-*/
 t/foo/foo-123/debian/
