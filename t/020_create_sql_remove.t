@@ -409,7 +409,7 @@ tel|2
     }
 
     # check apt config
-    is_program_out 0, "egrep -o 'postgresql.[0-9.*-]+' /etc/apt/apt.conf.d/01autoremove-postgresql", 0,
+    is_program_out 0, "egrep -o 'postgresql.[0-9.*-]+' /etc/apt/apt.conf.d/02autoremove-postgresql", 0,
         "postgresql.*-$v\n", "Correct apt NeverAutoRemove config";
 
     # stop server, clean up, check for leftovers
@@ -420,7 +420,7 @@ tel|2
     ok_dir $spc1, [], "tablespace spc1 was emptied";
     ok_dir $spc2, [qw(PG_99_fakedirectory)], "tablespace spc2 was emptied";
 
-    is_program_out 0, "egrep -o 'postgresql.[0-9.*-]+' /etc/apt/apt.conf.d/01autoremove-postgresql", 1,
+    is_program_out 0, "egrep -o 'postgresql.[0-9.*-]+' /etc/apt/apt.conf.d/02autoremove-postgresql", 1,
         "", "Correct apt NeverAutoRemove config";
 
     check_clean;
