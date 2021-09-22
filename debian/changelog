@@ -7,6 +7,7 @@ postgresql-common (229) UNRELEASED; urgency=medium
   * pg_wrapper: Skip LD_PRELOAD logic in PG13+.
   * postgresql-client-common: Stop recommending libreadline.
   * postgresql-server-dev-all: Mark dependency on make as :any.
+  * Depend on ${perl:Depends}.
   * pgdg/apt.postgresql.org.sh: Try /etc/os-release first and add some
     precautionary checks to the other methods.
 

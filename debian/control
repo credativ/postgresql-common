@@ -22,11 +22,11 @@ Depends:
  debconf (>= 0.5.00) | debconf-2.0,
  libjson-perl,
  lsb-base (>= 3.0-3),
- perl (>= 5.14),
  postgresql-client-common (= ${source:Version}),
  ssl-cert (>= 1.0.11),
  ucf,
  ${misc:Depends},
+ ${perl:Depends},
 Recommends:
  e2fsprogs,
  logrotate,
@@ -58,6 +58,7 @@ Multi-Arch: foreign
 Depends:
  netbase,
  ${misc:Depends},
+ ${perl:Depends},
  ${pgdg:Depends},
 Description: manager for multiple PostgreSQL client versions
  The postgresql-client-common package provides a structure under which
