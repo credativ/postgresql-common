@@ -12,7 +12,6 @@ else
 endif
 SUPPORTED_VERSIONS := $(shell PG_SUPPORTED_VERSIONS="$(FLAVOR)" debian/supported-versions)
 DEFAULT_VER := $(lastword $(SUPPORTED_VERSIONS))
-LIBREADLINE := $(shell dpkg-query -W --showformat '$${Status} $${Package}\n' 'libreadline[0-9]'| sed -n '/ installed / {s/^.* //; p}'|sort -ru | head -n1)
 
 #py2#PYTHON2_PACKAGE=postgresql-plpython-$v
 
@@ -37,7 +36,7 @@ override_dh_gencontrol:
 		-Vdefault-version="$(DEFAULT_VER)" -v'$(DEFAULT_VER)+$${source:Version}'
 
 	dh_gencontrol -ppostgresql-client-common -- \
-		-Vpgdg:Depends="$(PGDG_DEPENDS)" -Vreadline:Recommends=$(LIBREADLINE)
+		-Vpgdg:Depends="$(PGDG_DEPENDS)"
 
 	dh_gencontrol -ppostgresql-all -- \
 		-Vpostgresql-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-contrib-$v,postgresql-plperl-$v,$(if $(filter 8.% 9.% 10 11, $v), $(PYTHON2_PACKAGE)),postgresql-plpython3-$v,postgresql-pltcl-$v,)"

@@ -12,7 +12,6 @@ Vcs-Git: https://salsa.debian.org/postgresql/postgresql-common.git
 Vcs-Browser: https://salsa.debian.org/postgresql/postgresql-common
 Build-Depends:
  debhelper-compat (= 13),
- libreadline-dev,
 
 Package: postgresql-common
 Architecture: all
@@ -60,8 +59,6 @@ Depends:
  netbase,
  ${misc:Depends},
  ${pgdg:Depends},
-Recommends:
- ${readline:Recommends},
 Description: manager for multiple PostgreSQL client versions
  The postgresql-client-common package provides a structure under which
  multiple versions of PostgreSQL client programs may be installed at
