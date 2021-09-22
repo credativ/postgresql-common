@@ -9,7 +9,7 @@ TMPCONF="$(mktemp --tmpdir pg_updateaptconfig.XXXXXX)"
 trap "rm -f $TMPCONF" EXIT
 
 cat > $TMPCONF <<EOF
-// NO NOT EDIT!
+// DO NOT EDIT!
 // File maintained by /usr/share/postgresql-common/pg_updateaptconfig.
 //
 // Mark all PostgreSQL packages as NeverAutoRemove for which PostgreSQL
