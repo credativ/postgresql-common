@@ -1,3 +1,9 @@
+postgresql-common (229) UNRELEASED; urgency=medium
+
+  * postgresql-server-dev-all: Mark dependency on make as :any.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 22 Sep 2021 22:20:43 +0200
+
 postgresql-common (228) unstable; urgency=medium
 
   * postgresql-server-dev-all: Move to Arch: any, M-A: same to allow

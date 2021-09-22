@@ -81,7 +81,7 @@ Package: postgresql-server-dev-all
 Architecture: any
 Multi-Arch: same
 Depends:
- make,
+ make:any,
  postgresql-common (= ${source:Version}),
  ${misc:Depends},
  ${server-dev-all-depends},
