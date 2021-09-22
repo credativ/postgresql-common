@@ -1,5 +1,8 @@
 postgresql-common (229) UNRELEASED; urgency=medium
 
+  * postgresql-common.maintscript: We mistakenly tried to remove
+    /etc/apt/apt.conf.d/01autoremove instead of 01autoremove-postgresql.
+    Fix, and bump version to retry the removal.
   * postgresql-server-dev-all: Mark dependency on make as :any.
 
  -- Christoph Berg <myon@debian.org>  Wed, 22 Sep 2021 22:20:43 +0200
