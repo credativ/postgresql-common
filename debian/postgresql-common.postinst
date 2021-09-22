@@ -115,6 +115,9 @@ EOF
         ucfr --purge postgresql-common $LRCONFIG
     fi
 
+    # Drop auto-generated conffile dropped in 215/229 + backups
+    rm -f /etc/apt/apt.conf.d/01autoremove-postgresql*
+
     # Create tsearch dictionaries on first install
     if [ -z "$2" ]; then
         pg_updatedicts

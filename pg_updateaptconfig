@@ -4,7 +4,7 @@
 
 set -eu
 
-APTCONF="/etc/apt/apt.conf.d/01autoremove-postgresql"
+APTCONF="/etc/apt/apt.conf.d/02autoremove-postgresql"
 TMPCONF="$(mktemp --tmpdir pg_updateaptconfig.XXXXXX)"
 trap "rm -f $TMPCONF" EXIT
 
