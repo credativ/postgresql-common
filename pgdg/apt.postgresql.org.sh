@@ -41,12 +41,8 @@ fi
 
 # codename from command line
 CODENAME="$1"
-# lsb_release is the best interface, but not always available
-if [ -z "$CODENAME" ]; then
-    CODENAME=$(lsb_release -cs 2>/dev/null)
-fi
 # parse os-release
-if [ -z "$CODENAME" -a -f /etc/os-release ]; then
+if [ -z "$CODENAME" ] && [ -f /etc/os-release ]; then
     . /etc/os-release
     if [ "$VERSION_CODENAME" ]; then # added in buster/xenial
         CODENAME="$VERSION_CODENAME"
@@ -57,8 +53,12 @@ if [ -z "$CODENAME" -a -f /etc/os-release ]; then
         CODENAME=$(echo $VERSION | sed -ne 's/.*(\(.*\)).*/\1/') # works on Debian only
     fi
 fi
+# try lsb_release
+if [ -z "$CODENAME" ] && command -v lsb_release >/dev/null; then
+    CODENAME=$(lsb_release -cs 2>/dev/null)
+fi
 # guess from sources.list
-if [ -z "$CODENAME" ]; then
+if [ -z "$CODENAME" ] && [ -f /etc/apt/sources.list ]; then
     CODENAME=$(grep '^deb ' /etc/apt/sources.list | head -n1 | awk '{ print $3 }')
 fi
 # complain if no result yet

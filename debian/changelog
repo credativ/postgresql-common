@@ -5,6 +5,8 @@ postgresql-common (229) UNRELEASED; urgency=medium
     Fix, and bump version to retry the removal.
   * pg_updateaptconfig: Fix a comment typo.
   * postgresql-server-dev-all: Mark dependency on make as :any.
+  * pgdg/apt.postgresql.org.sh: Try /etc/os-release first and add some
+    precautionary checks to the other methods.
 
  -- Christoph Berg <myon@debian.org>  Wed, 22 Sep 2021 22:20:43 +0200
 
