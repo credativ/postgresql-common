@@ -4,7 +4,7 @@
 # /etc/postgresql-common/user_clusters.
 #
 # (C) 2005-2009 Martin Pitt <mpitt@debian.org>
-# (C) 2013-2020 Christoph Berg <myon@debian.org>
+# (C) 2013-2021 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ unless ($version or $explicit_host or $explicit_port or $explicit_service) {
     print STDERR "Warning: No existing cluster is suitable as a default target. Please see man pg_wrapper(1) how to specify one.\n";
 }
 
-# if we have no version yet, use the latest version. We were called as psql,
+# if we have no version yet, use the latest version. If we were called as psql,
 # pg_archivecleanup, or pg_isready, always use latest version
 if (not $version or $cmdname =~ /^(psql|pg_archivecleanup|pg_isready)$/) {
     $version = get_newest_version($cmdname);
@@ -126,8 +126,8 @@ if ($cmdname eq 'pg_wrapper') {
     $cmd = get_program_path ($cmdname, $version);
 }
 
-# libreadline is a lot better than libedit, so prefer that
-if ($cmdname eq 'psql' and not $PgCommon::rpm) {
+# libreadline is a lot better than libedit, so prefer that on versions that still use it
+if ($cmdname eq 'psql' and $version < 13 and not $PgCommon::rpm) {
     my @readlines;
     # non-multiarch path
     @readlines = sort(</lib/libreadline.so.?>);
