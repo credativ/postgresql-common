@@ -6,6 +6,7 @@ postgresql-common (229) UNRELEASED; urgency=medium
   * pg_updateaptconfig: Switch to 02autoremove-postgresql since dpkg 1.20.6's
     new built-in remove-conffile-on-upgrade logic doesn't like the file
     reappearing as non-conffile.
+  * pg_createcluster: Use scram-sha-256 by default in PG14+.
   * t/020_create_sql_remove.t: Check pg_hba.conf auth methods.
   * pg_wrapper: Skip LD_PRELOAD logic in PG13+.
   * postgresql-client-common: Stop recommending libreadline.

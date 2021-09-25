@@ -32,22 +32,9 @@ my $quiet;
 chdir '/';
 
 # call initdb
-# Arguments: <version> <data directory> <owner uid> <owner gid> <initdb options>
 sub init_db {
-    my ($version, $cluster, $datadir, $owneruid, $ownergid, $initdb_opts_from_cli) = @_;
+    my ($version, $cluster, $datadir, $owneruid, $ownergid, $local_method, $host_method, $initdb_opts_from_cli) = @_;
     $datadir = readlink $datadir if (-l $datadir);
-
-    my ($ident_method, $peer_method);
-    if ($version >= '8.4') {
-	$ident_method = 'ident';
-    } else {
-	$ident_method = 'ident sameuser';
-    }
-    if ($version >= '9.1') {
-	$peer_method = 'peer';
-    } else {
-	$peer_method = $ident_method;
-    }
 
     if (system 'install', '-d', '-o', $owneruid, '-g', $ownergid, $datadir) {
         error 'could not create data directory; you might need to run this program with root privileges';
@@ -64,13 +51,9 @@ sub init_db {
         my $wal = $version >= 10 ? 'wal' : 'xlog'; # renamed in PG 10
 	push @initdb, ("--${wal}dir", replace_v_c ($waldir, $version, $cluster));
     }
-    if ($explicit_auth_config) {
-	# do nothing
-    } elsif ($version >= '9.2') {
-	push @initdb, ('--auth-local', $peer_method);
-	push @initdb, ('--auth-host', 'md5');
-    } else {
-	push @initdb, ('-A', $ident_method);
+    if ($version >= '9.2' and not $explicit_auth_config) {
+        push @initdb, ('--auth-local', $local_method);
+        push @initdb, ('--auth-host', $host_method);
     }
 
     # cluster startup message
@@ -96,8 +79,6 @@ sub init_db {
         close STDOUT if ($quiet); # suppress initdb output
         exec @initdb;
     }
-
-    return ($ident_method, $peer_method);
 }
 
 # move a file to a directory with defined permissions; set <postgresql.conf option> in
@@ -126,7 +107,7 @@ sub move_conffile {
 # other entries. 
 # - Change default authentication for host entries to md5.
 sub setup_pg_hba {
-    my ($version, $owneruid, $confdir, $ident_method, $peer_method) = @_;
+    my ($version, $owneruid, $confdir, $local_method, $host_method) = @_;
     my $user = (getpwuid $owneruid)[0];
     my $fname = "$confdir/pg_hba.conf";
     my $su_comment = "
@@ -146,20 +127,20 @@ sub setup_pg_hba {
 	# add superuser entry before column description line
 	if ($search && $line =~ /#.*TYPE\s+DATABASE/) {
 	    push @lines, $su_comment;
-	    push @lines, sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $peer_method;
+            push @lines, sprintf "%-7s %-15s %-39s %s\n", 'local', 'all', $user, $local_method;
 	    push @lines, "\n";
 	    $search = 0;
 	}
 
-        if ($version lt '9.2') {
+        if ($version < '9.2') {
 	    # default authentication for Unix socket connections
 	    if ($line =~ /^#?local/) {
-		$line =~ s/trust/$peer_method/;
+                $line =~ s/trust/$local_method/;
 	    }
 
 	    # default authentication for TCP connections
 	    if ($line =~ /^#?host/) {
-		$line =~ s/($ident_method|trust)/md5/;
+                $line =~ s/trust/$host_method/;
 	    }
 	}
 
@@ -309,6 +290,13 @@ foreach my $argv (@ARGV) {
     push @initdb_opts_from_cli, $argv =~ /(.*)/; # untaint
 }
 
+# pg_hba.conf authentication settings
+my $local_method = $version >= 9.1 ? 'peer' :
+                  ($version >= 8.4 ? 'ident' :
+                                     'ident sameuser');
+my $host_method = $version >= 14 ? 'scram-sha-256' : 'md5';
+
+# create parent of data directory if missing
 my $datadirp_created;
 if (!defined $datadir) {
     $datadir = replace_v_c ($defaultconf{'data_directory'} || "/var/lib/postgresql/%v/%c", $version, $cluster);
@@ -357,7 +345,6 @@ error 'could not create configuration directory; you might ' .
 # determine owner in this case
 my $newcluster = 0;
 
-my ($ident_method, $peer_method);
 if (-f "$datadir/PG_VERSION") {
     open my $fh, '<', "$datadir/PG_VERSION" or error "could not open $datadir/PG_VERSION";
     chomp(my $existingver = <$fh>);
@@ -371,7 +358,8 @@ if (-f "$datadir/PG_VERSION") {
     }
 } else {
     print "Creating new PostgreSQL cluster $version/$cluster ...\n";
-    ($ident_method, $peer_method) = init_db $version, $cluster, $datadir, $owneruid, $ownergid, \@initdb_opts_from_cli;
+    init_db $version, $cluster, $datadir, $owneruid, $ownergid,
+        $local_method, $host_method, \@initdb_opts_from_cli;
     $newcluster = 1;
 }
 
@@ -392,7 +380,7 @@ foreach my $f ($datadir, $confdir, "$confdir/start.conf", "$confdir/pg_ctl.conf"
 PgCommon::set_conf_value $version, $cluster, 'postgresql.conf', 'data_directory', $datadir;
 
 # add access for database superuser
-setup_pg_hba $version, $owneruid, $confdir, $ident_method, $peer_method
+setup_pg_hba $version, $owneruid, $confdir, $local_method, $host_method
     if $newcluster and not $explicit_auth_config;
 
 # configure socket directory
