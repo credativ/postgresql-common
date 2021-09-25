@@ -82,7 +82,7 @@ unlink '/etc/postgresql-common/pg_upgradecluster.d/badscript';
 
 is ((exec_as 0, "pg_upgradecluster -v $MAJORS[-1] $MAJORS[0] main", $outref, 0), 0, 'pg_upgradecluster succeeds');
 unlike $$outref, qr/error|fail/i, 'no server error messages during upgrade';
-like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
+like $$outref, qr/Starting upgraded cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
 is ((system "pg_dropcluster $MAJORS[0] main --stop"), 0, 'Dropping old cluster');

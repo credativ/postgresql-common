@@ -34,7 +34,7 @@ SKIP: {
     my $outref;
     is ((exec_as $testuser, "pg_upgradecluster -v $version $oldversion main", $outref, 0), 0, 
         "pg_upgradecluster succeeds as user $testuser");
-    like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
+    like $$outref, qr/Starting upgraded cluster/, 'pg_upgradecluster reported cluster startup';
     like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
     like_program_out $testuser, 'pg_lsclusters -h', 0,

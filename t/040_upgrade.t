@@ -156,7 +156,7 @@ chdir '/tmp/pgtest';
 # Upgrade to latest version
 my $outref;
 is ((exec_as 0, "(env LC_MESSAGES=C pg_upgradecluster -v $MAJORS[-1] $upgrade_options $MAJORS[0] upgr | sed -e 's/^/STDOUT: /')", $outref, 0), 0, 'pg_upgradecluster succeeds');
-like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
+like $$outref, qr/Starting upgraded cluster/, 'pg_upgradecluster reported cluster startup';
 like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 my @err = grep (!/^STDOUT: /, split (/\n/, $$outref));
 if (@err) {

@@ -27,7 +27,7 @@ like_program_out 'nobody', "psql -Atl", 0, qr/template1.*UTF8/;
 if ($MAJORS[0] ne $MAJORS[-1]) {
     my $outref;
     is ((exec_as 'nobody', "pg_upgradecluster --logfile $rootdir/testupgr.log -v $MAJORS[-1] $version test $rootdir/data/testupgr", $outref, 0), 0);
-    like $$outref, qr/Starting target cluster/, 'pg_upgradecluster reported cluster startup';
+    like $$outref, qr/Starting upgraded cluster/, 'pg_upgradecluster reported cluster startup';
     like $$outref, qr/Success. Please check/, 'pg_upgradecluster reported successful operation';
 
     like_program_out 'nobody', 'pg_lsclusters -h', 0,

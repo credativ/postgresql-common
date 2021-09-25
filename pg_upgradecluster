@@ -737,9 +737,9 @@ if (not exists $ENV{'PG_CLUSTER_CONF_ROOT'} and -d '/run/systemd/system' and $> 
 # start cluster if it was running before, or upgrade scripts are present
 $start = ($info{running} or $upgrade_scripts) if ($start == -1);
 if ($start) {
-    print "Starting target cluster on port $newinfo{port}...\n";
+    print "Starting upgraded cluster on port $newinfo{port}...\n";
     @argv = ('pg_ctlcluster', $newversion, $newcluster, 'start');
-    error "Could not start target cluster; please check configuration and log files" if system @argv;
+    error "Could not start upgraded cluster; please check configuration and log files" if system @argv;
 }
 
 # Run upgrade scripts in finish phase
