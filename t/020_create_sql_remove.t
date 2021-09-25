@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 149 * @MAJORS;
+use Test::More tests => 151 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -48,6 +48,21 @@ sub check_major {
     my $first_xlog = $v >= 9.0 ? "000000010000000000000001" : "000000010000000000000000";
     ok_dir $xlogdir, [$first_xlog, "archive_status"],
         "xlog/wal directory $xlogdir was created";
+
+    # check pg_hba.conf auth methods
+    my $local_method = $v >= 9.1 ? 'peer' :
+                      ($v >= 8.4 ? 'ident' :
+                                   'sameuser'); # actually "ident sameuser", but the test is lazy
+    my $host_method = $v >= 14 ? 'scram-sha-256' : 'md5';
+    my (%local_methods, %host_methods);
+    open my $fh, "/etc/postgresql/$v/main/pg_hba.conf";
+    while (<$fh>) {
+        $local_methods{$1} = 1 if (/^local.*\s(\S+)/);
+        $host_methods{$1} = 1 if (/^host.*\s(\S+)/);
+    }
+    close $fh;
+    is_deeply [keys %local_methods], [$local_method], "local method in pg_hba.conf is $local_method";
+    is_deeply [keys %host_methods], [$host_method], "host method in pg_hba.conf is $host_method";
 
     # verify that exactly one postgres master is running
     my @pm_pids = pidof ('postgres');
