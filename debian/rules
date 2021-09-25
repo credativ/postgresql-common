@@ -24,8 +24,11 @@ override_dh_auto_configure:
 	echo "# See /usr/share/postgresql-common/supported-versions for documentation of this file" > supported_versions
 	echo "$(FLAVOR)" >> supported_versions
 
+# do not restart postgresql.service on postgresql-common upgrades
 override_dh_installinit:
 	dh_installinit -ppostgresql-common --name=postgresql -u'defaults 19 21' -r
+override_dh_installsystemd:
+	dh_installsystemd -r
 
 override_dh_gencontrol:
 	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-server-dev-$v,)"
