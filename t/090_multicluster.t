@@ -9,38 +9,18 @@ use PgCommon;
 
 use Test::More tests => 125;
 
-# Replace all md5 and password authentication methods with 'trust' in given
-# pg_hba.conf file.
-sub hba_password_to_ident {
-    open F, $_[0] or die "open $_[0]: $!";
-    my $hba;
-    read F, $hba, 10000;
-    $hba =~ s/md5/trust/g;
-    $hba =~ s/password/trust/g;
-    close F;
-    open F, ">$_[0]" or die "open $_[0]: $!";
-    print F $hba;
-    close F;
-    chmod 0644, $_[0] or die "chmod $_[0]: $!";
-}
-
 # create fake socket at 5433 to verify that this port is skipped
 socket (SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp')) or die "socket: $!";
 bind (SOCK, sockaddr_in(5433, INADDR_ANY)) || die "bind: $! ";
 
 # create clusters
-is ((system "pg_createcluster $MAJORS[0] old >/dev/null"), 0, "pg_createcluster $MAJORS[0] old");
-is ((system "pg_createcluster $MAJORS[-1] new1 >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new1");
-is ((system "pg_createcluster $MAJORS[-1] new2 -p 5440 >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
+is ((system "pg_createcluster $MAJORS[0] old -- -A trust >/dev/null"), 0, "pg_createcluster $MAJORS[0] old");
+is ((system "pg_createcluster $MAJORS[-1] new1 -- -A trust >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new1");
+is ((system "pg_createcluster $MAJORS[-1] new2 -p 5440 -- -A trust >/dev/null"), 0, "pg_createcluster $MAJORS[-1] new2");
 
 my $old = "$MAJORS[0]/old";
 my $new1 = "$MAJORS[-1]/new1";
 my $new2 = "$MAJORS[-1]/new2";
-
-# disable password auth for network cluster selection tests
-hba_password_to_ident "/etc/postgresql/$old/pg_hba.conf";
-hba_password_to_ident "/etc/postgresql/$new1/pg_hba.conf";
-hba_password_to_ident "/etc/postgresql/$new2/pg_hba.conf";
 
 is ((system "pg_ctlcluster $MAJORS[0] old start >/dev/null"), 0, "starting cluster $old");
 is ((system "pg_ctlcluster $MAJORS[-1] new1 start >/dev/null"), 0, "starting cluster $new1");
