@@ -28,7 +28,7 @@ if [ "$1" = purge ]; then
     rm -f $CCCONFIG $CCCONFIG.ucf-*
 
     # remove file created by pg_updateaptconfig
-    rm -f /etc/apt/apt.conf.d/01autoremove-postgresql
+    rm -f /etc/apt/apt.conf.d/02autoremove-postgresql*
 fi
 
 #DEBHELPER#
