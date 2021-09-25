@@ -8,6 +8,7 @@ postgresql-common (229) UNRELEASED; urgency=medium
     reappearing as non-conffile.
   * pg_createcluster: Use scram-sha-256 by default in PG14+.
   * t/020_create_sql_remove.t: Check pg_hba.conf auth methods.
+  * pg_upgradecluster: Migrate old files to new cluster before upgrading.
   * pg_wrapper: Skip LD_PRELOAD logic in PG13+.
   * postgresql-client-common: Stop recommending libreadline.
   * postgresql-server-dev-all: Mark dependency on make as :any.

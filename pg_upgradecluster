@@ -437,10 +437,12 @@ if ($method eq 'dump' or ($method eq 'upgrade' and not $info{'running'})) {
 # in dump mode, old cluster is running now
 # in upgrade mode, old cluster is stopped
 
+my $upgrade_port = next_free_port;
+
 # create new cluster, preserving encoding and locales
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
-    '--socketdir', $info{'socketdir'}, $newversion,
-    $newcluster);
+    '--socketdir', $info{'socketdir'}, '--port', $upgrade_port,
+    $newversion, $newcluster);
 
 push @argv, ('--datadir', $datadir) if $datadir;
 push @argv, ('--logfile', $logfile) if $logfile;
@@ -459,20 +461,11 @@ push @argv, ('--', '--data-checksums') if $oldcontrol->{'Data page checksum vers
 error "Could not create target cluster" if system @argv;
 print "\n";
 
-# if pg_upgrade is used, wal_level needs to be set early so standby servers can
-# be upgraded with the instructions outlined in pg_upgrade(1)
-if ($method eq 'upgrade' and $info{config}->{wal_level}) {
-    PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
-        'wal_level', $info{config}->{wal_level};
-    # if wal_level is minimal, max_wal_senders must be zero so the new cluster
-    # can start, so set max_wal_senders config option early as well
-    if (defined($info{config}->{max_wal_senders})) {
-       PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
-           'max_wal_senders', $info{config}->{max_wal_senders};
-   }
-}
-
+# migrate config files to new cluster before running upgrade
 %newinfo = cluster_info($newversion, $newcluster);
+migrate_config_files();
+set_cluster_port $newversion, $cluster, $upgrade_port; # use free port during upgrade
+%newinfo = cluster_info($newversion, $newcluster); # re-read info after migrate_config_files
 
 if ($method eq 'dump') {
     print "Starting new cluster...\n";
@@ -705,8 +698,6 @@ if ($?) {
     exit 1;
 }
 
-migrate_config_files();
-
 if ($method eq 'dump') {
     print "Stopping target cluster...\n";
     @argv = ('pg_ctlcluster', $newversion, $newcluster, 'stop');
@@ -732,13 +723,9 @@ manual
 }
 
 my $free_port = next_free_port;
-if ($keep_port) {
-    print "Configuring new cluster to use a different port ($free_port)...\n";
-    set_cluster_port $newversion, $cluster, $free_port;
-    $newinfo{port} = $free_port;
-} else {
-    print "Configuring old cluster to use a different port ($free_port)...\n";
-    set_cluster_port $version, $cluster, $free_port;
+unless ($keep_port) {
+    set_cluster_port $version, $cluster, $upgrade_port;
+    set_cluster_port $newversion, $cluster, $info{port};
     $newinfo{port} = $info{port};
 }
 
