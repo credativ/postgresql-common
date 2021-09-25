@@ -173,6 +173,7 @@ my $createclusterconf = "$PgCommon::common_confdir/createcluster.conf";
 my $environmentfile = "$PgCommon::common_confdir/environment";
 my ($owneruid, $ownergid, $socketdir, $datadir, $custom_logfile, $start, $port);
 my ($encoding, $locale, $lc_collate, $lc_ctype,  $lc_messages, $lc_monetary, $lc_numeric, $lc_time);
+my ($no_status);
 
 exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     's|socketdir=s' => \$socketdir, 'd|datadir=s' => \$datadir, 
@@ -183,6 +184,7 @@ exit 1 unless GetOptions ('u|user=s' => \$owneruid, 'g|group=s' => \$ownergid,
     },
     'createclusterconf=s' => \$createclusterconf,
     'environment=s' => \$environmentfile,
+    'no-status' => \$no_status,
     'p|port=i' => \$port,
     'q|quiet' => \$quiet,
     'locale=s' => \$locale,
@@ -601,7 +603,7 @@ if ($start) {
 }
 
 # finally, show the cluster we created
-system 'pg_lsclusters', $version, $cluster unless ($quiet);;
+system 'pg_lsclusters', $version, $cluster unless ($quiet or $no_status);
 
 END {
     # clean up cruft if something went wrong
@@ -756,9 +758,10 @@ port); this must be a number between 1024 and 65535, since PostgreSQL does not
 run as root and thus needs an unprivileged port number. By default the next
 free port starting from 5432 is assigned.
 
-=item B<-q> B<--quiet>
+=item B<-q> B<--quiet> B<--no-status>
 
-Suppress output from B<initdb>.
+Suppress output from B<initdb> and (or only) the cluster status message at the
+end of the output.
 
 =item B<--start>
 

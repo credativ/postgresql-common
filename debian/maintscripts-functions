@@ -86,7 +86,7 @@ configure_version() {
         create=$(pg_conftool /etc/postgresql-common/createcluster.conf show -bs create_main_cluster || :)
         if [ -z "$2" ] && [ "$create" != "off" ]; then
             set_system_locale
-            pg_createcluster -u postgres $VERSION main ||
+            pg_createcluster -u postgres --no-status $VERSION main ||
                 echo "Error: could not create default cluster. Please create it manually with
 
   pg_createcluster $VERSION main --start

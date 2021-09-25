@@ -441,7 +441,7 @@ my $upgrade_port = next_free_port;
 
 # create new cluster, preserving encoding and locales
 my @argv = ('pg_createcluster', '-u', $info{'owneruid'}, '-g', $info{'ownergid'},
-    '--socketdir', $info{'socketdir'}, '--port', $upgrade_port,
+    '--socketdir', $info{'socketdir'}, '--port', $upgrade_port, '--no-status',
     $newversion, $newcluster);
 
 push @argv, ('--datadir', $datadir) if $datadir;
