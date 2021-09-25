@@ -4,7 +4,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => $PgCommon::rpm ? 1 : 14;
+use Test::More tests => $PgCommon::rpm ? 1 : 13;
 
 if ($PgCommon::rpm) {
     pass 'No maintainer script tests on rpm';
