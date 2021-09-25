@@ -15,6 +15,7 @@ postgresql-common (229) UNRELEASED; urgency=medium
   * postgresql-server-dev-all: Mark dependency on make as :any.
   * Depend on ${perl:Depends}.
   * dh_installsystemd: Use -r to prevent restarting postgresql.service.
+  * t/012_maintscripts.t: New maintainer scripts test.
   * pgdg/apt.postgresql.org.sh: Try /etc/os-release first and add some
     precautionary checks to the other methods.
 
