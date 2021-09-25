@@ -1,4 +1,4 @@
-postgresql-common (229) UNRELEASED; urgency=medium
+postgresql-common (229) unstable; urgency=medium
 
   * postgresql-common.maintscript: We mistakenly tried to remove
     /etc/apt/apt.conf.d/01autoremove instead of 01autoremove-postgresql.
@@ -19,7 +19,7 @@ postgresql-common (229) UNRELEASED; urgency=medium
   * pgdg/apt.postgresql.org.sh: Try /etc/os-release first and add some
     precautionary checks to the other methods.
 
- -- Christoph Berg <myon@debian.org>  Wed, 22 Sep 2021 22:20:43 +0200
+ -- Christoph Berg <myon@debian.org>  Sat, 25 Sep 2021 21:43:00 +0200
 
 postgresql-common (228) unstable; urgency=medium
 
