@@ -193,6 +193,81 @@ sub adapt_conffiles {
     }
 }
 
+sub migrate_config_files() {
+    # copy configuration files
+    print "Copying old configuration files...\n";
+    install_file $info{'configdir'}.'/postgresql.conf', $newinfo{'configdir'},
+        $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+    adapt_conffiles $newversion, $newcluster, 'postgresql.conf';
+    # copy auto.conf after postgresql.conf has been updated
+    # (otherwise read_cluster_conf_file would also read auto.conf)
+    if ($version >= 9.4) {
+        install_file $info{'pgdata'}.'/postgresql.auto.conf', $newinfo{'pgdata'},
+            $newinfo{'owneruid'}, $newinfo{'ownergid'}, "600";
+        adapt_conffiles $newversion, $newcluster, 'postgresql.auto.conf';
+    }
+    install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
+        $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+    install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
+        $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
+    if ($version < 8.4 and $newversion >= 8.4) {
+        print "Removing 'ident sameuser' from pg_hba.conf...\n";
+        my $hba = "$PgCommon::confroot/$newversion/$newcluster/pg_hba.conf";
+        open O, $hba or error "open $hba: $!";
+        open N, ">$hba.new" or error "open $hba.new: $!";
+        while (<O>) {
+            s/ident\s+sameuser/ident/;
+            print N $_;
+        }
+        close O;
+        close N;
+        lchown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
+        chmod 0640, "$hba.new";
+        rename "$hba.new", $hba or error "rename: $!";
+    }
+    if ( -e $info{'configdir'}.'/start.conf') {
+        print "Copying old start.conf...\n";
+        install_file $info{'configdir'}.'/start.conf', $newinfo{'configdir'},
+            $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+    }
+    if ( -e $info{'configdir'}.'/pg_ctl.conf') {
+        print "Copying old pg_ctl.conf...\n";
+        install_file $info{'configdir'}.'/pg_ctl.conf', $newinfo{'configdir'},
+            $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
+    }
+
+    # copy SSL files (overwriting any file that pg_createcluster put there)
+    for my $file (qw/server.crt server.key root.crt root.crl/) {
+        if ( -e "$info{'pgdata'}/$file") {
+            print "Copying old $file...\n";
+            if (!fork) { # we don't use install_file because that converts symlinks to files
+                change_ugid $info{'owneruid'}, $info{'ownergid'};
+                system "cp -a $info{'pgdata'}/$file $newinfo{'pgdata'}";
+                exit 0;
+            }
+            wait;
+        }
+    }
+    if ($newversion >= 9.2) {
+        # SSL certificate paths have an explicit option now, older versions use
+        # a symlink
+        for my $f (['server.crt', 'ssl_cert_file'],
+            ['server.key', 'ssl_key_file'],
+            ['root.crt', 'ssl_ca_file'],
+            ['root.crl', 'ssl_crl_file']) {
+            my $file = "$newinfo{'pgdata'}/$f->[0]";
+            if (-l $file) { # migrate symlink to config entry with link target
+                PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
+                    $f->[1], (readlink $file);
+                unlink $file;
+            } elsif (-e $file) { # plain file in data dir, put in config
+                PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
+                    $f->[1], $file;
+            }
+        }
+    }
+}
+
 # Write temporary pg_hba.conf.
 # Arguments: <version> <cluster> <owner> <owneruid>
 sub temp_hba_conf {
@@ -630,78 +705,7 @@ if ($?) {
     exit 1;
 }
 
-# copy configuration files
-print "Copying old configuration files...\n";
-install_file $info{'configdir'}.'/postgresql.conf', $newinfo{'configdir'},
-    $newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
-adapt_conffiles $newversion, $newcluster, 'postgresql.conf';
-# copy auto.conf after postgresql.conf has been updated
-# (otherwise read_cluster_conf_file would also read auto.conf)
-if ($version >= 9.4) {
-    install_file $info{'pgdata'}.'/postgresql.auto.conf', $newinfo{'pgdata'},
-        $newinfo{'owneruid'}, $newinfo{'ownergid'}, "600";
-    adapt_conffiles $newversion, $newcluster, 'postgresql.auto.conf';
-}
-install_file $info{'configdir'}.'/pg_ident.conf', $newinfo{'configdir'},
-    $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
-install_file $info{'configdir'}.'/pg_hba.conf', $newinfo{'configdir'},
-    $newinfo{'owneruid'}, $newinfo{'ownergid'}, "640";
-if ($version < 8.4 and $newversion >= 8.4) {
-    print "Removing 'ident sameuser' from pg_hba.conf...\n";
-    my $hba = "$PgCommon::confroot/$newversion/$newcluster/pg_hba.conf";
-    open O, $hba or error "open $hba: $!";
-    open N, ">$hba.new" or error "open $hba.new: $!";
-    while (<O>) {
-        s/ident\s+sameuser/ident/;
-        print N $_;
-    }
-    close O;
-    close N;
-    lchown $newinfo{'owneruid'}, $newinfo{'ownergid'}, "$hba.new";
-    chmod 0640, "$hba.new";
-    rename "$hba.new", $hba or error "rename: $!";
-}
-if ( -e $info{'configdir'}.'/start.conf') {
-    print "Copying old start.conf...\n";
-    install_file $info{'configdir'}.'/start.conf', $newinfo{'configdir'},
-	$newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
-}
-if ( -e $info{'configdir'}.'/pg_ctl.conf') {
-    print "Copying old pg_ctl.conf...\n";
-    install_file $info{'configdir'}.'/pg_ctl.conf', $newinfo{'configdir'},
-	$newinfo{'owneruid'}, $newinfo{'ownergid'}, "644";
-}
-
-# copy SSL files (overwriting any file that pg_createcluster put there)
-for my $file (qw/server.crt server.key root.crt root.crl/) {
-    if ( -e "$info{'pgdata'}/$file") {
-	print "Copying old $file...\n";
-	if (!fork) { # we don't use install_file because that converts symlinks to files
-	    change_ugid $info{'owneruid'}, $info{'ownergid'};
-	    system "cp -a $info{'pgdata'}/$file $newinfo{'pgdata'}";
-	    exit 0;
-	}
-	wait;
-    }
-}
-if ($newversion >= 9.2) {
-    # SSL certificate paths have an explicit option now, older versions use
-    # a symlink
-    for my $f (['server.crt', 'ssl_cert_file'],
-        ['server.key', 'ssl_key_file'],
-        ['root.crt', 'ssl_ca_file'],
-        ['root.crl', 'ssl_crl_file']) {
-        my $file = "$newinfo{'pgdata'}/$f->[0]";
-        if (-l $file) { # migrate symlink to config entry with link target
-            PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
-                $f->[1], (readlink $file);
-            unlink $file;
-        } elsif (-e $file) { # plain file in data dir, put in config
-            PgCommon::set_conf_value $newversion, $newcluster, 'postgresql.conf',
-                $f->[1], $file;
-        }
-    }
-}
+migrate_config_files();
 
 if ($method eq 'dump') {
     print "Stopping target cluster...\n";
