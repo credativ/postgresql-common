@@ -1,3 +1,9 @@
+postgresql-common (230) UNRELEASED; urgency=medium
+
+  * t/012_maintscripts.t: Compare pid files instead of using ps.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 27 Sep 2021 17:04:28 +0200
+
 postgresql-common (229) unstable; urgency=medium
 
   * postgresql-common.maintscript: We mistakenly tried to remove
