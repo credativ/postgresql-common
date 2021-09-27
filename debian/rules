@@ -27,9 +27,9 @@ override_dh_auto_configure:
 # do not restart postgresql.service on postgresql-common upgrades
 # (--no-restart-after-upgrade required only on buster/stretch)
 override_dh_installinit:
-	dh_installinit -ppostgresql-common --name=postgresql -u'defaults 19 21' -r --no-restart-after-upgrade
+	dh_installinit -ppostgresql-common --name=postgresql -u'defaults 19 21' --no-start
 override_dh_installsystemd:
-	dh_installsystemd -r --no-restart-after-upgrade
+	dh_installsystemd --no-start
 
 override_dh_gencontrol:
 	dh_gencontrol -ppostgresql-server-dev-all -- -Vserver-dev-all-depends="$(foreach v,$(SUPPORTED_VERSIONS),postgresql-server-dev-$v,)"

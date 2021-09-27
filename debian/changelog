@@ -1,5 +1,7 @@
 postgresql-common (230) UNRELEASED; urgency=medium
 
+  * dh_installinit, dh_installsystemd: Use --no-start to prevent all actions
+    on postgresql.service at postgresql-common install/upgrade time.
   * t/012_maintscripts.t: Compare pid files instead of using ps.
 
  -- Christoph Berg <myon@debian.org>  Mon, 27 Sep 2021 17:04:28 +0200
