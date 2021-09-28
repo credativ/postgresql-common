@@ -24,8 +24,7 @@ override_dh_auto_configure:
 	echo "# See /usr/share/postgresql-common/supported-versions for documentation of this file" > supported_versions
 	echo "$(FLAVOR)" >> supported_versions
 
-# do not restart postgresql.service on postgresql-common upgrades
-# (--no-restart-after-upgrade required only on buster/stretch)
+# do not (re)start postgresql.service on postgresql-common install/upgrades
 override_dh_installinit:
 	dh_installinit -ppostgresql-common --name=postgresql -u'defaults 19 21' --no-start
 override_dh_installsystemd:
