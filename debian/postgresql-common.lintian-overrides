@@ -4,4 +4,4 @@ postgresql-common: binary-without-manpage usr/bin/pg_config
 # the init-functions are sourced via /usr/share/postgresql-common/init.d-functions
 postgresql-common: init.d-script-does-not-source-init-functions etc/init.d/postgresql
 # pg_receivewal@ is an add-on service of postgresql@
-postgresql-common: systemd-service-file-refers-to-unusual-wantedby-target usr/lib/systemd/system/pg_receivewal@.service postgresql@%i.service
+postgresql-common: systemd-service-file-refers-to-unusual-wantedby-target *lib/systemd/system/pg_receivewal@.service postgresql@%i.service
