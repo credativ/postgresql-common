@@ -1,3 +1,9 @@
+postgresql-common (231) UNRELEASED; urgency=medium
+
+  * pg_createcluster: Avoid "auth is trust" initdb warning on pre-9.2 servers.
+
+ -- Christoph Berg <myon@debian.org>  Wed, 29 Sep 2021 16:07:47 +0200
+
 postgresql-common (230) unstable; urgency=medium
 
   * dh_installinit, dh_installsystemd: Use --no-start to prevent all actions

@@ -51,9 +51,15 @@ sub init_db {
         my $wal = $version >= 10 ? 'wal' : 'xlog'; # renamed in PG 10
 	push @initdb, ("--${wal}dir", replace_v_c ($waldir, $version, $cluster));
     }
-    if ($version >= '9.2' and not $explicit_auth_config) {
-        push @initdb, ('--auth-local', $local_method);
-        push @initdb, ('--auth-host', $host_method);
+    unless ($explicit_auth_config) {
+        if ($version >= '9.2') {
+            push @initdb, ('--auth-local', $local_method);
+            push @initdb, ('--auth-host', $host_method);
+        } else {
+            # trust is the default, but set it explicitly to mute a warning from initdb
+            # the actual method will be filled in by setup_pg_hba()
+            push @initdb, ('-A', 'trust');
+        }
     }
 
     # cluster startup message
@@ -132,7 +138,7 @@ sub setup_pg_hba {
 	    $search = 0;
 	}
 
-        if ($version < '9.2') {
+        if ($version < '9.2' and not $explicit_auth_config) {
 	    # default authentication for Unix socket connections
 	    if ($line =~ /^#?local/) {
                 $line =~ s/trust/$local_method/;
