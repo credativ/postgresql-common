@@ -37,7 +37,7 @@
 # X: consider this version supported
 #
 # (C) 2005-2016 Martin Pitt <mpitt@debian.org>
-# (C) 2012-2020 Christoph Berg <myon@debian.org>
+# (C) 2012-2021 Christoph Berg <myon@debian.org>
 
 set -eu
 
@@ -49,7 +49,7 @@ else
     . /usr/share/postgresql-common/pgcommon.sh
 fi
 
-DEFAULT="13"
+DEFAULT="14"
 
 # functions
 
@@ -87,6 +87,7 @@ ubuntu() {
         19.04|19.10) /bin/echo -e "11" ;;
         20.04|20.10) /bin/echo -e "12" ;;
         21.04|21.10) /bin/echo -e "13" ;;
+        22.04|22.10) /bin/echo -e "14" ;;
         *)
             echo "supported-versions: WARNING: Unknown Ubuntu release: $1" >&2
             /bin/echo -e "$DEFAULT" ;;
@@ -102,6 +103,7 @@ debian() {
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
         10|10.*) /bin/echo -e "11" ;; # Buster
         11|11.*) /bin/echo -e "13" ;; # Bullseye
+        12|12.*) /bin/echo -e "14" ;; # Bookworm
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)
@@ -119,6 +121,7 @@ debian_backports() {
         9|9.*) /bin/echo -e "9.6" ;; # Stretch
         10|10.*) /bin/echo -e "11" ;; # Buster
         11|11.*) /bin/echo -e "13" ;; # Bullseye
+        12|12.*) /bin/echo -e "14" ;; # Bookworm
         testing | unstable)
             /bin/echo -e "$DEFAULT" ;;
         *)
@@ -134,6 +137,7 @@ pgdg() {
 	11
 	12
 	13
+	14
 	EOF
 }
 
