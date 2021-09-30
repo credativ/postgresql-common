@@ -1,9 +1,9 @@
-postgresql-common (231) UNRELEASED; urgency=medium
+postgresql-common (231) unstable; urgency=medium
 
   * supported-versions: Set PG 14 as default.
   * pg_createcluster: Avoid "auth is trust" initdb warning on pre-9.2 servers.
 
- -- Christoph Berg <myon@debian.org>  Wed, 29 Sep 2021 16:07:47 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 30 Sep 2021 13:12:36 +0200
 
 postgresql-common (230) unstable; urgency=medium
 
