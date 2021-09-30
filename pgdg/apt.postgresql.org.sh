@@ -81,7 +81,7 @@ case $PGVERSION in # FIXME: this shouldn't be hard-coded in here
         COMPONENTS="main $PGVERSION"
         PIN="-t $CODENAME-$PGDG" ;;
     # beta version just needs a different component
-    14) COMPONENTS="main $PGVERSION" ;;
+    #15) COMPONENTS="main $PGVERSION" ;;
 esac
 
 cat <<EOF
