@@ -53,7 +53,7 @@ for my $d (@srcdirs) {
 
 	my $enc = get_encoding $aff;
 	if (!$enc) {
-	    print STDERR "ERROR: no ecoding defined in $aff, ignoring\n";
+	    print STDERR "ERROR: no encoding defined in $aff, ignoring\n";
 	    next;
 	}
 
