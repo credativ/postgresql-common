@@ -329,7 +329,7 @@ sub dirsize($) {
 }
 
 sub list() {
-    print "Cluster $cluster $version backups in $clusterdir:\n";
+    print "Cluster $version $cluster backups in $clusterdir:\n";
     my $totalsize = 0;
     print "Dumps:\n";
     for my $dir (sort glob "$clusterdir/*.dump") {
