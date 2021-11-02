@@ -2,6 +2,7 @@ postgresql-common (232) UNRELEASED; urgency=medium
 
   * t/020_create_sql_remove.t: Sleep a bit after stopping clusters to
     hopefully fix a race condition seen on ci.debian.net.
+  * dh_make_pgxs/debian/watch: Look at tags instead of releases.
 
  -- Christoph Berg <myon@debian.org>  Thu, 07 Oct 2021 15:31:05 +0200
 
