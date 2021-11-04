@@ -287,7 +287,13 @@ sub compresswal() {
     for my $wal (glob "0???????????????????????") {
         $wal =~ /^([0-9A-F]+)$/ or continue;
         $wal = $1; # untaint
-        system_or_error "gzip < $wal > $wal.gz";
+        if (-f "$wal.gz") {
+            print STDERR "$waldir/$wal.gz already exists, skipping compression\n";
+            next;
+        }
+        system_or_error "if ! gzip < $wal > $wal.tmp.gz; then rm -f $wal.tmp.gz; exit 1; fi";
+        system_or_error "touch --reference=$wal $wal.tmp.gz";
+        system_or_error "mv $wal.tmp.gz $wal.gz";
         system_or_error "sync", "$wal.gz";
         unlink $wal;
     }
