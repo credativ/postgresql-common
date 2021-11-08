@@ -10,3 +10,4 @@ variables:
   PG_UPDATECONTROL: 'yes' # tell pg_buildext to automatically generate debian/control from debian/control.in (TODO: doesn't work this way yet)
   SALSA_CI_DISABLE_REPROTEST: 'yes' # too many packages fail because reprotest runs the build as root, disable for now
   SALSA_CI_REPROTEST_ENABLE_DIFFOSCOPE: 'yes'
+  SALSA_CI_DISABLE_CROSSBUILD_ARM64: 'yes' # clang isn't ready for cross-building yet
