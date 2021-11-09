@@ -25,7 +25,7 @@ usleep 2*$delay;
 is (next_free_port, 5433, 'next_free_port detects localhost ipv4 socket');
 # open a wildcard ipv4 socket
 push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -4 -l 5433));
-usleep $delay;
+usleep 2*$delay;
 is (next_free_port, 5434, 'next_free_port detects wildcard ipv4 socket');
 
 SKIP: {
@@ -35,11 +35,11 @@ SKIP: {
 
     # open a localhost ipv6 socket
     push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -l ::1 5434));
-    usleep $delay;
+    usleep 2*$delay;
     is (next_free_port, 5435, 'next_free_port detects localhost ipv6 socket');
     # open a wildcard ipv6 socket
     push @pids, open2(\*CHLD_OUT, \*CHLD_IN, qw(nc -6 -l 5435));
-    usleep $delay;
+    usleep 2*$delay;
     is (next_free_port, 5436, 'next_free_port detects wildcard ipv6 socket');
 }
 

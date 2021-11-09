@@ -1,6 +1,7 @@
 postgresql-common (232) UNRELEASED; urgency=medium
 
   * pg_backupcluster: Preserve wal file timestamps with compresswal.
+  * t/006_next_free_port.t: Sleep longer after nc startup.
   * t/020_create_sql_remove.t: Sleep a bit after stopping clusters to
     hopefully fix a race condition seen on ci.debian.net.
   * t/180_ecpg.t: Print error messages to console.
