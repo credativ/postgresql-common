@@ -18,6 +18,10 @@ chdir $workdir or die "could not chdir to $workdir: $!";
 open F, '>test.pgc' or die "Could not open $workdir/test.pgc: $!";
 print F <<EOF;
 #include <stdio.h>
+#include <stdlib.h>
+
+EXEC SQL WHENEVER SQLWARNING SQLPRINT;
+EXEC SQL WHENEVER SQLERROR SQLPRINT;
 
 EXEC SQL BEGIN DECLARE SECTION;
     char output[1024];
