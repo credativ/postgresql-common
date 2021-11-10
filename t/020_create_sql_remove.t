@@ -392,10 +392,10 @@ tel|2
     # test process title update
     like_program_out 0, "ps h $client_pid", 0, qr/ idle\s*$/, 'process title is idle';
     print WH "BEGIN;\n";
-    usleep 2*$delay;
+    usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/idle in transaction/, 'process title is idle in transaction';
-    print WH "SELECT pg_sleep(2); COMMIT;\n";
-    usleep 2*$delay;
+    print WH "SELECT pg_sleep(4);\n";
+    usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
 
     close WH;
