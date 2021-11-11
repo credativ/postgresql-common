@@ -1,4 +1,4 @@
-postgresql-common (232) UNRELEASED; urgency=medium
+postgresql-common (232) unstable; urgency=medium
 
   * pg_backupcluster: Preserve wal file timestamps with compresswal.
   * t/006_next_free_port.t: Sleep longer after nc startup.
@@ -7,7 +7,7 @@ postgresql-common (232) UNRELEASED; urgency=medium
   * t/180_ecpg.t: Print error messages to console.
   * dh_make_pgxs/debian/watch: Look at tags instead of releases.
 
- -- Christoph Berg <myon@debian.org>  Thu, 07 Oct 2021 15:31:05 +0200
+ -- Christoph Berg <myon@debian.org>  Thu, 11 Nov 2021 17:17:49 +0100
 
 postgresql-common (231) unstable; urgency=medium
 
