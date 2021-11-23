@@ -60,6 +60,13 @@ Extra initdb options to pass to B<pg_createcluster>.
 Configuration option to set in the C<postgresql.conf> file, passed to
 B<pg_createcluster>.
 
+=item B<-p> I<package>
+
+Set B<extension_destdir> and B<dynamic_library_path> in cluster to enable
+loading and testing extensions at build-time from B<debian/>I<package>B</>.
+
+This is a Debian-specific PostgreSQL patch.
+
 =item B<-s>
 
 Launch a shell inside the virtual environment when I<command> fails.
