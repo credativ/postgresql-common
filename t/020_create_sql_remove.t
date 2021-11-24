@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 151 * @MAJORS;
+use Test::More tests => 149 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -403,11 +403,6 @@ tel|2
     close WH;
     kill 15, $psql;
     waitpid $psql, 0;
-
-    # Drop database and user again.
-    usleep $delay;
-    is ((exec_as 'nobody', 'dropdb nobodydb', $outref, 0), 0, 'dropdb nobodydb', );
-    is ((exec_as 'postgres', 'dropuser nobody', $outref, 0), 0, 'dropuser nobody');
 
     # log file gets re-created by pg_ctlcluster
     is ((exec_as 0, "pg_ctlcluster $v main stop"), 0, 'stopping cluster');
