@@ -11,7 +11,7 @@ use lib 't';
 use TestLib;
 use PgCommon;
 
-use Test::More tests => 149 * @MAJORS;
+use Test::More tests => 147 * @MAJORS;
 
 $ENV{_SYSTEMCTL_SKIP_REDIRECT} = 1; # FIXME: testsuite is hanging otherwise
 
@@ -394,11 +394,6 @@ tel|2
     print WH "BEGIN;\n";
     usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/idle in transaction/, 'process title is idle in transaction';
-    note "before SELECT pg_sleep(4):" . scalar(localtime);
-    print WH "SELECT pg_sleep(4);\n";
-    note "after SELECT pg_sleep(4):" . scalar(localtime);
-    usleep $delay;
-    like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
 
     close WH;
     kill 15, $psql;
