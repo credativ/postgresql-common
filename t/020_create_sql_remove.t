@@ -350,7 +350,7 @@ tel|2
 	change_ugid $pw[2], $pw[3];
 	open(STDIN, "<& RH");
 	dup2(POSIX::open('/dev/null', POSIX::O_WRONLY), 1);
-	exec 'psql', 'nobodydb' or die "could not exec psql process: $!";
+	exec 'psql', '-Xq', '-vPROMPT1=', 'nobodydb' or die "could not exec psql process: $!";
     }
     close RH;
     select WH; $| = 1; # make unbuffered
@@ -394,11 +394,14 @@ tel|2
     print WH "BEGIN;\n";
     usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/idle in transaction/, 'process title is idle in transaction';
+    note "before SELECT pg_sleep(4):" . scalar(localtime);
     print WH "SELECT pg_sleep(4);\n";
+    note "after SELECT pg_sleep(4):" . scalar(localtime);
     usleep $delay;
     like_program_out 0, "ps h $client_pid", 0, qr/SELECT/, 'process title is SELECT';
 
     close WH;
+    kill 15, $psql;
     waitpid $psql, 0;
 
     # Drop database and user again.
