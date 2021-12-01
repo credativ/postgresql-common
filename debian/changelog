@@ -1,6 +1,7 @@
 postgresql-common (233) UNRELEASED; urgency=medium
 
   * pg_virtualenv.1: Document -p and extension_destdir.
+  * server: Centralize server packages debian/rules logic here.
 
  -- Christoph Berg <myon@debian.org>  Tue, 23 Nov 2021 16:48:18 +0100
 
