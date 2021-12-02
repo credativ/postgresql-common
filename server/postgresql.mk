@@ -28,8 +28,6 @@ CATVERSION = $(shell awk '/CATALOG_VERSION_NO/ { print $$3 }' src/include/catalo
 
 # configure flags
 
-#CASSERT_FLAGS = --enable-cassert
-
 CONFIGURE_FLAGS = \
   --with-tcl \
   --with-perl \
@@ -52,7 +50,6 @@ CONFIGURE_FLAGS = \
   --enable-thread-safety \
   --enable-debug \
   --enable-dtrace \
-  $(CASSERT_FLAGS) \
   --disable-rpath \
   --with-uuid=e2fs \
   --with-gnu-ld \
@@ -105,6 +102,11 @@ endif
 ifeq ($(DEB_HOST_ARCH_OS),linux)
   CONFIGURE_FLAGS += --with-systemd
   CONFIGURE_FLAGS += --with-selinux
+endif
+
+ifneq ($(filter pkg.postgresql.cassert,$(DEB_BUILD_PROFILES)),)
+  CONFIGURE_FLAGS += --enable-cassert
+  GENCONTROL_FLAGS += -Vcassert='$${Newline}$${Newline}This package has been built with cassert enabled.'
 endif
 
 # hurd implemented semaphores only recently and tests still fail a lot
@@ -231,4 +233,4 @@ override_dh_installdeb-arch:
 
 override_dh_gencontrol:
 	# record catversion in .deb control file
-	dh_gencontrol -- -Vpostgresql:Catversion=$(CATVERSION) -Vllvm:Version=$(LLVM_VERSION)
+	dh_gencontrol -- -Vpostgresql:Catversion=$(CATVERSION) -Vllvm:Version=$(LLVM_VERSION) $(GENCONTROL_FLAGS)
