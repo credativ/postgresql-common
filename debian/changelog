@@ -1,3 +1,9 @@
+postgresql-common (234) UNRELEASED; urgency=medium
+
+  * server/postgresql.mk: Fix OS detection in override_dh_auto_test.
+
+ -- Christoph Berg <myon@debian.org>  Sat, 04 Dec 2021 13:13:36 +0100
+
 postgresql-common (233) unstable; urgency=medium
 
   * pg_virtualenv.1: Document -p and extension_destdir.

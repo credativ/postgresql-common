@@ -110,8 +110,8 @@ ifneq ($(filter pkg.postgresql.cassert,$(DEB_BUILD_PROFILES)),)
 endif
 
 # hurd implemented semaphores only recently and tests still fail a lot
-# plperl currently fails on kfreebsd-*
-ifneq ($(filter hurd-% kfreebsd-%,$(DEB_HOST_ARCH_OS)),)
+# plperl fails on kfreebsd-* (#704802)
+ifneq ($(filter hurd kfreebsd,$(DEB_HOST_ARCH_OS)),)
   TEST_FAIL_COMMAND = exit 0
 else
   TEST_FAIL_COMMAND = exit 1
