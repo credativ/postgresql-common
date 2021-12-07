@@ -99,6 +99,12 @@ ifeq ($(DEB_HOST_ARCH),amd64)
   CFLAGS += -fno-omit-frame-pointer
 endif
 
+# Work around an ICE bug in GCC 11.2.0, see
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103395
+ifneq ($(findstring $(DEB_HOST_ARCH), armel armhf),)
+  CFLAGS+= -DSTAP_SDT_ARG_CONSTRAINT=g
+endif
+
 ifeq ($(DEB_HOST_ARCH_OS),linux)
   CONFIGURE_FLAGS += --with-systemd
   CONFIGURE_FLAGS += --with-selinux
