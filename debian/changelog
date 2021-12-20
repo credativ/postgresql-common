@@ -1,3 +1,10 @@
+postgresql-common (235) unstable; urgency=medium
+
+  [ Christian Ehrhardt ]
+  * server/postgresql.mk: avoid gcc 11 ICE on armhf and armel.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 20 Dec 2021 18:13:44 +0100
+
 postgresql-common (234) unstable; urgency=medium
 
   * server/postgresql.mk: Fix OS detection in override_dh_auto_test.
