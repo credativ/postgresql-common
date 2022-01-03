@@ -119,6 +119,11 @@ The third parameter specifies the package name to use. Most packages
 use B<postgresql-%v-pkgname>. Make will be
 called with DESTDIR="$(CURDIR)/debian/I<package>".
 
+The B<dpkg> substitution variable B<postgresql:Depends> is set to depend
+on the required PostgreSQL server package. For compatibility with previous
+packaging standards, the dependency is also added to B<misc:Depends> if
+postgresql:Depends is not used.
+
 =item B<clean> [I<src-dir>] [I<build-dir>] [I<package-pattern>]
 
 Clean the build directories.
@@ -205,8 +210,8 @@ configure the list of supported versions on your system.
   Package: postgresql-PGVERSION-foobar
   Architecture: any
   Depends:
-   postgresql-PGVERSION,
    ${misc:Depends},
+   ${postgresql:Depends},
    ${shlibs:Depends},
 
 =item B<debian/pgversions:>

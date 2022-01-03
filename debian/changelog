@@ -1,3 +1,10 @@
+postgresql-common (236) UNRELEASED; urgency=medium
+
+  * pg_buildext: Generate postgresql:Depends substvar and depend on
+    postgresql-$version-jit-llvm (>= $llvm_version).
+
+ -- Christoph Berg <myon@debian.org>  Mon, 03 Jan 2022 14:17:23 +0100
+
 postgresql-common (235) unstable; urgency=medium
 
   [ Christian Ehrhardt ]

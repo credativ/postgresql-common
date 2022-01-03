@@ -4,7 +4,7 @@
 # versions
 #
 # (C) 2010 Dimitri Fontaine <dfontaine@hi-media.com>
-# (C) 2011-2020 Christoph Berg <myon@debian.org>
+# (C) 2011-2022 Christoph Berg <myon@debian.org>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -81,6 +81,29 @@ build() {
     make -C $vtarget ${makefile:-} PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS || return $?
 }
 
+substvars() {
+    version="$1"
+    package="$2"
+
+    depends="postgresql-$version"
+    if [ -d "debian/$package/usr/lib/postgresql/$version/lib/bitcode" ]; then
+        pg_provides=$(dpkg-query --show --showformat='${Provides}' postgresql-$version | grep -o 'postgresql-[0-9]*-jit-llvm (= [0-9.]*')
+        llvm_version=${pg_provides#*= }
+        if [ "$llvm_version" ]; then # skip if server version doesn't have the Provides yet
+            depends="$depends, postgresql-$version-jit-llvm (>= $llvm_version)"
+        fi
+    fi
+    echo "postgresql:Depends=$depends" >> "debian/$package.substvars"
+
+    if ! grep -q postgresql:Depends debian/control; then # compat: add to misc:Depends
+        if grep -q ^misc:Depends "debian/$package.substvars"; then
+            sed -i -e "s/^misc:Depends=/misc:Depends=$depends, /" "debian/$package.substvars"
+        else
+            echo "misc:Depends=$depends" >> "debian/$package.substvars"
+        fi
+    fi
+}
+
 install() {
     prepare_env $1
     package=`echo $opt | sed -e "s:%v:$1:g"`
@@ -89,6 +112,7 @@ install() {
     # if a Makefile was created by configure, use it, else the top level Makefile
     [ -f $vtarget/Makefile ] || makefile="-f $srcdir/Makefile"
     make -C $vtarget ${makefile:-} install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" VPATH="$srcdir" USE_PGXS=1 $MAKEVARS || return $?
+    substvars "$1" "$package"
 }
 
 clean() {
@@ -106,6 +130,7 @@ loop() {
     make -C "$srcdir"         PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS || return $?
     echo "# $1: make install"
     make -C "$srcdir" install DESTDIR="$PWD/debian/$package" PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS || return $?
+    substvars "$1" "$package"
     echo "# $1: make clean"
     make -C "$srcdir" clean   PG_CONFIG="$pgc" USE_PGXS=1 $MAKEVARS # clean errors are fatal
 }

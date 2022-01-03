@@ -16,8 +16,8 @@ Vcs-Git: https://salsa.debian.org/postgresql/@SOURCE@.git
 Package: postgresql-PGVERSION-@EXTNAME@
 Architecture: any
 Depends:
- postgresql-PGVERSION,
  ${misc:Depends},
+ ${postgresql:Depends},
  ${shlibs:Depends},
 Description: FIXME PostgreSQL extension @SOURCE@
  FIXME long description here
