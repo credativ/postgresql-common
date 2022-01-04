@@ -1,3 +1,9 @@
+postgresql-common (237) unstable; urgency=medium
+
+  * postgresql.mk: Mute dpkg error on empty version fields in debian/control.
+
+ -- Christoph Berg <myon@debian.org>  Tue, 04 Jan 2022 11:44:42 +0100
+
 postgresql-common (236) unstable; urgency=medium
 
   * pg_buildext: Generate postgresql:Depends substvar and depend on

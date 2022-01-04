@@ -86,6 +86,8 @@ ifeq ($(call version_ge,11),y)
     LLVM_CONFIG = $(lastword $(sort $(wildcard /usr/bin/llvm-config-*)))
     LLVM_VERSION = $(subst /usr/bin/llvm-config-,,$(LLVM_CONFIG))
     CONFIGURE_FLAGS += --with-llvm LLVM_CONFIG=$(LLVM_CONFIG) CLANG=/usr/bin/clang-$(LLVM_VERSION)
+  else
+    LLVM_VERSION = 0.invalid # mute dpkg error on empty version fields in debian/control
   endif
   TEMP_CONFIG = TEMP_CONFIG=$(AUX_MK_DIR)/test-with-jit.conf
 endif
