@@ -302,7 +302,7 @@ if ($backup =~ /\.backup$/) {
         exit(0);
     }
     wait;
-    exit($?) if ($?);
+    exit(1) if ($?);
     if ($start) {
         print "\n";
         start_cluster();
@@ -324,7 +324,7 @@ if ($backup =~ /\.backup$/) {
         exit(0);
     }
     wait;
-    exit($?) if ($?);
+    exit(1) if ($?);
     start_cluster();
     switch_to_cluster_owner($owneruid, $ownergid);
     restore_globals($backup, $owneruid);
