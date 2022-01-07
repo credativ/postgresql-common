@@ -124,11 +124,28 @@ sub switch_to_cluster_owner($$) {
 
 # restore functions
 
+sub unpack_tar($$$) {
+    my ($backup, $tar, $dir) = @_;
+
+    if (-f "$backup/$tar.gz") {
+        $tar = "$tar.gz";
+    } elsif (-f "$backup/$tar.bz2") {
+        $tar = "$tar.bz2";
+    } elsif (-f "$backup/$tar.xz") {
+        $tar = "$tar.xz";
+    } elsif (-f "$backup/$tar") {
+        # do nothing
+    } else {
+        error "$backup/config.tar* is missing";
+    }
+
+    print "Restoring $backup/$tar to $dir ...\n";
+    system_or_error "tar", "-C", $dir, "-xf", "$backup/$tar";
+}
+
 sub restore_config($$) {
     my ($backup, $configdir) = @_;
-    -f "$backup/config.tar.gz" or error "$backup/config.tar.gz is missing";
-    print "Restoring $backup/config.tar.gz to $configdir ...\n";
-    system_or_error "tar", "-C", $configdir, "-xf", "$backup/config.tar.gz";
+    unpack_tar($backup, "config.tar", $configdir);
 }
 
 sub update_config($$$) {
@@ -153,20 +170,13 @@ sub update_config($$$) {
 
 sub restore_basebackup($$) {
     my ($backup, $datadir) = @_;
-
-    -f "$backup/base.tar.gz" or error "$backup/base.tar.gz is missing";
-    print "Restoring $backup/base.tar.gz to $datadir ...\n";
-    system_or_error "tar", "-C", $datadir, "-xf", "$backup/base.tar.gz";
+    unpack_tar($backup, "base.tar", $datadir);
 }
 
 sub restore_wal($$) {
     my ($backup, $datadir) = @_;
     return if ($version < 10); # WAL contained in base.tar.gz in PG 9.x
-
-    -f "$backup/pg_wal.tar.gz" or error "$backup/pg_wal.tar.gz is missing";
-    my $waldir = "$datadir/pg_wal";
-    print "Restoring $backup/pg_wal.tar.gz to $waldir ...\n";
-    system_or_error "tar", "-C", $waldir, "-xf", "$backup/pg_wal.tar.gz";
+    unpack_tar($backup, "pg_wal.tar", "$datadir/pg_wal");
 }
 
 sub archive_recovery_options($$$) {

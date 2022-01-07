@@ -1,6 +1,7 @@
 postgresql-common (238) UNRELEASED; urgency=medium
 
   * pg_restorecluster: Correctly detect errors on restore.
+  * pg_restorecluster: Support uncompressed backups and bz2/xz compression.
 
  -- Christoph Berg <myon@debian.org>  Fri, 07 Jan 2022 16:05:19 +0100
 
