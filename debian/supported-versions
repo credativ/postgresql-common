@@ -132,7 +132,6 @@ debian_backports() {
 
 pgdg() {
     cat <<-EOF
-	9.6
 	10
 	11
 	12
