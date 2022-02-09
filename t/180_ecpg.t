@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => 17;
+use Test::More tests => 19;
 
 my $v = $MAJORS[-1];
 
@@ -46,7 +46,8 @@ is_program_out 'nobody', 'cc -I$(pg_config --includedir) -L$(pg_config --libdir)
 chdir '/' or die "could not chdir to /: $!";
 
 # create cluster
-is ((system "pg_createcluster $v main --start >/dev/null"), 0, "pg_createcluster $v main");
+program_ok 0, "pg_createcluster $v main --start";
+like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
 is ((exec_as 'postgres', 'createuser nobody -D -R -S'), 0, 'createuser nobody');
 
 like_program_out 'nobody', "$workdir/test", 0, qr/Database is template1/,
