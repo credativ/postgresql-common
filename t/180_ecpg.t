@@ -5,7 +5,7 @@ use strict;
 use lib 't';
 use TestLib;
 use PgCommon;
-use Test::More tests => 19;
+use Test::More tests => 13;
 
 my $v = $MAJORS[-1];
 
@@ -45,17 +45,12 @@ is_program_out 'nobody', 'cc -I$(pg_config --includedir) -L$(pg_config --libdir)
     0, '', 'compiling ecpg output';
 chdir '/' or die "could not chdir to /: $!";
 
-# create cluster
-program_ok 0, "pg_createcluster $v main --start";
-like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online/;
-is ((exec_as 'postgres', 'createuser nobody -D -R -S'), 0, 'createuser nobody');
-
-like_program_out 'nobody', "$workdir/test", 0, qr/Database is template1/,
-    'runs and gives correct output';
+# run program
+like_program_out 'nobody', "pg_virtualenv $workdir/test", 0, qr/Database is template1/,
+    'test program runs and gives correct output';
 
 # clean up
 system "rm -rf $workdir";
-is ((system "pg_dropcluster $v main --stop"), 0, "pg_dropcluster $v main");
 check_clean;
 
 # vim: filetype=perl
