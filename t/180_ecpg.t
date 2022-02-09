@@ -28,8 +28,9 @@ EXEC SQL BEGIN DECLARE SECTION;
 EXEC SQL END DECLARE SECTION;
 
 int main() {
+    ECPGdebug(1, stderr);
     EXEC SQL CONNECT TO template1;
-    EXEC SQL SELECT current_database() INTO :output;
+    EXEC SQL SELECT 'Database is ' || current_database() INTO :output;
     puts(output);
     EXEC SQL DISCONNECT ALL;
     return 0;
@@ -48,7 +49,7 @@ chdir '/' or die "could not chdir to /: $!";
 is ((system "pg_createcluster $v main --start >/dev/null"), 0, "pg_createcluster $v main");
 is ((exec_as 'postgres', 'createuser nobody -D -R -S'), 0, 'createuser nobody');
 
-is_program_out 'nobody', "$workdir/test", 0, "template1\n", 
+like_program_out 'nobody', "$workdir/test", 0, qr/Database is template1/,
     'runs and gives correct output';
 
 # clean up
