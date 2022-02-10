@@ -1,11 +1,11 @@
-postgresql-common (238) UNRELEASED; urgency=medium
+postgresql-common (238) unstable; urgency=medium
 
   * pg_restorecluster: Correctly detect errors on restore.
   * pg_restorecluster: Support uncompressed backups and bz2/xz compression.
   * supported-versions: Unsupport PG 9.6 for apt.postgresql.org.
   * t/180_ecpg.t: Enable debug output and run program in pg_virtualenv.
 
- -- Christoph Berg <myon@debian.org>  Fri, 07 Jan 2022 16:05:19 +0100
+ -- Christoph Berg <myon@debian.org>  Thu, 10 Feb 2022 11:02:57 +0100
 
 postgresql-common (237) unstable; urgency=medium
 
