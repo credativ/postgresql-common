@@ -17,7 +17,7 @@ if ($v < '8.3') {
 
 # enable core dumps
 # sudo and salsa-ci set the hard limit to 0 by default, undo that
-is_program_out 0, "prlimit --core=unlimited:unlimited --pid=$$", 0, '', "set core file size to unlimited";
+is_program_out 0, "prlimit --core=0:unlimited --pid=$$", 0, '', "set core file size to unlimited";
 is_program_out 'postgres', "sh -c 'ulimit -Hc'", 0, "unlimited\n", "core file size is unlimited";
 
 # create cluster
