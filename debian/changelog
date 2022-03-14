@@ -1,3 +1,9 @@
+postgresql-common (240) unstable; urgency=medium
+
+  * t/085_pg_ctl.conf.t: Honor systemd hard core file size limit.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 14 Mar 2022 12:12:02 +0100
+
 postgresql-common (239) unstable; urgency=medium
 
   * t/085_pg_ctl.conf.t: sudo and salsa-ci set the core file size hard limit
