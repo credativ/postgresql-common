@@ -1,3 +1,9 @@
+postgresql-common (241) UNRELEASED; urgency=medium
+
+  * t/045_backup.t: Accept new PG15 psql -l output.
+
+ -- Christoph Berg <myon@debian.org>  Mon, 21 Mar 2022 13:01:14 +0100
+
 postgresql-common (240) unstable; urgency=medium
 
   * t/085_pg_ctl.conf.t: Honor systemd hard core file size limit.

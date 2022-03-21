@@ -115,12 +115,12 @@ foreach my $v (@MAJORS) {
         program_ok 0, "pg_dropcluster $v main --stop";
         program_ok 0, "pg_restorecluster $v main $backup --start --datadir /var/lib/postgresql/$v/snowflake";
         like_program_out 0, "pg_lsclusters -h", 0, qr/$v main 5432 online postgres .var.lib.postgresql.$v.snowflake/;
-        is_program_out $pg_uid, "psql -XAtl", 0, "mydb|postgres|SQL_ASCII|en_US.UTF-8|en_US.UTF-8|
-postgres|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|
-template0|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|=c/postgres
+        like_program_out $pg_uid, "psql -XAtl", 0, qr%mydb\|postgres\|SQL_ASCII\|en_US.UTF-8\|en_US.UTF-8\|(\|libc\|)?
+postgres\|postgres\|UTF8\|en_US.UTF-8\|en_US.UTF-8\|(\|libc\|)?
+template0\|postgres\|UTF8\|en_US.UTF-8\|en_US.UTF-8\|(\|libc\|)?=c/postgres
 postgres=CTc/postgres
-template1|postgres|UTF8|en_US.UTF-8|en_US.UTF-8|=c/postgres
-postgres=CTc/postgres\n";
+template1\|postgres\|UTF8\|en_US.UTF-8\|en_US.UTF-8\|(\|libc\|)?=c/postgres
+postgres=CTc/postgres\n%;
         is_program_out $pg_uid, "psql -XAtc 'show work_mem'", 0, "11MB\n";
         is_program_out $pg_uid, "psql -XAtc 'select * from foo' mydb", 0, "important data\n";
         is_program_out $pg_uid, "psql -XAtc \"select analyze_count from pg_stat_user_tables where relname = 'foo'\" mydb", 0,
