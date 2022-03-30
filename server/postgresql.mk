@@ -83,7 +83,7 @@ endif
 ifeq ($(call version_ge,11),y)
   # if LLVM is installed, use it
   ifneq ($(wildcard /usr/bin/llvm-config-*),)
-    LLVM_CONFIG = $(lastword $(sort $(wildcard /usr/bin/llvm-config-*)))
+    LLVM_CONFIG = $(lastword $(shell ls -v /usr/bin/llvm-config-*))
     LLVM_VERSION = $(subst /usr/bin/llvm-config-,,$(LLVM_CONFIG))
     CONFIGURE_FLAGS += --with-llvm LLVM_CONFIG=$(LLVM_CONFIG) CLANG=/usr/bin/clang-$(LLVM_VERSION)
   else
