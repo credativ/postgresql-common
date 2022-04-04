@@ -1,6 +1,7 @@
 postgresql-common (241) UNRELEASED; urgency=medium
 
   * server/postgresql.mk: Fix detection of latest llvm version.
+  * server/postgresql.mk: Remove builddir prefix from generated pg_config.
   * t/045_backup.t: Accept new PG15 psql -l output.
 
  -- Christoph Berg <myon@debian.org>  Mon, 21 Mar 2022 13:01:14 +0100

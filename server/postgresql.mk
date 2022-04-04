@@ -186,9 +186,10 @@ override_dh_install-arch:
 
 	# assemble perl version of pg_config in libpq-dev
 	sed -ne '1,/__DATA__/p' $(AUX_MK_DIR)/pg_config.pl > debian/libpq-dev/usr/bin/pg_config
-	LC_ALL=C debian/postgresql-client-$(MAJOR_VER)/usr/lib/postgresql/$(MAJOR_VER)/bin/pg_config >> debian/libpq-dev/usr/bin/pg_config
+	LC_ALL=C debian/postgresql-client-$(MAJOR_VER)/usr/lib/postgresql/$(MAJOR_VER)/bin/pg_config | sed -e 's![^ ]*/debian/postgresql-client-$(MAJOR_VER)!!' >> debian/libpq-dev/usr/bin/pg_config
 	LC_ALL=C debian/postgresql-client-$(MAJOR_VER)/usr/lib/postgresql/$(MAJOR_VER)/bin/pg_config --help >> debian/libpq-dev/usr/bin/pg_config
 	chmod 755 debian/libpq-dev/usr/bin/pg_config
+	[ "$$(debian/libpq-dev/usr/bin/pg_config --bindir)" = "/usr/lib/postgresql/$(MAJOR_VER)/bin" ]
 
 	# remove actual build path from Makefile.global for reproducibility
 	sed -i -e "s!^abs_top_builddir.*!abs_top_builddir = /build/postgresql-$(MAJOR_VER)/build!" \
