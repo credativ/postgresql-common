@@ -96,6 +96,10 @@ ifeq ($(call version_ge,14),y)
   CONFIGURE_FLAGS += --with-lz4
 endif
 
+ifeq ($(call version_ge,15),y)
+  CONFIGURE_FLAGS += --with-zstd
+endif
+
 # Facilitate hierarchical profile generation on amd64 (#730134)
 ifeq ($(DEB_HOST_ARCH),amd64)
   CFLAGS += -fno-omit-frame-pointer
