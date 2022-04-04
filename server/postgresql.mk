@@ -97,7 +97,9 @@ ifeq ($(call version_ge,14),y)
 endif
 
 ifeq ($(call version_ge,15),y)
-  CONFIGURE_FLAGS += --with-zstd
+  ifeq ($(filter pkg.postgresql.nozstd,$(DEB_BUILD_PROFILES)),)
+    CONFIGURE_FLAGS += --with-zstd
+  endif
 endif
 
 # Facilitate hierarchical profile generation on amd64 (#730134)
