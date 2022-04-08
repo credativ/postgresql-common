@@ -191,7 +191,7 @@ is_program_out 'nobody', 'psql -Atc "SELECT nextval(\'odd10\')" test', 0, "1\n",
     'check next sequence value (wrap)';
 
 # check large objects
-is_program_out 'postgres', 'psql -Atc "SET bytea_output = \'escape\'; SELECT data FROM pg_largeobject WHERE loid = 1234"', 0, "Hello world\n",
+is_program_out 'postgres', 'psql -Aqtc "SET bytea_output = \'escape\'; SELECT data FROM pg_largeobject WHERE loid = 1234"', 0, "Hello world\n",
     'check large object';
 
 # check stored procedures
