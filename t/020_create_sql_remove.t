@@ -36,7 +36,7 @@ sub check_major {
 
     # check that a /var/run/postgresql/ pid file is created
     my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$v-main.pid", "$v-main.pg_stat_tmp");
-    pop @contents if ($v < 8.4); # remove pg_stat_tmp
+    pop @contents if ($v < 8.4 or $v >= 15); # remove pg_stat_tmp
     unless ($PgCommon::rpm and $v < 9.4) {
         ok_dir '/var/run/postgresql/', [@contents],
             'Socket and pid file are in /var/run/postgresql/';
@@ -94,7 +94,7 @@ sub check_major {
 
     # Now there should not be an external PID file any more, since we set it
     # explicitly
-    unless ($PgCommon::rpm and $v < 9.4) {
+    unless ($PgCommon::rpm and ($v < 9.4 or $v >= 15)) {
         ok_dir '/var/run/postgresql', [grep {! /pid/} @contents],
             'Socket and stats dir, but not PID file in /var/run/postgresql/';
     } else {

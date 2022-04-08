@@ -82,7 +82,7 @@ program_ok 0, "pg_ctlcluster $version main start", 0,
 
 # check socket
 my @contents = ('.s.PGSQL.5432', '.s.PGSQL.5432.lock', "$version-main.pid", "$version-main.pg_stat_tmp");
-pop @contents if ($version < 8.4); # remove pg_stat_tmp
+pop @contents if ($version < 8.4 or $version >= 15); # remove pg_stat_tmp
 ok_dir '/var/run/postgresql', [grep {/main/} @contents], 'No sockets in /var/run/postgresql';
 ok_dir $socketdir, ['.s.PGSQL.5432', '.s.PGSQL.5432.lock'], "Socket is in $socketdir";
 
