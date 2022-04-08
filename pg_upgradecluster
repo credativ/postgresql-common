@@ -191,6 +191,10 @@ sub adapt_conffiles {
         }
         $deprecate->(\%c, 'vacuum_cleanup_index_scale_factor', 'does not exist anymore');
     }
+
+    if ($newversion >= '15') {
+        $deprecate->(\%c, 'stats_temp_directory', 'does not exist anymore');
+    }
 }
 
 sub migrate_config_files() {

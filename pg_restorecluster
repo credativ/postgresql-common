@@ -155,10 +155,10 @@ sub update_config($$$) {
         hba_file => "$configdir/pg_hba.conf",
         ident_file => "$configdir/pg_ident.conf",
         external_pid_file => "/var/run/postgresql/$version-$cluster.pid",
-        stats_temp_directory => "/var/run/postgresql/$version-$cluster.pg_stat_tmp",
         port => $port,
     );
     $settings{cluster_name} = "$version/$cluster" if ($version >= 9.5);
+    $settings{stats_temp_directory} = "/var/run/postgresql/$version-$cluster.pg_stat_tmp" if ($version < 15);
     my %config = PgCommon::read_conf_file("$configdir/postgresql.conf");
     for my $guc (sort keys %settings) {
         if (not exists $config{$guc} or $config{$guc} ne $settings{$guc}) {

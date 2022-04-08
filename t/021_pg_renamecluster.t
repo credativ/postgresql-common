@@ -24,7 +24,7 @@ is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'external_pid_file
     "/var/run/postgresql/$v-donau.pid", 'external_pid_file location updated');
 ok (-f "/var/run/postgresql/$v-donau.pid", 'external_pid_file exists');
 SKIP: {
-    skip "no stats_temp_directory in $v", 2 if ($v < 8.4);
+    skip "no stats_temp_directory in $v", 2 if ($v < 8.4 or $v >= 15);
     is ((PgCommon::get_conf_value $v, 'donau', 'postgresql.conf', 'stats_temp_directory'),
         "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory location updated');
     ok (-d "/var/run/postgresql/$v-donau.pg_stat_tmp", 'stats_temp_directory exists');

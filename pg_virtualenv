@@ -131,8 +131,6 @@ if [ "${NONROOT:-}" ]; then
     PWFILE="$PGSYSCONFDIR/pwfile"
     LOGDIR="$WORKDIR/log"
     echo "$PGPASSWORD" > "$PWFILE"
-    # stats_temp_directory in /var/run/postgresql needs root (or postgres), disable it
-    PGCONF_OPTS+=("--pgoption" "stats_temp_directory=")
 
     cleanup () {
 	set +e
@@ -205,6 +203,12 @@ for v in $PG_VERSIONS; do
             8*|9.0|9.1|9.2) : ;;
             *) NOSYNC="--nosync" ;;
         esac
+        if [ "${NONROOT:-}" ]; then
+            # stats_temp_directory in /var/run/postgresql needs root (or postgres), disable it
+            case $v in
+                8.4|9.*|1[01234]) PGCONF_OPTS+=("--pgoption" "stats_temp_directory=") ;;
+            esac
+        fi
         # disable fakeroot here because we really can't run as root
         # (and still switch to postgres when using fakeroot as root user)
         disable_fakeroot
