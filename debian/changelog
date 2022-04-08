@@ -1,5 +1,6 @@
 postgresql-common (241) UNRELEASED; urgency=medium
 
+  * Remove stats_temp_directory in PG 15.
   * server/postgresql.mk: Fix detection of latest llvm version.
   * server/postgresql.mk: Remove builddir prefix from generated pg_config.
   * t/045_backup.t: Accept new PG15 psql -l output.
